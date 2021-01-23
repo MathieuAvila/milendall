@@ -1,0 +1,28 @@
+<maze>
+    <room id="room1">
+        <name lang="en">nightmare</name>   <!-- optional, attr optional -->
+        <instance>
+            <type name="square">         <!-- description:optional, instantiation:mandatory -->
+                <arg name="" value=""/> <!-- optional, depends on type -->
+            </type>
+        </instance>
+        <portal
+            id="r1p1"              
+            to="room2"              
+            active="false"       
+            accessible="false"/>
+        <!-- id is globally unique -->
+        <!-- to=id@room -->
+        <!-- active defaults to true = visible and works -->
+        <!-- accessible defaults to true -->
+        <portal id="r1p2" to="room3" bidirectional="false"/>
+        <portal id="r1p3" to="room1" />
+    </room>
+
+    <room id="room2" />
+
+    <room id="room3">
+        <portal id="r3p1" to="room2" />
+    </room>
+
+</maze>
