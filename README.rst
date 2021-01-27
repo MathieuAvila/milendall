@@ -1,6 +1,11 @@
 Incoherent
 ==========
 
+Incoherent is a FPS-like game in a volontarily incoherent world.
+
+Game Goal
+---------
+
 In single player mode:
 
 - Get out of maze in a given amount of time.
@@ -8,6 +13,9 @@ In single player mode:
 In multi-player  mode:
 
 - Death match in a maze
+
+Particularity
+-------------
 
 In both cases:
 
