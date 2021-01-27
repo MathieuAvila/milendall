@@ -1,12 +1,20 @@
-incoherent
+Incoherent
 ==========
 
+In single player mode:
+
 - Get out of maze in a given amount of time.
+
+In multi-player  mode:
+
+- Death match in a maze
+
+In both cases:
+
 - Maze is non-euclidian
 - Gravity is dynamic and incoherent
 - Objects can be rescaled when passing through some gates
 - FPS classics: Enemies get on the way. Can be fought with weapons & ammo
-
 
 Requirements
 ============
@@ -34,7 +42,14 @@ Portals
 Portals are polygons showing another space in another room. They are directional.
 They can be active or inactive. They can move inside the source space.
 When active, they show their destination and can be crossed. Destination is in the
-space of the target room. There is no link between original space and target space.
+space of the target room. In terms of organisation, there is no link between 
+original space and target space. For example, it is possible to have
+Tardis-like (bigger inside than the outise) or Mario-like (smaller worlds in bigger worlds)
+portals.
+
+Portals can also change the same of the objects they cross: bigger or smaller by a 
+given static factor. Crossing in the opposite direction changes the scale in the
+opposite direction.
 
 Gates
 .....
@@ -50,7 +65,54 @@ polygon geometry, orientation (where should gravity happen) and decorations insi
 Gravity
 .......
 
-Gravity is defined on a per-room basis.
+Gravity is defined on a per-room basis. Default will be the expected one: down on Z,
+value 1.0, constant in space and time.
+
+It can be variable in space and time. It is customizable.
+
+
+Objects
+.......
+
+Rooms can be filled with objects:
+
+- standard FPS ones:
+ 
+  - enemies
+  - health
+  - armor
+  - ammo
+  - special effects (mega-health, ...)
+
+- unstandard ones:
+
+  - gravity inverter option
+  - weapon effect inverter option
+  - ...
+
+Events
+......
+
+Rooms configurations can change with triggers:
+
+- buttons placed in other rooms.
+- "keys" with a given color.
+
+For the sake of the player (or not), it can be devised which effect they have.
+
+Events are customizable through scripts. However here are some possible changes:
+
+- obviously, opening of closing gates
+- gravity change (see gravity)
+- appearance/disappearance of structural elements (see mesh animation)
+
+Entry/Output
+............
+
+A maze for single player mode have an entry room that marks the start (middle of it) and an output room
+that marks the end of the game.
+
+A maze for multi-player mode have many entry rooms and no output room.
 
 Maze visual aspect
 ------------------
@@ -66,12 +128,16 @@ Hints come in various categories
      - values
      - description     
    * - room
+     - type
+     - room, corridor, stairs, ..., planet, ocean, etc.
+     - the structural identity of the room
+   * - room
      - ordered
      - ordered, disordered
      - whether rooms must have a general ordered aspect, with gates aligned, and so on
    * - room
      - elements
-     - blocks, rocks, swimming-pool
+     - blocks, rocks, swimming-pool, ...
      - provides additional elements to append, both visual and structural
    * - gate
      - type
@@ -105,7 +171,8 @@ Generation happens with these steps:
      - Highest-level view which gives difficulty, ambiance, rythm
      - XML file
    * - Rooms descriptions
-     - Descriptions of rooms & gates : how they connect, their configurations, their high-level content. May include hints on decoration, room type, etc...
+     - Descriptions of rooms & gates : how they connect, their configurations,
+       their high-level content. May include hints on decoration, room type, etc...
      - XML file
 
        Viz thru Plantuml
@@ -118,6 +185,29 @@ Generation happens with these steps:
      - XML file
 
        Viz thru Plantuml
+   * - Rooms structure
+     - Generate rooms structural elements: hard walls structure.
+
+       At this point, walls position and sizes are decided, but not yet walls
+       graphical structure and texturing.
+
+       Gravity rules are computed.
+
+       Objects are placed.
+
+       It is still possible to re-compute one's room structural make-up without
+       affecting everything
+     - Set of rooms and gates with list of structural polygons. This starts to be navigable,
+       although it's ugly and uniform. 
+   * - Rooms decorations
+     - Generate all graphical elements of rooms
+      
+       After this, it is possible to re-compute a graphical setup if it is not satisfying.
+       
+       Otherwise, this is finalized.
+
+     - Playable level
+
    * - Rooms finalization
      - Generate rooms
      - Playable level
@@ -127,9 +217,30 @@ Level strategy
 
 TBD
 
-Rooms description & instantiation format
-----------------------------------------
+Rooms Description
+-----------------
+
+This is highest level of description of rooms.
+
+Rooms Instantiation
+-------------------
+
+TBD
+
+Rooms Structure
+---------------
+
+TBD
 
 
+Rooms Decorations
+-----------------
+
+TBD
+
+Rooms Finalization
+-------------------
+
+TBD
 
 

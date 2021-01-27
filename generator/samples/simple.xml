@@ -16,13 +16,14 @@
         <!-- active defaults to true = visible and works -->
         <!-- accessible defaults to true -->
         <portal id="r1p2" to="room3" bidirectional="false"/>
-        <portal id="r1p3" to="room1" />
+        <portal id="r1p3" to="room1" scale=0.5 />    <!-- crossing will shorten elements by x0.5 -->
     </room>
 
     <room id="room2" />
 
     <room id="room3">
         <portal id="r3p1" to="room2" />
+        <name lang="en">Room 2</name>   <!-- optional, attr optional -->
     </room>
 
 </maze>
