@@ -1,7 +1,10 @@
 Incoherent
 ==========
 
-Incoherent is a FPS-like game in a volontarily incoherent world.
+Incoherent is a FPS-like game in a volontarily incoherent maze. It can be played in single- or multi-player modes.
+
+Mazes can be generated randomly, with various control on the randomness to make them interesting from
+a game point-of-view. A set of pre-computed mazes (levels) are available.
 
 Game Goal
 ---------
@@ -10,7 +13,7 @@ In single player mode:
 
 - Get out of maze in a given amount of time.
 
-In multi-player  mode:
+In multi-player mode:
 
 - Death match in a maze
 
@@ -122,8 +125,9 @@ that marks the end of the game.
 
 A maze for multi-player mode have many entry rooms and no output room.
 
-Maze visual aspect
-------------------
+
+Maze structural aspects
+-----------------------
 
 This is done through "hints" provided to rooms generators.
 Hints come in various categories
@@ -155,6 +159,20 @@ Hints come in various categories
        - openspace creates the biggest link, like the 2 rooms would be only one.
        - water: a water surface
        - others are obvious
+
+Maze visual aspects
+-------------------
+
+This is done through "hints" provided to rooms dressers.
+Hints come in various categories
+
+.. list-table::
+   :header-rows: 1
+
+   * - object type
+     - name
+     - values
+     - description
    * - gate, room
      - decoration
      - futuristic, mine, hangar...
@@ -177,11 +195,11 @@ Generation happens with these steps:
      - Output
    * - Level Strategy
      - Highest-level view which gives difficulty, ambiance, rythm
-     - XML file
+     - JSON file
    * - Rooms descriptions
      - Descriptions of rooms & gates : how they connect, their configurations,
        their high-level content. May include hints on decoration, room type, etc...
-     - XML file
+     - JSON file
 
        Viz thru Plantuml
    * - Rooms instantiation
@@ -190,7 +208,7 @@ Generation happens with these steps:
        Example: room type, size, colors...
        
        Using this step to fine-tune content
-     - XML file
+     - JSON file
 
        Viz thru Plantuml
    * - Rooms structure
@@ -204,20 +222,24 @@ Generation happens with these steps:
        Objects are placed.
 
        It is still possible to re-compute one's room structural make-up without
-       affecting everything
-     - Set of rooms and gates with list of structural polygons. This starts to be navigable,
-       although it's ugly and uniform. 
-   * - Rooms decorations
+       affecting everything.
+
+       Walls come as a list of polygons that describe the main structure. Gates
+       are computed as a "punch" in one of the wall.
+
+     - Set of rooms and gates with list of structural polygons and gates. This starts to be navigable,
+       although it's ugly and uniform.
+   * - Rooms dressing
      - Generate all graphical elements of rooms
       
        After this, it is possible to re-compute a graphical setup if it is not satisfying.
        
        Otherwise, this is finalized.
 
-     - Playable level
+       Walls are cut into real final polygons, based on previous main structure. Main structure
+       can still used to check that you don't go through terrain, or this  can be done with
+       visual polygons. It's up to the specified dresser algorithm.
 
-   * - Rooms finalization
-     - Generate rooms
      - Playable level
 
 Level strategy
