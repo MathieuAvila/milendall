@@ -1,7 +1,7 @@
 Incoherent
 ==========
 
-Incoherent is a FPS-like game in a volontarily incoherent maze. It can be played in single- or multi-player modes.
+Incoherent is a FPS-like game in a voluntarily incoherent maze. It can be played in single- or multi-player modes.
 
 Mazes can be generated randomly, with various control on the randomness to make them interesting from
 a game point-of-view. A set of pre-computed mazes (levels) are available.
@@ -88,7 +88,7 @@ Objects
 Rooms can be filled with objects:
 
 - standard FPS ones:
- 
+
   - enemies
   - health
   - armor
@@ -141,7 +141,11 @@ Hints come in various categories
      - description     
    * - room
      - type
-     - room, corridor, stairs, ..., planet, ocean, etc.
+     - room, corridor, stairs, ...,
+     
+       planet, ocean, hamster wheel,
+       
+       bubble, escher painting, etc.
      - the structural identity of the room
    * - room
      - ordered
@@ -159,6 +163,33 @@ Hints come in various categories
        - openspace creates the biggest link, like the 2 rooms would be only one.
        - water: a water surface
        - others are obvious
+   * - room
+     - minsize, maxsize
+     - a set of 3 float values (3D vector)
+     - The minimum or maximum size of a room in each direction. Although this may mean
+       that the room is a cube, it is just a hint.
+
+       A zero in one direction means there is not requirement.
+
+       The unit is the meter. A player has a size of a 1.8m bubble (approx).
+
+       Some room's types cannot be instantiated under a given size.
+
+       The 3D vector refers to [X,Y,Z], Z being the expected top-bottom direction, at least
+       for  
+   * - gate
+     - minsize, maxsize
+     - a set of 2 float values (2D vector)
+     - The minimum or maximum size of a gate in each direction. Although this may mean
+       that the room is a cube, it is just a hint.
+
+       A zero in one direction means there is not requirement.
+
+       The unit is the meter. A player has a size of a 1.8m bubble (approx).
+
+       Some gate's types cannot be instantiated under a given size.
+
+       The 2D vector refers to [width, height]
 
 Maze visual aspects
 -------------------
@@ -185,6 +216,12 @@ Hints come in various categories
 Maze generation
 ===============
 
+This section goes more in depth with maze generation. In this section, "designer" refers to
+a human who controls the creation process.
+
+Overview 
+--------
+
 Generation happens with these steps:
 
 .. list-table::
@@ -204,7 +241,7 @@ Generation happens with these steps:
        Viz thru Plantuml
    * - Rooms instantiation
      - Force description of rooms not described in previous step.
-      
+     
        Example: room type, size, colors...
        
        Using this step to fine-tune content
@@ -231,7 +268,7 @@ Generation happens with these steps:
        although it's ugly and uniform.
    * - Rooms dressing
      - Generate all graphical elements of rooms
-      
+     
        After this, it is possible to re-compute a graphical setup if it is not satisfying.
        
        Otherwise, this is finalized.
@@ -241,6 +278,9 @@ Generation happens with these steps:
        visual polygons. It's up to the specified dresser algorithm.
 
      - Playable level
+
+Note that designer is given the ability to finely control every generation step.
+However, it is still possible to let the system handle all details.
 
 Level strategy
 --------------
@@ -252,10 +292,13 @@ Rooms Description
 
 This is highest level of description of rooms.
 
+A list of rooms is given, along with the lists of portals that allows to go from one room to another. 
+The designer has the ability to fix a few parameters in this stage.
+
 Rooms Instantiation
 -------------------
 
-TBD
+
 
 Rooms Structure
 ---------------
@@ -263,14 +306,7 @@ Rooms Structure
 TBD
 
 
-Rooms Decorations
+Rooms Dressing
 -----------------
 
 TBD
-
-Rooms Finalization
--------------------
-
-TBD
-
-
