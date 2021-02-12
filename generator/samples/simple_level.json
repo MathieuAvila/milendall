@@ -1,0 +1,88 @@
+{
+    "$schema": "../schema/level.schema.json",
+
+    "name" : [  { "lang": "en", "value" : "Sample Level"} ],
+    "section": "samples",
+
+    "game_type" : {
+        "single_mode" : {
+            "execution_time" : 10.0,
+            "entry_point_room" : "room1",
+            "end_point_room" : "room3"
+        }
+    },
+
+    "rooms" : [
+        {
+            "room_id" : "room1",
+            "name" : [ { "lang": "en", "value" : "nightmare"}  ], 
+            "structure" : "square",
+            "structure_parameters" : 
+                [
+                ],
+            "visual" : "garden",
+            "visual_parameters" : 
+                [
+                ],
+            "triggers" : [
+                { 
+                    "trigger_id" : "open0",
+                    "type" : "key"
+                }
+            ]
+        },
+        {
+            "room_id" : "room2",
+            "name" : [ { "lang": "en", "value" : "heaven"}  ],
+            "triggers" : [ { "trigger_id" : "open0", "type" : "key" }
+            ]
+        },
+        {
+            "room_id" : "room3"
+        }
+    ],
+    "gates" : [
+        { 
+            "gate_id" : "r3p1",
+            "from" : "room3",
+            "to" : "room2"   ,           
+            "open" : false,      
+            "accessible" : false
+        },
+        {
+            "gate_id" : "r1p1",
+            "from" : "room1"   ,           
+            "to" : "room2"   ,           
+            "open" : false,      
+            "accessible" : false,
+        
+            "structure" : "",
+            "structure_parameters" : 
+            [
+            ],
+        
+            "visual" : "",
+            "visual_parameters" : 
+            [
+            ]
+        },
+        { 
+            "gate_id" : "r1p2",
+            "from" : "room1",           
+            "to" : "room3",          
+            "bidirectional" : false
+        },
+        { 
+            "gate_id" : "r1p3",
+            "from" : "room1",           
+            "to" : "room1",           
+            "scale" : 0.5,
+            "open" : false,    
+            "events" : [
+                { "action": "open", "on_trigger" : "open0_r1p3" },
+                { "action": "close", "on_trigger" : "close0_r1p3" }
+            ]
+        }
+    ]
+}
+
