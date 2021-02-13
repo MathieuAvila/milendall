@@ -33,3 +33,43 @@ class Level:
             [r.dump_graph(output_file) for r in self.values.rooms]
             [g.dump_graph(output_file) for g in self.values.gates]
             output_file.write("}\n")
+
+    def structure_check_coherency(self):
+        # Sanity check that content is viable, at the structure level
+        # Thing can be insane if user has messed up with content in-betwween
+        pass
+
+    def dressing_check_coherency(self):
+        # Sanity check that content is viable, at the structure level
+        # Thing can be insane if user has messed up with content in-betwween
+        pass
+
+    def instantiation(self):
+        pass
+
+    def room_instantiation(self, room_id):
+        pass
+
+    def structure(self):
+        pass
+
+    def room_structure(self, room_id):
+        pass
+
+    def dressing(self):
+        pass
+
+    def room_dressing(self, room_id):
+        pass
+
+    def objects(self):
+        pass
+
+    def room_objects(self, room_id):
+        pass
+
+    def finalize(self):
+        pass
+
+    def room_finalize(self, room_id):
+        pass
