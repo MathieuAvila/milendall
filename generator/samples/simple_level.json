@@ -70,7 +70,7 @@
             "gate_id" : "r1p2",
             "from" : "room1",           
             "to" : "room3",          
-            "bidirectional" : false
+            "direction" : "from-to"
         },
         { 
             "gate_id" : "r1p3",
@@ -79,8 +79,10 @@
             "scale" : 0.5,
             "open" : false,    
             "events" : [
-                { "action": "open", "on_trigger" : "open0_r1p3" },
-                { "action": "close", "on_trigger" : "close0_r1p3" }
+                { "action": "open", "direction":"from-to" , "on_trigger" : "open0_r1p3" },
+                { "action": "visible", "direction":"from-to" , "on_trigger" : "open0_r1p3" },
+                { "action": "close", "on_trigger" : "close0_r1p3" },
+                { "action": "invisible", "on_trigger" : "close0_r1p3" }
             ]
         }
     ]
