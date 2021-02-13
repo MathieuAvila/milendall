@@ -1,7 +1,7 @@
-Incoherent
+Milendall
 ==========
 
-Incoherent is a FPS-like game in a voluntarily incoherent maze. It can be played in single- or multi-player modes.
+Milendall is a FPS-like game in a voluntarily incoherent maze. It can be played in single- or multi-player modes.
 
 Mazes can be generated randomly, with various control on the randomness to make them interesting from
 a game point-of-view. A set of pre-computed mazes (levels) are available.
