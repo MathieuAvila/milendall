@@ -1,7 +1,7 @@
 {
-    "$schema": "../schema/level.schema.json",
+    "$schema": "../../schema/level.schema.json",
 
-    "name" : [  { "lang": "en", "value" : "Sample Level"} ],
+    "name" : [  { "lang": "en", "value" : "Simple Level"} ],
     "section": "samples",
 
     "game_type" : {
