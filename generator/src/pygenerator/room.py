@@ -1,5 +1,7 @@
 from munch import DefaultMunch
 
+from rooms import *
+
 class Room:
 
     def __init__(self, dict):
