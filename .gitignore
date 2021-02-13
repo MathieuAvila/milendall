@@ -30,3 +30,17 @@
 *.exe
 *.out
 *.app
+
+# stuff
+**/__pycache__
+CMakeFiles/
+.vscode/
+build/
+cmake_install.cmake
+compile_commands.json
+d.patch
+*.graph
+*.png
+generator/src/build_bin_mesh
+workspace.code-workspace
+Makefile
