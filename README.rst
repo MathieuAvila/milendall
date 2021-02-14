@@ -157,11 +157,14 @@ Hints come in various categories
      - provides additional elements to append, both visual and structural
    * - gate
      - type
-     - window, door, openspace, water
+     - window, door, openspace, water, hole
      - describes the type of gate
      
        - openspace creates the biggest link, like the 2 rooms would be only one.
        - water: a water surface
+       - window: point of view, not traversable
+       - door : something you would step in, with a given floor direction
+       - hole: usually something you "falls into"
        - others are obvious
    * - room
      - minsize, maxsize
