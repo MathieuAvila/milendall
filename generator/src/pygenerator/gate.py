@@ -13,7 +13,14 @@ class Gate:
                 dir = 'dir="forward"'
             if (self.values["direction"] == "from"):
                 dir = 'dir="back"'
+        
+        label = self.values["gate_id"]
+        
+        if (self.values.structure_class != None):
+            label += "<BR/><I>S: "+ self.values.structure_class + "</I>"
+        if (self.values.dressing_class != None):
+            label += "<BR/><I>D: "+ self.values.dressing_class + "</I>"
 
         output.write(self.values["from"] +' -> ' + self.values["to"] +
-            ' [ label="' + self.values["gate_id"] +  '" ' + 
+            ' [ label= < ' + label +  ' > ' + 
             dir + '] ;\n')
