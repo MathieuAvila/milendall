@@ -27,6 +27,8 @@ class Level:
         return json.dumps(self, cls=JSONEncoder, indent=1)
 
     def dump_graph(self, filename):
+        """ Dump a file in graphviz format that allows to graphically visualize
+            level"""
         with open(filename, "w") as output_file:
             output_file.write("digraph g {\n") 
             output_file.write("node [shape=box];\n")
@@ -35,22 +37,37 @@ class Level:
             output_file.write("}\n")
 
     def structure_check_coherency(self):
-        # Sanity check that content is viable, at the structure level
-        # Thing can be insane if user has messed up with content in-betwween
+        """ Sanity check that content is viable, at the structure level
+            Thing can get insane if user has messed up with content in-betwween
+
+            1. For each room, if room type is selected
+            2. gather the gate lists with their format
+            3. Check it is allowed by the room type
+            4. Request room structure coherency"""
         pass
 
     def dressing_check_coherency(self):
-        # Sanity check that content is viable, at the structure level
-        # Thing can be insane if user has messed up with content in-betwween
+        """ Sanity check that content is viable, at the structure level
+            Thing can get insane if user has messed up with content in-betwween"""
         pass
 
     def instantiation(self):
+        """ 1. For each gate, choose gate format if not already done
+            2. Instantiate each room if not already done"""
         pass
 
     def room_instantiation(self, room_id):
+        """ 1. Sort room types that matches constraints: list of gates with format of each. 
+            Note: it's up to the room type to check criterias
+            2. Associate weights for each
+            3. Random selection of one type"""
         pass
 
     def structure(self):
+        """ 1. Sanity check
+            2. For each gate, call type to generate sizes
+            3. For each room, pass gates information and forced parameters to sekected type
+               type will use its private structure information to store types' parameters"""
         pass
 
     def room_structure(self, room_id):
