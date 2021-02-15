@@ -3,7 +3,11 @@
 import level
 import sys, getopt
 import os
+import room_selector_regular
+import logging
 
+logging.basicConfig()
+logging.getLogger().setLevel(logging.INFO)
 
 def help():
     print("generator.py : Integrated tool to build levels.")
@@ -93,7 +97,7 @@ def check_level_user():
 def main(argv):
     global directory, room
     try:
-        opts,args = getopt.getopt(argv,"hi:r:",["directory=","room="])
+        opts,args = getopt.getopt(argv,"hvi:r:",["directory=","room="])
     except getopt.GetoptError:
         help()
     for opt, arg in opts:
@@ -103,6 +107,10 @@ def main(argv):
             directory = arg
         elif opt in ("-r", "--room"):
             room = arg
+        elif opt in ("-v", "--verbose"):
+            logging.getLogger().setLevel(logging.DEBUG)
+            logging.debug("Set verbose to debug")
+
     print(args)
     print(opts)
     print('Input directory is "%s"' % directory)
@@ -121,6 +129,7 @@ def main(argv):
         os.system("dot -Tpng " + graph_file + " -o" + png_file)
     elif action == "level-instantiation":
         l = check_level_user()
+        l.instantiation(room_selector=room_selector_regular.RoomSelectorRegular())
         print(l.dump_json() + "\n")
     else:
         print("Error, action '" + action + "' unknown. See --help for info.")

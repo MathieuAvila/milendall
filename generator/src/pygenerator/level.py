@@ -2,6 +2,8 @@ import json
 import room
 import gate
 from munch import DefaultMunch
+import logging
+import random
 
 def decode_level(dct):
     if 'room_id' in dct:
@@ -51,9 +53,21 @@ class Level:
             Thing can get insane if user has messed up with content in-betwween"""
         pass
 
-    def instantiation(self):
+    def instantiation(self, room_selector):
         """ 1. For each gate, choose gate format if not already done
             2. Instantiate each room if not already done"""
+
+        for room in self.values.rooms:
+            if room.values.structure_class == None:
+                logging.info("Need to select class for room: %s" % room.values.room_id)
+                fit_list = room_selector.get_room_fit(room, None)
+                logging.info(fit_list)
+                # just random selection for the moment
+                choice = random.choice(fit_list)
+                room.values.structure_class = choice.get_name()
+            else:
+                logging.info("No need to select class for room: %s" % room.values.room_id)
+                
         pass
 
     def room_instantiation(self, room_id):

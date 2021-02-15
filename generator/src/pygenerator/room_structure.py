@@ -2,14 +2,19 @@ class RoomStructure:
 
     """
     Gives "interface" to what's must be implemented for a room structure
-    Should never been called here, will assert ("abstract type")
+    Should never been called here, will assert ("abstract type").
+
+    Also provides helpers to create rooms
     """
 
     _name = "RoomStructure"
 
-    def __init__(self, room):
+    def __init__(self, room:None):
         """ nothing"""
         self._room = room
+
+    def get_name(self):
+        return self._name
 
     def check_structure(self, gate_list):
         """ Pass the Room, and list of gates, check everything is as expected.
@@ -17,7 +22,7 @@ class RoomStructure:
         """
         assert("Subclass me")
 
-    def check_fit(self, gate_list):
+    def check_fit(self, room, gate_list):
         """ Pass the Room, and list of gates, check it can be applied. """
         assert("Subclass me")
 

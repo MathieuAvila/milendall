@@ -1,9 +1,17 @@
-class RectangularRoom:
-     
-     def __init__(self):
-            print("toto")
+from room_structure import RoomStructure
+from .register import registerRoomType
+import logging
 
-print("rectangular 2\n")
+class RectangularRoom(RoomStructure):
+    
+    _name = "rectangular"
 
-def prout():
-    print("mon prout\n")
+    def __init__(self):
+        pass
+
+    def check_fit(self, room, gate_list):
+        """ Pass the Room, and list of gates, check it can be applied. """
+        logging.info("checking if rectangular fits: always !")
+        return True
+
+registerRoomType("rectangular", RectangularRoom())
