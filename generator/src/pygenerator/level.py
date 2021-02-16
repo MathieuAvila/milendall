@@ -24,6 +24,7 @@ class Level:
         with open(json_file, "r") as read_file:
             obj = json.load(read_file, object_hook=decode_level)
             self.values = DefaultMunch.fromDict(obj)
+            self.structure_check_coherency()
 
     def dump_json(self):
         return json.dumps(self, cls=JSONEncoder, indent=1)
@@ -40,41 +41,61 @@ class Level:
 
     def structure_check_coherency(self):
         """ Sanity check that content is viable, at the structure level
-            Thing can get insane if user has messed up with content in-betwween
+            Thing can get insane if user has messed up with content in-between
 
             1. For each room, if room type is selected
             2. gather the gate lists with their format
             3. Check it is allowed by the room type
             4. Request room structure coherency"""
+        logging.info("Check coherency")
+        for gate in self.values.gates:
+            if gate.values.gate_id == None:
+                raise Exception ("Gate has no gate_id parameter.")
+            logging.info("Check gate: %s" % gate.values.gate_id)
+            
         pass
 
     def dressing_check_coherency(self):
         """ Sanity check that content is viable, at the structure level
-            Thing can get insane if user has messed up with content in-betwween"""
+            Thing can get insane if user has messed up with content in-between"""
         pass
 
-    def instantiation(self, room_selector):
-        """ 1. For each gate, choose gate format if not already done
-            2. Instantiate each room if not already done"""
-
-        for room in self.values.rooms:
-            if room.values.structure_class == None:
-                logging.info("Need to select class for room: %s" % room.values.room_id)
-                fit_list = room_selector.get_room_fit(room, None)
-                logging.info(fit_list)
-                # just random selection for the moment
-                choice = random.choice(fit_list)
-                room.values.structure_class = choice.get_name()
-            else:
-                logging.info("No need to select class for room: %s" % room.values.room_id)
-                
-        pass
-
-    def room_instantiation(self, room_id):
+    def _room_instantiation(self, room_selector, room):
         """ 1. Sort room types that matches constraints: list of gates with format of each. 
             Note: it's up to the room type to check criterias
             2. Associate weights for each
             3. Random selection of one type"""
+        if room.values.structure_class == None:
+            logging.info("Need to select class for room: %s" % room.values.room_id)
+            fit_list = room_selector.get_room_fit(room)
+            logging.info("Fit list is: " + str(fit_list))
+            if fit_list == []:
+                logging.error("Fit list is void, cannot choose any structure. This is unrecoverable.")
+                raise Exception ("Void fit list for room: " + room.values.room_id)
+            # just random selection for the moment
+            choice = random.choice(fit_list)
+            room.values.structure_class = choice.get_name()
+        else:
+            logging.info("No need to select class for room: %s" % room.values.room_id)
+            choice = room_selector.get_from_name(room.values.structure_class, room)
+            if choice == None:
+                logging.error("Unknown class name: %s" % room.values.structure_class)
+                raise Exception ("Void fit list for room: " + room.values.room_id)
+        if room.values.private_parameters == None:
+            room.values.private_parameters = {}
+            choice.instantiate()
+
+
+    def instantiation(self, room_selector):
+        """ 1. For each gate, choose gate format if not already done
+            2. Instantiate each room if not already done"""
+        assert(room_selector != None)
+        for room in self.values.rooms:
+            self._room_instantiation(room_selector, room)
+        pass
+
+    def room_instantiation(self, room_selector, room_id):
+        """ wrapper to _room_instantiation, with room name resolved"""
         pass
 
     def structure(self):

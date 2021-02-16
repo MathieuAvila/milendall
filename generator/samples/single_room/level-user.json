@@ -1,0 +1,27 @@
+{
+    "$schema": "../../schema/level.schema.json",
+
+    "name" : [  { "lang": "en", "value" : "Simple Level"} ],
+    "section": "samples",
+
+    "game_type" : {
+        "single_mode" : {
+            "execution_time" : 10.0,
+            "entry_point_room" : "room1",
+            "end_point_room" : "room1"
+        }
+    },
+
+    "rooms" : [
+        {
+            "room_id" : "room1"
+        },
+        {
+            "room_id" : "room2",
+            "structure_class" : "rectangular"
+        }
+    ],
+    "gates" : [
+    ]
+}
+

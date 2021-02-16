@@ -4,6 +4,7 @@ class Room:
 
     def __init__(self, dict):
         self.values = DefaultMunch.fromDict(dict)
+        self.gates = []
 
     def dump_graph(self, output):
 

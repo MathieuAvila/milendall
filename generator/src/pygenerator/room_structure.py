@@ -13,20 +13,24 @@ class RoomStructure:
         """ nothing"""
         self._room = room
 
+    def get_instance(self, room:None):
+        """ Return instance for a given room """
+        assert("Subclass me")
+
     def get_name(self):
         return self._name
 
-    def check_structure(self, gate_list):
+    def check_structure(self):
         """ Pass the Room, and list of gates, check everything is as expected.
             Should at least check that the gates are taken into account and at the right sizes
         """
         assert("Subclass me")
 
-    def check_fit(self, room, gate_list):
+    def check_fit(self):
         """ Pass the Room, and list of gates, check it can be applied. """
         assert("Subclass me")
 
-    def instantiate(self, gate_list):
+    def instantiate(self):
         """ performs parameters selection. Parameters should be enough to generate specific file"""
         assert("Subclass me")
 
