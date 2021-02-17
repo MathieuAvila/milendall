@@ -1,15 +1,24 @@
 #!/usr/bin/python
 
-import level
-import sys, getopt
+"""
+Command-line program
+"""
+
+import sys
+import getopt
 import os
-import room_selector_regular
 import logging
+import room_selector_regular
+
+import level
 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
 
-def help():
+def my_help():
+    """
+    Print help and exit
+    """
     print("generator.py : Integrated tool to build levels.")
     print("               It works at various layers of generation to help control the output")
     print()
@@ -71,7 +80,8 @@ def help():
     print("   Output: roomfinal-$roomid.json (for given room)")
     print()
     print("generator.py level-finalize        -i level-directory")
-    print("   Generate final format. This generates gltf format files for rooms with extra-metadata")
+    print("   Generate final format. This generates gltf format files for rooms"
+          " with extra-metadata")
     print("   If the dressing has not  been done, work at the structure level (ugly)")
     print("   Input: roomdress-$roomid.json")
     print("   Output: roomfinal-$roomid.json (for each room)")
@@ -82,10 +92,8 @@ def help():
     print("   This is helpful to check that structure is fine before choosing dressing.")
     sys.exit(0)
 
-directory = ''
-room = ''
-    
-def check_level_user():
+def check_level_user(directory):
+    """ Get user level, check it loads and return it"""
     if directory == '':
         print("Error, expected directory with level-user.json file. See --help for info.")
         sys.exit(1)
@@ -95,14 +103,18 @@ def check_level_user():
     return level.Level(directory+"/level-user.json")
 
 def main(argv):
-    global directory, room
+    """
+    when called from outside
+    """
+    directory = ""
+    room = ""
     try:
         opts,args = getopt.getopt(argv,"hvi:r:",["directory=","room="])
     except getopt.GetoptError:
         help()
     for opt, arg in opts:
         if opt == '-h':
-            help()
+            my_help()
         elif opt in ("-i", "--directory"):
             directory = arg
         elif opt in ("-r", "--room"):
@@ -116,21 +128,21 @@ def main(argv):
     print('Input directory is "%s"' % directory)
     print('Selected room is "%s"' % room)
 
-    if  (len(args) != 1):
+    if len(args) != 1:
         print("Error, expected action. See --help for info.")
         sys.exit(1)
     action = args[0]
 
     if action == "level-graph":
-        l = check_level_user()
+        loaded_level = check_level_user(directory)
         graph_file = directory + "/level.graph"
         png_file = directory + "/level.png"
-        l.dump_graph(graph_file)
+        loaded_level.dump_graph(graph_file)
         os.system("dot -Tpng " + graph_file + " -o" + png_file)
     elif action == "level-instantiation":
-        l = check_level_user()
-        l.instantiation(room_selector=room_selector_regular.RoomSelectorRegular())
-        print(l.dump_json() + "\n")
+        loaded_level = check_level_user(directory)
+        loaded_level.instantiation(room_selector=room_selector_regular.RoomSelectorRegular())
+        print(loaded_level.dump_json() + "\n")
     else:
         print("Error, action '" + action + "' unknown. See --help for info.")
         sys.exit(1)
@@ -140,4 +152,4 @@ def main(argv):
 
 
 if __name__ == "__main__":
-   main(sys.argv[1:])
+    main(sys.argv[1:])

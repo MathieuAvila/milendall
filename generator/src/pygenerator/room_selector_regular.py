@@ -1,3 +1,7 @@
+"""
+Real room selector based on catalog 
+"""
+
 from room_selector import RoomSelector
 from rooms import register
 
@@ -8,14 +12,16 @@ from rooms import *
 class RoomSelectorRegular(RoomSelector):
 
     def __init__(self):
-        assert("Subclass me")
+        """ subclass me"""
+        super().__init__()
 
     def get_room_fit(self, room):
 
-        l = [register.roomTypes[name].get_instance(room) for name in register.roomTypes 
+        list_fit = [register.roomTypes[name].get_instance(room) for name in register.roomTypes
                 if register.roomTypes[name].get_instance(room).check_fit()]
         #logging.info("Fit list is: " + str(register.roomTypes))
-        return l
+        return list_fit
 
     def get_from_name(self, name, room):
+        """ return the class from the loaded name"""
         return register.roomTypes[name].get_instance(room)

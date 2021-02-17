@@ -1,10 +1,13 @@
+""" define a super-class for finding structure definitions. Useful for tests """
+
 class RoomSelector:
 
-    def __init__(self):
-        assert("Subclass me")
+    """ finding and selecting your structure """
 
     def get_room_fit(self, room):
-        assert("Subclass me")
+        """ find a list of fits for the room """
+        raise "Subclass me"
 
-    def get_from_name(self, name):
-        assert("Subclass me")
+    def get_from_name(self, name, room):
+        """ return a structure from a name"""
+        raise "Subclass me"
