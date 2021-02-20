@@ -8,7 +8,7 @@ import sys
 import getopt
 import os
 import logging
-import room_selector_regular
+import selector_regular
 
 import level
 
@@ -141,7 +141,7 @@ def main(argv):
         os.system("dot -Tpng " + graph_file + " -o" + png_file)
     elif action == "level-instantiation":
         loaded_level = check_level_user(directory)
-        loaded_level.instantiation(room_selector=room_selector_regular.RoomSelectorRegular())
+        loaded_level.instantiation(_selector = selector_regular.SelectorRegular())
         print(loaded_level.dump_json() + "\n")
     else:
         print("Error, action '" + action + "' unknown. See --help for info.")

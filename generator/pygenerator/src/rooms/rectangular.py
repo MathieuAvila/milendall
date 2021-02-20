@@ -33,4 +33,4 @@ class RectangularRoom(RoomStructure):
         #    logging.info("My gate")
 
 
-registerRoomType("rectangular", RectangularRoom())
+registerRoomType(RectangularRoom())

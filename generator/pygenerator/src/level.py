@@ -32,8 +32,14 @@ class Level:
             self.structure_check_coherency()
 
     def dump_json(self):
-        """ dump internal state for later use"""
+        """dump internal state for later use"""
         return json.dumps(self, cls=JSONEncoder, indent=1)
+
+    def save(self, filename):
+        """save to a file"""
+        _j = self.dump_json()
+        with open(filename, "w") as output_file:
+            output_file.write(_j)
 
     def dump_graph(self, filename):
         """ Dump a file in graphviz format that allows to graphically visualize
@@ -65,14 +71,39 @@ class Level:
         """ Sanity check that content is viable, at the structure level
             Thing can get insane if user has messed up with content in-between"""
 
-    def _room_instantiation(self, room_selector, _room):
+    def _gate_instantiation(self, _selector, _gate):
+        """ 1. Sort gate types that matches constraints
+            2. Associate weights for each
+            3. Random selection of one type"""
+        if _gate.values.structure_class is None:
+            logging.info("Need to select class for gate: %s", _gate.values.gate_id)
+            fit_list = _selector.get_gate_structure_fit(_gate)
+            logging.info("Fit list is: %s", str(fit_list))
+            if fit_list == []:
+                logging.error("Fit list is void, cannot choose any structure."
+                              "This is unrecoverable.")
+                raise Exception ("Void fit list for room: " + _gate.values.gate_id)
+            # just random selection for the moment
+            choice = random.choice(fit_list)
+            _gate.values.structure_class = choice.get_name()
+        else:
+            logging.info("No need to select class for gate: %s", _gate.values.gate_id)
+            choice = _selector.get_gate_structure_from_name(_gate.values.structure_class, _gate)
+            if choice is None:
+                logging.error("Unknown class name: %s", _gate.values.structure_class)
+                raise Exception ("Void fit list for gate: " + _gate.values.gate_id)
+        if _gate.values.private_parameters is None:
+            _gate.values.private_parameters = {}
+            choice.instantiate()
+
+    def _room_instantiation(self, _selector, _room):
         """ 1. Sort room types that matches constraints: list of gates with format of each.
             Note: it's up to the room type to check criterias
             2. Associate weights for each
             3. Random selection of one type"""
         if _room.values.structure_class is None:
             logging.info("Need to select class for room: %s", _room.values.room_id)
-            fit_list = room_selector.get_room_fit(_room)
+            fit_list = _selector.get_room_structure_fit(_room)
             logging.info("Fit list is: %s", str(fit_list))
             if fit_list == []:
                 logging.error("Fit list is void, cannot choose any structure."
@@ -83,24 +114,31 @@ class Level:
             _room.values.structure_class = choice.get_name()
         else:
             logging.info("No need to select class for room: %s", _room.values.room_id)
-            choice = room_selector.get_from_name(room.values.structure_class, room)
+            choice = _selector.get_room_structure_from_name(_room.values.structure_class, _room)
             if choice is None:
                 logging.error("Unknown class name: %s", _room.values.structure_class)
                 raise Exception ("Void fit list for room: " + _room.values.room_id)
         if _room.values.private_parameters is None:
-            room.values.private_parameters = {}
+            _room.values.private_parameters = {}
             choice.instantiate()
 
 
-    def instantiation(self, room_selector):
+    def instantiation(self, _selector):
         """ 1. For each gate, choose gate format if not already done
             2. Instantiate each room if not already done"""
-        assert room_selector is not None
-        for _room in self.values.rooms:
-            self._room_instantiation(room_selector, _room)
+        assert _selector is not None
 
-    def room_instantiation(self, room_selector, room_id):
+        for _gate in self.values.gates:
+            self._gate_instantiation(_selector, _gate)
+
+        for _room in self.values.rooms:
+            self._room_instantiation(_selector, _room)
+
+    def room_instantiation(self, _selector, _room_id):
         """ wrapper to _room_instantiation, with room name resolved"""
+        _room = None
+        # todo complete
+        self._room_instantiation(_selector, _room)
 
     def structure(self):
         """ 1. Sanity check
