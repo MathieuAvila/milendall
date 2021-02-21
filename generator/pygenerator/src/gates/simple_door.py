@@ -8,14 +8,15 @@ from .register import register_gate_type
 
 class DoorGate(GateStructure):
 
-    _name = "door"
+    _name = "simple_door"
 
     def __init__(self, gate=None):
-        """ init gte """
+        """ init gate """
         super().__init__(gate)
         self.gate = gate
 
     def get_instance(self, gate:None):
+        """ return a self instance of this gate"""
         return DoorGate(gate)
 
     def check_fit(self):

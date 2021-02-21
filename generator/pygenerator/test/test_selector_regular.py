@@ -3,7 +3,8 @@
 import unittest
 import selector_regular
 
-from rooms import register
+from rooms import register as room_register
+from gates import register as gate_register
 
 class TestSelectorRegular(unittest.TestCase):
 
@@ -11,9 +12,17 @@ class TestSelectorRegular(unittest.TestCase):
         """ test retrieving list of rooms"""
 
         _s = selector_regular.SelectorRegular()
-        print(register.roomTypes)
-        self.assertIsNotNone(register.roomTypes)
-        self.assertTrue("rectangular" in register.roomTypes)
+        print(room_register.roomTypes)
+        self.assertIsNotNone(room_register.roomTypes)
+        self.assertTrue("rectangular" in room_register.roomTypes)
+
+    def test_get_list_gate_regular(self):
+        """ test retrieving list of gates"""
+
+        _s = selector_regular.SelectorRegular()
+        print(gate_register.gateTypes)
+        self.assertIsNotNone(room_register.roomTypes)
+        self.assertTrue("rectangular" in room_register.roomTypes)
 
 if __name__ == '__main__':
     unittest.main()

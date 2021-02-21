@@ -50,15 +50,13 @@
     "gates" : [
         { 
             "gate_id" : "r3r2",
-            "from" : "room3",
-            "to" : "room2"   ,           
+            "connect" : [ "room3", "room2"],         
             "open" : false,      
             "accessible" : false
         },
         {
             "gate_id" : "r1r2",
-            "from" : "room1"   ,           
-            "to" : "room2"   ,           
+            "connect" : [ "room1", "room2"],
             "open" : false,      
             "accessible" : false,
         
@@ -79,14 +77,12 @@
         },
         { 
             "gate_id" : "r1r3",
-            "from" : "room1",           
-            "to" : "room3",          
+            "connect" : [ "room1", "room3"],
             "direction" : "from-to"
         },
         { 
             "gate_id" : "r1r1",
-            "from" : "room1",           
-            "to" : "room1",           
+            "connect" : [ "room1", "room1"],
             "scale" : 0.5,
             "open" : false,    
             "events" : [

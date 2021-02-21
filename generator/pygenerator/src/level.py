@@ -53,6 +53,17 @@ class Level:
                 _g.dump_graph(output_file)
             output_file.write("}\n")
 
+    def _check_parameter_presence(self, element, structure_type, parameter_name):
+        logging.info("Check %s: %s", structure_type, element.values.gate_id)
+        if element.values[parameter_name] is None:
+            raise Exception ("%s has no %s parameter." % (structure_type, parameter_name))
+
+    def get_room(self, _name):
+        room_list = [r for r in self.values.rooms if r.values.room_id == _name ]
+        if len(room_list) != 1:
+            raise Exception ("More than one room with ID=%s" % _name)
+        return room_list[0]
+
     def structure_check_coherency(self):
         """ Sanity check that content is viable, at the structure level
             Thing can get insane if user has messed up with content in-between
@@ -63,9 +74,17 @@ class Level:
             4. Request room structure coherency"""
         logging.info("Check coherency")
         for _gate in self.values.gates:
-            if _gate.values.gate_id is None:
-                raise Exception ("Gate has no gate_id parameter.")
             logging.info("Check gate: %s", _gate.values.gate_id)
+            self._check_parameter_presence(_gate, "gate", "gate_id")
+            self._check_parameter_presence(_gate, "gate", "connect")
+            if len(_gate.values.connect) != 2:
+                raise Exception ("gate %s has not 2 values in connect parameter." % _gate.values.gate_id)
+
+            # append gate to both rooms
+            room_from = self.get_room(_gate.values.connect[0])
+            room_to = self.get_room(_gate.values.connect[1])
+            room_from.gates.append(_gate)
+            room_to.gates.append(_gate)
 
     def dressing_check_coherency(self):
         """ Sanity check that content is viable, at the structure level
