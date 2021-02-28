@@ -40,7 +40,7 @@
         {
             "room_id" : "room2",
             "name" : [ { "lang": "en", "value" : "heaven"}  ],
-            "triggers" : [ { "trigger_id" : "open2", "type" : "button" } ]
+            "triggers" : [ { "trigger_id" : "open2"} ]
         },
         {
             "room_id" : "room3",
