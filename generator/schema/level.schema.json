@@ -57,7 +57,6 @@
                         "type": "string",
                         "description": "ID of the gate"
                     },
-                    "name": { "$ref": "#/definitions/name" },
                     "structure_class": {
                         "type": "string",
                         "description": "The general class name of the structure. Example 'rectangular'"
@@ -132,7 +131,7 @@
                 "additionalProperties": false,
                 "required": [
                     "gate_id",
-                    "name"
+                    "connect"
                 ]
             }
         },
@@ -162,8 +161,24 @@
                     "triggers" : {
                         "type": "array",
                         "items": {
-                            "type": "string",
-                            "description": "Trigger ID. TODO: parameters to control trigger or is this open-bar ?"
+                            "type": "object",
+                            "description": "Trigger definition",
+                            "properties": {
+                                "trigger_id" : {
+                                    "type": "string",
+                                    "description": "Unique ID"
+                                },
+                                "type" : {
+                                    "type": "string",
+                                    "description": "trigger type. If undefined, room is free to choose what best suits it.",
+                                    "enum": ["walk-on", "hidden-walk-on", "button"]
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "trigger_id",
+                                "type"
+                            ]
                         }
                      }
                  },

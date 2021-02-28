@@ -33,18 +33,19 @@
             "triggers" : [
                 {
                     "trigger_id" : "open1",
-                    "type" : "key"
+                    "type" : "button"
                 }
             ]
         },
         {
             "room_id" : "room2",
             "name" : [ { "lang": "en", "value" : "heaven"}  ],
-            "triggers" : [ { "trigger_id" : "open2", "type" : "key" } ]
+            "triggers" : [ { "trigger_id" : "open2", "type" : "button" } ]
         },
         {
             "room_id" : "room3",
-            "triggers" : [ { "trigger_id" : "close3", "type" : "key" } ]
+            "name" : [ { "lang": "en", "value" : "earth"}  ],
+            "triggers" : [ { "trigger_id" : "close3", "type" : "walk-on" } ]
         }
     ],
     "gates" : [
