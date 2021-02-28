@@ -3,21 +3,18 @@
     "$id": "http://incoherent.com/schemas/level.json",
 
     "properties": {
-        "name": {
-            "type": "array",
-            "items": {
-              "type": "object"
-            },          
-            "description": "The name of the level"
+        "name": { "$ref": "#/definitions/name" },
+        "$schema": {
+            "type": "string",
+            "description": "Link to this schema"
         },
-
         "game_type": {
             "type" : "object",
             "description": "Allowed game types",
             "properties": {
                 "single_mode" : {
                     "type": "object",
-                    "description": "For single plyaer mode",
+                    "description": "For single player mode",
                     "properties": {
                         "execution_time" : {
                             "type": "number",
@@ -31,7 +28,13 @@
                             "type": "string",
                             "description": "Room where player has won"
                         }
-                    }
+                    },
+                    "required": [
+                        "execution_time",
+                        "entry_point_room",
+                        "end_point_room"
+                    ],
+                    "additionalProperties": false
                 }
             }
         },
@@ -42,23 +45,164 @@
         },
         "section": {
             "type": "string",
-            "description": "Section name to which it belongs"
+            "description": "Section ID to which it belongs"
         },
-        "season": {
-            "type": "number",
-            "description": "The season that the episode was shown",
-            "maximum": 99
+
+        "gates": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "gate_id": {
+                        "type": "string",
+                        "description": "ID of the gate"
+                    },
+                    "name": { "$ref": "#/definitions/name" },
+                    "structure_class": {
+                        "type": "string",
+                        "description": "The general class name of the structure. Example 'rectangular'"
+                    },
+                    "dressing_class": {
+                        "type": "string",
+                        "description": "The general class name of the dressing. Example 'raw'"
+                    },
+                    "structure_parameters" : { "type": "array", "description": "general parameters at instantiation. Content depends on class" },
+                    "structure_private" :  { "type": "array", "description": "private parameters at instantiation. Content depends on class" },
+                    "dressing_parameters" : { "type": "array", "description": "general parameters at instantiation. Content depends on class" },
+                    "dressing_private" :  { "type": "array", "description": "private parameters at instantiation. Content depends on class" },
+                    "connect" :  {
+                        "type": "array",
+                        "description": "List of rooms that are connected by this gates. Must be two !",
+                        "minimum": 2,
+                        "maximum": 2
+                    },
+                    "accessible":  {
+                        "type": "string",
+                        "description": "Declares if objects can pass through initially. Defaults to both.",
+                        "enum": ["from-to", "to-from", "both"]
+                    },
+                    "visible":  {
+                        "type": "string",
+                        "description": "Declares if it is visually detectable. Defaults to both.",
+                        "enum": ["from-to", "to-from", "both"]
+                    },
+                    "see_through":  {
+                        "type": "string",
+                        "description": "Declares if is possible to see through it. Defaults to both.",
+                        "enum": ["from-to", "to-from", "both"]
+                    },
+                    "scale" : {
+                        "type": "number",
+                        "description": "Change of scale when going forward; Reverse in the opposite direction."
+                    },
+                    "events" : {
+                        "type": "array",
+                        "description": "List of events that this gate reacts upon, and associated actions",
+                        "items": {
+                            "type": "object",
+                            "properties" : {
+                                "action": {
+                                    "type": "string",
+                                    "description": "On action amongst: open (can go through), close (cannot go through), visible (can see through), invisible (cannot see through), accessible, inaccessible"
+                                },
+                                "direction" : {
+                                    "type": "string",
+                                    "description": "Which direction is changed. Defaults to both."
+                                },
+                                "on_trigger" : {
+                                    "type": "string",
+                                    "description": "The trigger name that makes this action happen"
+                                },
+                                "on_property" : {
+                                    "type": "string",
+                                    "description": "Which characteristic is changed: visible, accessible, see_thourgh"
+                                },
+                                "to_value" : {
+                                    "type": "string",
+                                    "description": "To which value it is changed. Can be true,false,switch"
+                                }
+                            },
+                            "required": [
+                                "action", "on_trigger", "on_property", "to_value"
+                            ],
+                            "additionalProperties": false
+                        }
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "gate_id",
+                    "name"
+                ]
+            }
         },
-        "reboot": {
-            "type": "boolean",
-            "description": "true is this episode was made when the show returned in 1989 otherwise false "
+        "rooms": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "room_id": {
+                        "type": "string",
+                        "description": "Section name to which it belongs"
+                    },
+                    "name": { "$ref": "#/definitions/name" },
+                    "structure_class": {
+                        "type": "string",
+                        "description": "The general class name of the structure. Example 'rectangular'"
+                    },
+                    "dressing_class": {
+                        "type": "string",
+                        "description": "The general class name of the dressing. Example 'raw'"
+                    },
+                    "structure_parameters" : { "type": "array", "description": "general parameters at instantiation. Content depends on class" },
+                    "structure_private" :  { "type": "array", "description": "private parameters at instantiation. Content depends on class" },
+                    "dressing_parameters" : { "type": "array", "description": "general parameters at instantiation. Content depends on class" },
+                    "dressing_private" :  { "type": "array", "description": "private parameters at instantiation. Content depends on class" },
+
+                    "triggers" : {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "description": "Trigger ID. TODO: parameters to control trigger or is this open-bar ?"
+                        }
+                     }
+                 },
+                "additionalProperties": false,
+                "required": [
+                    "room_id",
+                    "name"
+                ]
+            }
         }
-    },   
+    },
     "required": [
         "name",
         "game_type",
         "section",
-        "rooms"
-    ]
+        "rooms",
+        "gates"
+    ],
+    "additionalProperties": false,
+
+    "definitions": {
+        "name": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "description": "A name in one language",
+                "properties": {
+                    "lang" : {
+                        "type": "string",
+                        "description": "The language. Must be unique."
+                    },
+                    "value" : {
+                        "type": "string",
+                        "description": "Name in that language"
+                    }
+                }
+            },
+            "description": "A name in multiple languages. Defaults to 'en'"
+        }
+    }
 }
 

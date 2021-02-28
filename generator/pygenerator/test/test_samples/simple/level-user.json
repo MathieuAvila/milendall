@@ -1,5 +1,5 @@
 {
-    "$schema": "../../schema/level.schema.json",
+    "$schema": "../../../../schema/level.schema.json",
 
     "name" : [  { "lang": "en", "value" : "Simple Level"} ],
     "section": "samples",
@@ -15,12 +15,12 @@
     "rooms" : [
         {
             "room_id" : "room1",
-            "name" : [ { "lang": "en", "value" : "nightmare"}  ], 
+            "name" : [ { "lang": "en", "value" : "nightmare"}  ],
             "structure_class" : "room_structure_1",
-            "structure_parameters" : 
+            "structure_parameters" :
                 [
                 ],
-            "structure_private" : 
+            "structure_private" :
                 [
                 ],
             "dressing_class" : "garden",
@@ -31,7 +31,7 @@
                 [
                 ],
             "triggers" : [
-                { 
+                {
                     "trigger_id" : "open1",
                     "type" : "key"
                 }
@@ -48,48 +48,46 @@
         }
     ],
     "gates" : [
-        { 
+        {
             "gate_id" : "r3r2",
-            "connect" : [ "room3", "room2"],         
-            "open" : false,      
-            "accessible" : false
+            "connect" : [ "room3", "room2"],
+            "accessible" : "from-to"
         },
         {
             "gate_id" : "r1r2",
             "connect" : [ "room1", "room2"],
-            "open" : false,      
-            "accessible" : false,
-        
+            "accessible" : "from-to",
+            "visible" : "from-to",
+            "see_through" : "from-to",
+
             "structure_class" : "gate_structure_1",
-            "structure_parameters" : 
+            "structure_parameters" :
             [
             ],
-            "structure_private" : 
+            "structure_private" :
             [
-            ],       
+            ],
             "dressing_class" : "garden",
-            "dressing_parameters" : 
+            "dressing_parameters" :
             [
             ],
-            "dressing_private" : 
+            "dressing_private" :
             [
             ]
         },
-        { 
+        {
             "gate_id" : "r1r3",
-            "connect" : [ "room1", "room3"],
-            "direction" : "from-to"
+            "connect" : [ "room1", "room3"]
         },
-        { 
+        {
             "gate_id" : "r1r1",
             "connect" : [ "room1", "room1"],
             "scale" : 0.5,
-            "open" : false,    
             "events" : [
-                { "action": "open", "direction":"from-to" , "on_trigger" : "open1" },
-                { "action": "visible", "direction":"from-to" , "on_trigger" : "open2" },
-                { "action": "close", "on_trigger" : "close3" },
-                { "action": "invisible", "on_trigger" : "close3" }
+                { "action": "open", "direction":"from-to", "on_trigger" : "open1", "on_property": "accessible", "to_value": "true"},
+                { "action": "visible", "direction":"from-to", "on_trigger" : "open2", "on_property": "accessible", "to_value": "false" },
+                { "action": "close", "on_trigger" : "close3" ,  "on_property": "accessible", "to_value": "false"},
+                { "action": "invisible", "on_trigger" : "close3", "on_property": "accessible", "to_value": "false" }
             ]
         }
     ]
