@@ -23,6 +23,12 @@ class RectangularRoom(RoomStructure):
         logging.info("checking if rectangular fits: always ! rectangular rules the world !")
         return True
 
+    def check_structure(self):
+        """check everything is as expected.
+        """
+        logging.info("checking if rectangular is ok: always ! rectangular rules the world !")
+        return True
+
     def instantiate(self):
         """ force set values:
         - set values to room size

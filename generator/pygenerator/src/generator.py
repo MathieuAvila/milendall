@@ -100,7 +100,7 @@ def check_level_user(directory):
     if not "level-user.json" in os.listdir(directory):
         print("Error, expected directory with level-user.json file. See --help for info.")
         sys.exit(1)
-    return level.Level(directory+"/level-user.json")
+    return level.Level(directory+"/level-user.json", selector_regular.SelectorRegular())
 
 def main(argv):
     """
@@ -141,7 +141,7 @@ def main(argv):
         os.system("dot -Tpng " + graph_file + " -o" + png_file)
     elif action == "level-instantiation":
         loaded_level = check_level_user(directory)
-        loaded_level.instantiation(_selector = selector_regular.SelectorRegular())
+        loaded_level.instantiation()
         print(loaded_level.dump_json() + "\n")
     else:
         print("Error, action '" + action + "' unknown. See --help for info.")

@@ -1,3 +1,5 @@
+""" Definition of a gate"""
+
 from munch import DefaultMunch
 
 class Gate:
@@ -5,8 +7,16 @@ class Gate:
     def __init__(self, values):
         self.values = DefaultMunch.fromDict(values)
 
-    def dump_graph(self, output):
+    def get_class(self):
+        """ get my class for selector"""
+        return "gate"
 
+    def get_id(self):
+        """ return ID depending on type"""
+        return self.values.gate_id
+
+    def dump_graph(self, output):
+        """ dump graph data to output"""
         direction = 'dir="both"'
         if "direction" in self.values:
             if self.values["direction"] == "to":

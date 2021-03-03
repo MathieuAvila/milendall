@@ -19,15 +19,20 @@ class GateStructureFake1(GateStructure):
         """ return a self instance of this gate"""
         return GateStructureFake1(gate)
 
-    def check_fit(self):
-        """ Pass the Gate, check it can be applied. """
-        return True
-
     def instantiate(self):
         """ force set values:
         - set values to gate size"""
         self.gate.values.private_parameters={}
         self.gate.values.private_parameters["private1"] = True
+
+    def check_structure(self):
+        """same as main"""
+        logging.debug("Check structure gate: %s", self.gate.values.gate_id)
+
+    def check_fit(self):
+        """same as main"""
+        logging.debug("Check fit gate: %s", self.gate.values.gate_id)
+        return True
 
 class GateStructureFake2(GateStructureFake1):
 
@@ -51,11 +56,6 @@ class RoomStructureFake1(RoomStructure):
         """ return instance"""
         return RoomStructureFake1(room)
 
-    def check_fit(self):
-        """ Pass the Room, and list of gates, check it can be applied. """
-        logging.info("checking if rectangular fits: always ! rectangular rules the world !")
-        return True
-
     def instantiate(self):
         """ force set values:
         - set values to room size
@@ -64,6 +64,15 @@ class RoomStructureFake1(RoomStructure):
         self.room.values.private_parameters["size"] = [10.0,10.0,2.5]
         #for gate in self.room.gates:
         #    logging.info("My gate")
+
+    def check_structure(self):
+        """same as main"""
+        logging.debug("Check structure room: %s", self.room.values.room_id)
+
+    def check_fit(self):
+        """same as main"""
+        logging.debug("Check fit room: %s", self.room.values.room_id)
+        return True
 
 class RoomStructureFake2(RoomStructureFake1):
     _name = "room_structure_2"
@@ -76,30 +85,10 @@ class RoomStructureFake2(RoomStructureFake1):
 class SelectorFake(Selector):
 
     def __init__(self):
-        self.room_types = {}
-        self.room_types[RoomStructureFake1().get_name()] = RoomStructureFake1()
-        self.room_types[RoomStructureFake2().get_name()] = RoomStructureFake2()
-        self.gate_types = {}
-        self.gate_types[GateStructureFake1().get_name()] = GateStructureFake1()
-        self.gate_types[GateStructureFake2().get_name()] = GateStructureFake2()
-
-    def get_room_structure_fit(self, _room):
-        """ find a list of fits for the room from the real ones """
-        list_fit = [self.room_types[name].get_instance(_room)
-                    for name in self.room_types]
-        return list_fit
-
-    def get_room_structure_from_name(self, name, _room):
-        """ return the class from the loaded name"""
-        return self.room_types[name].get_instance(_room)
-
-    def get_gate_structure_fit(self, _gate):
-        """ find a list of fits for the gate """
-        list_fit = [self.gate_types[name].get_instance(_gate)
-                    for name in self.gate_types]
-        logging.info("Fit list is: %s", str(self.gate_types))
-        return list_fit
-
-    def get_gate_structure_from_name(self, name, _gate):
-        """ return a gate structure from a name"""
-        return self.gate_types[name].get_instance(_gate)
+        self.classes={}
+        self.classes["room"] = {}
+        self.classes["gate"] = {}
+        self.classes["room"][RoomStructureFake1().get_name()] = RoomStructureFake1()
+        self.classes["room"][RoomStructureFake2().get_name()] = RoomStructureFake2()
+        self.classes["gate"][GateStructureFake1().get_name()] = GateStructureFake1()
+        self.classes["gate"][GateStructureFake2().get_name()] = GateStructureFake2()

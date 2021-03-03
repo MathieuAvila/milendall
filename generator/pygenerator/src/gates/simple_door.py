@@ -24,11 +24,18 @@ class DoorGate(GateStructure):
         logging.info("checking if door fits: always ! door rules the world !")
         return True
 
+    def check_structure(self):
+        """check everything is as expected.
+        """
+        logging.info("checking if door is ok: always ! door rules the world !")
+        return True
+
     def instantiate(self):
         """ force set values:
         - set values to gate size"""
         self.gate.values.private_parameters={}
         self.gate.values.private_parameters["size"] = [2.0, 2.0]
+
 
 
 register_gate_type(DoorGate())

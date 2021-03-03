@@ -2,7 +2,9 @@
 interface definition for a gate structure
 """
 
-class GateStructure:
+from elemental_structure import ElementalStructure
+
+class GateStructure(ElementalStructure):
 
     """
     Gives "interface" to what's must be implemented for a gate structure
@@ -20,6 +22,10 @@ class GateStructure:
     def get_instance(self, gate:None):
         """ Return instance for a given gate """
         raise "subclass me"
+
+    def get_class(self):
+        """ get my class for selector"""
+        return "gate"
 
     def get_name(self):
         """ name accessor"""
@@ -41,13 +47,4 @@ class GateStructure:
 
     def create_structure(self):
         """ create from instance """
-        raise "subclass me"
-
-
-    def load_structure_file(self, filename):
-        """ load structure from file """
-        raise "subclass me"
-
-    def save_structure_file(self, filename):
-        """ dump all to file """
         raise "subclass me"

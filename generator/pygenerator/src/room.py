@@ -10,6 +10,14 @@ class Room:
         self.values = DefaultMunch.fromDict(values)
         self.gates = []
 
+    def get_class(self):
+        """ get my class for selector"""
+        return "room"
+
+    def get_id(self):
+        """ return ID depending on type"""
+        return self.values.room_id
+
     def dump_graph(self, output):
         """
         dump a graphviz repr of a room

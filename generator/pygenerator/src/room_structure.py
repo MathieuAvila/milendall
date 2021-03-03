@@ -2,7 +2,9 @@
 interface definition for a room structure
 """
 
-class RoomStructure:
+from elemental_structure import ElementalStructure
+
+class RoomStructure(ElementalStructure):
 
     """
     Gives "interface" to what's must be implemented for a room structure
@@ -20,6 +22,10 @@ class RoomStructure:
     def get_instance(self, room:None):
         """ Return instance for a given room """
         raise "subclass me"
+
+    def get_class(self):
+        """ get my class for selector"""
+        return "room"
 
     def get_name(self):
         """ name accessor"""

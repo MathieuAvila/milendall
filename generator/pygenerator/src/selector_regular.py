@@ -11,28 +11,23 @@ from gates import register as gate_register
 class SelectorRegular(Selector):
 
     def __init__(self):
-        pass
+        self.classes={}
+        self.classes["room"] = room_register.roomTypes
+        self.classes["gate"] = gate_register.gateTypes
 
-    def get_room_structure_fit(self, room):
-        """ find a list of fits for the room from the real ones """
-        list_fit = [room_register.roomTypes[name].get_instance(room) 
-                    for name in room_register.roomTypes
-                if room_register.roomTypes[name].get_instance(room).check_fit()]
-        logging.info("Fit list is: %s", str(room_register.roomTypes))
+    def get_structure_fit(self, element):
+        """ find a list of fits for the structure from the real ones """
+        element_list = self.classes[element.get_class()]
+        list_fit = [element_list[name].get_instance(element)
+                    for name in element_list
+                if element_list[name].get_instance(element).check_fit()]
+        logging.info("Fit list is: %s", str(list_fit))
         return list_fit
 
-    def get_room_structure_from_name(self, name, room):
+    def get_structure_from_name(self, name, element):
         """ return the class from the loaded name"""
-        return room_register.roomTypes[name].get_instance(room)
-
-    def get_gate_structure_fit(self, _gate):
-        """ find a list of fits for the gate """
-        list_fit = [gate_register.gateTypes[name].get_instance(_gate)
-                    for name in gate_register.gateTypes
-                if gate_register.gateTypes[name].get_instance(_gate).check_fit()]
-        logging.info("Fit list is: %s", str(gate_register.gateTypes))
-        return list_fit
-
-    def get_gate_structure_from_name(self, name, _gate):
-        """ return a gate structure from a name"""
-        return gate_register.gateTypes[name].get_instance(_gate)
+        element_class = element.get_class()
+        if name not in self.classes[element_class]:
+            raise Exception("Element of class: %s has no class of type : %s. Classes are: %s" %
+                (element_class, name, str(self.classes[element_class].keys())))
+        return self.classes[element_class][name].get_instance(element)
