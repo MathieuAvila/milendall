@@ -16,7 +16,7 @@
         {
             "room_id" : "room1",
             "name" : [ { "lang": "en", "value" : "nightmare"}  ],
-            "structure_class" : "room_structure_1",
+            "structure_class" : "rectangular",
             "structure_parameters" :
                 [
                 ],
@@ -40,7 +40,7 @@
         {
             "room_id" : "room2",
             "name" : [ { "lang": "en", "value" : "heaven"}  ],
-            "triggers" : [ { "trigger_id" : "open2"} ]
+            "triggers" : [ { "trigger_id" : "open2", "type" : "walk-on"} ]
         },
         {
             "room_id" : "room3",
@@ -61,7 +61,7 @@
             "visible" : "from-to",
             "see_through" : "from-to",
 
-            "structure_class" : "gate_structure_1",
+            "structure_class" : "simple_door",
             "structure_parameters" :
             [
             ],
