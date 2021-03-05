@@ -4,7 +4,7 @@ structure definition for a simple rectangular room
 
 import logging
 from room_structure import RoomStructure
-from .register import registerRoomType
+from .register import register_room_type
 
 class RectangularRoom(RoomStructure):
 
@@ -39,4 +39,4 @@ class RectangularRoom(RoomStructure):
         #    logging.info("My gate")
 
 
-registerRoomType(RectangularRoom())
+register_room_type(RectangularRoom())

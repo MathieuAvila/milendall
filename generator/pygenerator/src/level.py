@@ -113,10 +113,13 @@ class Level:
             Thing can get insane if user has messed up with content in-between"""
 
     def _element_instantiation(self, _element):
-        """ 1. Sort room types that matches constraints: list of gates with format of each.
-            Note: it's up to the room type to check criterias
+        """ 1. Sort element types that matches constraints: list of gates with format of each.
+            Note: it's up to the element type to check criterias
             2. Associate weights for each
             3. Random selection of one type"""
+
+        # start with structure
+
         if _element.values.structure_class is None:
             logging.info("Need to select class for element: %s", _element.get_id())
             fit_list = self.selector.get_structure_fit(_element)
@@ -124,21 +127,60 @@ class Level:
             if fit_list == []:
                 logging.error("Fit list is void, cannot choose any structure."
                               "This is unrecoverable.")
-                raise Exception ("Void fit list for room: " + _element.get_id())
+                raise Exception ("Void fit list for element: " + _element.get_id())
             # just random selection for the moment
             choice = random.choice(fit_list)
+            logging.info("Chosen structure %s for element: %s", choice.get_name() ,_element.get_id())
             _element.values.structure_class = choice.get_name()
         else:
-            logging.info("No need to select class for room: %s", _element.get_id())
+            logging.info("No need to select class for element: %s", _element.get_id())
             choice = self.selector.get_structure_from_name(
                 _element.values.structure_class,
                 _element)
             if choice is None:
                 logging.error("Unknown class name: %s", _element.values.structure_class)
-                raise Exception ("Void fit list for room: " + _element.get_id())
-        if _element.values.private_parameters is None:
-            _element.values.private_parameters = {}
-            choice.instantiate()
+                raise Exception ("Void fit list for element: " + _element.get_id())
+        if _element.values.structure_private is None:
+            _element.values.structure_private = {}
+            logging.info("Create private parameters for element: %s", _element.get_id())
+        if _element.values.structure_parameters is None:
+            _element.values.structure_parameters = {}
+            logging.info("Create structure parameters for element: %s", _element.get_id())
+        _element.values.structure_private.update(_element.values.structure_parameters)
+        logging.info("Run instantiation structure parameters for element: %s", _element.get_id())
+        choice.instantiate()
+
+        # same for dressing
+
+        if _element.values.dressing_class is None:
+            logging.info("Need to select dressing class for element: %s", _element.get_id())
+            fit_list = self.selector.get_dressing_fit(_element)
+            logging.info("Fit list is: %s", str(fit_list))
+            if fit_list == []:
+                logging.error("Fit list is void, cannot choose any dressing."
+                              "This is unrecoverable.")
+                raise Exception ("Void fit list for element: " + _element.get_id())
+            # just random selection for the moment
+            choice = random.choice(fit_list)
+            logging.info("Chosen dressing %s for element: %s", choice.get_name() ,_element.get_id())
+            _element.values.dressing_class = choice.get_name()
+        else:
+            logging.info("No need to select dressing  class for element: %s", _element.get_id())
+            choice = self.selector.get_dressing_from_name(
+                _element.values.dressing_class,
+                _element)
+            if choice is None:
+                logging.error("Unknown dressing class name: %s", _element.values.dressing_class)
+                raise Exception ("Void fit list for element: " + _element.get_id())
+        if _element.values.dressing_private is None:
+            _element.values.dressing_private = {}
+            logging.info("Create private parameters for element: %s", _element.get_id())
+        if _element.values.dressing_parameters is None:
+            _element.values.dressing_parameters = {}
+            logging.info("Create structure parameters for element: %s", _element.get_id())
+        _element.values.dressing_private.update(_element.values.dressing_parameters)
+        logging.info("Run instantiation dressing parameters for element: %s", _element.get_id())
+        choice.instantiate()
 
     def instantiation(self):
         """ 1. For each gate, choose gate format if not already done

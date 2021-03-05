@@ -7,27 +7,18 @@ import logging
 from selector import Selector
 from rooms import register as room_register
 from gates import register as gate_register
+from dressings import register as dressing_register
 
 class SelectorRegular(Selector):
 
     def __init__(self):
-        self.classes={}
-        self.classes["room"] = room_register.roomTypes
-        self.classes["gate"] = gate_register.gateTypes
+        self.classes["structure"]["room"] = room_register.roomTypes
+        self.classes["structure"]["gate"] = gate_register.gateTypes
+        # todo: differentiate gates and rooms dressing 
+        self.classes["dressing"]["room"] = dressing_register.dressingTypes
+        self.classes["dressing"]["gate"] = dressing_register.dressingTypes
 
-    def get_structure_fit(self, element):
-        """ find a list of fits for the structure from the real ones """
-        element_list = self.classes[element.get_class()]
-        list_fit = [element_list[name].get_instance(element)
-                    for name in element_list
-                if element_list[name].get_instance(element).check_fit()]
-        logging.info("Fit list is: %s", str(list_fit))
-        return list_fit
-
-    def get_structure_from_name(self, name, element):
-        """ return the class from the loaded name"""
-        element_class = element.get_class()
-        if name not in self.classes[element_class]:
-            raise Exception("Element of class: %s has no class of type : %s. Classes are: %s" %
-                (element_class, name, str(self.classes[element_class].keys())))
-        return self.classes[element_class][name].get_instance(element)
+        logging.info("Room structure list is: %s", " ".join(self.classes["structure"]["room"]) )
+        logging.info("Gate structure list is: %s", " ".join(self.classes["structure"]["gate"]) )
+        logging.info("Room dressing list is: %s", " ".join(self.classes["dressing"]["room"]) )
+        logging.info("Gate dressing list is: %s", " ".join(self.classes["dressing"]["gate"]) )
