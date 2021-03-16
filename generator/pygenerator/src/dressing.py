@@ -13,11 +13,11 @@ class Dressing():
 
     _name = "Dressing"
 
-    def __init__(self, element:None):
+    def __init__(self, element=None):
         """ nothing"""
         self._element = element
 
-    def get_instance(self, element:None):
+    def get_instance(self, element=None):
         """ Return instance for a given gate """
         raise "subclass me"
 
@@ -35,8 +35,4 @@ class Dressing():
 
     def instantiate(self):
         """ performs parameters selection. Parameters should be enough to generate specific file"""
-        raise "subclass me"
-
-    def create_structure(self):
-        """ create from instance """
         raise "subclass me"

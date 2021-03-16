@@ -1,6 +1,6 @@
 """ define a super-class for finding structure definitions. Useful for tests """
 
-import logging
+#import logging
 
 class Selector:
 
@@ -15,7 +15,7 @@ class Selector:
                     for name in element_list
                 if element_list[name].get_instance(element).check_fit()]
         return list_fit
-        
+
     def get_structure_fit(self, element):
         """ find a list of fits for the structure from the real ones """
         return self._get_fit(self.classes["structure"], element)

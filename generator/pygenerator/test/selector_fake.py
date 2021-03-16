@@ -5,6 +5,7 @@ import logging
 from selector import Selector
 from room_structure import RoomStructure
 from gate_structure import GateStructure
+from dressing import Dressing
 
 class GateStructureFake1(GateStructure):
 
@@ -32,6 +33,36 @@ class GateStructureFake1(GateStructure):
     def check_fit(self):
         """same as main"""
         logging.debug("Check fit gate: %s", self.gate.values.gate_id)
+        return True
+
+class GateDressingFake1(Dressing):
+    _name = "gate_dressing_1"
+
+    def __init__(self, element=None):
+        """ nothing"""
+        self._element = element
+
+    def get_instance(self, element=None):
+        """ Return instance for a given gate """
+        return GateDressingFake1(element)
+
+    def instantiate(self):
+        """ performs parameters selection. Parameters should be enough to generate specific file"""
+        return True
+
+class RoomDressingFake1(Dressing):
+    _name = "room_dressing_1"
+
+    def __init__(self, element=None):
+        """ nothing"""
+        self._element = element
+
+    def get_instance(self, element=None):
+        """ Return instance for a given gate """
+        return RoomDressingFake1(element)
+
+    def instantiate(self):
+        """ performs parameters selection. Parameters should be enough to generate specific file"""
         return True
 
 class GateStructureFake2(GateStructureFake1):
@@ -85,10 +116,16 @@ class RoomStructureFake2(RoomStructureFake1):
 class SelectorFake(Selector):
 
     def __init__(self):
-        self.classes={}
-        self.classes["room"] = {}
-        self.classes["gate"] = {}
-        self.classes["room"][RoomStructureFake1().get_name()] = RoomStructureFake1()
-        self.classes["room"][RoomStructureFake2().get_name()] = RoomStructureFake2()
-        self.classes["gate"][GateStructureFake1().get_name()] = GateStructureFake1()
-        self.classes["gate"][GateStructureFake2().get_name()] = GateStructureFake2()
+
+        self.classes = { 
+            "structure": { "room":{}, "gate":{} },
+            "dressing": { "room":{}, "gate":{} }
+        }
+
+        self.classes["structure"]["room"][RoomStructureFake1().get_name()] = RoomStructureFake1()
+        self.classes["structure"]["room"][RoomStructureFake2().get_name()] = RoomStructureFake2()
+        self.classes["structure"]["gate"][GateStructureFake1().get_name()] = GateStructureFake1()
+        self.classes["structure"]["gate"][GateStructureFake2().get_name()] = GateStructureFake2()
+
+        self.classes["dressing"]["room"][RoomDressingFake1().get_name()] = RoomDressingFake1()
+        self.classes["dressing"]["gate"][GateDressingFake1().get_name()] = GateDressingFake1()
