@@ -23,7 +23,7 @@ def get_texture_definition(filename, scale = 1.0, offset = cgtypes.vec3()):
         scale, scale, scale, offset[1],
         scale, scale, scale, offset[2],
         scale, scale, scale, 0)
-    my_def.proj = transform
+    my_def["proj"] = transform
     return my_def
 
 class Node:
@@ -112,7 +112,7 @@ class Node:
         for face in faces:
             nface = [ p+point_offset for p in face]
             nfaces.append(nface)
-        self.structure_faces.append({
+        self.dressing_faces.append({
             "faces":nfaces,
             "texture": texture
             })
@@ -120,7 +120,13 @@ class Node:
 class JSONEncoder(json.JSONEncoder):
 
     def default(self, o):
-        return o.__dict__
+        try:
+            res = o.__dict__
+            return res
+        except AttributeError:
+            pass
+        print(o)
+        return None
 
 class ConcreteRoom:
 
