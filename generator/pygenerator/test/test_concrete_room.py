@@ -60,7 +60,7 @@ class TestRoomImpl(unittest.TestCase):
         {'x': 4.0, 'y': 4.0, 'z': 4.0},
         {'x': 5.0, 'y': 5.0, 'z': 5.0}])
         faces = j["objects"][0]["structure_faces"]
-        self.assertEqual(faces, 
+        self.assertEqual(faces,
             [
                 {
                     'faces': [[3, 4, 5], [6, 7, 8], [9, 10, 11]],
@@ -110,14 +110,16 @@ class TestRoomImpl(unittest.TestCase):
         self.assertEqual(faces,
             [
                 {
-                    'faces': [[3, 4, 5], [6, 7, 8], [9, 10, 11]], 
-                    'texture': {'texture': 'myfilename', 
-                    'proj': {'mlist': [1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0]}}
+                    'faces': [[3, 4, 5], [6, 7, 8], [9, 10, 11]],
+                    'texture': {'texture': 'myfilename',
+                    'proj': {'mlist': [1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0,
+                    1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0]}}
                 },
                 {
                     'faces': [[12, 13, 14], [15, 16, 17]],
                     'texture': {'texture': 'myfilename2',
-                    'proj': {'mlist': [1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0]}}
+                    'proj': {'mlist': [1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0,
+                    1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0]}}
                 }
             ]
         )
