@@ -10,6 +10,9 @@ However, it can be dumped to a file to ease debugging of rooms/gates/objects
 """
 
 import json
+from array import array
+import itertools
+import struct
 
 import cgtypes.vec3
 import cgtypes.mat4
@@ -33,11 +36,9 @@ class Node:
         self.structure_faces = []
         self.dressing_points = []
         self.dressing_faces = []
-        if _matrix is not None:
-            self.matrix = _matrix
+        self.matrix = _matrix
         self.name = _name
-        if _parent is not None:
-            self.parent = _parent
+        self.parent = _parent
 
     def add_structure_points(self, points):
         """
@@ -105,7 +106,7 @@ class Node:
         faces are a table of table of points. There can be any number as long as they
         are of convex shape and in the same plan.
         Use point_offset to offset all points indexes.
-        texture is metadata for textures and is mandatory. There is  only one per call. Do
+        texture is metadata for textures and is mandatory. There is only one per call. Do
         multiple calls to have different textures.
         """
         nfaces = []
@@ -128,11 +129,56 @@ class JSONEncoder(json.JSONEncoder):
         print(o)
         return None
 
+getBin = lambda x: x > 0 and str(bin(x))[2:] or "-" + str(bin(x))[3:]
+
+def create_accessor(data_file, gltf, elements, target, component_type, num_elem, elem_type):
+    start_pos = data_file.tell()
+    if component_type == 5126:
+        pad = start_pos % 8
+        print("start_pos ", start_pos)
+        print("padding ", pad)
+        for i in range(pad):
+            data_file.write(struct.pack('c', b'a'))
+        start_pos = data_file.tell()
+        print("start_pos ", start_pos)
+        for value in elements:
+            data_file.write(struct.pack('f', value))
+    if component_type == 5123:
+        pad = start_pos % 4
+        print("start_pos ", start_pos)
+        print("padding ", pad)
+        for i in range(pad):
+            data_file.write(struct.pack('c', b'a'))
+        start_pos = data_file.tell()
+        print("start_pos ", start_pos)
+        for value in elements:
+            data_file.write(struct.pack('H', value))
+    end_pos = data_file.tell()
+    gltf_buffer_views = gltf["bufferViews"]
+    gltf_accessors = gltf["accessors"]        
+    gltf_buffer_views.append({
+                    "buffer": 0,
+                    "byteOffset": start_pos,
+                    "byteLength": end_pos - start_pos,
+                    "target": target})
+    gltf_accessors.append(
+                {
+                    "bufferView": len(gltf_buffer_views) - 1,
+                    "byteOffset": 0,
+                    "componentType": component_type,
+                    "count": num_elem,
+                    "type": elem_type,
+                    "min": [0.0,0.0],
+                    "max": [0.0,0.0]
+                })
+    return len(gltf_accessors) - 1
+
 class ConcreteRoom:
 
     def __init__(self):
         self.objects = []
         self.gravity = None
+        self.counter = 0
 
     def add_child(self, parent, name, matrix = None):
         """
@@ -159,7 +205,7 @@ class ConcreteRoom:
         """
         return json.dumps(self, cls=JSONEncoder, indent=1)
 
-    def generate_gltf(self, filename):
+    def generate_gltf(self, directory):
         """
         dump the scene to a file
         """
@@ -176,11 +222,140 @@ class ConcreteRoom:
                     ]
                 }
             ],
-            "nodes": [
+            "nodes": [],
+            "meshes": [],
+            "buffers": [
+                {
+                    "uri": "data.bin",
+                    "byteLength" : 1
+                }
             ],
-            "meshes": [
-            ]
+            "bufferViews": [],
+            "materials": [],
+            "accessors": [],
+            "images": [],
+            "textures": [],
+            "samplers": [
+                {
+                    "magFilter": 9729,
+                    "minFilter": 9986,
+                    "wrapS": 10497,
+                    "wrapT": 10497
+                }
+            ],
         }
+
+        # data file
+        data_file = open(directory + "/data.bin", "wb")
+        if data_file is None:
+            raise "Unable to open data file"
+
+        # determine children of each node
+        for node in self.objects:
+            node.children=[ count+1 for count, value in enumerate(self.objects)
+                            if node.name == value.parent]
+            print ("node: %s , children: %s" %( node.name, str(node.children)))
+        # get root nodes
+        roots = [count+1 for count, value in enumerate(self.objects) if value.parent is None ]
+        gltf_nodes = gltf["nodes"]
+        gltf_meshes = gltf["meshes"]
+        gltf_textures = gltf["textures"]
+        gltf_images = gltf["images"]
+        gltf_materials = gltf["materials"]
+        gltf_buffer_views = gltf["bufferViews"]
+        gltf_accessors = gltf["accessors"]
+        gltf_nodes.append( { "children" : roots } )
+        for node in self.objects:
+            gltf_node = { "name" : node.name }
+            if node.children != []:
+                gltf_node["children"] = node.children
+            if node.matrix is not None:
+                gltf_node["matrix"] = node.matrix
+            #gltf_node["mesh"] = [ count ]
+            gltf_nodes.append(gltf_node)
+
+            if node.dressing_faces != []:
+
+                # write list of points
+                points = list(itertools.chain.from_iterable([ [n.x, n.y, n.z]
+                            for n in node.dressing_points]))
+                points_buffer = create_accessor(
+                        data_file,
+                        gltf,
+                        points,
+                        34962,
+                        5126,
+                        len(node.dressing_points),
+                        "VEC3")
+
+                primitives = []
+                for faces_block in node.dressing_faces:
+                    print(faces_block)
+                    print(faces_block.keys())
+                    # add texture even if it already exist. No additional cost in the engine
+                    gltf_images.append({ "uri": faces_block["texture"]["texture"] })
+                    gltf_textures.append( { "sampler": 0, "source": len(gltf_images)-1 } )
+                    gltf_materials.append(
+                        {
+                            "pbrMetallicRoughness": {
+                                "baseColorTexture": {
+                                    "index": len(gltf_textures) -1
+                                },
+                                "metallicFactor": 0.0
+                            },
+                        })
+
+                    # compute indices
+                    poly_list = []
+                    for poly in faces_block["faces"]:
+                        poly_list.append(poly[0])
+                        poly_list.append(poly[1])
+                        poly_list.append(poly[2])
+                    print(poly_list)
+                    indices_accessor = create_accessor(
+                        data_file,
+                        gltf,
+                        poly_list,
+                        34963,
+                        5123,
+                        len(poly_list),
+                        "SCALAR")
+                    # compute texture projections
+                    projs = []
+                    for point in node.dressing_points:
+                        point4 = cgtypes.vec4(point.x, point.y, point.z, 1.0)
+                        tex_proj = faces_block["texture"]["proj"] * point4
+                        projs.append(tex_proj.x)
+                        projs.append(tex_proj.y)
+                    print(projs)
+                    tex_coords_accessor = create_accessor(
+                        data_file,
+                        gltf,
+                        projs,
+                        34962,
+                        5126,
+                        len(node.dressing_points),
+                        "VEC2")
+
+                    primitives.append(
+                        {
+                            "attributes": {
+                                "POSITION": points_buffer,
+                                "TEXCOORD_0": tex_coords_accessor
+                            },
+                            "indices": indices_accessor,
+                            "mode": 4,
+                            "material": len(gltf_materials) - 1
+                        })
+                gltf_meshes.append({
+                        "primitives": primitives,
+                        "name": "Mesh_%s" %(node.name)
+                })
+                gltf_node["mesh"] = len(gltf_meshes) - 1
+
+
+        gltf["buffers"][0]["byteLength"] = data_file.tell()
         j = json.dumps(gltf, indent=1)
-        with open(filename, "w") as write_file:
+        with open(directory + "/room.gltf", "w") as write_file:
             write_file.write(j)
+        data_file.close()

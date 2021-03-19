@@ -124,6 +124,75 @@ class TestRoomImpl(unittest.TestCase):
             ]
         )
 
+    def test_dump_objects(self):
+        """ test dumping hierachy of nodes """
+        room = concrete_room.ConcreteRoom()
+        parent1 = room.add_child(None, "parent1")
+        parent2 = room.add_child(None, "parent2")
+        child1_1 = room.add_child("parent1", "child1_1")
+        child1_2 = room.add_child("parent1", "child1_2")
+        child2_1 = room.add_child("parent2", "child2_1")
+        child2_2 = room.add_child("parent2", "child2_2")
+        self.assertIsNotNone(parent1)
+        self.assertIsNotNone(parent2)
+        self.assertIsNotNone(child2_1)
+        self.assertIsNotNone(child2_2)
+        self.assertIsNotNone(child1_1)
+        self.assertIsNotNone(child1_2)
+        room.generate_gltf("/tmp")
+        with open("/tmp/room.gltf", "r") as room_file:
+            obj = json.load(room_file)
+        objects = obj["nodes"]
+        self.assertEqual(objects, 
+        [
+            {'children': [1, 2]},
+            {'name': 'parent1', 'children': [3, 4]},
+            {'name': 'parent2', 'children': [5, 6]},
+            {'name': 'child1_1'}, {'name': 'child1_2'},
+            {'name': 'child2_1'}, {'name': 'child2_2'}
+        ])
+
+    def test_dump_1_face_3_points(self):
+        """ test dumping 1 face with 3 points (aka triangle)  """
+        room = concrete_room.ConcreteRoom()
+        parent = room.add_child(None, "parent")
+        self.assertIsNotNone(parent)
+        index0 = parent.add_dressing_points(
+            [cgtypes.vec3(0,0,0),
+            cgtypes.vec3(0,0,1),
+            cgtypes.vec3(0,1,0) ])
+        self.assertEqual(0, index0)
+        parent.add_dressing_faces(
+            index0,
+            [ [0,1,2] ],
+            concrete_room.get_texture_definition("texture.png"))
+        room.generate_gltf("/tmp")
+        with open("/tmp/room.gltf", "r") as room_file:
+            obj = json.load(room_file)
+        parent_object = obj["nodes"][1]
+        print(parent_object)
+
+
+    def test_dump_4_faces_3_points(self):
+        """ test dumping 1 face with 3 points (aka triangle)  """
+        room = concrete_room.ConcreteRoom()
+        parent = room.add_child(None, "parent")
+        self.assertIsNotNone(parent)
+        index0 = parent.add_dressing_points(
+            [cgtypes.vec3(0,0,0),
+            cgtypes.vec3(0,0,1),
+            cgtypes.vec3(0,1,0),
+            cgtypes.vec3(1,0,0) ])
+        self.assertEqual(0, index0)
+        parent.add_dressing_faces(
+            index0,
+            [ [0,1,2],[0,1,3],[1,2,3],[0,2,3] ],
+            concrete_room.get_texture_definition("texture.png"))
+        room.generate_gltf("/tmp")
+        with open("/tmp/room.gltf", "r") as room_file:
+            obj = json.load(room_file)
+        parent_object = obj["nodes"][1]
+        print(parent_object)
 
 
 if __name__ == '__main__':
