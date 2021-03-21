@@ -84,44 +84,47 @@ class TestRoomImpl(unittest.TestCase):
         self.assertIsNotNone(room)
         parent = room.add_child(None, "parent")
         self.assertIsNotNone(parent)
-        index0 = parent.add_dressing_points([ cgtypes.vec3(0), cgtypes.vec3(1), cgtypes.vec3(2) ])
-        self.assertEqual(0, index0)
-        index1 = parent.add_dressing_points([ cgtypes.vec3(3), cgtypes.vec3(4), cgtypes.vec3(5) ])
-        self.assertEqual(3, index1)
         parent.add_dressing_faces(
-            index1,
+            [ cgtypes.vec3(0), cgtypes.vec3(1), cgtypes.vec3(2) ],
             [ [0,1,2], [3,4,5], [6,7,8] ],
             concrete_room.get_texture_definition("myfilename"))
         parent.add_dressing_faces(
-            index1,
+            [ cgtypes.vec3(3), cgtypes.vec3(4), cgtypes.vec3(5) ],
             [ [9,10,11], [12,13,14]],
             concrete_room.get_texture_definition("myfilename2"))
         j = json.loads(room.dump_to_json())
-        points = j["objects"][0]["dressing_points"]
-        print(points)
-        self.assertEqual(points,
-        [{'x': 0.0, 'y': 0.0, 'z': 0.0},
-        {'x': 1.0, 'y': 1.0, 'z': 1.0},
-        {'x': 2.0, 'y': 2.0, 'z': 2.0},
-        {'x': 3.0, 'y': 3.0, 'z': 3.0},
-        {'x': 4.0, 'y': 4.0, 'z': 4.0},
-        {'x': 5.0, 'y': 5.0, 'z': 5.0}])
-        faces = j["objects"][0]["dressing_faces"]
+        faces = j["objects"][0]["dressing"]
+        print(faces)
         self.assertEqual(faces,
-            [
-                {
-                    'faces': [[3, 4, 5], [6, 7, 8], [9, 10, 11]],
-                    'texture': {'texture': 'myfilename',
-                    'proj': {'mlist': [1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0,
-                    1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0]}}
-                },
-                {
-                    'faces': [[12, 13, 14], [15, 16, 17]],
-                    'texture': {'texture': 'myfilename2',
-                    'proj': {'mlist': [1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0,
-                    1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0]}}
+            [{
+            'points':
+            [{'x': 0.0, 'y': 0.0, 'z': 0.0},
+            {'x': 1.0, 'y': 1.0, 'z': 1.0},
+            {'x': 2.0, 'y': 2.0, 'z': 2.0}],
+            'faces': [[0, 1, 2], [3, 4, 5], [6, 7, 8]],
+            'texture': {
+                'texture': 'myfilename',
+                'proj': {'mlist': [
+                    1.0, 1.0, 1.0, 0.0,
+                    1.0, 1.0, 1.0, 0.0,
+                    1.0, 1.0, 1.0, 0.0,
+                    1.0, 1.0, 1.0, 0.0]}
                 }
-            ]
+            },
+            {'points':
+            [{'x': 3.0, 'y': 3.0, 'z': 3.0},
+            {'x': 4.0, 'y': 4.0, 'z': 4.0},
+            {'x': 5.0, 'y': 5.0, 'z': 5.0}],
+            'faces': [[9, 10, 11], [12, 13, 14]],
+            'texture': {
+                'texture': 'myfilename2',
+                'proj': {'mlist': [
+                    1.0, 1.0, 1.0, 0.0,
+                    1.0, 1.0, 1.0, 0.0,
+                    1.0, 1.0, 1.0, 0.0,
+                    1.0, 1.0, 1.0, 0.0]}
+                }
+            }]
         )
 
     def test_dump_objects(self):
@@ -143,13 +146,15 @@ class TestRoomImpl(unittest.TestCase):
         with open("/tmp/room.gltf", "r") as room_file:
             obj = json.load(room_file)
         objects = obj["nodes"]
-        self.assertEqual(objects, 
+        self.assertEqual(objects,
         [
-            {'children': [1, 2]},
-            {'name': 'parent1', 'children': [3, 4]},
-            {'name': 'parent2', 'children': [5, 6]},
-            {'name': 'child1_1'}, {'name': 'child1_2'},
-            {'name': 'child2_1'}, {'name': 'child2_2'}
+            {'children': [1, 2]}, 
+            {'name': 'parent1', 'children': [3, 4], 'mesh': 0},
+            {'name': 'parent2', 'children': [5, 6], 'mesh': 1},
+            {'name': 'child1_1', 'mesh': 2}, 
+            {'name': 'child1_2', 'mesh': 3},
+            {'name': 'child2_1', 'mesh': 4},
+            {'name': 'child2_2', 'mesh': 5}
         ])
 
     def test_dump_1_face_3_points(self):
@@ -157,13 +162,10 @@ class TestRoomImpl(unittest.TestCase):
         room = concrete_room.ConcreteRoom()
         parent = room.add_child(None, "parent")
         self.assertIsNotNone(parent)
-        index0 = parent.add_dressing_points(
+        parent.add_dressing_faces(
             [cgtypes.vec3(0,0,0),
             cgtypes.vec3(0,0,1),
-            cgtypes.vec3(0,1,0) ])
-        self.assertEqual(0, index0)
-        parent.add_dressing_faces(
-            index0,
+            cgtypes.vec3(0,1,0) ],
             [ [0,1,2] ],
             concrete_room.get_texture_definition("texture.png"))
         room.generate_gltf("/tmp")
@@ -172,21 +174,33 @@ class TestRoomImpl(unittest.TestCase):
         parent_object = obj["nodes"][1]
         print(parent_object)
 
-
-    def test_dump_4_faces_3_points(self):
+    def test_dump_cube(self):
         """ test dumping 1 face with 3 points (aka triangle)  """
         room = concrete_room.ConcreteRoom()
         parent = room.add_child(None, "parent")
         self.assertIsNotNone(parent)
-        index0 = parent.add_dressing_points(
-            [cgtypes.vec3(0,0,0),
-            cgtypes.vec3(0,0,1),
-            cgtypes.vec3(0,1,0),
-            cgtypes.vec3(1,0,0) ])
-        self.assertEqual(0, index0)
         parent.add_dressing_faces(
-            index0,
-            [ [0,1,2],[0,1,3],[1,2,3],[0,2,3] ],
+            [
+            cgtypes.vec3(0,0,0),
+            cgtypes.vec3(0,0,1),
+            cgtypes.vec3(0,1,1),
+            cgtypes.vec3(0,1,0),
+
+            cgtypes.vec3(1,0,0),
+            cgtypes.vec3(1,0,1),
+            cgtypes.vec3(1,1,1),
+            cgtypes.vec3(1,1,0),
+            ],
+            [
+                [0,1,2,3],
+                [7,6,5,4],
+                [4,5,1,0],
+                [6,7,3,2],
+
+                [5,6,2,1],
+                [0,3,7,4],
+                
+             ],
             concrete_room.get_texture_definition("texture.png"))
         room.generate_gltf("/tmp")
         with open("/tmp/room.gltf", "r") as room_file:
