@@ -16,15 +16,23 @@ import struct
 import cgtypes.vec3
 import cgtypes.mat4
 
-def get_texture_definition(filename, scale = 1.0, offset = cgtypes.vec3()):
+def get_texture_definition(filename, axes=[ ["x"], [ "y"] ] , scale = 1.0, offset = cgtypes.vec3()):
     """ return an easy to use texture definition based on 4 points (vec3)
     and their textures offset (vec3) with 3rd component being 0."""
     my_def = { "texture": filename }
     transform = cgtypes.mat4(
-        scale, 0, 0, 0,
-        0, scale, 0, 0,
-        0, 0, scale, 0,
-        0, 0, 0, 0)
+        0, 0, 0, offset.x,
+        0, 0, 0, offset.y,
+        0, 0, 0, offset.z,
+        0, 0, 0,     0)
+    for u_v in range(0,2):
+        for my_axe in axes[u_v]:
+            if my_axe == "x":
+                transform[u_v,0] = scale
+            if my_axe == "y":
+                transform[u_v,1] = scale
+            if my_axe == "z":
+                transform[u_v,2] = scale
     my_def["proj"] = transform
     return my_def
 

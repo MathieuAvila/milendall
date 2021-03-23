@@ -105,10 +105,10 @@ class TestRoomImpl(unittest.TestCase):
             'texture': {
                 'texture': 'myfilename',
                 'proj': {'mlist': [
-                    1.0, 1.0, 1.0, 0.0,
-                    1.0, 1.0, 1.0, 0.0,
-                    1.0, 1.0, 1.0, 0.0,
-                    1.0, 1.0, 1.0, 0.0]}
+                    1.0, 0.0, 0.0, 0.0,
+                    0.0, 1.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0, 0.0]}
                 }
             },
             {'points':
@@ -119,10 +119,10 @@ class TestRoomImpl(unittest.TestCase):
             'texture': {
                 'texture': 'myfilename2',
                 'proj': {'mlist': [
-                    1.0, 1.0, 1.0, 0.0,
-                    1.0, 1.0, 1.0, 0.0,
-                    1.0, 1.0, 1.0, 0.0,
-                    1.0, 1.0, 1.0, 0.0]}
+                    1.0, 0.0, 0.0, 0.0,
+                    0.0, 1.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0, 0.0]}
                 }
             }]
         )
@@ -151,11 +151,54 @@ class TestRoomImpl(unittest.TestCase):
             {'children': [1, 2]}, 
             {'name': 'parent1', 'children': [3, 4], 'mesh': 0},
             {'name': 'parent2', 'children': [5, 6], 'mesh': 1},
-            {'name': 'child1_1', 'mesh': 2}, 
+            {'name': 'child1_1', 'mesh': 2},
             {'name': 'child1_2', 'mesh': 3},
             {'name': 'child2_1', 'mesh': 4},
             {'name': 'child2_2', 'mesh': 5}
         ])
+
+    def test_proj_matrix(self):
+        """test proj matrix construction"""
+        default_tex = concrete_room.get_texture_definition(
+                "texture.png")
+        self.assertEqual(default_tex,
+        {
+            'texture': 'texture.png',
+            'proj': cgtypes.mat4(
+                1.0, 0.0, 0.0, 0.0,
+                0.0, 1.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0.0)})
+        offset_tex = concrete_room.get_texture_definition(
+                "texture.png", offset = cgtypes.vec3(1,2,3))
+        self.assertEqual(offset_tex,
+        {
+            'texture': 'texture.png',
+            'proj': cgtypes.mat4(
+                1.0, 0.0, 0.0, 1.0,
+                0.0, 1.0, 0.0, 2.0,
+                0.0, 0.0, 0.0, 3.0,
+                0.0, 0.0, 0.0, 0.0)})
+        scale_tex = concrete_room.get_texture_definition(
+                "texture.png", scale = 2.0)
+        self.assertEqual(scale_tex,
+        {
+            'texture': 'texture.png',
+            'proj': cgtypes.mat4(
+                2.0, 0.0, 0.0, 0.0,
+                0.0, 2.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0.0)})
+        axes_tex = concrete_room.get_texture_definition(
+                "texture.png", axes=[ ["x","y"], [ "z"] ])
+        self.assertEqual(axes_tex,
+        {
+            'texture': 'texture.png',
+            'proj': cgtypes.mat4(
+                1.0, 1.0, 0.0, 0.0,
+                0.0, 0.0, 1.0, 0.0,
+                0.0, 0.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0.0)})
 
     def test_dump_1_face_3_points(self):
         """ test dumping 1 face with 3 points (aka triangle)  """
@@ -167,7 +210,10 @@ class TestRoomImpl(unittest.TestCase):
             cgtypes.vec3(0,0,1),
             cgtypes.vec3(0,1,0) ],
             [ [0,1,2] ],
-            concrete_room.get_texture_definition("texture.png"))
+            concrete_room.get_texture_definition(
+                "texture.png",
+                axes=[ ["y"],["z"] ],
+                scale=1.0 ))
         room.generate_gltf("/tmp")
         with open("/tmp/room.gltf", "r") as room_file:
             obj = json.load(room_file)
@@ -192,16 +238,42 @@ class TestRoomImpl(unittest.TestCase):
             cgtypes.vec3(1,1,0),
             ],
             [
-                [0,1,2,3],
-                [7,6,5,4],
-                [4,5,1,0],
-                [6,7,3,2],
-
+                # X,Y
                 [5,6,2,1],
                 [0,3,7,4],
-                
              ],
-            concrete_room.get_texture_definition("texture.png"))
+            concrete_room.get_texture_definition(
+                "texture.png",
+                axes=[ ["x",],["y"] ],
+                scale=1.0 ))
+
+        parent.add_dressing_faces(
+            [
+            cgtypes.vec3(0,0,0),
+            cgtypes.vec3(0,0,1),
+            cgtypes.vec3(0,1,1),
+            cgtypes.vec3(0,1,0),
+
+            cgtypes.vec3(1,0,0),
+            cgtypes.vec3(1,0,1),
+            cgtypes.vec3(1,1,1),
+            cgtypes.vec3(1,1,0),
+            ],
+            [
+                # Y,Z
+                [0,1,2,3],
+                [7,6,5,4],
+
+                # X,Z
+                [4,5,1,0],
+                [6,7,3,2],
+             ],
+            concrete_room.get_texture_definition(
+                "texture.png",
+                axes=[ ["x", "y"],["z"] ],
+                scale=1.0 ))
+
+        
         room.generate_gltf("/tmp")
         with open("/tmp/room.gltf", "r") as room_file:
             obj = json.load(room_file)
