@@ -38,6 +38,6 @@ class ElementalStructure():
         """ performs parameters selection. Parameters should be enough to generate specific file"""
         raise "subclass me"
 
-    def create_structure(self, components):
-        """ create from instance """
+    def generate(self, concrete):
+        """Perform instantiation on concrete_room"""
         raise "subclass me"

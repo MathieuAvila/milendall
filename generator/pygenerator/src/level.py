@@ -2,12 +2,15 @@
 
 import logging
 import random
+import pathlib
 
 import json
 import jsonschema
 
 import room
 import gate
+import concrete_room
+
 from munch import DefaultMunch
 
 def decode_level(dct):
@@ -136,21 +139,21 @@ class Level:
             _element.values.structure_class = choice.get_name()
         else:
             logging.info("No need to select class for element: %s", _element.get_id())
-            choice = self.selector.get_structure_from_name(
+        _element.structure = self.selector.get_structure_from_name(
                 _element.values.structure_class,
                 _element)
-            if choice is None:
+        if _element.structure is None:
                 logging.error("Unknown class name: %s", _element.values.structure_class)
                 raise Exception ("Void fit list for element: " + _element.get_id())
         if _element.values.structure_private is None:
-            _element.values.structure_private = []
+            _element.values.structure_private = {}
             logging.info("Create private parameters for element: %s", _element.get_id())
         if _element.values.structure_parameters is None:
-            _element.values.structure_parameters = []
+            _element.values.structure_parameters = {}
             logging.info("Create structure parameters for element: %s", _element.get_id())
-        _element.values.structure_private.extend(_element.values.structure_parameters)
+        _element.values.structure_private.update(_element.values.structure_parameters)
         logging.info("Run instantiation structure parameters for element: %s", _element.get_id())
-        choice.instantiate()
+        _element.structure.instantiate()
 
         # same for dressing
 
@@ -168,21 +171,23 @@ class Level:
             _element.values.dressing_class = choice.get_name()
         else:
             logging.info("No need to select dressing  class for element: %s", _element.get_id())
-            choice = self.selector.get_dressing_from_name(
+        _element.dressing = self.selector.get_dressing_from_name(
                 _element.values.dressing_class,
                 _element)
-            if choice is None:
-                logging.error("Unknown dressing class name: %s", _element.values.dressing_class)
-                raise Exception ("Void fit list for element: " + _element.get_id())
+        if _element.dressing is None:
+            logging.error("Unknown dressing class name: %s", _element.values.dressing_class)
+            raise Exception ("Void fit list for element: " + _element.get_id())
+
         if _element.values.dressing_private is None:
-            _element.values.dressing_private = []
+            _element.values.dressing_private = {}
             logging.info("Create private parameters for element: %s", _element.get_id())
         if _element.values.dressing_parameters is None:
-            _element.values.dressing_parameters = []
+            _element.values.dressing_parameters = {}
             logging.info("Create structure parameters for element: %s", _element.get_id())
-        _element.values.dressing_private.extend(_element.values.dressing_parameters)
+
+        _element.values.dressing_private.update(_element.values.dressing_parameters)
         logging.info("Run instantiation dressing parameters for element: %s", _element.get_id())
-        choice.instantiate()
+        _element.dressing.instantiate()
 
     def instantiation(self):
         """ 1. For each gate, choose gate format if not already done
@@ -195,7 +200,6 @@ class Level:
     def element_instantiation(self, _id):
         """ wrapper to _element_instantiation, with ID name resolved"""
         element = None
-        # todo complete
         self._element_instantiation(element)
 
     def structure(self):
@@ -211,11 +215,20 @@ class Level:
     def element_structure(self, _id):
         """ Perform structure only on one room"""
 
-    def dressing(self):
+    def dressing(self, output_dir):
         """ Perform final dressing on every room and gate"""
+        for _element in self.values.rooms:
+            self.element_dressing(output_dir, _element)
 
-    def element_dressing(self, room_id):
+    def element_dressing(self, output_dir, element):
         """ Perform final dressing one element"""
+
+        concrete = concrete_room.ConcreteRoom()
+        element.structure.generate(concrete)
+        element.dressing.generate(concrete)
+        room_path = output_dir + "/" + element.values.room_id
+        pathlib.Path(room_path).mkdir(parents=True, exist_ok=True)
+        concrete.generate_gltf(room_path)
 
     def objects(self):
         """ Place objects in room acording to specs"""

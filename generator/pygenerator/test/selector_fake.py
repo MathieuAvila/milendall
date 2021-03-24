@@ -1,11 +1,13 @@
 """Selector for tests"""
 
 import logging
+import cgtypes
 
 from selector import Selector
 from room_structure import RoomStructure
 from gate_structure import GateStructure
 from dressing import Dressing
+import concrete_room
 
 class GateStructureFake1(GateStructure):
 
@@ -23,8 +25,8 @@ class GateStructureFake1(GateStructure):
     def instantiate(self):
         """ force set values:
         - set values to gate size"""
-        self.gate.values.private_parameters={}
-        self.gate.values.private_parameters["private1"] = True
+        self.gate.values.structure_private={}
+        self.gate.values.structure_private["private1"] = True
 
     def check_structure(self):
         """same as main"""
@@ -65,6 +67,14 @@ class RoomDressingFake1(Dressing):
         """ performs parameters selection. Parameters should be enough to generate specific file"""
         return True
 
+    def generate(self, concrete):
+        """Instantiate only 1 triangle to pass validity check"""
+        parent = concrete.get_node("parent")
+        parent.add_dressing_faces(
+            [ cgtypes.vec3(0), cgtypes.vec3(1), cgtypes.vec3(2) ],
+            [ [0,1,2] ],
+            concrete_room.get_texture_definition("myfilename"))
+
 class GateStructureFake2(GateStructureFake1):
 
     _name = "gate_structure_2"
@@ -91,8 +101,8 @@ class RoomStructureFake1(RoomStructure):
         """ force set values:
         - set values to room size
         - set values for gates"""
-        self.room.values.private_parameters={}
-        self.room.values.private_parameters["size"] = [10.0,10.0,2.5]
+        self.room.values.structure_private={}
+        self.room.values.structure_private["size"] = [10.0,10.0,2.5]
         #for gate in self.room.gates:
         #    logging.info("My gate")
 
@@ -104,6 +114,15 @@ class RoomStructureFake1(RoomStructure):
         """same as main"""
         logging.debug("Check fit room: %s", self.room.values.room_id)
         return True
+
+    def generate(self, concrete):
+        """generate 1 structure triangle to be able to check validity"""
+        parent = concrete.add_child(None, "parent")
+        index0 = parent.add_structure_points([ cgtypes.vec3(0), cgtypes.vec3(1), cgtypes.vec3(2) ])
+        parent.add_structure_faces(
+            index0,
+            [ [0,1,2], [3,4,5], [6,7,8] ],
+            [concrete_room.Node.CATEGORY_PHYSICS], [concrete_room.Node.HINT_BUILDING], [ 0 ] )
 
 class RoomStructureFake2(RoomStructureFake1):
     _name = "room_structure_2"

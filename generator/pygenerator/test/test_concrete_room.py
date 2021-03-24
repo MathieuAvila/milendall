@@ -148,7 +148,7 @@ class TestRoomImpl(unittest.TestCase):
         objects = obj["nodes"]
         self.assertEqual(objects,
         [
-            {'children': [1, 2]}, 
+            {'children': [1, 2]},
             {'name': 'parent1', 'children': [3, 4], 'mesh': 0},
             {'name': 'parent2', 'children': [5, 6], 'mesh': 1},
             {'name': 'child1_1', 'mesh': 2},
@@ -273,7 +273,6 @@ class TestRoomImpl(unittest.TestCase):
                 axes=[ ["x", "y"],["z"] ],
                 scale=1.0 ))
 
-        
         room.generate_gltf("/tmp")
         with open("/tmp/room.gltf", "r") as room_file:
             obj = json.load(room_file)

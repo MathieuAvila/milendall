@@ -122,9 +122,8 @@ class JSONEncoder(json.JSONEncoder):
         print(o)
         return None
 
-getBin = lambda x: x > 0 and str(bin(x))[2:] or "-" + str(bin(x))[3:]
-
 def create_accessor(data_file, gltf, elements):
+    """Append an accessor for a given elements list data"""
 
     if isinstance(elements[0], list):
         component_type = 5126
@@ -159,21 +158,21 @@ def create_accessor(data_file, gltf, elements):
     start_pos = data_file.tell()
     if component_type == 5126:
         pad = start_pos % 8
-        for i in range(pad):
+        for _ in range(pad):
             data_file.write(struct.pack('c', b'a'))
         start_pos = data_file.tell()
         for value in final_list:
             data_file.write(struct.pack('f', value))
     if component_type == 5123:
         pad = start_pos % 4
-        for i in range(pad):
+        for _ in range(pad):
             data_file.write(struct.pack('c', b'a'))
         start_pos = data_file.tell()
         for value in final_list:
             data_file.write(struct.pack('H', value))
     end_pos = data_file.tell()
     gltf_buffer_views = gltf["bufferViews"]
-    gltf_accessors = gltf["accessors"]        
+    gltf_accessors = gltf["accessors"]
     gltf_buffer_views.append({
                     "buffer": 0,
                     "byteOffset": start_pos,
@@ -209,6 +208,13 @@ class ConcreteRoom:
         obj = Node(name, parent, matrix)
         self.objects.append(obj)
         return obj
+    
+    def get_node(self, name):
+        """ accessor to a given node"""
+        for obj in self.objects:
+            if obj.name == name:
+                return obj
+        return None
 
     def setup_gravity_info(self, gravity):
         """
@@ -319,10 +325,10 @@ class ConcreteRoom:
                 # compute indices
                 poly_list = []
                 for poly in faces_block["faces"]:
-                    for n in range(2,len(poly)):
+                    for end_index in range(2,len(poly)):
                         poly_list.append(poly[0])
-                        poly_list.append(poly[n-1])
-                        poly_list.append(poly[n])
+                        poly_list.append(poly[end_index-1])
+                        poly_list.append(poly[end_index])
                 indices_accessor = create_accessor(
                     data_file,
                     gltf,

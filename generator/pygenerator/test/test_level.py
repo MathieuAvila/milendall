@@ -57,6 +57,15 @@ class TestLevel(unittest.TestCase):
         loaded_level = level.Level("../test/test_samples/simple/level-user.json", selector)
         self.assertIsNotNone(loaded_level)
         loaded_level.instantiation()
+        loaded_level.save("../test/test_samples/simple/level-user-instantiated.json")
+
+    def test_dressing(self):
+        """Test the instantiation algo using a fake selector"""
+        selector = selector_fake.SelectorFake()
+        loaded_level = level.Level("../test/test_samples/simple/level-user.json", selector)
+        self.assertIsNotNone(loaded_level)
+        loaded_level.instantiation()
+        loaded_level.dressing("/tmp/test_dressing")
 
 
 if __name__ == '__main__':

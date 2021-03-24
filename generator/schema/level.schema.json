@@ -65,10 +65,10 @@
                         "type": "string",
                         "description": "The general class name of the dressing. Example 'raw'"
                     },
-                    "structure_parameters" : { "type": "array", "description": "general parameters at instantiation. Content depends on class" },
-                    "structure_private" :  { "type": "array", "description": "private parameters at instantiation. Content depends on class" },
-                    "dressing_parameters" : { "type": "array", "description": "general parameters at instantiation. Content depends on class" },
-                    "dressing_private" :  { "type": "array", "description": "private parameters at instantiation. Content depends on class" },
+                    "structure_parameters" : { "type": "object", "description": "general parameters at instantiation. Content depends on class" },
+                    "structure_private" :  { "type": "object", "description": "private parameters at instantiation. Content depends on class" },
+                    "dressing_parameters" : { "type": "object", "description": "general parameters at instantiation. Content depends on class" },
+                    "dressing_private" :  { "type": "object", "description": "private parameters at instantiation. Content depends on class" },
                     "connect" :  {
                         "type": "array",
                         "description": "List of rooms that are connected by this gates. Must be two !",
@@ -153,10 +153,10 @@
                         "type": "string",
                         "description": "The general class name of the dressing. Example 'raw'"
                     },
-                    "structure_parameters" : { "type": "array", "description": "general parameters at instantiation. Content depends on class" },
-                    "structure_private" :  { "type": "array", "description": "private parameters at instantiation. Content depends on class" },
-                    "dressing_parameters" : { "type": "array", "description": "general parameters at instantiation. Content depends on class" },
-                    "dressing_private" :  { "type": "array", "description": "private parameters at instantiation. Content depends on class" },
+                    "structure_parameters" : { "type": "object", "description": "general parameters at instantiation. Content depends on class" },
+                    "structure_private" :  { "type": "object", "description": "private parameters at instantiation. Content depends on class" },
+                    "dressing_parameters" : { "type": "object", "description": "general parameters at instantiation. Content depends on class" },
+                    "dressing_private" :  { "type": "object", "description": "private parameters at instantiation. Content depends on class" },
 
                     "triggers" : {
                         "type": "array",

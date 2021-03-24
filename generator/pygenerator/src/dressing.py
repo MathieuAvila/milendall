@@ -36,3 +36,7 @@ class Dressing():
     def instantiate(self):
         """ performs parameters selection. Parameters should be enough to generate specific file"""
         raise "subclass me"
+
+    def generate(self, concrete):
+        """Perform instantiation on concrete_room"""
+        raise "subclass me"
