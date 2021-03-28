@@ -15,9 +15,9 @@ class RoomStructure(ElementalStructure):
 
     _name = "RoomStructure"
 
-    def __init__(self, room:None):
-        """ nothing"""
-        self._room = room
+    #def __init__(self, room:None):
+    #    """ nothing"""
+    #    super().__init__(room)
 
     def get_class(self):
         """ get my class for selector"""

@@ -2,6 +2,11 @@
 interface definition for any structural element
 """
 
+import logging
+
+logging.basicConfig()
+logging.getLogger().setLevel(logging.INFO)
+
 class ElementalStructure():
 
     """
@@ -15,6 +20,7 @@ class ElementalStructure():
 
     def __init__(self, element:None):
         """ nothing"""
+        logging.info("Init to %s", element.get_id())
         self._element = element
 
     def get_class(self):
@@ -41,3 +47,13 @@ class ElementalStructure():
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""
         raise "subclass me"
+
+    def instantiate_defaults(self):
+        """Instantiate default values"""
+        if self._element.values.structure_private is None:
+            self._element.values.structure_private = {}
+            logging.info("Create private parameters for element: %s", self._element.get_id())
+        if self._element.values.structure_parameters is None:
+            self._element.values.structure_parameters = {}
+            logging.info("Create structure parameters for element: %s", self._element.get_id())
+        self._element.values.structure_private.update(self._element.values.structure_parameters)

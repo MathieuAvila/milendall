@@ -143,15 +143,9 @@ class Level:
                 _element.values.structure_class,
                 _element)
         if _element.structure is None:
-                logging.error("Unknown class name: %s", _element.values.structure_class)
-                raise Exception ("Void fit list for element: " + _element.get_id())
-        if _element.values.structure_private is None:
-            _element.values.structure_private = {}
-            logging.info("Create private parameters for element: %s", _element.get_id())
-        if _element.values.structure_parameters is None:
-            _element.values.structure_parameters = {}
-            logging.info("Create structure parameters for element: %s", _element.get_id())
-        _element.values.structure_private.update(_element.values.structure_parameters)
+            logging.error("Unknown class name: %s", _element.values.structure_class)
+            raise Exception ("Void fit list for element: " + _element.get_id())
+        _element.structure.instantiate_defaults()
         logging.info("Run instantiation structure parameters for element: %s", _element.get_id())
         _element.structure.instantiate()
 

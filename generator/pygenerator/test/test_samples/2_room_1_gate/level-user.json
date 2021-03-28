@@ -1,0 +1,39 @@
+{
+    "$schema": "../../../../schema/level.schema.json",
+
+    "name" : [  { "lang": "en", "value" : "Simple Level"} ],
+    "section": "samples",
+
+    "game_type" : {
+        "single_mode" : {
+            "execution_time" : 10.0,
+            "entry_point_room" : "room1",
+            "end_point_room" : "room1"
+        }
+    },
+
+    "rooms" : [
+        {
+            "room_id" : "room1",
+            "name" : [ { "lang": "en", "value" : "nightmare1"}  ],
+            "structure_class" : "room_structure_1",
+            "dressing_class" : "room_dressing_1"
+        },
+        {
+            "room_id" : "room2",
+            "name" : [ { "lang": "en", "value" : "nightmare2"}  ],
+            "structure_class" : "room_structure_1",
+            "dressing_class" : "room_dressing_1"
+        }
+    ],
+    "gates" : [
+        {
+            "gate_id" : "g1",
+            "connect" : [ "room1", "room2"],
+            "accessible" : "from-to",
+            "structure_class" : "room_structure_1",
+            "dressing_class" : "room_dressing_1"
+        }
+    ]
+}
+

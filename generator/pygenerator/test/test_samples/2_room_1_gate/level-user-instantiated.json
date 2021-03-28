@@ -1,0 +1,195 @@
+{
+ "$schema": "../../../../schema/level.schema.json",
+ "name": [
+  {
+   "lang": "en",
+   "value": "Simple Level"
+  }
+ ],
+ "section": "samples",
+ "game_type": {
+  "single_mode": {
+   "execution_time": 10.0,
+   "entry_point_room": "room1",
+   "end_point_room": "room3"
+  }
+ },
+ "rooms": [
+  {
+   "room_id": "room1",
+   "name": [
+    {
+     "lang": "en",
+     "value": "nightmare"
+    }
+   ],
+   "structure_class": "room_structure_1",
+   "dressing_class": "room_dressing_1",
+   "triggers": [
+    {
+     "trigger_id": "open1",
+     "type": "button"
+    }
+   ],
+   "structure_private": {
+    "size": [
+     10.0,
+     10.0,
+     2.5
+    ]
+   },
+   "structure_parameters": {},
+   "dressing_private": {},
+   "dressing_parameters": {}
+  },
+  {
+   "room_id": "room2",
+   "name": [
+    {
+     "lang": "en",
+     "value": "heaven"
+    }
+   ],
+   "triggers": [
+    {
+     "trigger_id": "open2",
+     "type": "walk-on"
+    }
+   ],
+   "structure_class": "room_structure_1",
+   "structure_private": {
+    "size": [
+     10.0,
+     10.0,
+     2.5
+    ]
+   },
+   "structure_parameters": {},
+   "dressing_class": "room_dressing_1",
+   "dressing_private": {},
+   "dressing_parameters": {}
+  },
+  {
+   "room_id": "room3",
+   "name": [
+    {
+     "lang": "en",
+     "value": "earth"
+    }
+   ],
+   "triggers": [
+    {
+     "trigger_id": "close3",
+     "type": "walk-on"
+    }
+   ],
+   "structure_class": "room_structure_1",
+   "structure_private": {
+    "size": [
+     10.0,
+     10.0,
+     2.5
+    ]
+   },
+   "structure_parameters": {},
+   "dressing_class": "room_dressing_1",
+   "dressing_private": {},
+   "dressing_parameters": {}
+  }
+ ],
+ "gates": [
+  {
+   "gate_id": "r3r2",
+   "connect": [
+    "room3",
+    "room2"
+   ],
+   "accessible": "from-to",
+   "structure_class": "gate_structure_1",
+   "structure_private": {
+    "private1": true
+   },
+   "structure_parameters": {},
+   "dressing_class": "gate_dressing_1",
+   "dressing_private": {},
+   "dressing_parameters": {}
+  },
+  {
+   "gate_id": "r1r2",
+   "connect": [
+    "room1",
+    "room2"
+   ],
+   "accessible": "from-to",
+   "visible": "from-to",
+   "see_through": "from-to",
+   "structure_class": "gate_structure_1",
+   "dressing_class": "gate_dressing_1",
+   "structure_private": {
+    "private1": true
+   },
+   "structure_parameters": {},
+   "dressing_private": {},
+   "dressing_parameters": {}
+  },
+  {
+   "gate_id": "r1r3",
+   "connect": [
+    "room1",
+    "room3"
+   ],
+   "structure_class": "gate_structure_1",
+   "structure_private": {
+    "private1": true
+   },
+   "structure_parameters": {},
+   "dressing_class": "gate_dressing_1",
+   "dressing_private": {},
+   "dressing_parameters": {}
+  },
+  {
+   "gate_id": "r1r1",
+   "connect": [
+    "room1",
+    "room1"
+   ],
+   "scale": 0.5,
+   "events": [
+    {
+     "action": "open",
+     "direction": "from-to",
+     "on_trigger": "open1",
+     "on_property": "accessible",
+     "to_value": "true"
+    },
+    {
+     "action": "visible",
+     "direction": "from-to",
+     "on_trigger": "open2",
+     "on_property": "accessible",
+     "to_value": "false"
+    },
+    {
+     "action": "close",
+     "on_trigger": "close3",
+     "on_property": "accessible",
+     "to_value": "false"
+    },
+    {
+     "action": "invisible",
+     "on_trigger": "close3",
+     "on_property": "accessible",
+     "to_value": "false"
+    }
+   ],
+   "structure_class": "gate_structure_1",
+   "structure_private": {
+    "private1": true
+   },
+   "structure_parameters": {},
+   "dressing_class": "gate_dressing_1",
+   "dressing_private": {},
+   "dressing_parameters": {}
+  }
+ ]
+}

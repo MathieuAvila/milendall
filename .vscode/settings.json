@@ -5,9 +5,10 @@
         "--disable=F0401", "--disable=C0115"
     ],
     "python.testing.unittestArgs": [
+        "discover",
         "-v",
         "-s",
-        "./generator/pygenerator/test",
+        "./generator/pygenerator/test/",
         "-p",
         "*test*.py"
     ],

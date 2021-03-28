@@ -12,6 +12,8 @@ However, it can be dumped to a file to ease debugging of rooms/gates/objects
 import json
 import itertools
 import struct
+import shutil
+import os
 
 import cgtypes.vec3
 import cgtypes.mat4
@@ -57,6 +59,8 @@ class Node:
 
     CATEGORY_VISUAL = "vis"
     CATEGORY_PHYSICS = "phy"
+
+    CAT_PHYS_VIS = [CATEGORY_VISUAL, CATEGORY_PHYSICS]
 
     HINT_GROUND  = "ground"
     HINT_WALL    = "wall"
@@ -368,3 +372,21 @@ class ConcreteRoom:
         with open(directory + "/room.gltf", "w") as write_file:
             write_file.write(j)
         data_file.close()
+
+def preview(i_file, o_file):
+    """Build a preview of the result gltf so that it can be viewed with a 3rd party"""
+    with open(i_file, "r") as gltf_file:
+        gltf = json.load(gltf_file)
+    src_dir = os.path.dirname(i_file)
+    for image in gltf["images"]:
+        uri = src_dir + "/" + image["uri"]
+        n_uri = os.path.basename(uri)
+        dst = src_dir + "/" + n_uri
+        print("Check: original:'" + image["uri"] + "' uri:'" + uri + "' with: '" + n_uri + "' to:'" + dst + "'")
+        if uri != n_uri:
+            print("Copy")
+            shutil.copyfile(uri, dst)
+            image["uri"] = n_uri
+    j = json.dumps(gltf, indent=1)
+    with open(o_file, "w") as write_file:
+        write_file.write(j)

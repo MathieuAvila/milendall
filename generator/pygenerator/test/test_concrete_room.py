@@ -4,6 +4,8 @@ test level
 
 import logging
 import json
+import pathlib
+import shutil
 
 import unittest
 import concrete_room
@@ -221,7 +223,7 @@ class TestRoomImpl(unittest.TestCase):
         print(parent_object)
 
     def test_dump_cube(self):
-        """ test dumping 1 face with 3 points (aka triangle)  """
+        """ test dumping 1 face with 3 points (aka triangle) . Test preview dump """
         room = concrete_room.ConcreteRoom()
         parent = room.add_child(None, "parent")
         self.assertIsNotNone(parent)
@@ -243,7 +245,7 @@ class TestRoomImpl(unittest.TestCase):
                 [0,3,7,4],
              ],
             concrete_room.get_texture_definition(
-                "texture.png",
+                "../texture.png",
                 axes=[ ["x",],["y"] ],
                 scale=1.0 ))
 
@@ -269,16 +271,22 @@ class TestRoomImpl(unittest.TestCase):
                 [6,7,3,2],
              ],
             concrete_room.get_texture_definition(
-                "texture.png",
+                "../texture.png",
                 axes=[ ["x", "y"],["z"] ],
                 scale=1.0 ))
 
-        room.generate_gltf("/tmp")
-        with open("/tmp/room.gltf", "r") as room_file:
+        path_gen = "/tmp/test_cube/output"
+        pathlib.Path(path_gen).mkdir(parents=True, exist_ok=True)
+
+        shutil.copyfile("../test/test_samples/texture.png", path_gen + "/../texture.png")
+
+        pathlib.Path(path_gen).mkdir(parents=True, exist_ok=True)
+        room.generate_gltf(path_gen)
+        with open(path_gen + "/room.gltf", "r") as room_file:
             obj = json.load(room_file)
         parent_object = obj["nodes"][1]
         print(parent_object)
-
+        concrete_room.preview(path_gen + "/room.gltf", path_gen + "/room_preview.gltf")
 
 if __name__ == '__main__':
     unittest.main()

@@ -73,7 +73,7 @@ class RoomDressingFake1(Dressing):
         parent.add_dressing_faces(
             [ cgtypes.vec3(0), cgtypes.vec3(1), cgtypes.vec3(2) ],
             [ [0,1,2] ],
-            concrete_room.get_texture_definition("myfilename"))
+            concrete_room.get_texture_definition("../texture.png"))
 
 class GateStructureFake2(GateStructureFake1):
 
