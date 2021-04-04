@@ -155,6 +155,8 @@ class RectangularRoom(RoomStructure):
         for wall_dir in range(0,4):
             logging.info("wall direction: %i", wall_dir)
 
+            
+
         # add gates special places
 
 

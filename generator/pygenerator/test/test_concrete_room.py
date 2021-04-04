@@ -67,17 +67,65 @@ class TestRoomImpl(unittest.TestCase):
                 {
                     'faces': [[3, 4, 5], [6, 7, 8], [9, 10, 11]],
                     'category': ['phy'],
-                    'hint': ['building'],
+                    'hints': ['building'],
                     'physics': [0]
                 },
                 {
                     'faces': [[12, 13, 14], [15, 16, 17]],
                     'category': ['phy'],
-                    'hint': ['ceiling'],
+                    'hints': ['ceiling'],
                     'physics': [1]
                 }
             ])
 
+    def test_get_visual_faces(self):
+        """test that we can get visuals only"""
+        room = concrete_room.ConcreteRoom()
+        parent = room.add_child(None, "parent")
+        table_points = [ cgtypes.vec3(0),
+                cgtypes.vec3(1),
+                cgtypes.vec3(2),
+                cgtypes.vec3(3),
+                cgtypes.vec3(4),
+                cgtypes.vec3(5),
+                cgtypes.vec3(6),
+                cgtypes.vec3(7),
+                ]
+        index0 = parent.add_structure_points(table_points)
+
+        list_phys_building = [ [0,1,2], [0,1,3] ]
+        parent.add_structure_faces(
+            index0,
+            list_phys_building,
+            concrete_room.Node.CAT_PHYS, [concrete_room.Node.HINT_BUILDING], [ 0 ] )
+
+        list_vis_ceiling = [ [1,2,3], [1,3,4]]
+        parent.add_structure_faces(
+            index0,
+            list_vis_ceiling,
+            concrete_room.Node.CAT_VIS, [concrete_room.Node.HINT_CEILING], [ 1 ] )
+
+        list_phys_vis_building = [ [2,3,4], [2,4,5]]
+        parent.add_structure_faces(
+            index0,
+            list_phys_vis_building,
+            concrete_room.Node.CAT_PHYS_VIS, [concrete_room.Node.HINT_BUILDING], [ 1 ] )
+
+        list_phys_vis_ceiling = [ [2,3,4], [2,4,5]]
+        parent.add_structure_faces(
+            index0,
+            list_phys_vis_ceiling,
+            concrete_room.Node.CAT_PHYS_VIS, [concrete_room.Node.HINT_CEILING], [ 1 ] )
+
+        # check it returns 1 element that matches
+        list_building = parent.get_visual_face([concrete_room.Node.HINT_BUILDING])
+        self.assertEqual(1, len(list_building))
+        self.assertListEqual(list_building[0]["faces"], list_phys_vis_building)
+
+        # check it returns 2 elements that match
+        list_ceiling = parent.get_visual_face([concrete_room.Node.HINT_CEILING])
+        self.assertEqual(2, len(list_ceiling))
+        self.assertListEqual(list_building[0]["faces"], list_phys_vis_building)
 
     def test_dressing_faces(self):
         """Test creating a simple impl with 1 node with multiple points and faces sets

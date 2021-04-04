@@ -18,7 +18,7 @@ class Dressing():
         self._element = element
 
     def get_instance(self, element=None):
-        """ Return instance for a given gate """
+        """ Return instance for a given dressing """
         raise "subclass me"
 
     def check_fit(self):

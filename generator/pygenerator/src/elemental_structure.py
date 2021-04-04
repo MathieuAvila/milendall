@@ -20,7 +20,6 @@ class ElementalStructure():
 
     def __init__(self, element:None):
         """ nothing"""
-        logging.info("Init to %s", element.get_id())
         self._element = element
 
     def get_class(self):

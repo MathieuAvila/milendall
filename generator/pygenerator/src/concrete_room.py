@@ -60,14 +60,18 @@ class Node:
     CATEGORY_VISUAL = "vis"
     CATEGORY_PHYSICS = "phy"
 
+    CAT_PHYS = [CATEGORY_PHYSICS]
+    CAT_VIS = [CATEGORY_VISUAL]
     CAT_PHYS_VIS = [CATEGORY_VISUAL, CATEGORY_PHYSICS]
 
+    # for visuals, what kinds of surfaces it represents.
     HINT_GROUND  = "ground"
     HINT_WALL    = "wall"
     HINT_CEILING = "ceiling"
     HINT_WATER   = "water"
     HINT_OTHER   = "other"
 
+    # for visuals, in what kind of structures it is linked.
     HINT_DOOR       = "door"
     HINT_BUILDING   = "building"
     HINT_WINDOW     = "window"
@@ -97,9 +101,18 @@ class Node:
         self.structure_faces.append({
             "faces":nfaces,
             "category":categories,
-            "hint": hints,
+            "hints": hints,
             "physics": physics
             })
+
+    def get_visual_face(self, hints):
+        """get visual faces, matching those hints"""
+        result = []
+        for faces in self.structure_faces:
+            if self.CATEGORY_VISUAL in faces["category"]:
+                if set(hints).issubset(set(faces["hints"])):
+                    result.append(faces)
+        return result
 
     def add_dressing_faces(self, points, faces, texture):
         """
@@ -200,6 +213,11 @@ class ConcreteRoom:
         self.objects = []
         self.gravity = None
         self.counter = 0
+
+    def get_objects(self):
+        """return direct references to the list of objects included in the room
+           Is this a good idea to provide a direct access? Not sure..."""
+        return self.objects
 
     def add_child(self, parent, name, matrix = None):
         """
@@ -382,7 +400,10 @@ def preview(i_file, o_file):
         uri = src_dir + "/" + image["uri"]
         n_uri = os.path.basename(uri)
         dst = src_dir + "/" + n_uri
-        print("Check: original:'" + image["uri"] + "' uri:'" + uri + "' with: '" + n_uri + "' to:'" + dst + "'")
+        print("Check: original:'" + image["uri"] +
+              "' uri:'" + uri +
+              "' with: '" + n_uri +
+              "' to:'" + dst + "'")
         if uri != n_uri:
             print("Copy")
             shutil.copyfile(uri, dst)

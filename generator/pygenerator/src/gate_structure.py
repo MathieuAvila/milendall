@@ -15,10 +15,6 @@ class GateStructure(ElementalStructure):
 
     _name = "GateStructure"
 
-    def __init__(self, gate:None):
-        """ nothing"""
-        self._gate = gate
-
     def get_class(self):
         """ get my class for selector"""
         return "gate"
