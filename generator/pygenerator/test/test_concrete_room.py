@@ -125,7 +125,12 @@ class TestRoomImpl(unittest.TestCase):
         # check it returns 2 elements that match
         list_ceiling = parent.get_visual_face([concrete_room.Node.HINT_CEILING])
         self.assertEqual(2, len(list_ceiling))
-        self.assertListEqual(list_building[0]["faces"], list_phys_vis_building)
+        self.assertListEqual(list_ceiling[0]["faces"], list_vis_ceiling)
+        self.assertListEqual(list_ceiling[1]["faces"], list_phys_vis_ceiling)
+
+        # check it returns 0 elements
+        list_building_ceiling = parent.get_visual_face([concrete_room.Node.HINT_BUILDING, concrete_room.Node.HINT_CEILING])
+        self.assertEqual(0, len(list_building_ceiling))
 
     def test_dressing_faces(self):
         """Test creating a simple impl with 1 node with multiple points and faces sets
