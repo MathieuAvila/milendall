@@ -5,7 +5,6 @@ test level
 import logging
 import json
 import pathlib
-import shutil
 
 import unittest
 import concrete_room
@@ -53,7 +52,6 @@ class TestRoomImpl(unittest.TestCase):
             [concrete_room.Node.CATEGORY_PHYSICS], [concrete_room.Node.HINT_CEILING], [ 1 ] )
         j = json.loads(room.dump_to_json())
         points = j["objects"][0]["structure_points"]
-        print(points)
         self.assertEqual(points,
         [{'x': 0.0, 'y': 0.0, 'z': 0.0},
         {'x': 1.0, 'y': 1.0, 'z': 1.0},
@@ -129,7 +127,9 @@ class TestRoomImpl(unittest.TestCase):
         self.assertListEqual(list_ceiling[1]["faces"], list_phys_vis_ceiling)
 
         # check it returns 0 elements
-        list_building_ceiling = parent.get_visual_face([concrete_room.Node.HINT_BUILDING, concrete_room.Node.HINT_CEILING])
+        list_building_ceiling = parent.get_visual_face(
+            [concrete_room.Node.HINT_BUILDING,
+            concrete_room.Node.HINT_CEILING])
         self.assertEqual(0, len(list_building_ceiling))
 
     def test_dressing_faces(self):
@@ -298,7 +298,7 @@ class TestRoomImpl(unittest.TestCase):
                 [0,3,7,4],
              ],
             concrete_room.get_texture_definition(
-                "../texture.png",
+                "common/basic/wall.jpg",
                 axes=[ ["x",],["y"] ],
                 scale=1.0 ))
 
@@ -324,15 +324,11 @@ class TestRoomImpl(unittest.TestCase):
                 [6,7,3,2],
              ],
             concrete_room.get_texture_definition(
-                "../texture.png",
+                "common/basic/ground.jpg",
                 axes=[ ["x", "y"],["z"] ],
                 scale=1.0 ))
 
         path_gen = "/tmp/test_cube/output"
-        pathlib.Path(path_gen).mkdir(parents=True, exist_ok=True)
-
-        shutil.copyfile("../test/test_samples/texture.png", path_gen + "/../texture.png")
-
         pathlib.Path(path_gen).mkdir(parents=True, exist_ok=True)
         room.generate_gltf(path_gen)
         with open(path_gen + "/room.gltf", "r") as room_file:

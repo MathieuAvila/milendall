@@ -34,8 +34,11 @@ class DoorGate(GateStructure):
         """ force set values:
         - set values to gate size"""
         self.gate.values.private_parameters={}
-        self.gate.values.private_parameters["size"] = [2.0, 2.0]
-
+        self.gate.values.private_parameters["geometry"] =  {
+            "portal":[1.5,2.0],
+            "margin":[0.5 , 0.5],
+            "floor":["x0"]
+        }
 
 
 register_gate_type(DoorGate())

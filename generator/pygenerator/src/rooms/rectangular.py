@@ -11,6 +11,18 @@ import cgtypes.mat4
 
 from .register import register_room_type
 
+def append_wall(wall_list, width, start_height):
+    """helper to add a wall to a wall list"""
+    if len(wall_list) == 0:
+        wall_list.append({"width":width, "start":start_height})
+    elif wall_list[-1]["start"] != start_height:
+        wall_list.append({"width":width, "start":start_height})
+    else:
+        wall_list[-1]["width"] += width
+
+def get_sum_walls_width(wall_list):
+    return sum([ w["width"] for w in wall_list ])
+
 class RectangularRoom(RoomStructure):
 
     _name = "rectangular"
@@ -68,7 +80,7 @@ class RectangularRoom(RoomStructure):
 
         # instantiate wall pre/post
         if "wall_pre_post" not in structure_private:
-            structure_private["wall_pre_post"] = [ 
+            structure_private["wall_pre_post"] = [
                 [random.randint(wall_pre_post_range[0][0], wall_pre_post_range[0][1]),
                  random.randint(wall_pre_post_range[1][0], wall_pre_post_range[1][1])
                 ] for i in range(0,4)
@@ -82,7 +94,7 @@ class RectangularRoom(RoomStructure):
                 pos = random.randint(0, 3)
                 pre = random.randint(gate_pre_post_range[0][0], gate_pre_post_range[0][1])
                 post =  random.randint(gate_pre_post_range[1][0], gate_pre_post_range[1][1])
-                setup[pos].append({"gate": gate, "pre":pre, "post":post})
+                setup[pos].append({"gate": gate.get_id(), "pre":pre, "post":post})
 
         logging.info("setup: %s", str(structure_private["setup"]))
         logging.info("height_over_gate_range: %s", str(structure_private["height_over_gate_range"]))
@@ -95,17 +107,38 @@ class RectangularRoom(RoomStructure):
         structure_private = self._element.values.structure_private
         wall_pre_post = structure_private["wall_pre_post"]
         setup = structure_private["setup"]
-        # for each wall, account required size
-        wall_required_size = [ 
-                        wall_pre_post[i][0]+wall_pre_post[i][1]
-                        + sum([ gate["pre"] + gate["post"] + gate["gate"].size[0] 
-                                for gate in setup[i] ])
-                        for i in range(0,4)
-                    ]
+
+        wall_required_size = []
+        minimum_gate_height = 3.0
+
+        # for each wall, account required size, and build wall list
+        walls = [] # 1 for each direction, and a sublist of [width, height_start]
+        gates = [] # 1 for each direction, containing reference
+        for i in range(0,4):
+            walls.append([])
+            wall_list = walls[i]
+            gates.append([])
+            gates_list = gates[i]
+            append_wall(wall_list, wall_pre_post[i][0], 0)
+            for gate_def in setup[i]:
+                gate_id = gate_def["gate"]
+                logging.info("direction %i gate: %s", i, gate_id)
+                gate = [g for g in self._element.gates if g.get_id() == gate_id][0]
+                dims = gate.get_dimensions()
+                # take height into account
+                minimum_gate_height = max(minimum_gate_height, dims["portal"][1]+dims["margin"][1])
+
+                append_wall(wall_list, gate_def["pre"] + dims["margin"][0], 0) # adding pre_gate
+                gates_list.append({"gate":gate, "offset":get_sum_walls_width(wall_list)}) # todo : 0 to be set correctly
+                append_wall(wall_list, dims["portal"][0], dims["portal"][1]) # adding gate itself
+                append_wall(wall_list, gate_def["post"] + dims["margin"][0], 0) # adding post-gate
+
+            append_wall(wall_list, wall_pre_post[i][1], 0)
+            wall_required_size.append(get_sum_walls_width(wall_list))
+            logging.info("direction %i walls: %s", i, wall_list)
 
         # compute height
         height_over_gate = structure_private["height_over_gate"]
-        minimum_gate_height = max([2.0] ) # todo: add gate height
         height = minimum_gate_height + height_over_gate
 
         # for each direction, account required size based on wall required size
@@ -113,6 +146,7 @@ class RectangularRoom(RoomStructure):
             max(wall_required_size[0], wall_required_size[1]),
             max(wall_required_size[2], wall_required_size[3])
         ]
+
         setup = structure_private["setup"]
         logging.info("wall_required_size: %s" , str(wall_required_size))
         logging.info("direction_size: %s" , str(direction_size))
@@ -123,39 +157,87 @@ class RectangularRoom(RoomStructure):
         # add extreme points
         index0 = parent.add_structure_points(
             [
-                cgtypes.vec3(0,                0,                0),
-                cgtypes.vec3(0,                0,                height),
+                cgtypes.vec3(0,                  0,        0),
+                cgtypes.vec3(0,                  height,   0),
 
-                cgtypes.vec3(direction_size[0],0,                0),
-                cgtypes.vec3(direction_size[0],0,                height),
+                cgtypes.vec3(direction_size[0],  0,        0),
+                cgtypes.vec3(direction_size[0],  height,   0),
 
-                cgtypes.vec3(direction_size[0],direction_size[1],0),
-                cgtypes.vec3(direction_size[0],direction_size[1],height),
+                cgtypes.vec3(direction_size[0],  0,        direction_size[1]),
+                cgtypes.vec3(direction_size[0],  height,   direction_size[1]),
 
-                cgtypes.vec3(0,                direction_size[1],0),
-                cgtypes.vec3(0,                direction_size[1],height),
+                cgtypes.vec3(0,                  0,       direction_size[1]),
+                cgtypes.vec3(0,                  height,  direction_size[1]),
             ])
         # add floor
         parent.add_structure_faces(
             index0,
-            [ [0,2,4,6] ],
+            [ [6,4,2,0] ],
             concrete_room.Node.CAT_PHYS_VIS,
-            [concrete_room.Node.HINT_GROUND],
+            [concrete_room.Node.HINT_GROUND, concrete_room.Node.HINT_BUILDING],
             [] )
 
         # add ceiling
         parent.add_structure_faces(
             index0,
-            [ [7,5,3,2] ],
+            [ [1,3,5,7] ],
             concrete_room.Node.CAT_PHYS_VIS,
-            [concrete_room.Node.HINT_CEILING],
+            [concrete_room.Node.HINT_CEILING, concrete_room.Node.HINT_BUILDING],
             [] )
 
         # add walls in every direction
+
+        wall_matrices = [
+            cgtypes.mat4(
+                1.0, 0.0, 0.0, 0.0,
+                0.0, 1.0, 0.0, 0.0,
+                0.0, 0.0, 1.0, 0.0,
+                0.0, 0.0, 0.0, 0.0),
+            cgtypes.mat4(
+                -1.0, 0.0, 0.0, direction_size[0],
+                0.0, 1.0, 0.0,  0.0,
+                0.0, 0.0, -1.0, direction_size[1],
+                0.0, 0.0, 0.0, 0.0),
+            cgtypes.mat4(
+                0.0, 0.0, 0.0, direction_size[0],
+                0.0, 1.0, 0.0, 0.0,
+                1.0, 0.0, 1.0, 0.0,
+                0.0, 0.0, 0.0, 0.0),
+            cgtypes.mat4(
+                0.0, 0.0, 0.0, 0.0,
+                0.0, 1.0, 0.0, 0.0,
+                -1.0, 0.0, -1.0, direction_size[1],
+                0.0, 0.0, 0.0, 0.0),
+        ]
         for wall_dir in range(0,4):
+            cdir = int(wall_dir / 2)
             logging.info("wall direction: %i", wall_dir)
 
-            
+            # append pre/post if wall is shorter than direction
+            if wall_required_size[wall_dir] < direction_size[cdir]:
+                need = direction_size[cdir] - wall_required_size[wall_dir]
+                logging.info("shorter: %f %f", wall_required_size[wall_dir], direction_size[cdir])
+                append_wall(walls[wall_dir], need, 0)
+
+            wall_mat = wall_matrices[wall_dir]
+
+            offset = 0
+            for wall in walls[wall_dir]:
+                width = wall["width"]
+                index_wall = parent.add_structure_points(
+                    [
+                    wall_mat*cgtypes.vec4(offset,         wall["start"],   0,1),
+                    wall_mat*cgtypes.vec4(offset,         height,       0,1),
+                    wall_mat*cgtypes.vec4(offset + width, wall["start"],   0,1),
+                    wall_mat*cgtypes.vec4(offset + width, height,       0,1),
+                ])
+                parent.add_structure_faces(
+                    index_wall,
+                    [ [2,3,1,0] ],
+                    concrete_room.Node.CAT_PHYS_VIS,
+                    [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
+                    [] )
+                offset += width
 
         # add gates special places
 

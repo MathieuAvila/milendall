@@ -34,3 +34,19 @@ class Gate:
         output.write(self.values["from"] +' -> ' + self.values["to"] +
             ' [ label= < ' + label +  ' > ' +
             direction + '] ;\n')
+
+    def get_dimensions(self):
+        """return dimensions used to compute rooms places
+        This must have the following format:
+          {
+            "portal": [x,y],
+            "margin": [x,y],
+            "floor": [ list of axes in the form 'x0', 'x1', 'y0','y1'
+          }
+        "portal" gives the overall portal format in terms of width and height
+        "margin" specifies the requested margins needed to build the portal,
+                 this space is potentially taken but must be filled by security
+        "floor" tells which direction is a floor
+        Should be set by a gate structure
+        """
+        return self.values.private_parameters["geometry"]

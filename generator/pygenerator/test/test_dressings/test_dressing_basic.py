@@ -4,6 +4,7 @@ test rectangular room
 
 import logging
 import sys
+import pathlib
 
 import unittest
 
@@ -34,20 +35,27 @@ class TestDressingBasic(unittest.TestCase):
         parent.add_structure_faces(
             index0,
             [ [0,1,2] ],
-            concrete_room.Node.CAT_PHYS, [concrete_room.Node.HINT_BUILDING], [ 0 ] )
+            concrete_room.Node.CAT_PHYS, [concrete_room.Node.HINT_WALL], [ 0 ] )
         parent.add_structure_faces(
             index0,
             [ [1,2,3] ],
-            concrete_room.Node.CAT_VIS, [concrete_room.Node.HINT_BUILDING], [ 0 ] )
+            concrete_room.Node.CAT_VIS, [concrete_room.Node.HINT_WALL], [ 0 ] )
         parent.add_structure_faces(
             index0,
             [ [2,3,0] ],
-            [concrete_room.Node.CAT_PHYS_VIS], [concrete_room.Node.HINT_BUILDING], [ 0 ] )
+            [concrete_room.Node.CAT_PHYS_VIS], [concrete_room.Node.HINT_WALL], [ 0 ] )
 
         basic1 = basic.DressingBasic()
 
         basic1.generate(concrete)
+        print(parent.dressing)
 
+        path_gen = "/tmp/test_basic/output"
+        pathlib.Path(path_gen).mkdir(parents=True, exist_ok=True)
+
+        concrete.generate_gltf(path_gen)
+
+        concrete_room.preview(path_gen + "/room.gltf", path_gen + "/room_preview.gltf")
 
 if __name__ == '__main__':
     unittest.main()

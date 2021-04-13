@@ -9,6 +9,7 @@ should be sufficient to reconstruct a full one.
 However, it can be dumped to a file to ease debugging of rooms/gates/objects
 """
 
+import logging
 import json
 import itertools
 import struct
@@ -17,6 +18,9 @@ import os
 
 import cgtypes.vec3
 import cgtypes.mat4
+
+logging.basicConfig()
+logging.getLogger().setLevel(logging.INFO)
 
 def get_texture_definition(filename, axes=[ ["x"], [ "y"] ] , scale = 1.0, offset = cgtypes.vec3()):
     """ return an easy to use texture definition based on 4 points (vec3)
@@ -136,7 +140,6 @@ class JSONEncoder(json.JSONEncoder):
             return res
         except AttributeError:
             pass
-        print(o)
         return None
 
 def create_accessor(data_file, gltf, elements):
@@ -156,7 +159,6 @@ def create_accessor(data_file, gltf, elements):
         final_list = list(itertools.chain.from_iterable(elements))
         if len(elements[0]) == 2:
             elem_type = "VEC2"
-            print(elements)
         elif len(elements[0]) == 3:
             elem_type = "VEC3"
             all2 = [elem[2] for elem in elements]
@@ -230,7 +232,7 @@ class ConcreteRoom:
         obj = Node(name, parent, matrix)
         self.objects.append(obj)
         return obj
-    
+
     def get_node(self, name):
         """ accessor to a given node"""
         for obj in self.objects:
@@ -309,6 +311,7 @@ class ConcreteRoom:
         gltf_images = gltf["images"]
         gltf_materials = gltf["materials"]
         gltf_nodes.append( { "children" : roots } )
+        texture_list = {}
         for node in self.objects:
             gltf_node = { "name" : node.name }
             if node.children != []:
@@ -329,12 +332,13 @@ class ConcreteRoom:
                         gltf,
                         points)
 
-                print(faces_block)
-                print(faces_block.keys())
                 # add texture even if it already exist. No additional cost in the engine
-                gltf_images.append({ "uri": faces_block["texture"]["texture"] })
-                gltf_textures.append( { "sampler": 0, "source": len(gltf_images)-1 } )
-                gltf_materials.append(
+                texture = faces_block["texture"]["texture"]
+                texture_id = 0
+                if texture not in texture_list:  # need to insert
+                    gltf_images.append({ "uri": faces_block["texture"]["texture"] })
+                    gltf_textures.append( { "sampler": 0, "source": len(gltf_images)-1 } )
+                    gltf_materials.append(
                         {
                             "pbrMetallicRoughness": {
                                 "baseColorTexture": {
@@ -343,6 +347,8 @@ class ConcreteRoom:
                                 "metallicFactor": 0.0
                             },
                         })
+                    texture_list[texture] = len(gltf_materials)-1
+                texture_id = texture_list[texture]
 
                 # compute indices
                 poly_list = []
@@ -360,9 +366,7 @@ class ConcreteRoom:
                 projs = []
                 for point in faces_block["points"]:
                     point4 = cgtypes.vec4(point.x, point.y, point.z, 0.0)
-                    print("p: ", point4)
                     tex_proj = faces_block["texture"]["proj"] * point4
-                    print(tex_proj)
                     projs.append([tex_proj.x, tex_proj.y])
                 tex_coords_accessor = create_accessor(
                         data_file,
@@ -377,7 +381,7 @@ class ConcreteRoom:
                             },
                             "indices": indices_accessor,
                             "mode": 4,
-                            "material": len(gltf_materials) - 1
+                            "material": texture_id
                         })
             gltf_meshes.append({
                         "primitives": primitives,
@@ -391,8 +395,9 @@ class ConcreteRoom:
             write_file.write(j)
         data_file.close()
 
-def preview(i_file, o_file):
+def preview(i_file, o_file, root_dir = os.path.realpath(os.getcwd() + "/../../../data/")):
     """Build a preview of the result gltf so that it can be viewed with a 3rd party"""
+    logging.info("Generate to: %s, from %s, with root dir for data: %s", o_file, i_file, root_dir)
     with open(i_file, "r") as gltf_file:
         gltf = json.load(gltf_file)
     src_dir = os.path.dirname(i_file)
@@ -400,13 +405,12 @@ def preview(i_file, o_file):
         uri = src_dir + "/" + image["uri"]
         n_uri = os.path.basename(uri)
         dst = src_dir + "/" + n_uri
-        print("Check: original:'" + image["uri"] +
-              "' uri:'" + uri +
-              "' with: '" + n_uri +
-              "' to:'" + dst + "'")
+
+        logging.info("Check: original:'%s' uri:'%s' with '%s' to '%s'",
+                        image["uri"], uri, n_uri, dst)
         if uri != n_uri:
-            print("Copy")
-            shutil.copyfile(uri, dst)
+            logging.info("Copy")
+            shutil.copyfile(root_dir + "/" + image["uri"], dst)
             image["uri"] = n_uri
     j = json.dumps(gltf, indent=1)
     with open(o_file, "w") as write_file:
