@@ -8,7 +8,7 @@
             "name": "clang++-11 - Build and debug active file",
             "type": "cppdbg",
             "request": "launch",
-            "program": "./generator/src/build_bin_mesh",
+            "program": "./milendall",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
