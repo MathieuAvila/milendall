@@ -7,6 +7,10 @@ find_package(Boost 1.40 COMPONENTS program_options REQUIRED)
 
 
 # add the executable
-add_executable(milendall src/main.cxx)
+add_executable(milendall
+        game/src/main.cxx
+        game/src/level.hxx
+        game/src/level.cxx
+        )
 
 target_link_libraries(milendall ${Boost_LIBRARIES} nlohmann_json::nlohmann_json)

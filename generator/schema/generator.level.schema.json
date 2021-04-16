@@ -39,10 +39,6 @@
             }
         },
 
-        "execution_time": {
-            "type": "number",
-            "description": "Duration time in seconds"
-        },
         "section": {
             "type": "string",
             "description": "Section ID to which it belongs"

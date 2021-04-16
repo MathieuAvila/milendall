@@ -3,12 +3,17 @@
         {
             "type": "cppbuild",
             "label": "C/C++: clang++-11 build active file",
-            "command": "/usr/bin/clang++-11",
+            "command": "cmake",
             "args": [
-                "-g",
-                "${file}",
-                "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
+                "--build",
+                "./build",
+                "--config",
+                "Debug",
+                "--target",
+                "milendall",
+                "--",
+                "-j",
+                "6"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
