@@ -1,5 +1,5 @@
 {
-    "$schema": "../../../../schema/level.schema.json",
+    "$schema": "../../../../schema/generator.level.schema.json",
 
     "name" : [  { "lang": "en", "value" : "Simple Level"} ],
     "section": "samples",
@@ -28,7 +28,7 @@
         {
             "room_id" : "room2",
             "name" : [ { "lang": "en", "value" : "heaven"}  ],
-            "triggers" : [ { "trigger_id" : "open2", "type":"walk-on" } 
+            "triggers" : [ { "trigger_id" : "open2", "type":"walk-on" }
             ]
         },
         {

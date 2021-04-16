@@ -32,7 +32,7 @@ class Level:
 
         self.selector = _selector
 
-        with open("../../schema/level.schema.json", "r") as read_schema_file:
+        with open("../../schema/generator.level.schema.json", "r") as read_schema_file:
             schema = json.load(read_schema_file)
 
         with open(json_file, "r") as read_file:
