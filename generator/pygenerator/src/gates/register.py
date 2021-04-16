@@ -7,4 +7,4 @@ gateTypes = {}
 def register_gate_type(obj):
     """Registering a gate"""
     gateTypes[obj.get_name()] = obj
-    logging.info("Registering gate %s", obj.get_name())
+    logging.debug("Registering gate %s", obj.get_name())

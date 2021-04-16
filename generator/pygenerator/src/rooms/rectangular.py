@@ -12,7 +12,7 @@ import cgtypes.mat4
 from .register import register_room_type
 
 def append_wall(wall_list, width, start_height):
-    """helper to add a wall to a wall list"""
+    """Helper: to add a wall to a wall list"""
     if len(wall_list) == 0:
         wall_list.append({"width":width, "start":start_height})
     elif wall_list[-1]["start"] != start_height:
@@ -21,6 +21,7 @@ def append_wall(wall_list, width, start_height):
         wall_list[-1]["width"] += width
 
 def get_sum_walls_width(wall_list):
+    """Helper: Get the sum of all width of the walls"""
     return sum([ w["width"] for w in wall_list ])
 
 class RectangularRoom(RoomStructure):
@@ -32,6 +33,7 @@ class RectangularRoom(RoomStructure):
         self._element = _element
 
     def get_instance(self, room:None):
+        """Return an instante"""
         return RectangularRoom(room)
 
     def check_fit(self):
@@ -128,10 +130,15 @@ class RectangularRoom(RoomStructure):
                 # take height into account
                 minimum_gate_height = max(minimum_gate_height, dims["portal"][1]+dims["margin"][1])
 
-                append_wall(wall_list, gate_def["pre"] + dims["margin"][0], 0) # adding pre_gate
-                gates_list.append({"gate":gate, "offset":get_sum_walls_width(wall_list)}) # todo : 0 to be set correctly
-                append_wall(wall_list, dims["portal"][0], dims["portal"][1]) # adding gate itself
-                append_wall(wall_list, gate_def["post"] + dims["margin"][0], 0) # adding post-gate
+                # adding pre_gate
+                # todo : 0 to be set correctly
+                append_wall(wall_list, gate_def["pre"] + dims["margin"][0], 0)
+                # at this point, add the gate reference
+                gates_list.append({"gate":gate, "offset":get_sum_walls_width(wall_list)})
+                # adding gate itself
+                append_wall(wall_list, dims["portal"][0], dims["portal"][1])
+                # adding post-gate
+                append_wall(wall_list, gate_def["post"] + dims["margin"][0], 0)
 
             append_wall(wall_list, wall_pre_post[i][1], 0)
             wall_required_size.append(get_sum_walls_width(wall_list))

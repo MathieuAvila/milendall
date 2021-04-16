@@ -67,6 +67,10 @@ class TestLevel(unittest.TestCase):
         loaded_level.instantiation()
         loaded_level.dressing("/tmp/test_dressing")
 
+    def test_finalize(self):
+        """Test the finalize"""
+        # todo: for real
+
 
 if __name__ == '__main__':
     unittest.main()

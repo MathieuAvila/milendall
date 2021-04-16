@@ -10,4 +10,4 @@ modules = [ k[:-3] for k in files if '.py' in k]
 for _m in modules:
     importlib.import_module("gates." + _m)
 
-logging.info("Gates structure modules are: %s", str(modules))
+#logging.info("Gates structure modules are: %s", str(modules))

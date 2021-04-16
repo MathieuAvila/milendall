@@ -24,7 +24,7 @@ class DressingBasic(Dressing):
     def instantiate(self):
         """ force set values:
         - set default values to dressing"""
-        self.element.values.private_dressing={}
+        self.element.values.dressing_private={}
 
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""
@@ -41,7 +41,6 @@ class DressingBasic(Dressing):
                 list_faces = obj.get_visual_face([kind_texture])
                 logging.info("kind: %s, texture:%s , len:%i",
                             kind_texture, texture, len(list_faces))
-                logging.info(list_faces)
                 if len(list_faces) != 0:
                     for faces in list_faces:
                         obj.add_dressing_faces(

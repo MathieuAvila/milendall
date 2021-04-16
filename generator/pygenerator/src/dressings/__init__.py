@@ -1,6 +1,6 @@
 """ import all dressing type"""
 
-import logging
+#import logging
 import os
 import importlib
 
@@ -10,4 +10,4 @@ modules = [ k[:-3] for k in files if '.py' in k]
 for _m in modules:
     importlib.import_module("dressings." + _m)
 
-logging.info("Dressing modules are: %s", str(modules))
+#logging.info("Dressing modules are: %s", str(modules))

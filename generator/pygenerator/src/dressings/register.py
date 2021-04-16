@@ -7,4 +7,4 @@ dressingTypes = {}
 def register_dressing_type(obj):
     """Registering a dressing"""
     dressingTypes[obj.get_name()] = obj
-    logging.info("Registering dressing %s", obj.get_name())
+    logging.debug("Registering dressing %s", obj.get_name())

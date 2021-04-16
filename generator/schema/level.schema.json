@@ -66,7 +66,7 @@
                         "description": "The general class name of the dressing. Example 'raw'"
                     },
                     "structure_parameters" : { "type": "object", "description": "general parameters at instantiation. Content depends on class" },
-                    "structure_private" :  { "type": "object", "description": "private parameters at instantiation. Content depends on class" },
+                    "structure_private" : { "type": "object", "description": "general parameters at instantiation. Content depends on class" },
                     "dressing_parameters" : { "type": "object", "description": "general parameters at instantiation. Content depends on class" },
                     "dressing_private" :  { "type": "object", "description": "private parameters at instantiation. Content depends on class" },
                     "connect" :  {
@@ -154,7 +154,7 @@
                         "description": "The general class name of the dressing. Example 'raw'"
                     },
                     "structure_parameters" : { "type": "object", "description": "general parameters at instantiation. Content depends on class" },
-                    "structure_private" :  { "type": "object", "description": "private parameters at instantiation. Content depends on class" },
+                    "structure_private" : { "type": "object", "description": "general parameters at instantiation. Content depends on class" },
                     "dressing_parameters" : { "type": "object", "description": "general parameters at instantiation. Content depends on class" },
                     "dressing_private" :  { "type": "object", "description": "private parameters at instantiation. Content depends on class" },
 

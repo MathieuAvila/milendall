@@ -87,9 +87,9 @@ class Level:
             2. gather the gate lists with their format
             3. Check it is allowed by the room type
             4. Request room structure coherency"""
-        logging.info("Check coherency")
+        logging.debug("Structure check coherency")
         for _gate in self.values.gates:
-            logging.info("Check gate: %s", _gate.values.gate_id)
+            logging.debug("Check gate: %s", _gate.values.gate_id)
 
             # append gate to both rooms
             room_from = self.get_room(_gate.values.connect[0])
@@ -104,7 +104,7 @@ class Level:
                 _gate.structure.check_structure()
 
         for _room in self.values.rooms:
-            logging.info("Check room: %s", _room.values.room_id)
+            logging.debug("Check room: %s", _room.values.room_id)
             if _room.values.structure_class is not None:
                 _room.structure = self.selector.get_structure_from_name(
                     _room.values.structure_class,
@@ -114,6 +114,21 @@ class Level:
     def dressing_check_coherency(self):
         """ Sanity check that content is viable, at the structure level
             Thing can get insane if user has messed up with content in-between"""
+        logging.info("Dressing check coherency")
+        for _gate in self.values.gates:
+            logging.debug("Check gate: %s", _gate.values.gate_id)
+
+            if _gate.values.dressing_class is not None:
+                _gate.dressing = self.selector.get_dressing_from_name(
+                    _gate.values.dressing_class,
+                    _gate)
+
+        for _room in self.values.rooms:
+            logging.debug("Check room: %s", _room.values.room_id)
+            if _room.values.dressing_class is not None:
+                _room.dressing = self.selector.get_dressing_from_name(
+                    _room.values.dressing_class,
+                    _room)
 
     def _element_instantiation(self, _element):
         """ 1. Sort element types that matches constraints: list of gates with format of each.
@@ -209,12 +224,12 @@ class Level:
     def element_structure(self, _id):
         """ Perform structure only on one room"""
 
-    def dressing(self, output_dir):
+    def dressing(self, output_dir, preview=False):
         """ Perform final dressing on every room and gate"""
         for _element in self.values.rooms:
-            self.element_dressing(output_dir, _element)
+            self.element_dressing(output_dir, _element, preview)
 
-    def element_dressing(self, output_dir, element):
+    def element_dressing(self, output_dir, element, preview=False):
         """ Perform final dressing one element"""
 
         concrete = concrete_room.ConcreteRoom()
@@ -223,6 +238,8 @@ class Level:
         room_path = output_dir + "/" + element.values.room_id
         pathlib.Path(room_path).mkdir(parents=True, exist_ok=True)
         concrete.generate_gltf(room_path)
+        if preview:
+            concrete_room.preview(room_path + "/room.gltf", room_path + "/room_preview.gltf")
 
     def objects(self):
         """ Place objects in room acording to specs"""
@@ -230,8 +247,25 @@ class Level:
     def room_objects(self, room_id):
         """ Place objects in one room acording to specs"""
 
-    def finalize(self):
-        """ Finalize all level"""
+    def finalize(self, output_directory, preview=False):
+        """ Finalize level, generate final output data"""
+        self.dressing_check_coherency()
+        pathlib.Path(output_directory).mkdir(parents=True, exist_ok=True)
+        level_file = output_directory + "/level.json"
+        level_content = {
+                "version": "1.0",
+                "rooms" : [],
+                "section" : "",
+                "game_type" : {}
+            }
+        level_content["game_type"] = self.values.game_type
+        level_content["section"] = self.values.section
+        for _element in self.values.rooms:
+            level_content["rooms"].append(_element.get_id())
+            self.element_dressing(output_directory, _element, preview)
+        level_json = json.dumps(level_content, indent=1)
+        with open(level_file, "w") as output_file:
+            output_file.write(level_json)
 
     def room_finalize(self, room_id):
         """ Finalize only one room"""

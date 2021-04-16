@@ -48,27 +48,6 @@ def my_help():
     print("   Output: level.graph")
     print("   Output: level.png")
     print()
-    print("generator.py level-structure       -i level-directory")
-    print("   Instantiate rooms structure based on level file")
-    print("   Input: level-instance.json")
-    print("   Output: room-$roomid.json (for each room)")
-    print()
-    print("generator.py room-structure        -i level-directory -r room-id")
-    print("   Instantiate a given room structure based on level file and room-id")
-    print("   This will replace all previously chosen parameters for the given room")
-    print("   Input: level-instance.json      for room-id")
-    print("   Output: room-$roomid.json       for each room")
-    print()
-    print("generator.py level-dressing        -i level-directory")
-    print("   Perform dressing for all rooms")
-    print("   Input: room-$roomid.json")
-    print("   Output: roomfinal-$roomid.json (for each room)")
-    print()
-    print("generator.py room-dressing        -i level-directory -r room-id")
-    print("   Perform dressing for a given room")
-    print("   Input: room-$roomid.json")
-    print("   Output: roomdress-$roomid.json (for each room)")
-    print()
     print("generator.py level-objects        -i level-directory")
     print("   Fill objects for all rooms")
     print("   Input: roomdress-$roomid.json")
@@ -82,7 +61,7 @@ def my_help():
     print("generator.py level-finalize        -i level-directory")
     print("   Generate final format. This generates gltf format files for rooms"
           " with extra-metadata")
-    print("   If the dressing has not  been done, work at the structure level (ugly)")
+    print("   If the dressing has not been done, work at the structure level (ugly)")
     print("   Input: roomdress-$roomid.json")
     print("   Output: roomfinal-$roomid.json (for each room)")
     print()
@@ -92,15 +71,23 @@ def my_help():
     print("   This is helpful to check that structure is fine before choosing dressing.")
     sys.exit(0)
 
-def check_level_user(directory):
-    """ Get user level, check it loads and return it"""
+def check_level(directory, filename):
+    """ Get level, check it loads and return it"""
     if directory == '':
-        print("Error, expected directory with level-user.json file. See --help for info.")
+        print("Error, expected directory. See --help for info.")
         sys.exit(1)
-    if not "level-user.json" in os.listdir(directory):
-        print("Error, expected directory with level-user.json file. See --help for info.")
+    if not filename in os.listdir(directory):
+        print("Error, expected directory with ", filename, "file. See --help for info.")
         sys.exit(1)
-    return level.Level(directory+"/level-user.json", selector_regular.SelectorRegular())
+    return level.Level(directory+"/" + filename, selector_regular.SelectorRegular())
+
+def check_level_user(directory):
+    """Get a user defined level"""
+    return check_level(directory,"level-user.json")
+
+def check_level_instance(directory):
+    """Get a user instanced level"""
+    return check_level(directory,"level-instance.json")
 
 def main(argv):
     """
@@ -123,10 +110,8 @@ def main(argv):
             logging.getLogger().setLevel(logging.DEBUG)
             logging.debug("Set verbose to debug")
 
-    print(args)
-    print(opts)
-    print('Input directory is "%s"' % directory)
-    print('Selected room is "%s"' % room)
+    #print('Input directory is "%s"' % directory)
+    #print('Selected room is "%s"' % room)
 
     if len(args) != 1:
         print("Error, expected action. See --help for info.")
@@ -142,7 +127,11 @@ def main(argv):
     elif action == "level-instantiation":
         loaded_level = check_level_user(directory)
         loaded_level.instantiation()
-        print(loaded_level.dump_json() + "\n")
+        loaded_level.save(directory + "/level-instance.json")
+        #print(loaded_level.dump_json() + "\n")
+    elif action == "level-finalize":
+        loaded_level = check_level_instance(directory)
+        loaded_level.finalize(directory, True)
     else:
         print("Error, action '" + action + "' unknown. See --help for info.")
         sys.exit(1)
