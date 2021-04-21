@@ -3,6 +3,6 @@
 class Level
 {
     public:
-        Level(FileLibrary::UriReference& ref);
+        Level(FileLibrary::UriReference ref);
 };
 

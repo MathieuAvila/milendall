@@ -1,6 +1,6 @@
 #include "level.hxx"
 
-Level::Level(FileLibrary::UriReference& ref)
+Level::Level(FileLibrary::UriReference ref)
 {
 
 }

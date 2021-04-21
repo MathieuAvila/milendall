@@ -1,5 +1,5 @@
 #include <string>
-#include <vector>
+#include <list>
 #include <memory>
 
 /* A raw memory container. To be used with *_ptr for auto mgmt */
@@ -9,12 +9,11 @@ class FileContent
 
     /* Initialize. Ownership is passed to FileContent, content must NOT be released after call.
     */
-    FileContent(void * content) : memory_block(content) {};
-    ~FileContent() { free(memory_block);};
-
-    private:
+    FileContent(int _size, void * content) : memory_block(content), size(_size) {};
+    ~FileContent() { if (memory_block) free(memory_block);};
 
     void* memory_block;
+    unsigned int size;
 };
 
 /** An abstraction of filesystem, that masks the fact that things are
@@ -34,12 +33,21 @@ class FileLibrary
         public:
 
         UriReference(FileLibrary*, std::string);
+        UriReference(UriReference&& ref);
+        UriReference();
 
-        std::vector<UriReference> list_directory();
+        std::list<UriReference> listDirectory();
         bool is_directory();
 
-        std::shared_ptr<FileContent> read_content();
+        std::shared_ptr<FileContent> readContent();
 
+        /** from current position, get an object to a sub-path.
+         * If this starts with "/", original path is removed
+         */
+        UriReference getSubPath(std::string);
+
+        /** for Ut only */
+        std::string getPath();
     };
 
 
@@ -52,12 +60,11 @@ class FileLibrary
     /** Append a specific zip file and overlay it. */
     void addZipFiles(std::string);
 
-    /* get a raw content */
-    std::shared_ptr<FileContent> readContent();
-
-    std::shared_ptr<FileLibrary::UriReference> getRoot();
+    /* get an instance to root */
+    FileLibrary::UriReference getRoot();
 
     private:
 
-    /* TODO */
+    std::list<std::string> root_list;
+
 };
