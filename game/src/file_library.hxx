@@ -1,4 +1,5 @@
 #include <string>
+#include <vector>
 #include <list>
 #include <memory>
 
@@ -36,7 +37,7 @@ class FileLibrary
         UriReference(UriReference&& ref);
         UriReference();
 
-        std::list<UriReference> listDirectory();
+        std::vector<UriReference> listDirectory();
         bool is_directory();
 
         std::shared_ptr<FileContent> readContent();
@@ -45,6 +46,11 @@ class FileLibrary
          * If this starts with "/", original path is removed
          */
         UriReference getSubPath(std::string);
+
+        /** from current position, get an object to the original directory.
+         * basically: remove last path element
+         */
+        UriReference getDirPath();
 
         /** for Ut only */
         std::string getPath();

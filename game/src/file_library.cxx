@@ -25,13 +25,20 @@ FileLibrary::UriReference::UriReference(FileLibrary* fl, std::string _path)
    std::cout << path << std::endl;
 }
 
-std::list<FileLibrary::UriReference> FileLibrary::UriReference::listDirectory()
+FileLibrary::UriReference FileLibrary::UriReference::getDirPath()
 {
-   std::list<FileLibrary::UriReference> result;
+   auto ppath = std::filesystem::path(path).parent_path();
+   return UriReference(master, ppath);
+}
+
+std::vector<FileLibrary::UriReference> FileLibrary::UriReference::listDirectory()
+{
+   std::vector<FileLibrary::UriReference> result;
    for (auto dir_path: master->root_list) {
       for (const auto & entry : std::filesystem::directory_iterator(dir_path + "/" + path)) {
-         auto file_path = entry.path();
-         result.push_back(UriReference(master, file_path));
+         std::string file_path = entry.path();
+         auto final_path = file_path.substr(dir_path.length());
+         result.push_back(UriReference(master, final_path));
       }
    }
    /** todo: add ZIP contents */
