@@ -3,6 +3,9 @@
 #include <list>
 #include <memory>
 
+#ifndef FILE_LIBRAY_HXX
+#define FILE_LIBRAY_HXX
+
 /* A raw memory container. To be used with *_ptr for auto mgmt */
 class FileContent
 {
@@ -40,7 +43,11 @@ class FileLibrary
         std::vector<UriReference> listDirectory();
         bool is_directory();
 
+        /** read a binary content */
         std::shared_ptr<FileContent> readContent();
+
+        /** read any content that looks like a string, i.e: a JSON file */
+        std::string readStringContent();
 
         /** from current position, get an object to a sub-path.
          * If this starts with "/", original path is removed
@@ -74,3 +81,5 @@ class FileLibrary
     std::list<std::string> root_list;
 
 };
+
+#endif

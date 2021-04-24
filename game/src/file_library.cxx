@@ -74,6 +74,26 @@ std::shared_ptr<FileContent> FileLibrary::UriReference::readContent()
    return std::make_shared<FileContent>(0, nullptr);
 }
 
+std::string FileLibrary::UriReference::readStringContent()
+{
+   for (auto dir_path: master->root_list) {
+      // Get first filename that matches requested name
+      auto final_path = dir_path + path;
+      if (std::filesystem::is_regular_file(final_path)) {
+         std::string str;
+         std::ifstream t(final_path);
+         t.seekg(0, std::ios::end);
+         str.reserve(t.tellg());
+         t.seekg(0, std::ios::beg);
+         str.assign((std::istreambuf_iterator<char>(t)),
+            std::istreambuf_iterator<char>());
+         return str;
+      }
+   }
+   std::cout << "file not found: " << path << std::endl;
+   return "";
+}
+
 FileLibrary::FileLibrary()
 {
 };
