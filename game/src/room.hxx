@@ -1,8 +1,10 @@
 #ifndef ROOM_HXX
 #define ROOM_HXX
 
-#include "file_library.hxx"
+#include <memory>
 
+#include "file_library.hxx"
+#include "gltf_model.hxx"
 
 class Room
 {
@@ -13,6 +15,7 @@ class Room
 
     private:
 
+        std::unique_ptr<GltfModel> model;
 };
 
 #endif

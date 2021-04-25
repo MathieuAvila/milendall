@@ -1,8 +1,11 @@
 #ifndef GLTF_FRAME_HXX
 #define GLTF_FRAME_HXX
 
-#include "file_library.hxx"
+#include <memory>
 #include <nlohmann/json.hpp>
+
+#include "gltf_data_accessor_iface.hxx"
+#include "gltf_material_accessor_iface.hxx"
 
 class GltfFrame
 {
@@ -13,7 +16,13 @@ class GltfFrame
 
     public:
 
-    GltfFrame(nlohmann::json& json);
+    GltfFrame(
+        nlohmann::json& json,
+        GltfDataAccessorIFace* data_accessor,
+        GltfMaterialAccessorIFace* material_accessor
+        );
+
+    virtual ~GltfFrame();
 
 };
 

@@ -6,19 +6,28 @@
 #include "file_library.hxx"
 #include "gltf_frame.hxx"
 
+class GltfDataAccessorIFace;
+class GltfMaterialAccessorIFace;
+
+
+/** @brief A GLTF model represents a GLTF file. Application-specific data is read and interpreted
+ * through subclassable */
 class GltfModel
 {
     protected:
 
-        /** to be subclassed in case of application specific data
+        /** @brief to be subclassed in case of application specific data
          * that needs specific handling (i.e: rooms) */
-        std::shared_ptr<GltfFrame> instantiateFrame(nlohmann::json& json);
+        std::shared_ptr<GltfFrame> instantiateFrame(
+            nlohmann::json& json,
+            GltfDataAccessorIFace* data_accessor,
+            GltfMaterialAccessorIFace* material_accessor);
 
-        /** To be derived in case there is private data */
+        /** @brief  To be derived in case there is private data */
         virtual void parseApplicationData(nlohmann::json& json);
 
         /**
-         * Holds the table of objects, in file order for easy retrieval of parent/children
+         * @brief  Holds the table of objects, in file order for easy retrieval of parent/children
          * relationships
          */
         std::vector<std::shared_ptr<GltfFrame>> frameTable;
@@ -26,7 +35,7 @@ class GltfModel
     public:
 
         GltfModel(FileLibrary::UriReference& ref);
-
+        virtual ~GltfModel();
 };
 
 #endif
