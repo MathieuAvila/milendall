@@ -38,29 +38,30 @@ class FileLibrary
 
         UriReference(FileLibrary*, std::string);
         UriReference(UriReference&& ref);
+        UriReference(const UriReference&) = default;
         UriReference();
 
-        std::vector<UriReference> listDirectory();
-        bool is_directory();
+        std::vector<UriReference> listDirectory() const;
+        bool is_directory() const;
 
         /** read a binary content */
-        std::shared_ptr<FileContent> readContent();
+        std::shared_ptr<FileContent> readContent() const;
 
         /** read any content that looks like a string, i.e: a JSON file */
-        std::string readStringContent();
+        std::string readStringContent() const;
 
         /** from current position, get an object to a sub-path.
          * If this starts with "/", original path is removed
          */
-        UriReference getSubPath(std::string);
+        UriReference getSubPath(std::string) const;
 
         /** from current position, get an object to the original directory.
          * basically: remove last path element
          */
-        UriReference getDirPath();
+        UriReference getDirPath() const;
 
         /** for Ut only */
-        std::string getPath();
+        std::string getPath() const;
     };
 
 

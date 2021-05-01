@@ -24,7 +24,9 @@ add_library(game_lib STATIC
   game/src/gltf_model.cxx
   game/src/gltf_material_accessor_iface.hxx
   game/src/gltf_data_accessor_iface.hxx
-  game/src/gltf_model.cxx
+  game/src/gltf_exception.hxx
+  game/src/gltf_table_accessor.hxx
+  game/src/gltf_table_accessor.cxx
   game/src/file_library.hxx
   game/src/file_library.cxx
 )
@@ -40,6 +42,7 @@ add_executable(game_test
   game/test/unit_level.cpp
   game/test/unit_main.cpp
   game/test/unit_file_library.cpp
+  game/test/unit_gltf_table_accessor.cpp
   catch2/catch_amalgamated.cpp
   catch2/catch_amalgamated.hpp
   )

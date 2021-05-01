@@ -34,7 +34,8 @@ class GltfModel
 
     public:
 
-        GltfModel(FileLibrary::UriReference& ref);
+        GltfModel() = delete;
+        GltfModel(const FileLibrary::UriReference ref);
         virtual ~GltfModel();
 };
 

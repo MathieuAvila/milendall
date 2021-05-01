@@ -13,11 +13,18 @@ class GltfFrame
 
     virtual void parseApplicationData(nlohmann::json& json);
 
-
     public:
 
+    /** @brief Loads a GLTF frame object
+     * @param json the full JSON file
+     * @param index index of the object to load
+     * @param data_accessor helper to access data efficiently
+     * @param material_accessor helper to load a texture
+     * @note may throw a GltfException
+     */
     GltfFrame(
         nlohmann::json& json,
+        int index,
         GltfDataAccessorIFace* data_accessor,
         GltfMaterialAccessorIFace* material_accessor
         );

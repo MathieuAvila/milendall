@@ -16,7 +16,7 @@ class Level
 
     private:
 
-        std::list<std::shared_ptr<Room>> rooms;
+        std::vector<std::shared_ptr<Room>> rooms;
 };
 
 #endif

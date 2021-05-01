@@ -17,10 +17,10 @@ class GltfDataAccessorIFace
     public:
 
     /** access a given Id, return the first value of the data block.
-     * caller doesn't hold ownership. It is destroyed when Accessor is destroyed
-     * after all its references have been released.
+     * This block may be a copy or original data.
+     * Internal data should not be accessed after loading has ending.
      */
-    virtual const uint8_t* accessId(uint32_t index) = 0;
+    virtual std::shared_ptr<uint8_t*> accessId(uint32_t index) = 0;
     virtual ~GltfDataAccessorIFace() = 0;
 };
 

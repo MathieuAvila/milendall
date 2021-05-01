@@ -4,7 +4,7 @@
 #include <fstream>
 #include <vector>
 
-std::string FileLibrary::UriReference::getPath()
+std::string FileLibrary::UriReference::getPath() const
 {
    return path;
 }
@@ -25,13 +25,13 @@ FileLibrary::UriReference::UriReference(FileLibrary* fl, std::string _path)
    std::cout << path << std::endl;
 }
 
-FileLibrary::UriReference FileLibrary::UriReference::getDirPath()
+FileLibrary::UriReference FileLibrary::UriReference::getDirPath() const
 {
    auto ppath = std::filesystem::path(path).parent_path();
    return UriReference(master, ppath);
 }
 
-std::vector<FileLibrary::UriReference> FileLibrary::UriReference::listDirectory()
+std::vector<FileLibrary::UriReference> FileLibrary::UriReference::listDirectory() const
 {
    std::vector<FileLibrary::UriReference> result;
    for (auto dir_path: master->root_list) {
@@ -45,19 +45,19 @@ std::vector<FileLibrary::UriReference> FileLibrary::UriReference::listDirectory(
    return result;
 }
 
-FileLibrary::UriReference FileLibrary::UriReference::getSubPath(std::string sub_path)
+FileLibrary::UriReference FileLibrary::UriReference::getSubPath(std::string sub_path) const
 {
    if ((sub_path.length() > 0) && (sub_path[0] == '/'))
       return UriReference(master, sub_path);
    return FileLibrary::UriReference(master, path + "/" + sub_path);
 }
 
-bool FileLibrary::UriReference::is_directory()
+bool FileLibrary::UriReference::is_directory() const
 {
    return true;
 }
 
-std::shared_ptr<FileContent> FileLibrary::UriReference::readContent()
+std::shared_ptr<FileContent> FileLibrary::UriReference::readContent() const
 {
    for (auto dir_path: master->root_list) {
       // Get first filename that matches requested name
@@ -74,7 +74,7 @@ std::shared_ptr<FileContent> FileLibrary::UriReference::readContent()
    return std::make_shared<FileContent>(0, nullptr);
 }
 
-std::string FileLibrary::UriReference::readStringContent()
+std::string FileLibrary::UriReference::readStringContent() const
 {
    for (auto dir_path: master->root_list) {
       // Get first filename that matches requested name
