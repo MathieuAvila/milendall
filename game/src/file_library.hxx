@@ -20,6 +20,8 @@ class FileContent
     unsigned int size;
 };
 
+using FileContentPtr = std::shared_ptr<FileContent>;
+
 /** An abstraction of filesystem, that masks the fact that things are
  * in real FS roots or embedded zipped files.
  * ZIP files are expected to have a namespaced root directory to avoid collision.
@@ -45,7 +47,7 @@ class FileLibrary
         bool is_directory() const;
 
         /** read a binary content */
-        std::shared_ptr<FileContent> readContent() const;
+        FileContentPtr readContent() const;
 
         /** read any content that looks like a string, i.e: a JSON file */
         std::string readStringContent() const;
