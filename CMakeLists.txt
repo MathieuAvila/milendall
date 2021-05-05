@@ -24,6 +24,8 @@ add_library(game_lib STATIC
   game/src/gltf_model.cxx
   game/src/gltf_material_accessor_iface.hxx
   game/src/gltf_data_accessor_iface.hxx
+  game/src/gltf_data_accessor.hxx
+  game/src/gltf_data_accessor.cxx
   game/src/gltf_exception.hxx
   game/src/gltf_table_accessor.hxx
   game/src/gltf_table_accessor.cxx
@@ -38,16 +40,17 @@ add_executable(milendall
 
 target_link_libraries(milendall ${Boost_LIBRARIES} game_lib nlohmann_json::nlohmann_json)
 
-add_executable(game_test
+add_executable(unit_test
   game/test/unit_level.cpp
   game/test/unit_main.cpp
   game/test/unit_file_library.cpp
   game/test/unit_gltf_table_accessor.cpp
+  game/test/unit_gltf_data_accessor.cpp
   catch2/catch_amalgamated.cpp
   catch2/catch_amalgamated.hpp
   )
 
-target_link_libraries(game_test ${Boost_LIBRARIES} game_lib nlohmann_json::nlohmann_json)
+target_link_libraries(unit_test ${Boost_LIBRARIES} game_lib nlohmann_json::nlohmann_json)
 
-target_include_directories(game_test PRIVATE catch2/ )
-target_include_directories(game_test PRIVATE game/src/ )
+target_include_directories(unit_test PRIVATE catch2/ )
+target_include_directories(unit_test PRIVATE game/src/ )

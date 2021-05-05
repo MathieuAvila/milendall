@@ -62,6 +62,7 @@ std::shared_ptr<FileContent> FileLibrary::UriReference::readContent() const
    for (auto dir_path: master->root_list) {
       // Get first filename that matches requested name
       auto final_path = dir_path + path;
+
       if (std::filesystem::is_regular_file(final_path)) {
          auto file_size = std::filesystem::file_size(final_path);
          FILE *file = fopen(final_path.c_str(), "rb");
@@ -79,6 +80,8 @@ std::string FileLibrary::UriReference::readStringContent() const
    for (auto dir_path: master->root_list) {
       // Get first filename that matches requested name
       auto final_path = dir_path + path;
+      std::cout << "Try file: " << final_path << std::endl;
+
       if (std::filesystem::is_regular_file(final_path)) {
          std::string str;
          std::ifstream t(final_path);

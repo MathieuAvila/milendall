@@ -10,7 +10,8 @@
 
 using namespace nlohmann;
 
-TEST_CASE( "Get valid values", "[gltf]" ) {
+TEST_CASE( "Get table values", "[gltf]" ) {
+
 
     auto fl = FileLibrary();
     std::string pwd = std::filesystem::current_path();
@@ -20,6 +21,8 @@ TEST_CASE( "Get valid values", "[gltf]" ) {
     auto json_element = json::parse(raw_json.c_str());
     std::cout << json_element << std::endl;
 
+SECTION("valid")
+{
     auto get_room_0 = gltfGetElementByIndex(json_element, "rooms", 0);
     std::cout << get_room_0 << std::endl;
     REQUIRE( to_string(get_room_0) == "{\"r\":1}" );
@@ -37,17 +40,32 @@ TEST_CASE( "Get valid values", "[gltf]" ) {
     REQUIRE( to_string(get_gate_2) == "{\"g\":3}" );
 }
 
-TEST_CASE( "Get invalid values", "[gltf]" ) {
+SECTION( "invalid", "[gltf]" ) {
 
+    REQUIRE_THROWS( gltfGetElementByIndex(json_element, "no_element", 0));
+    REQUIRE_THROWS( gltfGetElementByIndex(json_element, "rooms", 10));
+}
+}
+
+TEST_CASE( "fields op", "[gltf]" )
+{
     auto fl = FileLibrary();
     std::string pwd = std::filesystem::current_path();
     fl.addRootFilesystem(pwd + "/../game/test/sample/json");
     auto ref = fl.getRoot().getSubPath("simple.json");
     auto raw_json = ref.readStringContent();
     auto json_element = json::parse(raw_json.c_str());
-    std::cout << json_element << std::endl;
 
-    REQUIRE_THROWS( gltfGetElementByIndex(json_element, "no_element", 0));
+SECTION( "Get valid field" ) {
 
-    REQUIRE_THROWS( gltfGetElementByIndex(json_element, "rooms", 10));
+
+    REQUIRE(to_string(gltfGetElementByName(json_element, "rooms"))
+     == "[{\"r\":1},{\"r\":2},{\"r\":3}]" );
+}
+SECTION( "Get invalid field" ) {
+
+    REQUIRE(to_string(gltfGetElementByName(json_element, "rooms"))
+     == "[{\"r\":1},{\"r\":2},{\"r\":3}]" );
+}
+
 }

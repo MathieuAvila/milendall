@@ -9,4 +9,9 @@
  */
 nlohmann::json& gltfGetElementByIndex(nlohmann::json&, std::string element, int index);
 
+/**
+ * Helper function to return an element given its name. Check validity and throw if not present
+ */
+nlohmann::json& gltfGetElementByName(nlohmann::json&, std::string element);
+
 #endif
