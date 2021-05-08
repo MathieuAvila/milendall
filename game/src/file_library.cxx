@@ -1,8 +1,12 @@
-#include "file_library.hxx"
 #include <filesystem>
 #include <iostream>
 #include <fstream>
 #include <vector>
+
+#include "common.hxx"
+#include "file_library.hxx"
+
+static auto console = spdlog::stdout_color_mt("library");
 
 std::string FileLibrary::UriReference::getPath() const
 {
@@ -22,7 +26,7 @@ FileLibrary::UriReference::UriReference(FileLibrary* fl, std::string _path)
    if ((path.length() > 1) && (path[path.length()-1] == '/'))
       path = path.substr(0, path.length()-1);
    master = fl;
-   std::cout << path << std::endl;
+   console->debug("Create path: {}", path);
 }
 
 FileLibrary::UriReference FileLibrary::UriReference::getDirPath() const
@@ -59,30 +63,33 @@ bool FileLibrary::UriReference::is_directory() const
 
 std::shared_ptr<FileContent> FileLibrary::UriReference::readContent() const
 {
+   console->debug("Tenatatively open file", path);
    for (auto dir_path: master->root_list) {
       // Get first filename that matches requested name
       auto final_path = dir_path + path;
-
+      console->debug("Check if file {} is a match", final_path);
       if (std::filesystem::is_regular_file(final_path)) {
+         console->debug("Is a match, now try to open", final_path);
          auto file_size = std::filesystem::file_size(final_path);
          FILE *file = fopen(final_path.c_str(), "rb");
          void* memory = malloc(file_size);
          fread(memory, file_size, 1, file);
          return std::make_shared<FileContent>(file_size, memory);
       }
-
    }
+   console->error("file not found: ", path);
    return std::make_shared<FileContent>(0, nullptr);
 }
 
 std::string FileLibrary::UriReference::readStringContent() const
 {
+   console->debug("Tenatatively open file", path);
    for (auto dir_path: master->root_list) {
       // Get first filename that matches requested name
       auto final_path = dir_path + path;
-      std::cout << "Try file: " << final_path << std::endl;
-
+      console->debug("Check if file {} is a match", final_path);
       if (std::filesystem::is_regular_file(final_path)) {
+         console->debug("Is a match, now try to open", final_path);
          std::string str;
          std::ifstream t(final_path);
          t.seekg(0, std::ios::end);
@@ -93,7 +100,7 @@ std::string FileLibrary::UriReference::readStringContent() const
          return str;
       }
    }
-   std::cout << "file not found: " << path << std::endl;
+   console->error("file not found: ", path);
    return "";
 }
 
