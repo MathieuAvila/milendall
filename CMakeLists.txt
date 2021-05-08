@@ -14,6 +14,7 @@ SET (CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
 
 
 add_library(game_lib STATIC
+  game/src/common.hxx
   game/src/level.hxx
   game/src/level.cxx
   game/src/room.hxx
