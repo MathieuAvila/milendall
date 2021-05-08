@@ -53,7 +53,7 @@
             "items": {
                 "type": "object",
                 "properties": {
-                    "id": {
+                    "room_id": {
                         "type": "string",
                         "description": "Section name to which it belongs"
                     },
@@ -63,7 +63,7 @@
                  },
                 "additionalProperties": false,
                 "required": [
-                    "id",
+                    "room_id",
                     "name"
                 ]
             }

@@ -3,7 +3,7 @@
  "version": "1.0",
  "rooms": [
   {
-   "id": "room1",
+   "room_id": "room1",
    "name": [
     {
      "lang": "en",
