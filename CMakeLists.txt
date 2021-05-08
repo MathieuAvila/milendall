@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(milendall)
 
 find_package(nlohmann_json 3.2.0 REQUIRED)
-
+find_package(spdlog REQUIRED)
 find_package(Boost 1.40 COMPONENTS program_options REQUIRED)
 
 SET (CMAKE_CXX_COMPILER             "/usr/bin/clang++-11")
@@ -39,7 +39,11 @@ add_executable(milendall
         game/src/main.cxx
         )
 
-target_link_libraries(milendall ${Boost_LIBRARIES} game_lib nlohmann_json::nlohmann_json)
+target_link_libraries(milendall
+  ${Boost_LIBRARIES}
+  game_lib
+  nlohmann_json::nlohmann_json
+  spdlog::spdlog)
 
 add_executable(unit_test
   game/test/unit_level.cpp
@@ -47,6 +51,7 @@ add_executable(unit_test
   game/test/unit_file_library.cpp
   game/test/unit_gltf_table_accessor.cpp
   game/test/unit_gltf_data_accessor.cpp
+  game/test/unit_gltf_model.cxx
   catch2/catch_amalgamated.cpp
   catch2/catch_amalgamated.hpp
   )
