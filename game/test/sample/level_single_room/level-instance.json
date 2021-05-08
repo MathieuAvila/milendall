@@ -1,0 +1,86 @@
+{
+ "$schema": "../../schema/generator.level.schema.json",
+ "name": [
+  {
+   "lang": "en",
+   "value": "Simple Level"
+  }
+ ],
+ "section": "samples",
+ "game_type": {
+  "single_mode": {
+   "execution_time": 10.0,
+   "entry_point_room": "room1",
+   "end_point_room": "room1"
+  }
+ },
+ "rooms": [
+  {
+   "room_id": "room1",
+   "name": [
+    {
+     "lang": "en",
+     "value": "room1"
+    }
+   ],
+   "structure_class": "rectangular",
+   "structure_private": {
+    "gate_pre_post_range": [
+     [
+      1.0,
+      1.0
+     ],
+     [
+      1.0,
+      1.0
+     ]
+    ],
+    "height_over_gate_range": [
+     1.0,
+     1.0
+    ],
+    "height_over_gate": 1,
+    "wall_pre_post_range": [
+     [
+      2.0,
+      2.0
+     ],
+     [
+      2.0,
+      2.0
+     ]
+    ],
+    "wall_pre_post": [
+     [
+      2,
+      2
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      2,
+      2
+     ]
+    ],
+    "setup": [
+     [],
+     [],
+     [],
+     [],
+     []
+    ]
+   },
+   "structure_parameters": {},
+   "dressing_class": "basic",
+   "dressing_private": {},
+   "dressing_parameters": {}
+  }
+ ],
+ "gates": []
+}

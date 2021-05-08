@@ -1,0 +1,23 @@
+{
+ "$schema": "/home/avila/milendall/generator/schema/final.level.schema.json",
+ "version": "1.0",
+ "rooms": [
+  {
+   "id": "room1",
+   "name": [
+    {
+     "lang": "en",
+     "value": "room1"
+    }
+   ]
+  }
+ ],
+ "section": "samples",
+ "game_type": {
+  "single_mode": {
+   "execution_time": 10.0,
+   "entry_point_room": "room1",
+   "end_point_room": "room1"
+  }
+ }
+}
