@@ -7,7 +7,7 @@
 #include "gltf_data_accessor_iface.hxx"
 #include "gltf_material_accessor_iface.hxx"
 
-class GltfFrame
+class GltfMesh
 {
     protected:
 
@@ -22,14 +22,14 @@ class GltfFrame
      * @param material_accessor helper to load a texture
      * @note may throw a GltfException
      */
-    GltfFrame(
+    GltfMesh(
         nlohmann::json& json,
         int index,
         GltfDataAccessorIFace* data_accessor,
         GltfMaterialAccessorIFace* material_accessor
         );
 
-    virtual ~GltfFrame();
+    virtual ~GltfMesh();
 
 };
 

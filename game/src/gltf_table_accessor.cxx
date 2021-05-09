@@ -7,7 +7,7 @@ static auto console = spdlog::stdout_color_mt("json");
 nlohmann::json& jsonGetElementByName(nlohmann::json& file, std::string element)
 {
     if (!file.contains(element)) {
-        console->error("JSON element has no element:'{}'. Will throw", element);
+        console->error("JSON element has no sub-element:'{}'. Will throw", element);
         throw GltfException(std::string("No such element:") + element);
     }
     return file[element];

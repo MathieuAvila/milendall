@@ -5,32 +5,48 @@
 
 static auto console = spdlog::stdout_color_mt("gltf_frame");
 
-GltfFrame::GltfFrame(
+static void store_if_contains(int& storage, json& json, string name)
+{
+    storage = -1;
+    if (json.contains(name))
+        storage = json[name].get<int>();
+}
+
+GltfMesh::GltfMesh(
         json& json,
-        int index,
+        int my_mesh,
         GltfDataAccessorIFace* data_accessor,
         GltfMaterialAccessorIFace* material_accessor)
 {
-    console->info("Load frame with index: {}", index);
-    auto j_frame = jsonGetElementByIndex(json, "", index);
-    if (j_frame.contains("mesh")) {
-        auto my_mesh = jsonGetElementByName(j_frame, "mesh").get<int>();
-        console->info("Frame ID={}, has mesh {}", index, my_mesh);
-        auto j_mesh = jsonGetElementByIndex(json, "meshes", my_mesh);
-        console->info("Frame ID={}, mesh has primitives nr={}", index, j_mesh.size());
-        for(auto j_prim : j_mesh) {
-            console->info("Frame ID={}, load primitive", index);
-        /*frameTable.push_back(std::make_shared<GltfFrame>(
-            file_json, frame_index, data_accessor.get(), nullptr));*/
-        }
+    console->debug("Frame ID={}, has mesh {}", my_mesh, my_mesh);
+    auto j_mesh = jsonGetElementByIndex(json, "meshes", my_mesh);
+    console->debug("Frame ID={}, mesh has primitives nr={}", my_mesh, j_mesh.size());
+    auto j_prims = jsonGetElementByName(j_mesh, "primitives");
+    for(auto j_prim : j_prims) {
+        int indices, mode, material, NORMAL, POSITION, TEXCOORD_0;
+        store_if_contains(indices, j_prim, "indices");
+        store_if_contains(mode, j_prim, "mode");
+        store_if_contains(material, j_prim, "material");
+        auto attributes = j_prim[std::string("attributes")];
+        store_if_contains(NORMAL, attributes, "NORMAL");
+        store_if_contains(POSITION, attributes, "POSITION");
+        store_if_contains(TEXCOORD_0, attributes, "TEXCOORD_0");
+        console->debug(
+            "Frame ID={}, load primitive indices={}, mode={}, "
+            "material={}, NORMAL={}, POSITION={}, TEXCOORD_0={}",
+            my_mesh, indices, mode, material, NORMAL, POSITION, TEXCOORD_0);
+    }
+    if (j_mesh.contains("name")) {
+        auto name = j_mesh["name"].get<string>();
+        console->info("Frame ID={}, has name {}", my_mesh, name);
     }
 }
 
-GltfFrame::~GltfFrame()
+GltfMesh::~GltfMesh()
 {
 }
 
-void GltfFrame::parseApplicationData(json& json)
+void GltfMesh::parseApplicationData(json& json)
 {
 }
 

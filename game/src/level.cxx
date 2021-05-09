@@ -21,15 +21,4 @@ Level::Level(FileLibrary::UriReference ref)
             auto ref_room = ref.getDirPath().getSubPath(room_id+ "/");
             auto room = std::make_shared<Room>(ref_room);
     }
-
-    auto my_scene = jsonGetElementByName(j_level, "scene").get<int>();
-    console->info("scene:{}", my_scene);
-
-    auto j_scenes = jsonGetElementByName(j_level, "scenes");
-    console->info("scenes count:{}", j_scenes.size());
-    auto j_scenes_0 = jsonGetElementByIndex(j_level, "scenes", 0);
-    auto scene_child_count = j_scenes_0.size();
-    console->info("scene has children:{}", scene_child_count);
-
-
 }
