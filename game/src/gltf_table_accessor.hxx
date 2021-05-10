@@ -14,4 +14,18 @@ nlohmann::json& jsonGetElementByIndex(nlohmann::json&, std::string element, int 
  */
 nlohmann::json& jsonGetElementByName(nlohmann::json&, std::string element);
 
+/**
+ * Helper function to execute code if node exists
+ */
+void jsonExecuteIfElement(
+    nlohmann::json&, std::string,
+    std::function<void(nlohmann::json&)>);
+
+/**
+ * Helper function to execute code for each element of node if it exists
+ */
+void jsonExecuteAllIfElement(
+    nlohmann::json&, std::string element,
+    std::function<void(nlohmann::json&, int)>);
+
 #endif

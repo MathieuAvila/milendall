@@ -8,7 +8,18 @@ static auto console = spdlog::stdout_color_mt("gltf_model");
 
 GltfNode::GltfNode(json& json)
 {
-
+    my_mesh = -1;
+    /* check it has an associated mesh */
+    if (json.contains("mesh")) {
+        my_mesh = jsonGetElementByName(json, "mesh").get<int>();
+    }
+    /* get back all children nodes */
+    jsonExecuteAllIfElement(json, "children", [this](nlohmann::json& child, int node_index) {
+        console->info("found child:{}", to_string(child));
+        children.push_back(child.get<int>());
+    });
+    /* read matrix or operations */
+    // TODO
 }
 
 shared_ptr<GltfMesh> GltfModel::instantiateFrame(
@@ -33,17 +44,11 @@ GltfModel::GltfModel(const FileLibrary::UriReference ref)
     auto file_json = json::parse(raw_json.c_str());
     // build a data accessor from this
     unique_ptr<GltfDataAccessorIFace> data_accessor(new GltfDataAccessor(file_json, ref.getDirPath()));
-    auto node_nr = jsonGetElementByName(file_json, "nodes").size();
-    console->info("Nodes count: {}", node_nr);
     // Load all nodes, whether used or not
-    for(int node_index = 0; node_index < node_nr; node_index++) {
-        console->info("Load node with index: {}", node_index);
-        auto j_node = jsonGetElementByIndex(file_json, "nodes", node_index);
-        /* check it has an associated mesh */
-        if (j_node.contains("mesh")) {
-            auto my_mesh = jsonGetElementByName(j_node, "mesh").get<int>();
-        }
-    }
+    jsonExecuteAllIfElement(file_json, "nodes", [this](nlohmann::json& child, int node_index) {
+        console->debug("Load node with index: {}", node_index);
+        nodeTable.push_back(make_shared<GltfNode>(child));
+    });
     // Load all meshes, whether used or not
     auto mesh_nr = jsonGetElementByName(file_json, "meshes").size();
     console->info("Meshes count: {}", mesh_nr);

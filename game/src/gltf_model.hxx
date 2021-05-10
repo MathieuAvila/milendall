@@ -11,7 +11,7 @@ class GltfMaterialAccessorIFace;
 
 struct GltfNode
 {
-    std::shared_ptr<GltfMesh> mesh;
+    int my_mesh;
     std::vector<unsigned int> children;
 
     /** @brief instantiate is some kind of direct read
