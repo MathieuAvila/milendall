@@ -1,5 +1,5 @@
 #include "gltf_data_accessor.hxx"
-#include "gltf_table_accessor.hxx"
+#include "json_helper_accessor.hxx"
 #include "gltf_exception.hxx"
 
 using namespace std;

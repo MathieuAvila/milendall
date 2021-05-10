@@ -5,7 +5,7 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
-#include "gltf_table_accessor.hxx"
+#include "json_helper_accessor.hxx"
 
 #include "common.hxx"
 

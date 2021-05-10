@@ -28,8 +28,8 @@ add_library(game_lib STATIC
   game/src/gltf_data_accessor.hxx
   game/src/gltf_data_accessor.cxx
   game/src/gltf_exception.hxx
-  game/src/gltf_table_accessor.hxx
-  game/src/gltf_table_accessor.cxx
+  game/src/json_helper_accessor.hxx
+  game/src/json_helper_accessor.cxx
   game/src/file_library.hxx
   game/src/file_library.cxx
 )

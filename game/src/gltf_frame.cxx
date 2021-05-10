@@ -1,7 +1,7 @@
 #include "common.hxx"
 #include "gltf_frame.hxx"
 #include "gltf_data_accessor.hxx"
-#include "gltf_table_accessor.hxx"
+#include "json_helper_accessor.hxx"
 
 static auto console = spdlog::stdout_color_mt("gltf_frame");
 
@@ -13,16 +13,12 @@ static void store_if_contains(int& storage, json& json, string name)
 }
 
 GltfMesh::GltfMesh(
-        json& json,
-        int my_mesh,
+        json& j_mesh,
         GltfDataAccessorIFace* data_accessor,
         GltfMaterialAccessorIFace* material_accessor)
 {
-    console->debug("Mesh NR={}, has mesh {}", my_mesh, my_mesh);
-    auto j_mesh = jsonGetElementByIndex(json, "meshes", my_mesh);
-    console->debug("Mesh NR={}, mesh has primitives nr={}", my_mesh, j_mesh.size());
-    auto j_prims = jsonGetElementByName(j_mesh, "primitives");
-    for(auto j_prim : j_prims) {
+    console->debug("New mesh");
+    jsonExecuteAllIfElement(j_mesh, "primitives", [this, &j_mesh](nlohmann::json& j_prim, int node_index) {
         int indices, mode, material, NORMAL, POSITION, TEXCOORD_0;
         store_if_contains(indices, j_prim, "indices");
         store_if_contains(mode, j_prim, "mode");
@@ -32,13 +28,13 @@ GltfMesh::GltfMesh(
         store_if_contains(POSITION, attributes, "POSITION");
         store_if_contains(TEXCOORD_0, attributes, "TEXCOORD_0");
         console->debug(
-            "Mesh NR={}, load primitive indices={}, mode={}, "
+            "load primitive indices={}, mode={}, "
             "material={}, NORMAL={}, POSITION={}, TEXCOORD_0={}",
-            my_mesh, indices, mode, material, NORMAL, POSITION, TEXCOORD_0);
-    }
+            indices, mode, material, NORMAL, POSITION, TEXCOORD_0);
+    });
     if (j_mesh.contains("name")) {
         auto name = j_mesh["name"].get<string>();
-        console->info("Mesh NR={}, has name {}", my_mesh, name);
+        console->info("Mesh has name {}", name);
     }
 }
 

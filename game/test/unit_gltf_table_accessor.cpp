@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include "file_library.hxx"
-#include "gltf_table_accessor.hxx"
+#include "json_helper_accessor.hxx"
 
 #include "gltf_exception.hxx"
 

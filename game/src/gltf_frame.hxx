@@ -16,7 +16,7 @@ class GltfMesh
     public:
 
     /** @brief Loads a GLTF frame object
-     * @param json the full JSON file
+     * @param json the JSON mesh
      * @param index index of the object to load
      * @param data_accessor helper to access data efficiently
      * @param material_accessor helper to load a texture
@@ -24,7 +24,6 @@ class GltfMesh
      */
     GltfMesh(
         nlohmann::json& json,
-        int index,
         GltfDataAccessorIFace* data_accessor,
         GltfMaterialAccessorIFace* material_accessor
         );

@@ -2,7 +2,7 @@
 #include "gltf_model.hxx"
 #include "gltf_frame.hxx"
 #include "gltf_data_accessor.hxx"
-#include "gltf_table_accessor.hxx"
+#include "json_helper_accessor.hxx"
 
 static auto console = spdlog::stdout_color_mt("gltf_model");
 
@@ -22,14 +22,12 @@ GltfNode::GltfNode(json& json)
     // TODO
 }
 
-shared_ptr<GltfMesh> GltfModel::instantiateFrame(
+shared_ptr<GltfMesh> GltfModel::instantiateMesh(
     nlohmann::json& json,
     GltfDataAccessorIFace* data_accessor,
     GltfMaterialAccessorIFace* material_accessor)
 {
-    return std::make_shared<GltfMesh>(
-        json, 0, data_accessor, material_accessor);
-    //return std::shared_ptr<GltfMesh>(nullptr);
+    return make_shared<GltfMesh>(json, data_accessor, material_accessor);
 }
 
 void GltfModel::parseApplicationData(nlohmann::json& json)
@@ -44,19 +42,18 @@ GltfModel::GltfModel(const FileLibrary::UriReference ref)
     auto file_json = json::parse(raw_json.c_str());
     // build a data accessor from this
     unique_ptr<GltfDataAccessorIFace> data_accessor(new GltfDataAccessor(file_json, ref.getDirPath()));
+
+    // Load all meshes, whether used or not
+    jsonExecuteAllIfElement(file_json, "meshes", [this, &data_accessor](nlohmann::json& child, int node_index) {
+        console->info("Load mesh: {}", node_index);
+        meshTable.push_back(instantiateMesh(child, data_accessor.get(), nullptr));
+    });
+
     // Load all nodes, whether used or not
     jsonExecuteAllIfElement(file_json, "nodes", [this](nlohmann::json& child, int node_index) {
-        console->debug("Load node with index: {}", node_index);
+        console->debug("Load node: {}", node_index);
         nodeTable.push_back(make_shared<GltfNode>(child));
     });
-    // Load all meshes, whether used or not
-    auto mesh_nr = jsonGetElementByName(file_json, "meshes").size();
-    console->info("Meshes count: {}", mesh_nr);
-    for(int mesh_index = 0; mesh_index < mesh_nr; mesh_index++) {
-
-        meshTable.push_back(std::make_shared<GltfMesh>(
-            file_json, mesh_index, data_accessor.get(), nullptr));
-    }
 
     auto my_scene = jsonGetElementByName(file_json, "scene").get<int>();
     auto j_scenes = jsonGetElementByName(file_json, "scenes");
