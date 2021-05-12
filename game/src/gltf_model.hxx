@@ -11,11 +11,13 @@ class GltfMaterialAccessorIFace;
 
 struct GltfNode
 {
+    typedef std::vector<unsigned int> ChildrenList;
+
     /** @brief index to mesh */
     int my_mesh;
 
     /** @brief list of index of children */
-    std::vector<unsigned int> children;
+    ChildrenList children;
 
     /** @brief default transform matrix */
     glm::mat4x4 default_transform;

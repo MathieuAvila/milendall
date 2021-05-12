@@ -3,24 +3,50 @@
 #include "gltf_mesh.hxx"
 #include "gltf_data_accessor.hxx"
 #include "json_helper_accessor.hxx"
+#include "json_helper_math.hxx"
+#include <glm/ext/matrix_transform.hpp>
+
+#include "helper_math.hxx"
 
 static auto console = spdlog::stdout_color_mt("gltf_model");
 
-GltfNode::GltfNode(json& json)
+static glm::mat4x4 identity(
+        1,0,0,0,
+        0,1,0,0,
+        0,0,1,0,
+        0,0,0,1
+        );
+
+GltfNode::GltfNode(json& json): default_transform(identity)
 {
     my_mesh = -1;
     /* check it has an associated mesh */
     if (json.contains("mesh")) {
         my_mesh = jsonGetElementByName(json, "mesh").get<int>();
     }
-    /* get back all children nodes */
+    /* get all children nodes */
     jsonExecuteAllIfElement(json, "children", [this](nlohmann::json& child, int node_index) {
         console->info("found child:{}", to_string(child));
         children.push_back(child.get<int>());
     });
-    /* read matrix or operations */
+    /* read default raw matrix */
+    jsonExecuteIfElement(json, "matrix", [this](nlohmann::json& child) {
+        default_transform = jsonGetMatrix4x4(child);
+    });
+    /* read matrix for translation */
+    jsonExecuteIfElement(json, "translation", [this](nlohmann::json& child) {
+        default_transform = glm::translate(default_transform, jsonGetVec3(child));
+    });
 
-    // TODO
+    /* read matrix for rotation */
+    //jsonExecuteIfElement(json, "rotation", [this](nlohmann::json& child) {
+    //   // default_transform = glm::rotate(default_transform, jsonGetVec3(child));
+    //});
+
+    /* read matrix for scale */
+    jsonExecuteIfElement(json, "scale", [this](nlohmann::json& child) {
+        default_transform = glm::scale(default_transform, jsonGetVec3(child));
+    });
 }
 
 shared_ptr<GltfMesh> GltfModel::instantiateMesh(

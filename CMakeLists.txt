@@ -35,6 +35,8 @@ add_library(game_lib STATIC
   game/src/json_helper_math.cxx
   game/src/file_library.hxx
   game/src/file_library.cxx
+  game/src/helper_math.hxx
+  game/src/helper_math.cxx
 )
 
 # add the executable
@@ -57,6 +59,7 @@ add_executable(unit_test
   game/test/unit_gltf_data_accessor.cpp
   game/test/unit_json_helper_math.cpp
   game/test/unit_gltf_model.cxx
+  game/test/unit_gltf_node.cxx
   catch2/catch_amalgamated.cpp
   catch2/catch_amalgamated.hpp
   )
