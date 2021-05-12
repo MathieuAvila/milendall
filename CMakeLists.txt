@@ -31,6 +31,8 @@ add_library(game_lib STATIC
   game/src/gltf_exception.hxx
   game/src/json_helper_accessor.hxx
   game/src/json_helper_accessor.cxx
+  game/src/json_helper_math.hxx
+  game/src/json_helper_math.cxx
   game/src/file_library.hxx
   game/src/file_library.cxx
 )
@@ -53,6 +55,7 @@ add_executable(unit_test
   game/test/unit_file_library.cpp
   game/test/unit_gltf_table_accessor.cpp
   game/test/unit_gltf_data_accessor.cpp
+  game/test/unit_json_helper_math.cpp
   game/test/unit_gltf_model.cxx
   catch2/catch_amalgamated.cpp
   catch2/catch_amalgamated.hpp

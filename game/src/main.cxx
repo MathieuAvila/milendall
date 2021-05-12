@@ -1,3 +1,7 @@
+
+#define GLM_FORCE_MESSAGES
+#include <glm/glm.hpp>
+
 #include "level.hxx"
 
 #include <memory>

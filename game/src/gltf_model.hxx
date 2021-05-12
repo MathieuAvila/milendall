@@ -1,6 +1,7 @@
 #pragma once
 
 #include <nlohmann/json.hpp>
+#include <glm/mat4x4.hpp>
 
 #include "file_library.hxx"
 #include "gltf_mesh.hxx"
@@ -10,8 +11,14 @@ class GltfMaterialAccessorIFace;
 
 struct GltfNode
 {
+    /** @brief index to mesh */
     int my_mesh;
+
+    /** @brief list of index of children */
     std::vector<unsigned int> children;
+
+    /** @brief default transform matrix */
+    glm::mat4x4 default_transform;
 
     /** @brief instantiate is some kind of direct read
      * @param json pointer to direct JSON of the node
@@ -47,6 +54,8 @@ class GltfModel
     public:
 
         GltfModel() = delete;
+        GltfModel(const GltfModel&) = delete;
+
         GltfModel(const FileLibrary::UriReference ref);
         virtual ~GltfModel();
 };
