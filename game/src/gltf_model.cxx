@@ -5,6 +5,7 @@
 #include "json_helper_accessor.hxx"
 #include "json_helper_math.hxx"
 #include <glm/ext/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #include "helper_math.hxx"
 
@@ -33,20 +34,25 @@ GltfNode::GltfNode(json& json): default_transform(identity)
     jsonExecuteIfElement(json, "matrix", [this](nlohmann::json& child) {
         default_transform = jsonGetMatrix4x4(child);
     });
-    /* read matrix for translation */
-    jsonExecuteIfElement(json, "translation", [this](nlohmann::json& child) {
-        default_transform = glm::translate(default_transform, jsonGetVec3(child));
-    });
 
-    /* read matrix for rotation */
-    //jsonExecuteIfElement(json, "rotation", [this](nlohmann::json& child) {
-    //   // default_transform = glm::rotate(default_transform, jsonGetVec3(child));
-    //});
+    // TODO : T*R*S is probably not implemented correctly and not tested.
 
     /* read matrix for scale */
     jsonExecuteIfElement(json, "scale", [this](nlohmann::json& child) {
         default_transform = glm::scale(default_transform, jsonGetVec3(child));
     });
+    /* read matrix for rotation */
+    jsonExecuteIfElement(json, "rotation", [this](nlohmann::json& child) {
+        auto xyzw = jsonGetVec4(child);
+        auto quat = glm::qua(xyzw[3], xyzw[0], xyzw[1], xyzw[2]);
+        default_transform = default_transform * toMat4(quat);
+    });
+
+    /* read matrix for translation */
+    jsonExecuteIfElement(json, "translation", [this](nlohmann::json& child) {
+        default_transform = glm::translate(default_transform, jsonGetVec3(child));
+    });
+
 }
 
 shared_ptr<GltfMesh> GltfModel::instantiateMesh(
