@@ -1,9 +1,9 @@
 #include "common.hxx"
-#include "gltf_frame.hxx"
+#include "gltf_mesh.hxx"
 #include "gltf_data_accessor.hxx"
 #include "json_helper_accessor.hxx"
 
-static auto console = spdlog::stdout_color_mt("gltf_frame");
+static auto console = spdlog::stdout_color_mt("gltf_mesh");
 
 static void store_if_contains(int& storage, json& json, string name)
 {

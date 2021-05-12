@@ -1,5 +1,4 @@
-#ifndef GLTF_DATA_ACCESSOR_IFACE_HXX
-#define GLTF_DATA_ACCESSOR_IFACE_HXX
+#pragma once
 
 #include "gltf_data_accessor_iface.hxx"
 #include "file_library.hxx"
@@ -27,5 +26,3 @@ class GltfDataAccessor: public GltfDataAccessorIFace
     virtual std::shared_ptr<DataBlock> accessId(uint32_t index);
     virtual ~GltfDataAccessor();
 };
-
-#endif

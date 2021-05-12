@@ -1,5 +1,4 @@
-#ifndef JSON_TABLE_ACCESSOR_HXX
-#define JSON_TABLE_ACCESSOR_HXX
+#pragma once
 
 #include <nlohmann/json.hpp>
 
@@ -28,4 +27,3 @@ void jsonExecuteAllIfElement(
     nlohmann::json&, std::string element,
     std::function<void(nlohmann::json&, int)>);
 
-#endif

@@ -1,5 +1,4 @@
-#ifndef COMMON_HXX
-#define COMMON_HXX
+#pragma once
 
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
@@ -10,4 +9,3 @@ using namespace std;
 using namespace spdlog;
 using namespace nlohmann;
 
-#endif

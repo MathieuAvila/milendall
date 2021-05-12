@@ -1,5 +1,4 @@
-#ifndef ROOM_HXX
-#define ROOM_HXX
+#pragma once
 
 #include <memory>
 
@@ -18,4 +17,4 @@ class Room
         std::unique_ptr<GltfModel> model;
 };
 
-#endif
+

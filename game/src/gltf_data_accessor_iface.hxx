@@ -1,5 +1,4 @@
-#ifndef GLTF_DATA_ACCESSOR_HXX
-#define GLTF_DATA_ACCESSOR_HXX
+#pragma once
 
 #include <memory>
 
@@ -42,4 +41,3 @@ class GltfDataAccessorIFace
     virtual ~GltfDataAccessorIFace() {};
 };
 
-#endif

@@ -1,5 +1,4 @@
-#ifndef GLTF_FRAME_HXX
-#define GLTF_FRAME_HXX
+#pragma once
 
 #include <memory>
 #include <nlohmann/json.hpp>
@@ -32,4 +31,3 @@ class GltfMesh
 
 };
 
-#endif

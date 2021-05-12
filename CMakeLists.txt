@@ -19,8 +19,8 @@ add_library(game_lib STATIC
   game/src/level.cxx
   game/src/room.hxx
   game/src/room.cxx
-  game/src/gltf_frame.hxx
-  game/src/gltf_frame.cxx
+  game/src/gltf_mesh.hxx
+  game/src/gltf_mesh.cxx
   game/src/gltf_model.hxx
   game/src/gltf_model.cxx
   game/src/gltf_material_accessor_iface.hxx

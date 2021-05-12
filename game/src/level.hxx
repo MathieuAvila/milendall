@@ -1,5 +1,4 @@
-#ifndef LEVEL_HXX
-#define LEVEL_HXX
+#pragma once
 
 #include "file_library.hxx"
 
@@ -28,4 +27,3 @@ class Level
         std::vector<std::shared_ptr<Room>> rooms;
 };
 
-#endif

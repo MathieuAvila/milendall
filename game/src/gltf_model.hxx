@@ -1,10 +1,9 @@
-#ifndef GLTF_MODEL_HXX
-#define GLTF_MODEL_HXX
+#pragma once
 
 #include <nlohmann/json.hpp>
 
 #include "file_library.hxx"
-#include "gltf_frame.hxx"
+#include "gltf_mesh.hxx"
 
 class GltfDataAccessorIFace;
 class GltfMaterialAccessorIFace;
@@ -52,4 +51,3 @@ class GltfModel
         virtual ~GltfModel();
 };
 
-#endif

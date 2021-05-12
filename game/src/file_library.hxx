@@ -1,10 +1,9 @@
+#pragma once
+
 #include <string>
 #include <vector>
 #include <list>
 #include <memory>
-
-#ifndef FILE_LIBRAY_HXX
-#define FILE_LIBRAY_HXX
 
 /* A raw memory container. To be used with *_ptr for auto mgmt */
 class FileContent
@@ -84,5 +83,3 @@ class FileLibrary
     std::list<std::string> root_list;
 
 };
-
-#endif

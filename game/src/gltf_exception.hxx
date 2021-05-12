@@ -1,5 +1,4 @@
-#ifndef GLTF_EXCEPTION_HXX
-#define GLTF_EXCEPTION_HXX
+#pragma once
 
 #include <stdexcept>
 
@@ -10,5 +9,3 @@ class GltfException: public std::runtime_error
 
         GltfException(const std::string err): runtime_error(err) {};
 };
-
-#endif

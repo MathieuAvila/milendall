@@ -1,5 +1,4 @@
-#ifndef GLTF_MATERIAL_IFACE_HXX
-#define GLTF_MATERIAL_IFACE_HXX
+#pragma once
 
 #include "file_library.hxx"
 #include <nlohmann/json.hpp>
@@ -28,4 +27,3 @@ class GltfMaterialAccessorIFace
     virtual ~GltfMaterialAccessorIFace() = 0;
 };
 
-#endif
