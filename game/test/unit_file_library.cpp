@@ -2,15 +2,16 @@
 
 #include "file_library.hxx"
 
-TEST_CASE( "Get root instance", "[file_library]" ) {
+TEST_CASE("File library", "[file_library]" ) {
 
+SECTION("Get root instance"){
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library");
     auto root = fl.getRoot();
     REQUIRE( root.getPath() == "/" );
 }
 
-TEST_CASE( "Check path completion", "[file_library]" ) {
+SECTION( "Check path completion") {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library");
@@ -18,7 +19,7 @@ TEST_CASE( "Check path completion", "[file_library]" ) {
     REQUIRE( toto_tata.getPath() == "/toto/tata" );
 }
 
-TEST_CASE( "Get dir path", "[file_library]" ) {
+SECTION( "Get dir path" ) {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library");
@@ -26,7 +27,7 @@ TEST_CASE( "Get dir path", "[file_library]" ) {
     REQUIRE( toto_tata.getDirPath().getPath() == "/toto/tata" );
 }
 
-TEST_CASE( "Check path completion with root", "[file_library]" ) {
+SECTION("Check path completion with root") {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library");
@@ -34,7 +35,7 @@ TEST_CASE( "Check path completion with root", "[file_library]" ) {
     REQUIRE( toto_tata.getPath() == "/tata" );
 }
 
-TEST_CASE( "Check path simplification", "[file_library]" ) {
+SECTION("Check path simplification") {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library");
@@ -42,11 +43,11 @@ TEST_CASE( "Check path simplification", "[file_library]" ) {
     REQUIRE( toto_tata.getPath() == "/toto" );
 }
 
-TEST_CASE("List directory", "[file_library]" ) {
+SECTION("List directory") {
     // TODO
 }
 
-TEST_CASE("Get file content does not exist", "[file_library]" ) {
+SECTION("Get file content does not exist") {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library");
@@ -58,7 +59,7 @@ TEST_CASE("Get file content does not exist", "[file_library]" ) {
     REQUIRE( content.get()->size == 0 );
 }
 
-TEST_CASE("Get file content ok, simple file", "[file_library]" ) {
+SECTION("Get file content ok, simple file") {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library");
@@ -79,7 +80,7 @@ TEST_CASE("Get file content ok, simple file", "[file_library]" ) {
     REQUIRE( ((char*)(content.get()->memory_block))[4] == '\n' );
 }
 
-TEST_CASE("File content in 2 dirs", "[file_library]") {
+SECTION("File content in 2 dirs") {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library/d1");
@@ -118,7 +119,7 @@ TEST_CASE("File content in 2 dirs", "[file_library]") {
 
 }
 
-TEST_CASE("File content conflict in 2 dirs", "[file_library]") {
+SECTION("File content conflict in 2 dirs") {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library/d1");
@@ -143,7 +144,7 @@ TEST_CASE("File content conflict in 2 dirs", "[file_library]") {
     REQUIRE( ((char*)(content.get()->memory_block))[4] == '\n' );
 }
 
-TEST_CASE("List directory 1 dir", "[file_library]") {
+SECTION("List directory 1 dir") {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library");
@@ -160,7 +161,7 @@ TEST_CASE("List directory 1 dir", "[file_library]") {
     REQUIRE( content[1].getPath() == "/d1/toto/file2.txt" );
 }
 
-TEST_CASE("List directory 2 dirs", "[file_library]") {
+SECTION("List directory 2 dirs") {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library/d1");
@@ -183,7 +184,7 @@ TEST_CASE("List directory 2 dirs", "[file_library]") {
     REQUIRE( content[3].getPath() == "/toto/file4.txt" );
 }
 
-TEST_CASE("Get string file content does not exist", "[file_library]" ) {
+SECTION("Get string file content does not exist") {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library");
@@ -193,7 +194,7 @@ TEST_CASE("Get string file content does not exist", "[file_library]" ) {
     REQUIRE( content == "" );
 }
 
-TEST_CASE("Get string file content ok, simple content", "[file_library]" ) {
+SECTION("Get string file content ok, simple content") {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library");
@@ -205,4 +206,5 @@ TEST_CASE("Get string file content ok, simple content", "[file_library]" ) {
     auto content = no_file.readStringContent();
 
     REQUIRE( content == "abcd\n" );
+}
 }
