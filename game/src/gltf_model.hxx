@@ -6,8 +6,9 @@
 #include "file_library.hxx"
 #include "gltf_mesh.hxx"
 
+#include "gltf_material_accessor_library_iface.hxx"
+
 class GltfDataAccessorIFace;
-class GltfMaterialAccessorIFace;
 
 struct GltfNode
 {
@@ -39,7 +40,7 @@ class GltfModel
         std::shared_ptr<GltfMesh> instantiateMesh(
             nlohmann::json& json,
             GltfDataAccessorIFace* data_accessor,
-            GltfMaterialAccessorIFace* material_accessor);
+            GltfMaterialAccessorIFacePtr material_accessor);
 
         /** @brief  To be derived in case there is private data */
         virtual void parseApplicationData(nlohmann::json& json);
@@ -53,12 +54,14 @@ class GltfModel
          */
         std::vector<std::shared_ptr<GltfNode>> nodeTable;
 
+        GltfMaterialAccessorIFacePtr materialAccessor;
+
     public:
 
         GltfModel() = delete;
         GltfModel(const GltfModel&) = delete;
 
-        GltfModel(const FileLibrary::UriReference ref);
+        GltfModel(GltfMaterialLibraryIfacePtr materialLibrary, const FileLibrary::UriReference ref);
         virtual ~GltfModel();
 };
 

@@ -5,6 +5,7 @@
 
 #include "gltf_data_accessor_iface.hxx"
 #include "gltf_material_accessor_iface.hxx"
+#include "gltf_material_accessor_library_iface.hxx"
 
 class GltfMesh
 {
@@ -24,7 +25,7 @@ class GltfMesh
     GltfMesh(
         nlohmann::json& json,
         GltfDataAccessorIFace* data_accessor,
-        GltfMaterialAccessorIFace* material_accessor
+        GltfMaterialAccessorIFacePtr material_accessor
         );
 
     virtual ~GltfMesh();

@@ -1,8 +1,7 @@
 #pragma once
 
 #include "file_library.hxx"
-
-//class Room;
+#include "gltf_material_accessor_library_iface.hxx"
 #include "room.hxx"
 
 
@@ -25,5 +24,6 @@ class Level
     private:
 
         std::vector<std::shared_ptr<Room>> rooms;
+        GltfMaterialLibraryIfacePtr materialLibrary;
 };
 

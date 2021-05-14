@@ -10,7 +10,7 @@ class Room
     public:
 
         /** build the room from the directory path */
-        Room(FileLibrary::UriReference& ref);
+        Room(GltfMaterialLibraryIfacePtr materialLibrary, FileLibrary::UriReference& ref);
 
     private:
 

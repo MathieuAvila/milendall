@@ -1,29 +1,25 @@
 #pragma once
 
-#include "file_library.hxx"
-#include <nlohmann/json.hpp>
-
+#include <cstdint>
 #include <memory>
 
-class GltfMaterialIface
-{
-   GltfMaterialIface();
-};
-
 /**
- * accessor is intended to return a given texture to be used for direct injection
- * during object creation.
- * the goal of this file is to provide an abstraction to external texture access
+ * @class GltfMaterialAccessorIFace is intended to return a given texture to be used for direct injection
+ * during @class GltfMesh creation. All game is to load a given texture only once.
+ * This interface is the only one presented to @class GltfMesh.
+ * See @file gltf_material_accessor.hxx to get the whole picture.
  */
 class GltfMaterialAccessorIFace
 {
     public:
 
-    /** access a given Id, return a pointer to the material definition
-     * caller doesn't hold ownership. It is destroyed when Accessor is destroyed
-     * after all its references have been released.
+    /**
+     * @brief access a given Id, access and apply.
+     *        It is expected to apply only if not already applied, and not to load multiple
+     *        times.
      */
     virtual void loadId(uint32_t index) = 0;
     virtual ~GltfMaterialAccessorIFace() = 0;
 };
 
+using GltfMaterialAccessorIFacePtr = std::shared_ptr<GltfMaterialAccessorIFace>;

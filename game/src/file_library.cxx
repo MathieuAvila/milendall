@@ -104,6 +104,11 @@ std::string FileLibrary::UriReference::readStringContent() const
    return "";
 }
 
+bool FileLibrary::UriReference::operator<(const FileLibrary::UriReference& r ) const
+{
+    return path < r.path;
+}
+
 FileLibrary::FileLibrary()
 {
 };

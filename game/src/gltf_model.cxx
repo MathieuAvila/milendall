@@ -11,12 +11,7 @@
 
 static auto console = spdlog::stdout_color_mt("gltf_model");
 
-static glm::mat4x4 identity(
-        1,0,0,0,
-        0,1,0,0,
-        0,0,1,0,
-        0,0,0,1
-        );
+static glm::mat4x4 identity = glm::mat4(1.0f);
 
 GltfNode::GltfNode(json& json): default_transform(identity)
 {
@@ -54,11 +49,10 @@ GltfNode::GltfNode(json& json): default_transform(identity)
     });
 
 }
-
-shared_ptr<GltfMesh> GltfModel::instantiateMesh(
-    nlohmann::json& json,
-    GltfDataAccessorIFace* data_accessor,
-    GltfMaterialAccessorIFace* material_accessor)
+std::shared_ptr<GltfMesh> GltfModel::instantiateMesh(
+            nlohmann::json& json,
+            GltfDataAccessorIFace* data_accessor,
+            GltfMaterialAccessorIFacePtr material_accessor)
 {
     return make_shared<GltfMesh>(json, data_accessor, material_accessor);
 }
@@ -68,7 +62,7 @@ void GltfModel::parseApplicationData(nlohmann::json& json)
     // do nothing
 }
 
-GltfModel::GltfModel(const FileLibrary::UriReference ref)
+GltfModel::GltfModel(GltfMaterialLibraryIfacePtr materialLibrary, const FileLibrary::UriReference ref)
 {
     console->info("Load level: {}", ref.getPath());
     auto raw_json = ref.readStringContent();
@@ -76,10 +70,13 @@ GltfModel::GltfModel(const FileLibrary::UriReference ref)
     // build a data accessor from this
     unique_ptr<GltfDataAccessorIFace> data_accessor(new GltfDataAccessor(file_json, ref.getDirPath()));
 
+    // access a material accessor from the json file
+    materialAccessor = materialLibrary->getMaterialAccessor(file_json);
+
     // Load all meshes, whether used or not
     jsonExecuteAllIfElement(file_json, "meshes", [this, &data_accessor](nlohmann::json& child, int node_index) {
         console->info("Load mesh: {}", node_index);
-        meshTable.push_back(instantiateMesh(child, data_accessor.get(), nullptr));
+        meshTable.push_back(instantiateMesh(child, data_accessor.get(), materialAccessor));
     });
 
     // Load all nodes, whether used or not

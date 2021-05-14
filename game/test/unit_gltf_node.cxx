@@ -15,12 +15,7 @@ static auto console = spdlog::stdout_color_mt("ut");
 
 TEST_CASE( "Load GLTF node", "[gltf-node]" ) {
 
-glm::mat4x4 identity(
-        1,0,0,0,
-        0,1,0,0,
-        0,0,1,0,
-        0,0,0,1
-        );
+static glm::mat4x4 identity = glm::mat4(1.0f);
 
 SECTION("Load void")
 {

@@ -61,8 +61,10 @@ class FileLibrary
          */
         UriReference getDirPath() const;
 
-        /** for Ut only */
+        /** for UT and debug only */
         std::string getPath() const;
+
+        bool operator<(const FileLibrary::UriReference& r ) const;
     };
 
 
@@ -83,3 +85,5 @@ class FileLibrary
     std::list<std::string> root_list;
 
 };
+
+using FileLibraryPtr = std::shared_ptr<FileLibrary>;
