@@ -1,9 +1,14 @@
 cmake_minimum_required(VERSION 3.16)
 project(milendall)
 
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+
 find_package(nlohmann_json 3.2.0 REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(glm REQUIRED)
+find_package(FreeImagePlus REQUIRED)
+find_package(FreeImage REQUIRED)
+
 find_package(Boost 1.40 COMPONENTS program_options REQUIRED)
 
 SET (CMAKE_CXX_COMPILER             "/usr/bin/clang++-11")
@@ -51,7 +56,9 @@ target_link_libraries(milendall
   game_lib
   nlohmann_json::nlohmann_json
   spdlog::spdlog
-  glm::glm)
+  glm::glm
+  ${FREEIMAGEPLUS_LIBRARIES} ${FreeImage_LIBRARIES}
+)
 
 add_executable(unit_test
   game/test/unit_level.cpp
@@ -70,7 +77,9 @@ target_link_libraries(unit_test
     ${Boost_LIBRARIES}
     game_lib
     nlohmann_json::nlohmann_json
-    glm::glm)
+    glm::glm
+    ${FREEIMAGEPLUS_LIBRARIES} ${FreeImage_LIBRARIES}
+)
 
 target_include_directories(unit_test PRIVATE catch2/ )
 target_include_directories(unit_test PRIVATE game/src/ )
