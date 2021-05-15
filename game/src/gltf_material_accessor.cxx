@@ -1,9 +1,12 @@
+#include <map>
+#include <iostream>
+#include <FreeImagePlus.h>
+
 #include "gltf_material_accessor_library_iface.hxx"
 #include "gltf_exception.hxx"
 #include "json_helper_accessor.hxx"
 
 #include "common.hxx"
-#include <map>
 
 class GltfMaterialLibraryImpl;
 using GltfMaterialLibraryImplPtr = std::shared_ptr<GltfMaterialLibraryImpl>;
@@ -18,16 +21,8 @@ class GltfTextureReference {
 
     public:
 
-    GltfTextureReference(GltfMaterialLibraryImpl* _lib, const FileLibrary::UriReference _ref) :
-        ref(_ref), lib(_lib)
-    {
-        console->debug("Load texture {}", ref.getPath().c_str());
-    };
-
-    void apply() {
-        console->debug("Apply texture {}", ref.getPath().c_str());
-    }
-
+    GltfTextureReference(GltfMaterialLibraryImpl* _lib, const FileLibrary::UriReference _ref);
+    void apply();
     ~GltfTextureReference();
 };
 
@@ -79,14 +74,14 @@ class GltfMaterialAccessorImpl : public GltfMaterialAccessorIFace {
             FileLibrary::UriReference imageUri = dir.getSubPath(uri);
             textureList.push_back(libImpl->getTexture(imageUri));
         });
-        jsonExecuteAllIfElement(file, "textures", [this, &texture_to_image](nlohmann::json& node_texture, int texture_index) {
+        jsonExecuteAllIfElement(file, "textures", [&texture_to_image](nlohmann::json& node_texture, int texture_index) {
             if (!node_texture.contains("source"))
                 throw GltfException(string("Texture has no source. Index=") + to_string(texture_index));
             int source_index = node_texture["source"].get<int>();
             texture_to_image.push_back(source_index);
             console->debug("texture {} is using image {}", texture_index, source_index);
         });
-        jsonExecuteAllIfElement(file, "materials", [this, &texture_to_image](nlohmann::json& child, int node_index) {
+        jsonExecuteAllIfElement(file, "materials", [&texture_to_image](nlohmann::json& child, int node_index) {
             string name;
             string textureFileName;
             struct material mat;
@@ -94,9 +89,9 @@ class GltfMaterialAccessorImpl : public GltfMaterialAccessorIFace {
             jsonExecuteIfElement(child, "name", [&name](nlohmann::json& name_child) {
                 name = name_child.get<string>();
             });
-            jsonExecuteIfElement(child, "pbrMetallicRoughness", [this, &texture_to_image, node_index, &mat](nlohmann::json& pbr_child) {
-                jsonExecuteIfElement(pbr_child, "baseColorTexture", [this, &texture_to_image, node_index, &mat](nlohmann::json& baseColorTexture) {
-                    jsonExecuteIfElement(baseColorTexture, "index", [this, &texture_to_image, node_index, &mat](nlohmann::json& index) {
+            jsonExecuteIfElement(child, "pbrMetallicRoughness", [&texture_to_image, node_index, &mat](nlohmann::json& pbr_child) {
+                jsonExecuteIfElement(pbr_child, "baseColorTexture", [&texture_to_image, node_index, &mat](nlohmann::json& baseColorTexture) {
+                    jsonExecuteIfElement(baseColorTexture, "index", [&texture_to_image, node_index, &mat](nlohmann::json& index) {
                         int texture_index = index.get<int>();
                         if (texture_index < 0 || texture_index >=texture_to_image.size())
                             throw GltfException(string("Invaild texture index {} for material {}")
@@ -170,11 +165,27 @@ GltfMaterialLibraryIface::~GltfMaterialLibraryIface()
 {
 }
 
+GltfMaterialAccessorIFace::~GltfMaterialAccessorIFace() {}
+
+
+GltfTextureReference::GltfTextureReference(GltfMaterialLibraryImpl* _lib, const FileLibrary::UriReference _ref) :
+        ref(_ref), lib(_lib)
+{
+    console->debug("Load texture {}", ref.getPath().c_str());
+    FileContentPtr textureContent = ref.readContent();
+    fipImage img;
+    fipMemoryIO mem((BYTE*)(textureContent->memory_block), (DWORD)textureContent->size);
+    bool result = img.loadFromMemory(mem);
+    console->debug("Load texture {} returned {} size {}x{}", ref.getPath().c_str(), result, img.getWidth(), img.getHeight());
+};
+
+void GltfTextureReference::apply()
+{
+    console->debug("Apply texture {}", ref.getPath().c_str());
+}
+
 GltfTextureReference::~GltfTextureReference()
 {
     lib->releaseTexture(ref);
     console->debug("Release texture {}", ref.getPath().c_str());
 }
-
-GltfMaterialAccessorIFace::~GltfMaterialAccessorIFace() {}
-
