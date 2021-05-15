@@ -36,11 +36,15 @@ class GltfMaterialLibraryIface
     /** @brief Access to real GltfMaterialAccessor impl. Keep the pointer
      *         during the life of the model. Releasing it decrements
      *         allocated textures ref-counting
+     * @param dir Current GLTF file directory. External files are built
+     *            from this reference point.
      * @param file Current GLTF file. Used for:
      *             1/ relative file name resolution
      *             2/ preloading all material upfront
     */
-    virtual GltfMaterialAccessorIFacePtr getMaterialAccessor(nlohmann::json& file) = 0;
+    virtual GltfMaterialAccessorIFacePtr getMaterialAccessor(
+        const FileLibrary::UriReference& dir,
+        nlohmann::json& file) = 0;
 
     virtual ~GltfMaterialLibraryIface() = 0;
 };

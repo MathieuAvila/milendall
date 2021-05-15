@@ -71,7 +71,7 @@ GltfModel::GltfModel(GltfMaterialLibraryIfacePtr materialLibrary, const FileLibr
     unique_ptr<GltfDataAccessorIFace> data_accessor(new GltfDataAccessor(file_json, ref.getDirPath()));
 
     // access a material accessor from the json file
-    materialAccessor = materialLibrary->getMaterialAccessor(file_json);
+    materialAccessor = materialLibrary->getMaterialAccessor(ref.getDirPath(), file_json);
 
     // Load all meshes, whether used or not
     jsonExecuteAllIfElement(file_json, "meshes", [this, &data_accessor](nlohmann::json& child, int node_index) {
