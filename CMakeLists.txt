@@ -8,8 +8,15 @@ find_package(spdlog REQUIRED)
 find_package(glm REQUIRED)
 find_package(FreeImagePlus REQUIRED)
 find_package(FreeImage REQUIRED)
+find_package(OpenGL REQUIRED)
+
+set(GLFW_INCLUDE_PATH "" CACHE PATH "The directory that contains GL/glfw.h" )
+set(GLFW_LIBRARY "" CACHE FILEPATH "libglfw.a or glfw.lib" )
+set(GLEW_INCLUDE_PATH "" CACHE PATH "The directory that contains GL/glew.h" )
+set(GLEW_LIBRARY "" CACHE FILEPATH "libglew.a or glew.lib" )
 
 find_package(Boost 1.40 COMPONENTS program_options REQUIRED)
+
 
 SET (CMAKE_CXX_COMPILER             "/usr/bin/clang++-11")
 SET (CMAKE_CXX_FLAGS                "-std=c++17 -Wall")
@@ -58,12 +65,16 @@ target_link_libraries(milendall
   spdlog::spdlog
   glm::glm
   ${FREEIMAGEPLUS_LIBRARIES} ${FreeImage_LIBRARIES}
+  ${OPENGL_LIBRARY}
+  ${GLFW_LIBRARY}
+  ${GLEW_LIBRARY}
 )
 
 add_executable(unit_test
   game/test/unit_level.cpp
   game/test/unit_main.cpp
   game/test/unit_file_library.cpp
+  game/test/unit_gltf_material_accessor.cpp
   game/test/unit_gltf_table_accessor.cpp
   game/test/unit_gltf_data_accessor.cpp
   game/test/unit_json_helper_math.cpp
@@ -79,6 +90,10 @@ target_link_libraries(unit_test
     nlohmann_json::nlohmann_json
     glm::glm
     ${FREEIMAGEPLUS_LIBRARIES} ${FreeImage_LIBRARIES}
+
+    ${OPENGL_LIBRARY}
+    ${GLFW_LIBRARY}
+    ${GLEW_LIBRARY}
 )
 
 target_include_directories(unit_test PRIVATE catch2/ )

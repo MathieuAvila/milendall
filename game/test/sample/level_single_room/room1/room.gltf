@@ -499,13 +499,13 @@
  ],
  "images": [
   {
-   "uri": "common/basic/ground.jpg"
+   "uri": "/fake_texture/white.jpg"
   },
   {
-   "uri": "common/basic/wall.jpg"
+   "uri": "/fake_texture/black.jpg"
   },
   {
-   "uri": "common/basic/ceiling.jpg"
+   "uri": "/fake_texture/white.jpg"
   }
  ],
  "textures": [

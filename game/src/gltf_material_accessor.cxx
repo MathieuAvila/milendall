@@ -1,6 +1,7 @@
 #include <map>
 #include <iostream>
 #include <FreeImagePlus.h>
+#include <GL/glew.h>
 
 #include "gltf_material_accessor_library_iface.hxx"
 #include "gltf_exception.hxx"
@@ -18,6 +19,7 @@ class GltfTextureReference {
 
     const FileLibrary::UriReference ref;
     GltfMaterialLibraryImpl* lib;
+    GLuint gl_texture;
 
     public:
 
@@ -174,9 +176,26 @@ GltfTextureReference::GltfTextureReference(GltfMaterialLibraryImpl* _lib, const 
     console->debug("Load texture {}", ref.getPath().c_str());
     FileContentPtr textureContent = ref.readContent();
     fipImage img;
+    int format;
+
     fipMemoryIO mem((BYTE*)(textureContent->memory_block), (DWORD)textureContent->size);
     bool result = img.loadFromMemory(mem);
-    console->debug("Load texture {} returned {} size {}x{}", ref.getPath().c_str(), result, img.getWidth(), img.getHeight());
+    if (!result)
+        throw GltfException(string("Error loading texture file: ") + ref.getPath().c_str());
+    console->debug("Load texture {} returned {} size {}x{}, image type={}, BPP={}", ref.getPath().c_str(), result,
+        img.getWidth(), img.getHeight(), img.getImageType(), img.getBitsPerPixel());
+    switch (img.getBitsPerPixel())
+    {
+        case 32: format = GL_RGBA; break;
+        case 24: format = GL_RGB; break;
+        default: throw GltfException("Unhandled pixel size: " + to_string(img.getBitsPerPixel()));
+    }
+    glGenTextures(1, &gl_texture);
+	glBindTexture(GL_TEXTURE_2D, gl_texture);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.getWidth(), img.getHeight(), 0, GL_BYTE,  format, (*img).data);
+	GLenum err = glGetError();
+    console->debug("glTexImage2D returned {}", err);
 };
 
 void GltfTextureReference::apply()

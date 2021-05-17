@@ -1,0 +1,54 @@
+{
+
+ "materials": [
+  {
+   "pbrMetallicRoughness": {
+    "baseColorTexture": {
+     "index": 0
+    },
+    "metallicFactor": 0.0
+   }
+  },
+  {
+   "pbrMetallicRoughness": {
+    "baseColorTexture": {
+     "index": 1
+    },
+    "metallicFactor": 0.0
+   }
+  },
+  {
+   "pbrMetallicRoughness": {
+    "baseColorTexture": {
+     "index": 2
+    },
+    "metallicFactor": 0.0
+   }
+  }
+ ],
+ "images": [
+  {
+   "uri": "/common/basic/ground.jpg"
+  },
+  {
+   "uri": "/common/basic/wall.jpg"
+  },
+  {
+   "uri": "/common/basic/missing.jpg"
+  }
+ ],
+ "textures": [
+  {
+   "sampler": 0,
+   "source": 0
+  },
+  {
+   "sampler": 0,
+   "source": 1
+  },
+  {
+   "sampler": 0,
+   "source": 2
+  }
+ ]
+}

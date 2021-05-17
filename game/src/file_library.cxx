@@ -77,7 +77,7 @@ std::shared_ptr<FileContent> FileLibrary::UriReference::readContent() const
          return std::make_shared<FileContent>(file_size, memory);
       }
    }
-   console->error("file not found: ", path);
+   console->error("file not found: {}", path);
    return std::make_shared<FileContent>(0, nullptr);
 }
 

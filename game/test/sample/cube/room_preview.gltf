@@ -203,10 +203,10 @@
  ],
  "images": [
   {
-   "uri": "wall.jpg"
+   "uri": "/fake_texture/white.jpg"
   },
   {
-   "uri": "ground.jpg"
+   "uri": "/fake_texture/black.jpg"
   }
  ],
  "textures": [
