@@ -17,6 +17,11 @@ set(GLEW_LIBRARY "" CACHE FILEPATH "libglew.a or glew.lib" )
 
 find_package(Boost 1.40 COMPONENTS program_options REQUIRED)
 
+find_package(GTest REQUIRED)
+find_package(GMock REQUIRED)
+include(GoogleTest)
+
+
 
 SET (CMAKE_CXX_COMPILER             "/usr/bin/clang++-11")
 SET (CMAKE_CXX_FLAGS                "-std=c++17 -Wall")
@@ -71,19 +76,18 @@ target_link_libraries(milendall
 )
 
 add_executable(unit_test
-  game/test/unit_level.cpp
-  game/test/unit_main.cpp
-  game/test/unit_file_library.cpp
-  game/test/unit_gltf_material_accessor.cpp
-  game/test/unit_gltf_table_accessor.cpp
-  game/test/unit_gltf_data_accessor.cpp
-  game/test/unit_json_helper_math.cpp
-  game/test/unit_gltf_model.cxx
-  game/test/unit_gltf_node.cxx
-  catch2/catch_amalgamated.cpp
-  catch2/catch_amalgamated.hpp
-  )
+game/test/unit_main.cpp
+game/test/unit_file_library.cpp
+game/test/unit_level.cpp
+game/test/unit_gltf_material_accessor.cpp
+game/test/unit_gltf_table_accessor.cpp
+game/test/unit_gltf_data_accessor.cpp
+game/test/unit_json_helper_math.cpp
+game/test/unit_gltf_model.cxx
+game/test/unit_gltf_node.cxx
+)
 
+enable_testing()
 target_link_libraries(unit_test
     ${Boost_LIBRARIES}
     game_lib
@@ -94,7 +98,9 @@ target_link_libraries(unit_test
     ${OPENGL_LIBRARY}
     ${GLFW_LIBRARY}
     ${GLEW_LIBRARY}
+    gtest gtest_main pthread
 )
+include(GoogleTest)
+gtest_discover_tests(unit_test)
 
-target_include_directories(unit_test PRIVATE catch2/ )
 target_include_directories(unit_test PRIVATE game/src/ )

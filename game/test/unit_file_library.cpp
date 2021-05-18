@@ -1,65 +1,63 @@
-#include "catch_amalgamated.hpp"
+#include <gtest/gtest.h>
 
 #include "file_library.hxx"
 
-TEST_CASE("File library", "[file_library]" ) {
-
-SECTION("Get root instance"){
+TEST(FILE_LIBRARY, GET_ROOT_INSTANCE){
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library");
     auto root = fl.getRoot();
-    REQUIRE( root.getPath() == "/" );
+    EXPECT_EQ( root.getPath(), "/" );
 }
 
-SECTION( "Check path completion") {
+TEST(FILE_LIBRARY, Check_path_completion) {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library");
     auto toto_tata = fl.getRoot().getSubPath("toto").getSubPath("tata");
-    REQUIRE( toto_tata.getPath() == "/toto/tata" );
+    EXPECT_TRUE( toto_tata.getPath() == "/toto/tata" );
 }
 
-SECTION( "Get dir path" ) {
+TEST(FILE_LIBRARY, Get_dir_path ) {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library");
     auto toto_tata = fl.getRoot().getSubPath("toto").getSubPath("tata").getSubPath("trou");
-    REQUIRE( toto_tata.getDirPath().getPath() == "/toto/tata" );
+    EXPECT_TRUE( toto_tata.getDirPath().getPath() == "/toto/tata" );
 }
 
-SECTION("Check path completion with root") {
+TEST(FILE_LIBRARY, Check_path_completion_with_root) {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library");
     auto toto_tata = fl.getRoot().getSubPath("toto").getSubPath("/tata/");
-    REQUIRE( toto_tata.getPath() == "/tata" );
+    EXPECT_TRUE( toto_tata.getPath() == "/tata" );
 }
 
-SECTION("Check path simplification") {
+TEST(FILE_LIBRARY, Check_path_simplification) {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library");
     auto toto_tata = fl.getRoot().getSubPath("toto").getSubPath("tata").getSubPath("..");
-    REQUIRE( toto_tata.getPath() == "/toto" );
+    EXPECT_TRUE( toto_tata.getPath() == "/toto" );
 }
 
-SECTION("List directory") {
+TEST(FILE_LIBRARY, List_directory) {
     // TODO
 }
 
-SECTION("Get file content does not exist") {
+TEST(FILE_LIBRARY, Get_file_content_does_not_exist) {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library");
     auto no_file = fl.getRoot().getSubPath("no_entry");
     auto content = no_file.readContent();
 
-    REQUIRE( content.get() != nullptr );
-    REQUIRE( content.get()->memory_block == nullptr );
-    REQUIRE( content.get()->size == 0 );
+    EXPECT_TRUE( content.get() != nullptr );
+    EXPECT_TRUE( content.get()->memory_block == nullptr );
+    EXPECT_TRUE( content.get()->size == 0 );
 }
 
-SECTION("Get file content ok, simple file") {
+TEST(FILE_LIBRARY, Get_file_content_ok_simple_file) {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library");
@@ -70,17 +68,17 @@ SECTION("Get file content ok, simple file") {
     auto no_file = fl.getRoot().getSubPath("/toto/file.txt");
     auto content = no_file.readContent();
 
-    REQUIRE( content.get() != nullptr );
-    REQUIRE( content.get()->memory_block != nullptr );
-    REQUIRE( content.get()->size == 5 );
-    REQUIRE( ((char*)(content.get()->memory_block))[0] == 'a' );
-    REQUIRE( ((char*)(content.get()->memory_block))[1] == 'b' );
-    REQUIRE( ((char*)(content.get()->memory_block))[2] == 'c' );
-    REQUIRE( ((char*)(content.get()->memory_block))[3] == 'd' );
-    REQUIRE( ((char*)(content.get()->memory_block))[4] == '\n' );
+    EXPECT_TRUE( content.get() != nullptr );
+    EXPECT_TRUE( content.get()->memory_block != nullptr );
+    EXPECT_TRUE( content.get()->size == 5 );
+    EXPECT_TRUE( ((char*)(content.get()->memory_block))[0] == 'a' );
+    EXPECT_TRUE( ((char*)(content.get()->memory_block))[1] == 'b' );
+    EXPECT_TRUE( ((char*)(content.get()->memory_block))[2] == 'c' );
+    EXPECT_TRUE( ((char*)(content.get()->memory_block))[3] == 'd' );
+    EXPECT_TRUE( ((char*)(content.get()->memory_block))[4] == '\n' );
 }
 
-SECTION("File content in 2 dirs") {
+TEST(FILE_LIBRARY, File_content_in_2_dirs) {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library/d1");
@@ -95,31 +93,31 @@ SECTION("File content in 2 dirs") {
     auto file1 = fl.getRoot().getSubPath("/toto/file1.txt");
     auto content = file1.readContent();
 
-    REQUIRE( content.get() != nullptr );
-    REQUIRE( content.get()->memory_block != nullptr );
-    REQUIRE( content.get()->size == 5 );
-    REQUIRE( ((char*)(content.get()->memory_block))[0] == 'a' );
-    REQUIRE( ((char*)(content.get()->memory_block))[1] == 'b' );
-    REQUIRE( ((char*)(content.get()->memory_block))[2] == 'c' );
-    REQUIRE( ((char*)(content.get()->memory_block))[3] == 'd' );
-    REQUIRE( ((char*)(content.get()->memory_block))[4] == '\n' );
+    EXPECT_TRUE( content.get() != nullptr );
+    EXPECT_TRUE( content.get()->memory_block != nullptr );
+    EXPECT_TRUE( content.get()->size == 5 );
+    EXPECT_TRUE( ((char*)(content.get()->memory_block))[0] == 'a' );
+    EXPECT_TRUE( ((char*)(content.get()->memory_block))[1] == 'b' );
+    EXPECT_TRUE( ((char*)(content.get()->memory_block))[2] == 'c' );
+    EXPECT_TRUE( ((char*)(content.get()->memory_block))[3] == 'd' );
+    EXPECT_TRUE( ((char*)(content.get()->memory_block))[4] == '\n' );
 
     auto file2 = fl.getRoot().getSubPath("/toto/file2.txt");
     content = file2.readContent();
 
-    REQUIRE( content.get() != nullptr );
-    REQUIRE( content.get()->memory_block != nullptr );
-    REQUIRE( content.get()->size == 5 );
-    REQUIRE( ((char*)(content.get()->memory_block))[0] == '0' );
-    REQUIRE( ((char*)(content.get()->memory_block))[1] == '1' );
-    REQUIRE( ((char*)(content.get()->memory_block))[2] == '2' );
-    REQUIRE( ((char*)(content.get()->memory_block))[3] == '3' );
-    REQUIRE( ((char*)(content.get()->memory_block))[4] == '\n' );
+    EXPECT_TRUE( content.get() != nullptr );
+    EXPECT_TRUE( content.get()->memory_block != nullptr );
+    EXPECT_TRUE( content.get()->size == 5 );
+    EXPECT_TRUE( ((char*)(content.get()->memory_block))[0] == '0' );
+    EXPECT_TRUE( ((char*)(content.get()->memory_block))[1] == '1' );
+    EXPECT_TRUE( ((char*)(content.get()->memory_block))[2] == '2' );
+    EXPECT_TRUE( ((char*)(content.get()->memory_block))[3] == '3' );
+    EXPECT_TRUE( ((char*)(content.get()->memory_block))[4] == '\n' );
 
 
 }
 
-SECTION("File content conflict in 2 dirs") {
+TEST(FILE_LIBRARY, File_content_conflict_in_2_dirs) {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library/d1");
@@ -134,17 +132,17 @@ SECTION("File content conflict in 2 dirs") {
     auto no_file = fl.getRoot().getSubPath("/toto/file.txt");
     auto content = no_file.readContent();
 
-    REQUIRE( content.get() != nullptr );
-    REQUIRE( content.get()->memory_block != nullptr );
-    REQUIRE( content.get()->size == 5 );
-    REQUIRE( ((char*)(content.get()->memory_block))[0] == 'a' );
-    REQUIRE( ((char*)(content.get()->memory_block))[1] == 'b' );
-    REQUIRE( ((char*)(content.get()->memory_block))[2] == 'c' );
-    REQUIRE( ((char*)(content.get()->memory_block))[3] == 'd' );
-    REQUIRE( ((char*)(content.get()->memory_block))[4] == '\n' );
+    EXPECT_TRUE( content.get() != nullptr );
+    EXPECT_TRUE( content.get()->memory_block != nullptr );
+    EXPECT_TRUE( content.get()->size == 5 );
+    EXPECT_TRUE( ((char*)(content.get()->memory_block))[0] == 'a' );
+    EXPECT_TRUE( ((char*)(content.get()->memory_block))[1] == 'b' );
+    EXPECT_TRUE( ((char*)(content.get()->memory_block))[2] == 'c' );
+    EXPECT_TRUE( ((char*)(content.get()->memory_block))[3] == 'd' );
+    EXPECT_TRUE( ((char*)(content.get()->memory_block))[4] == '\n' );
 }
 
-SECTION("List directory 1 dir") {
+TEST(FILE_LIBRARY, List_directory_1_dir) {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library");
@@ -156,12 +154,12 @@ SECTION("List directory 1 dir") {
         );
     auto dir1 = fl.getRoot().getSubPath("/d1/toto");
     auto content = dir1.listDirectory();
-    REQUIRE( content.size() == 2 );
-    REQUIRE( content[0].getPath() == "/d1/toto/file1.txt" );
-    REQUIRE( content[1].getPath() == "/d1/toto/file2.txt" );
+    EXPECT_TRUE( content.size() == 2 );
+    EXPECT_TRUE( content[0].getPath() == "/d1/toto/file1.txt" );
+    EXPECT_TRUE( content[1].getPath() == "/d1/toto/file2.txt" );
 }
 
-SECTION("List directory 2 dirs") {
+TEST(FILE_LIBRARY, List_directory_2_dirs) {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library/d1");
@@ -177,24 +175,24 @@ SECTION("List directory 2 dirs") {
         );
     auto dir1 = fl.getRoot().getSubPath("/toto");
     auto content = dir1.listDirectory();
-    REQUIRE( content.size() == 4 );
-    REQUIRE( content[0].getPath() == "/toto/file1.txt" );
-    REQUIRE( content[1].getPath() == "/toto/file2.txt" );
-    REQUIRE( content[2].getPath() == "/toto/file3.txt" );
-    REQUIRE( content[3].getPath() == "/toto/file4.txt" );
+    EXPECT_TRUE( content.size() == 4 );
+    EXPECT_TRUE( content[0].getPath() == "/toto/file1.txt" );
+    EXPECT_TRUE( content[1].getPath() == "/toto/file2.txt" );
+    EXPECT_TRUE( content[2].getPath() == "/toto/file3.txt" );
+    EXPECT_TRUE( content[3].getPath() == "/toto/file4.txt" );
 }
 
-SECTION("Get string file content does not exist") {
+TEST(FILE_LIBRARY, Get_string_file_content_does_not_exist) {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library");
     auto no_file = fl.getRoot().getSubPath("no_entry");
     auto content = no_file.readStringContent();
 
-    REQUIRE( content == "" );
+    EXPECT_TRUE( content == "" );
 }
 
-SECTION("Get string file content ok, simple content") {
+TEST(FILE_LIBRARY, Get_string_file_content_ok_simple_content) {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library");
@@ -205,6 +203,5 @@ SECTION("Get string file content ok, simple content") {
     auto no_file = fl.getRoot().getSubPath("/toto/file.txt");
     auto content = no_file.readStringContent();
 
-    REQUIRE( content == "abcd\n" );
-}
+    EXPECT_TRUE( content == "abcd\n" );
 }

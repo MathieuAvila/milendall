@@ -317,7 +317,7 @@ namespace Catch {
 //
 // For example, this code will likely segfault under IBM XL:
 // ```
-// REQUIRE(std::string("12") + "34" == "1234")
+// EXPECT_TRUE(std::string("12") + "34" == "1234")
 // ```
 //
 // Therefore, `CATCH_INTERNAL_IGNORE_BUT_WARN` is not implemented.
@@ -950,7 +950,7 @@ namespace Catch {
 #include <iosfwd>
 
 namespace Catch {
-        
+
     struct ITransientExpression;
 
     class LazyExpression {
@@ -2575,7 +2575,7 @@ namespace Catch {
                         analysis.outlier_variance,
                     };
                 } else {
-                    std::vector<Duration> samples; 
+                    std::vector<Duration> samples;
                     samples.reserve(last - first);
 
                     Duration mean = Duration(0);
@@ -5765,14 +5765,14 @@ struct AutoReg : Detail::NonCopyable {
 
 #if defined(CATCH_CONFIG_PREFIX_ALL) && !defined(CATCH_CONFIG_DISABLE)
 
-  #define CATCH_REQUIRE( ... ) INTERNAL_CATCH_TEST( "CATCH_REQUIRE", Catch::ResultDisposition::Normal, __VA_ARGS__ )
+  #define CATCH_EXPECT_TRUE( ... ) INTERNAL_CATCH_TEST( "CATCH_REQUIRE", Catch::ResultDisposition::Normal, __VA_ARGS__ )
   #define CATCH_REQUIRE_FALSE( ... ) INTERNAL_CATCH_TEST( "CATCH_REQUIRE_FALSE", Catch::ResultDisposition::Normal | Catch::ResultDisposition::FalseTest, __VA_ARGS__ )
 
   #define CATCH_REQUIRE_THROWS( ... ) INTERNAL_CATCH_THROWS( "CATCH_REQUIRE_THROWS", Catch::ResultDisposition::Normal, __VA_ARGS__ )
   #define CATCH_REQUIRE_THROWS_AS( expr, exceptionType ) INTERNAL_CATCH_THROWS_AS( "CATCH_REQUIRE_THROWS_AS", exceptionType, Catch::ResultDisposition::Normal, expr )
   #define CATCH_REQUIRE_NOTHROW( ... ) INTERNAL_CATCH_NO_THROW( "CATCH_REQUIRE_NOTHROW", Catch::ResultDisposition::Normal, __VA_ARGS__ )
 
-  #define CATCH_CHECK( ... ) INTERNAL_CATCH_TEST( "CATCH_CHECK", Catch::ResultDisposition::ContinueOnFailure, __VA_ARGS__ )
+  #define CATCH_EXPECT_TRUE( ... ) INTERNAL_CATCH_TEST( "CATCH_CHECK", Catch::ResultDisposition::ContinueOnFailure, __VA_ARGS__ )
   #define CATCH_CHECK_FALSE( ... ) INTERNAL_CATCH_TEST( "CATCH_CHECK_FALSE", Catch::ResultDisposition::ContinueOnFailure | Catch::ResultDisposition::FalseTest, __VA_ARGS__ )
   #define CATCH_CHECKED_IF( ... ) INTERNAL_CATCH_IF( "CATCH_CHECKED_IF", Catch::ResultDisposition::ContinueOnFailure, __VA_ARGS__ )
   #define CATCH_CHECKED_ELSE( ... ) INTERNAL_CATCH_ELSE( "CATCH_CHECKED_ELSE", Catch::ResultDisposition::ContinueOnFailure, __VA_ARGS__ )
@@ -5789,21 +5789,21 @@ struct AutoReg : Detail::NonCopyable {
   #define CATCH_SECTION( ... ) INTERNAL_CATCH_SECTION( __VA_ARGS__ )
   #define CATCH_DYNAMIC_SECTION( ... ) INTERNAL_CATCH_DYNAMIC_SECTION( __VA_ARGS__ )
   #define CATCH_FAIL( ... ) INTERNAL_CATCH_MSG( "CATCH_FAIL", Catch::ResultWas::ExplicitFailure, Catch::ResultDisposition::Normal, __VA_ARGS__ )
-  #define CATCH_FAIL_CHECK( ... ) INTERNAL_CATCH_MSG( "CATCH_FAIL_CHECK", Catch::ResultWas::ExplicitFailure, Catch::ResultDisposition::ContinueOnFailure, __VA_ARGS__ )
+  #define CATCH_FAIL_EXPECT_TRUE( ... ) INTERNAL_CATCH_MSG( "CATCH_FAIL_CHECK", Catch::ResultWas::ExplicitFailure, Catch::ResultDisposition::ContinueOnFailure, __VA_ARGS__ )
   #define CATCH_SUCCEED( ... ) INTERNAL_CATCH_MSG( "CATCH_SUCCEED", Catch::ResultWas::Ok, Catch::ResultDisposition::ContinueOnFailure, __VA_ARGS__ )
 
 
   #if !defined(CATCH_CONFIG_RUNTIME_STATIC_REQUIRE)
-    #define CATCH_STATIC_REQUIRE( ... )       static_assert(   __VA_ARGS__ ,      #__VA_ARGS__ );     CATCH_SUCCEED( #__VA_ARGS__ )
+    #define CATCH_STATIC_EXPECT_TRUE( ... )       static_assert(   __VA_ARGS__ ,      #__VA_ARGS__ );     CATCH_SUCCEED( #__VA_ARGS__ )
     #define CATCH_STATIC_REQUIRE_FALSE( ... ) static_assert( !(__VA_ARGS__), "!(" #__VA_ARGS__ ")" ); CATCH_SUCCEED( #__VA_ARGS__ )
   #else
-    #define CATCH_STATIC_REQUIRE( ... )       CATCH_REQUIRE( __VA_ARGS__ )
+    #define CATCH_STATIC_EXPECT_TRUE( ... )       CATCH_EXPECT_TRUE( __VA_ARGS__ )
     #define CATCH_STATIC_REQUIRE_FALSE( ... ) CATCH_REQUIRE_FALSE( __VA_ARGS__ )
   #endif
 
 
   // "BDD-style" convenience wrappers
-  #define CATCH_SCENARIO( ... ) CATCH_TEST_CASE( "Scenario: " __VA_ARGS__ )
+  #define CATCH_SCENARIO( ... ) CATCH_TEST(Scenario: " __VA_ARGS__ )
   #define CATCH_SCENARIO_METHOD( className, ... ) INTERNAL_CATCH_TEST_CASE_METHOD( className, "Scenario: " __VA_ARGS__ )
   #define CATCH_GIVEN( desc )     INTERNAL_CATCH_DYNAMIC_SECTION( "    Given: " << desc )
   #define CATCH_AND_GIVEN( desc ) INTERNAL_CATCH_DYNAMIC_SECTION( "And given: " << desc )
@@ -5814,14 +5814,14 @@ struct AutoReg : Detail::NonCopyable {
 
 #elif defined(CATCH_CONFIG_PREFIX_ALL) && defined(CATCH_CONFIG_DISABLE) // ^^ prefixed, implemented | vv prefixed, disabled
 
-  #define CATCH_REQUIRE( ... )        (void)(0)
+  #define CATCH_EXPECT_TRUE( ... )        (void)(0)
   #define CATCH_REQUIRE_FALSE( ... )  (void)(0)
 
   #define CATCH_REQUIRE_THROWS( ... ) (void)(0)
   #define CATCH_REQUIRE_THROWS_AS( expr, exceptionType ) (void)(0)
   #define CATCH_REQUIRE_NOTHROW( ... ) (void)(0)
 
-  #define CATCH_CHECK( ... )         (void)(0)
+  #define CATCH_EXPECT_TRUE( ... )         (void)(0)
   #define CATCH_CHECK_FALSE( ... )   (void)(0)
   #define CATCH_CHECKED_IF( ... )    if (__VA_ARGS__)
   #define CATCH_CHECKED_ELSE( ... )  if (!(__VA_ARGS__))
@@ -5838,10 +5838,10 @@ struct AutoReg : Detail::NonCopyable {
   #define CATCH_SECTION( ... )
   #define CATCH_DYNAMIC_SECTION( ... )
   #define CATCH_FAIL( ... ) (void)(0)
-  #define CATCH_FAIL_CHECK( ... ) (void)(0)
+  #define CATCH_FAIL_EXPECT_TRUE( ... ) (void)(0)
   #define CATCH_SUCCEED( ... ) (void)(0)
 
-  #define CATCH_STATIC_REQUIRE( ... )       (void)(0)
+  #define CATCH_STATIC_EXPECT_TRUE( ... )       (void)(0)
   #define CATCH_STATIC_REQUIRE_FALSE( ... ) (void)(0)
 
   // "BDD-style" convenience wrappers
@@ -5856,14 +5856,14 @@ struct AutoReg : Detail::NonCopyable {
 
 #elif !defined(CATCH_CONFIG_PREFIX_ALL) && !defined(CATCH_CONFIG_DISABLE) // ^^ prefixed, disabled | vv unprefixed, implemented
 
-  #define REQUIRE( ... ) INTERNAL_CATCH_TEST( "REQUIRE", Catch::ResultDisposition::Normal, __VA_ARGS__  )
+  #define EXPECT_TRUE( ... ) INTERNAL_CATCH_TEST( "REQUIRE", Catch::ResultDisposition::Normal, __VA_ARGS__  )
   #define REQUIRE_FALSE( ... ) INTERNAL_CATCH_TEST( "REQUIRE_FALSE", Catch::ResultDisposition::Normal | Catch::ResultDisposition::FalseTest, __VA_ARGS__ )
 
   #define REQUIRE_THROWS( ... ) INTERNAL_CATCH_THROWS( "REQUIRE_THROWS", Catch::ResultDisposition::Normal, __VA_ARGS__ )
   #define REQUIRE_THROWS_AS( expr, exceptionType ) INTERNAL_CATCH_THROWS_AS( "REQUIRE_THROWS_AS", exceptionType, Catch::ResultDisposition::Normal, expr )
   #define REQUIRE_NOTHROW( ... ) INTERNAL_CATCH_NO_THROW( "REQUIRE_NOTHROW", Catch::ResultDisposition::Normal, __VA_ARGS__ )
 
-  #define CHECK( ... ) INTERNAL_CATCH_TEST( "CHECK", Catch::ResultDisposition::ContinueOnFailure, __VA_ARGS__ )
+  #define EXPECT_TRUE( ... ) INTERNAL_CATCH_TEST( "CHECK", Catch::ResultDisposition::ContinueOnFailure, __VA_ARGS__ )
   #define CHECK_FALSE( ... ) INTERNAL_CATCH_TEST( "CHECK_FALSE", Catch::ResultDisposition::ContinueOnFailure | Catch::ResultDisposition::FalseTest, __VA_ARGS__ )
   #define CHECKED_IF( ... ) INTERNAL_CATCH_IF( "CHECKED_IF", Catch::ResultDisposition::ContinueOnFailure, __VA_ARGS__ )
   #define CHECKED_ELSE( ... ) INTERNAL_CATCH_ELSE( "CHECKED_ELSE", Catch::ResultDisposition::ContinueOnFailure, __VA_ARGS__ )
@@ -5880,20 +5880,20 @@ struct AutoReg : Detail::NonCopyable {
   #define SECTION( ... ) INTERNAL_CATCH_SECTION( __VA_ARGS__ )
   #define DYNAMIC_SECTION( ... ) INTERNAL_CATCH_DYNAMIC_SECTION( __VA_ARGS__ )
   #define FAIL( ... ) INTERNAL_CATCH_MSG( "FAIL", Catch::ResultWas::ExplicitFailure, Catch::ResultDisposition::Normal, __VA_ARGS__ )
-  #define FAIL_CHECK( ... ) INTERNAL_CATCH_MSG( "FAIL_CHECK", Catch::ResultWas::ExplicitFailure, Catch::ResultDisposition::ContinueOnFailure, __VA_ARGS__ )
+  #define FAIL_EXPECT_TRUE( ... ) INTERNAL_CATCH_MSG( "FAIL_CHECK", Catch::ResultWas::ExplicitFailure, Catch::ResultDisposition::ContinueOnFailure, __VA_ARGS__ )
   #define SUCCEED( ... ) INTERNAL_CATCH_MSG( "SUCCEED", Catch::ResultWas::Ok, Catch::ResultDisposition::ContinueOnFailure, __VA_ARGS__ )
 
 
   #if !defined(CATCH_CONFIG_RUNTIME_STATIC_REQUIRE)
-    #define STATIC_REQUIRE( ... )       static_assert(   __VA_ARGS__,  #__VA_ARGS__ ); SUCCEED( #__VA_ARGS__ )
+    #define STATIC_EXPECT_TRUE( ... )       static_assert(   __VA_ARGS__,  #__VA_ARGS__ ); SUCCEED( #__VA_ARGS__ )
     #define STATIC_REQUIRE_FALSE( ... ) static_assert( !(__VA_ARGS__), "!(" #__VA_ARGS__ ")" ); SUCCEED( "!(" #__VA_ARGS__ ")" )
   #else
-    #define STATIC_REQUIRE( ... )       REQUIRE( __VA_ARGS__ )
+    #define STATIC_EXPECT_TRUE( ... )       EXPECT_TRUE( __VA_ARGS__ )
     #define STATIC_REQUIRE_FALSE( ... ) REQUIRE_FALSE( __VA_ARGS__ )
   #endif
 
   // "BDD-style" convenience wrappers
-  #define SCENARIO( ... ) TEST_CASE( "Scenario: " __VA_ARGS__ )
+  #define SCENARIO( ... ) TEST(Scenario: " __VA_ARGS__ )
   #define SCENARIO_METHOD( className, ... ) INTERNAL_CATCH_TEST_CASE_METHOD( className, "Scenario: " __VA_ARGS__ )
   #define GIVEN( desc )     INTERNAL_CATCH_DYNAMIC_SECTION( "    Given: " << desc )
   #define AND_GIVEN( desc ) INTERNAL_CATCH_DYNAMIC_SECTION( "And given: " << desc )
@@ -5904,14 +5904,14 @@ struct AutoReg : Detail::NonCopyable {
 
 #elif !defined(CATCH_CONFIG_PREFIX_ALL) && defined(CATCH_CONFIG_DISABLE) // ^^ unprefixed, implemented | vv unprefixed, disabled
 
-  #define REQUIRE( ... )       (void)(0)
+  #define EXPECT_TRUE( ... )       (void)(0)
   #define REQUIRE_FALSE( ... ) (void)(0)
 
   #define REQUIRE_THROWS( ... ) (void)(0)
   #define REQUIRE_THROWS_AS( expr, exceptionType ) (void)(0)
   #define REQUIRE_NOTHROW( ... ) (void)(0)
 
-  #define CHECK( ... ) (void)(0)
+  #define EXPECT_TRUE( ... ) (void)(0)
   #define CHECK_FALSE( ... ) (void)(0)
   #define CHECKED_IF( ... ) if (__VA_ARGS__)
   #define CHECKED_ELSE( ... ) if (!(__VA_ARGS__))
@@ -5928,10 +5928,10 @@ struct AutoReg : Detail::NonCopyable {
   #define SECTION( ... )
   #define DYNAMIC_SECTION( ... )
   #define FAIL( ... ) (void)(0)
-  #define FAIL_CHECK( ... ) (void)(0)
+  #define FAIL_EXPECT_TRUE( ... ) (void)(0)
   #define SUCCEED( ... ) (void)(0)
 
-  #define STATIC_REQUIRE( ... )       (void)(0)
+  #define STATIC_EXPECT_TRUE( ... )       (void)(0)
   #define STATIC_REQUIRE_FALSE( ... ) (void)(0)
 
   // "BDD-style" convenience wrappers

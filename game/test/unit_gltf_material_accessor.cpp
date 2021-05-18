@@ -1,4 +1,4 @@
-#include "catch_amalgamated.hpp"
+#include <gtest/gtest.h>
 
 #include <filesystem>
 #include <iostream>
@@ -10,9 +10,8 @@
 using namespace nlohmann;
 using namespace std;
 
-TEST_CASE("Read material", "[gltf][material]" ) {
+TEST(GLTF_MATERIAL, READ_MATERIAL ) {
 
-SECTION("Read valid 3x3x3") {
     auto fl = FileLibrary();
     fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../game/test/sample"));
     auto material_uri = fl.getRoot().getSubPath("material/valid_3_3_3.gltf");
@@ -23,8 +22,6 @@ SECTION("Read valid 3x3x3") {
 
 }
 
-
-}
 
 
 

@@ -1,4 +1,4 @@
-#include "catch_amalgamated.hpp"
+#include <gtest/gtest.h>
 
 #include <filesystem>
 #include <iostream>
@@ -13,23 +13,21 @@
 
 static auto console = spdlog::stdout_color_mt("ut");
 
-TEST_CASE( "Load GLTF node", "[gltf-node]" ) {
-
 static glm::mat4x4 identity = glm::mat4(1.0f);
 
-SECTION("Load void")
+TEST(GLTF_NODE, Load_void)
 {
     auto json_node = json::parse(
         "{ }" );
     GltfNode node(json_node);
 
-    REQUIRE(node.children == GltfNode::ChildrenList{});
-    REQUIRE(glm::all((glm::equal(node.default_transform, identity))));
-    REQUIRE(node.my_mesh == -1);
+    EXPECT_TRUE(node.children == GltfNode::ChildrenList{});
+    EXPECT_TRUE(glm::all((glm::equal(node.default_transform, identity))));
+    EXPECT_TRUE(node.my_mesh == -1);
 }
 
 
-SECTION("Load children and matrix and mesh")
+TEST(GLTF_NODE, Load_children_and_matrix_and_mesh)
 {
     auto json_node = json::parse(
         "{ \
@@ -40,13 +38,13 @@ SECTION("Load children and matrix and mesh")
             \"matrix\": [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]}" );
     GltfNode node(json_node);
 
-    REQUIRE(node.children == GltfNode::ChildrenList{1,2,3,4});
-    REQUIRE(glm::all((glm::equal(node.default_transform, glm::mat4x4(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)))));
-    REQUIRE(node.my_mesh == 10);
+    EXPECT_TRUE( (node.children == GltfNode::ChildrenList{1,2,3,4}) );
+    EXPECT_TRUE(glm::all((glm::equal(node.default_transform, glm::mat4x4(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)))));
+    EXPECT_TRUE(node.my_mesh == 10);
 }
 
 
-SECTION("Load children and translation")
+TEST(GLTF_NODE, Load_children_and_translation)
 {
     auto json_node = json::parse(
         "{ \
@@ -56,11 +54,11 @@ SECTION("Load children and translation")
             \"translation\": [10,11,12]}" );
     GltfNode node(json_node);
 
-    REQUIRE(node.children == GltfNode::ChildrenList{1,2,3,4});
+    EXPECT_TRUE((node.children == GltfNode::ChildrenList{1,2,3,4}));
 
     console->debug(mat4x4_to_string(glm::transpose(node.default_transform)));
 
-    REQUIRE(glm::all((glm::equal(node.default_transform, glm::mat4x4(
+    EXPECT_TRUE(glm::all((glm::equal(node.default_transform, glm::mat4x4(
         1,0,0,0,
         0,1,0,0,
         0,0,1,0,
@@ -68,5 +66,3 @@ SECTION("Load children and translation")
         )))));
 }
 
-
-}
