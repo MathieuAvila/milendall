@@ -22,4 +22,6 @@ class GltfMaterialAccessorIFace
     virtual ~GltfMaterialAccessorIFace() = 0;
 };
 
-using GltfMaterialAccessorIFacePtr = std::shared_ptr<GltfMaterialAccessorIFace>;
+using UGltfMaterialAccessorIFace = std::unique_ptr<GltfMaterialAccessorIFace>;
+using WGltfMaterialAccessorIFace = std::weak_ptr<GltfMaterialAccessorIFace>;
+using SGltfMaterialAccessorIFace = std::shared_ptr<GltfMaterialAccessorIFace>;

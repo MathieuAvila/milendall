@@ -10,7 +10,9 @@
 #include "common.hxx"
 
 class GltfMaterialLibraryImpl;
-using GltfMaterialLibraryImplPtr = std::shared_ptr<GltfMaterialLibraryImpl>;
+using SGltfMaterialLibraryImpl = std::shared_ptr<GltfMaterialLibraryImpl>;
+using WGltfMaterialLibraryImpl = std::weak_ptr<GltfMaterialLibraryImpl>;
+using PGltfMaterialLibraryImpl = GltfMaterialLibraryImpl*;
 
 static auto console = spdlog::stdout_color_mt("texture");
 
@@ -18,14 +20,17 @@ static auto console = spdlog::stdout_color_mt("texture");
 class GltfTextureReference {
 
     const FileLibrary::UriReference ref;
-    GltfMaterialLibraryImpl* lib;
+    PGltfMaterialLibraryImpl lib;
     GLuint gl_texture;
 
     public:
 
-    GltfTextureReference(GltfMaterialLibraryImpl* _lib, const FileLibrary::UriReference _ref);
+    GltfTextureReference(PGltfMaterialLibraryImpl _lib, const FileLibrary::UriReference _ref);
     void apply();
     ~GltfTextureReference();
+
+    /** in case library leaves before, but should not happen */
+    void leaveLibrary();
 };
 
 using GltfTextureReferencePtr = shared_ptr<GltfTextureReference>;
@@ -39,7 +44,7 @@ class GltfMaterialLibraryImpl : public GltfMaterialLibraryIface {
 
 public:
 
-    GltfMaterialAccessorIFacePtr getMaterialAccessor(
+    UGltfMaterialAccessorIFace getMaterialAccessor(
         const FileLibrary::UriReference& dir,
         nlohmann::json& file) override;
 
@@ -124,15 +129,16 @@ class GltfMaterialAccessorImpl : public GltfMaterialAccessorIFace {
     };
 };
 
-GltfMaterialAccessorIFacePtr GltfMaterialLibraryImpl::getMaterialAccessor(
+UGltfMaterialAccessorIFace GltfMaterialLibraryImpl::getMaterialAccessor(
     const FileLibrary::UriReference& dir,
     nlohmann::json& file)
 {
-        return make_shared<GltfMaterialAccessorImpl>(this, dir, file);
+        return make_unique<GltfMaterialAccessorImpl>(this, dir, file);
 };
 
 void GltfMaterialLibraryImpl::releaseTexture(const FileLibrary::UriReference ref)
 {
+    console->debug("Remove texture from list: {}", ref.getPath());
     textureMap.erase(ref);
 }
 
@@ -152,6 +158,11 @@ GltfTextureReferencePtr GltfMaterialLibraryImpl::getTexture(const FileLibrary::U
 GltfMaterialLibraryImpl::~GltfMaterialLibraryImpl()
 {
     console->debug("End material library, textures left: {}", textureMap.size());
+    for (auto tex: textureMap) {
+        if (auto stex=tex.second.lock()) {
+            stex->leaveLibrary();
+        }
+    }
 }
 
 GltfMaterialLibraryImpl::GltfMaterialLibraryImpl(): GltfMaterialLibraryIface()
@@ -170,7 +181,7 @@ GltfMaterialLibraryIface::~GltfMaterialLibraryIface()
 GltfMaterialAccessorIFace::~GltfMaterialAccessorIFace() {}
 
 
-GltfTextureReference::GltfTextureReference(GltfMaterialLibraryImpl* _lib, const FileLibrary::UriReference _ref) :
+GltfTextureReference::GltfTextureReference(PGltfMaterialLibraryImpl _lib, const FileLibrary::UriReference _ref) :
         ref(_ref), lib(_lib)
 {
     console->debug("Load texture {}", ref.getPath().c_str());
@@ -192,7 +203,6 @@ GltfTextureReference::GltfTextureReference(GltfMaterialLibraryImpl* _lib, const 
     }
     glGenTextures(1, &gl_texture);
 	glBindTexture(GL_TEXTURE_2D, gl_texture);
-
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.getWidth(), img.getHeight(), 0, GL_BYTE,  format, (*img).data);
 	GLenum err = glGetError();
     console->debug("glTexImage2D returned {}", err);
@@ -205,6 +215,15 @@ void GltfTextureReference::apply()
 
 GltfTextureReference::~GltfTextureReference()
 {
-    lib->releaseTexture(ref);
-    console->debug("Release texture {}", ref.getPath().c_str());
+    if (lib) {
+        console->debug("Report to release texture {}", ref.getPath().c_str());
+        lib->releaseTexture(ref);
+    } else {
+        console->debug("Unable to report to release texture {}, library left", ref.getPath().c_str());
+    }
+}
+
+void GltfTextureReference::leaveLibrary()
+{
+    lib = nullptr;
 }

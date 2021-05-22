@@ -5,7 +5,7 @@
 
 #include "level.hxx"
 
-TEST(LEVEL, LOAD_LEVEL ) {
+TEST(Level, LoadLevel) {
 
     auto fl = FileLibrary();
     fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../game/test/sample/"));

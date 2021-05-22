@@ -15,7 +15,7 @@ static void store_if_contains(int& storage, json& json, string name)
 GltfMesh::GltfMesh(
         json& j_mesh,
         GltfDataAccessorIFace* data_accessor,
-        GltfMaterialAccessorIFacePtr material_accessor)
+        SGltfMaterialAccessorIFace material_accessor)
 {
     console->debug("New mesh");
     jsonExecuteAllIfElement(j_mesh, "primitives", [this, &j_mesh](nlohmann::json& j_prim, int node_index) {

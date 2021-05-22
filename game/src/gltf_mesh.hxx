@@ -25,7 +25,7 @@ class GltfMesh
     GltfMesh(
         nlohmann::json& json,
         GltfDataAccessorIFace* data_accessor,
-        GltfMaterialAccessorIFacePtr material_accessor
+        SGltfMaterialAccessorIFace material_accessor
         );
 
     virtual ~GltfMesh();

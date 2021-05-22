@@ -6,11 +6,20 @@
 #include "file_library.hxx"
 #include "gltf_material_accessor_library_iface.hxx"
 #include "gltf_exception.hxx"
+#include "glmock.hpp"
 
 using namespace nlohmann;
 using namespace std;
+using namespace testing;
 
-TEST(GLTF_MATERIAL, READ_MATERIAL ) {
+TEST(GltfMaterial, ReadValidMaterial ) {
+
+    GLMock mock;
+
+    ///EXPECT_CALL(mock, gl_CreateShader(GL_VERTEX_SHADER)).WillOnce(Return(0));
+    EXPECT_CALL(mock, gl_GenTextures(1, 0)).WillOnce(Return());
+    EXPECT_CALL(mock, gl_BindTexture(GL_TEXTURE_2D, 1)).WillOnce(Return());
+    EXPECT_CALL(mock, gl_TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_BYTE,  GL_RGB, nullptr)).WillOnce(Return());
 
     auto fl = FileLibrary();
     fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../game/test/sample"));

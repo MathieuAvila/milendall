@@ -52,7 +52,7 @@ GltfNode::GltfNode(json& json): default_transform(identity)
 std::shared_ptr<GltfMesh> GltfModel::instantiateMesh(
             nlohmann::json& json,
             GltfDataAccessorIFace* data_accessor,
-            GltfMaterialAccessorIFacePtr material_accessor)
+            SGltfMaterialAccessorIFace material_accessor)
 {
     return make_shared<GltfMesh>(json, data_accessor, material_accessor);
 }

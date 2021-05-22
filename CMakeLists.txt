@@ -26,9 +26,9 @@ include(GoogleTest)
 SET (CMAKE_CXX_COMPILER             "/usr/bin/clang++-11")
 SET (CMAKE_CXX_FLAGS                "-std=c++17 -Wall")
 SET (CMAKE_CXX_FLAGS_DEBUG          "-g")
-SET (CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
-SET (CMAKE_CXX_FLAGS_RELEASE        "-O4 -DNDEBUG")
-SET (CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
+#SET (CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
+#SET (CMAKE_CXX_FLAGS_RELEASE        "-O4 -DNDEBUG")
+#SET (CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
 
 
 add_library(game_lib STATIC
@@ -75,6 +75,8 @@ target_link_libraries(milendall
   ${GLEW_LIBRARY}
 )
 
+add_library(glmock SHARED game/test/glmock/glmock.cpp)
+
 add_executable(unit_test
 game/test/unit_main.cpp
 game/test/unit_file_library.cpp
@@ -95,12 +97,12 @@ target_link_libraries(unit_test
     glm::glm
     ${FREEIMAGEPLUS_LIBRARIES} ${FreeImage_LIBRARIES}
 
-    ${OPENGL_LIBRARY}
+    glmock
     ${GLFW_LIBRARY}
     ${GLEW_LIBRARY}
-    gtest gtest_main pthread
+    gtest gtest_main gmock pthread
 )
 include(GoogleTest)
 gtest_discover_tests(unit_test)
 
-target_include_directories(unit_test PRIVATE game/src/ )
+target_include_directories(unit_test PRIVATE game/src/ game/test/glmock/ )

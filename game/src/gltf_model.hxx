@@ -40,7 +40,7 @@ class GltfModel
         std::shared_ptr<GltfMesh> instantiateMesh(
             nlohmann::json& json,
             GltfDataAccessorIFace* data_accessor,
-            GltfMaterialAccessorIFacePtr material_accessor);
+            SGltfMaterialAccessorIFace material_accessor);
 
         /** @brief  To be derived in case there is private data */
         virtual void parseApplicationData(nlohmann::json& json);
@@ -54,7 +54,7 @@ class GltfModel
          */
         std::vector<std::shared_ptr<GltfNode>> nodeTable;
 
-        GltfMaterialAccessorIFacePtr materialAccessor;
+        SGltfMaterialAccessorIFace materialAccessor;
 
     public:
 

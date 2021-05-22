@@ -42,7 +42,7 @@ class GltfMaterialLibraryIface
      *             1/ relative file name resolution
      *             2/ preloading all material upfront
     */
-    virtual GltfMaterialAccessorIFacePtr getMaterialAccessor(
+    virtual UGltfMaterialAccessorIFace getMaterialAccessor(
         const FileLibrary::UriReference& dir,
         nlohmann::json& file) = 0;
 
