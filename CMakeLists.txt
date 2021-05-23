@@ -9,6 +9,8 @@ find_package(glm REQUIRED)
 find_package(FreeImagePlus REQUIRED)
 find_package(FreeImage REQUIRED)
 find_package(OpenGL REQUIRED)
+find_package(GLEW 2.0 REQUIRED)
+find_package(glfw3 3.3 REQUIRED)
 
 set(GLFW_INCLUDE_PATH "" CACHE PATH "The directory that contains GL/glfw.h" )
 set(GLFW_LIBRARY "" CACHE FILEPATH "libglfw.a or glfw.lib" )
@@ -23,12 +25,10 @@ include(GoogleTest)
 
 
 
+SET (CMAKE_C_COMPILER               "/usr/bin/clang-11")
 SET (CMAKE_CXX_COMPILER             "/usr/bin/clang++-11")
 SET (CMAKE_CXX_FLAGS                "-std=c++17 -Wall")
 SET (CMAKE_CXX_FLAGS_DEBUG          "-g")
-#SET (CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
-#SET (CMAKE_CXX_FLAGS_RELEASE        "-O4 -DNDEBUG")
-#SET (CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
 
 
 add_library(game_lib STATIC
@@ -71,8 +71,8 @@ target_link_libraries(milendall
   glm::glm
   ${FREEIMAGEPLUS_LIBRARIES} ${FreeImage_LIBRARIES}
   ${OPENGL_LIBRARY}
-  ${GLFW_LIBRARY}
-  ${GLEW_LIBRARY}
+  GLEW::GLEW
+  glfw
 )
 
 add_library(glmock SHARED game/test/glmock/glmock.cpp)
@@ -98,8 +98,6 @@ target_link_libraries(unit_test
     ${FREEIMAGEPLUS_LIBRARIES} ${FreeImage_LIBRARIES}
 
     glmock
-    ${GLFW_LIBRARY}
-    ${GLEW_LIBRARY}
     gtest gtest_main gmock pthread
 )
 include(GoogleTest)
