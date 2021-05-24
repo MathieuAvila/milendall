@@ -3,23 +3,35 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <vector>
 #include <memory>
 
+/** @brief A single GLTF exception when a loading errors happens */
+class LibraryException: public std::runtime_error
+{
+    public:
+
+        LibraryException(const std::string err): runtime_error(err) {};
+};
+
 /* A raw memory container. To be used with *_ptr for auto mgmt */
+/*
 class FileContent
 {
     public:
 
-    /* Initialize. Ownership is passed to FileContent, content must NOT be released after call.
-    */
+     Initialize. Ownership is passed to FileContent, content must NOT be released after call.
+
     FileContent(int _size, void * content) : memory_block(content), size(_size) {};
     ~FileContent() { if (memory_block) free(memory_block);};
 
     void* memory_block;
     unsigned int size;
 };
-
 using FileContentPtr = std::shared_ptr<FileContent>;
+*/
+
+using FileContentPtr = std::unique_ptr< std::vector<uint8_t> >;
 
 /** An abstraction of filesystem, that masks the fact that things are
  * in real FS roots or embedded zipped files.

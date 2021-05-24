@@ -50,11 +50,7 @@ TEST(FILE_LIBRARY, Get_file_content_does_not_exist) {
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library");
     auto no_file = fl.getRoot().getSubPath("no_entry");
-    auto content = no_file.readContent();
-
-    EXPECT_TRUE( content.get() != nullptr );
-    EXPECT_TRUE( content.get()->memory_block == nullptr );
-    EXPECT_TRUE( content.get()->size == 0 );
+    EXPECT_THROW(no_file.readContent(), LibraryException);
 }
 
 TEST(FILE_LIBRARY, Get_file_content_ok_simple_file) {
@@ -69,13 +65,13 @@ TEST(FILE_LIBRARY, Get_file_content_ok_simple_file) {
     auto content = no_file.readContent();
 
     EXPECT_TRUE( content.get() != nullptr );
-    EXPECT_TRUE( content.get()->memory_block != nullptr );
-    EXPECT_TRUE( content.get()->size == 5 );
-    EXPECT_TRUE( ((char*)(content.get()->memory_block))[0] == 'a' );
-    EXPECT_TRUE( ((char*)(content.get()->memory_block))[1] == 'b' );
-    EXPECT_TRUE( ((char*)(content.get()->memory_block))[2] == 'c' );
-    EXPECT_TRUE( ((char*)(content.get()->memory_block))[3] == 'd' );
-    EXPECT_TRUE( ((char*)(content.get()->memory_block))[4] == '\n' );
+    EXPECT_TRUE( content.get()->data() != nullptr );
+    EXPECT_TRUE( content.get()->size()== 5 );
+    EXPECT_TRUE( ((char*)(content.get()->data()))[0] == 'a' );
+    EXPECT_TRUE( ((char*)(content.get()->data()))[1] == 'b' );
+    EXPECT_TRUE( ((char*)(content.get()->data()))[2] == 'c' );
+    EXPECT_TRUE( ((char*)(content.get()->data()))[3] == 'd' );
+    EXPECT_TRUE( ((char*)(content.get()->data()))[4] == '\n' );
 }
 
 TEST(FILE_LIBRARY, File_content_in_2_dirs) {
@@ -94,25 +90,25 @@ TEST(FILE_LIBRARY, File_content_in_2_dirs) {
     auto content = file1.readContent();
 
     EXPECT_TRUE( content.get() != nullptr );
-    EXPECT_TRUE( content.get()->memory_block != nullptr );
-    EXPECT_TRUE( content.get()->size == 5 );
-    EXPECT_TRUE( ((char*)(content.get()->memory_block))[0] == 'a' );
-    EXPECT_TRUE( ((char*)(content.get()->memory_block))[1] == 'b' );
-    EXPECT_TRUE( ((char*)(content.get()->memory_block))[2] == 'c' );
-    EXPECT_TRUE( ((char*)(content.get()->memory_block))[3] == 'd' );
-    EXPECT_TRUE( ((char*)(content.get()->memory_block))[4] == '\n' );
+    EXPECT_TRUE( content.get()->data() != nullptr );
+    EXPECT_TRUE( content.get()->size()== 5 );
+    EXPECT_TRUE( ((char*)(content.get()->data()))[0] == 'a' );
+    EXPECT_TRUE( ((char*)(content.get()->data()))[1] == 'b' );
+    EXPECT_TRUE( ((char*)(content.get()->data()))[2] == 'c' );
+    EXPECT_TRUE( ((char*)(content.get()->data()))[3] == 'd' );
+    EXPECT_TRUE( ((char*)(content.get()->data()))[4] == '\n' );
 
     auto file2 = fl.getRoot().getSubPath("/toto/file2.txt");
     content = file2.readContent();
 
     EXPECT_TRUE( content.get() != nullptr );
-    EXPECT_TRUE( content.get()->memory_block != nullptr );
-    EXPECT_TRUE( content.get()->size == 5 );
-    EXPECT_TRUE( ((char*)(content.get()->memory_block))[0] == '0' );
-    EXPECT_TRUE( ((char*)(content.get()->memory_block))[1] == '1' );
-    EXPECT_TRUE( ((char*)(content.get()->memory_block))[2] == '2' );
-    EXPECT_TRUE( ((char*)(content.get()->memory_block))[3] == '3' );
-    EXPECT_TRUE( ((char*)(content.get()->memory_block))[4] == '\n' );
+    EXPECT_TRUE( content.get()->data() != nullptr );
+    EXPECT_TRUE( content.get()->size()== 5 );
+    EXPECT_TRUE( ((char*)(content.get()->data()))[0] == '0' );
+    EXPECT_TRUE( ((char*)(content.get()->data()))[1] == '1' );
+    EXPECT_TRUE( ((char*)(content.get()->data()))[2] == '2' );
+    EXPECT_TRUE( ((char*)(content.get()->data()))[3] == '3' );
+    EXPECT_TRUE( ((char*)(content.get()->data()))[4] == '\n' );
 
 
 }
@@ -133,13 +129,13 @@ TEST(FILE_LIBRARY, File_content_conflict_in_2_dirs) {
     auto content = no_file.readContent();
 
     EXPECT_TRUE( content.get() != nullptr );
-    EXPECT_TRUE( content.get()->memory_block != nullptr );
-    EXPECT_TRUE( content.get()->size == 5 );
-    EXPECT_TRUE( ((char*)(content.get()->memory_block))[0] == 'a' );
-    EXPECT_TRUE( ((char*)(content.get()->memory_block))[1] == 'b' );
-    EXPECT_TRUE( ((char*)(content.get()->memory_block))[2] == 'c' );
-    EXPECT_TRUE( ((char*)(content.get()->memory_block))[3] == 'd' );
-    EXPECT_TRUE( ((char*)(content.get()->memory_block))[4] == '\n' );
+    EXPECT_TRUE( content.get()->data() != nullptr );
+    EXPECT_TRUE( content.get()->size()== 5 );
+    EXPECT_TRUE( ((char*)(content.get()->data()))[0] == 'a' );
+    EXPECT_TRUE( ((char*)(content.get()->data()))[1] == 'b' );
+    EXPECT_TRUE( ((char*)(content.get()->data()))[2] == 'c' );
+    EXPECT_TRUE( ((char*)(content.get()->data()))[3] == 'd' );
+    EXPECT_TRUE( ((char*)(content.get()->data()))[4] == '\n' );
 }
 
 TEST(FILE_LIBRARY, List_directory_1_dir) {

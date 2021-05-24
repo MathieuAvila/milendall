@@ -61,9 +61,9 @@ bool FileLibrary::UriReference::is_directory() const
    return true;
 }
 
-std::shared_ptr<FileContent> FileLibrary::UriReference::readContent() const
+FileContentPtr FileLibrary::UriReference::readContent() const
 {
-   console->debug("Tenatatively open file", path);
+   console->debug("Tentatively open file", path);
    for (auto dir_path: master->root_list) {
       // Get first filename that matches requested name
       auto final_path = dir_path + path;
@@ -72,13 +72,13 @@ std::shared_ptr<FileContent> FileLibrary::UriReference::readContent() const
          console->debug("Is a match, now try to open", final_path);
          auto file_size = std::filesystem::file_size(final_path);
          FILE *file = fopen(final_path.c_str(), "rb");
-         void* memory = malloc(file_size);
-         fread(memory, file_size, 1, file);
-         return std::make_shared<FileContent>(file_size, memory);
+         FileContentPtr result = make_unique<std::vector<uint8_t>>(file_size);
+         fread(result->data(), file_size, 1, file);
+         return result;
       }
    }
    console->error("file not found: {}", path);
-   return std::make_shared<FileContent>(0, nullptr);
+   throw LibraryException(string("file not found: {}") + path);
 }
 
 std::string FileLibrary::UriReference::readStringContent() const

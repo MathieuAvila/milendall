@@ -37,7 +37,7 @@ class GltfDataAccessorIFace
      * This data block may be a copy or original data.
      * Internal data should not be accessed after loading has ending.
      */
-    virtual std::shared_ptr<DataBlock> accessId(uint32_t index) = 0;
+    virtual std::unique_ptr<DataBlock> accessId(uint32_t index) = 0;
     virtual ~GltfDataAccessorIFace() {};
 };
 

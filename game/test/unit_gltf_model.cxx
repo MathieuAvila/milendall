@@ -3,9 +3,17 @@
 #include <filesystem>
 #include <iostream>
 
+#include "glmock.hpp"
+
 #include "gltf_model.hxx"
 
+using ::testing::_;
+using ::testing::InSequence;
+
 TEST(GLTF_MODEL, Load_GLTF_model) {
+
+    InSequence s;
+    GLMock mock;
 
     auto fl = FileLibrary();
     fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../game/test/sample"));

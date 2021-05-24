@@ -23,6 +23,6 @@ class GltfDataAccessor: public GltfDataAccessorIFace
     /** @brief Needs the JSON model file being used, as well as the library content */
     GltfDataAccessor(nlohmann::json& _json, const FileLibrary::UriReference ref);
 
-    virtual std::shared_ptr<DataBlock> accessId(uint32_t index);
+    virtual std::unique_ptr<DataBlock> accessId(uint32_t index);
     virtual ~GltfDataAccessor();
 };

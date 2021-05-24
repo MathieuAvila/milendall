@@ -17,10 +17,7 @@ using ::testing::InSequence;
 TEST(GltfMaterial, ReadValidMaterial ) {
 
     InSequence s;
-
     GLMock mock;
-
-    ///EXPECT_CALL(mock, gl_CreateShader(GL_VERTEX_SHADER)).WillOnce(Return(0));
 
     EXPECT_CALL(mock, gl_GenTextures(1, _)).WillOnce(Return());
     EXPECT_CALL(mock, gl_BindTexture(GL_TEXTURE_2D, _)).WillOnce(Return());

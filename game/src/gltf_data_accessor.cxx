@@ -11,12 +11,12 @@ GltfDataAccessor::GltfDataAccessor(nlohmann::json& _json, const FileLibrary::Uri
         auto buffers_json = json["buffers"];
         for(auto buffer_json: buffers_json) {
                 auto buf_ref = ref.getSubPath(buffer_json["uri"]);
-                auto content = buf_ref.readContent();
-                loaded_buffers.push_back(content);
+                //auto content = buf_ref.readContent();
+                loaded_buffers.push_back(buf_ref.readContent());
         }
 }
 
-std::shared_ptr<GltfDataAccessor::DataBlock> GltfDataAccessor::accessId(uint32_t index)
+std::unique_ptr<GltfDataAccessor::DataBlock> GltfDataAccessor::accessId(uint32_t index)
 {
    std::map<std::string, GltfDataAccessor::DataBlock::VEC_TYPE> mapper_type = {
            {"VEC2", GltfDataAccessor::DataBlock::VEC2},
@@ -47,16 +47,16 @@ std::shared_ptr<GltfDataAccessor::DataBlock> GltfDataAccessor::accessId(uint32_t
         +" size is:"
         + std::to_string(loaded_buffers.size())));
 
-   FileContentPtr buffPtr = loaded_buffers[bufferview_buffer];
+   FileContentPtr& buffPtr = loaded_buffers[bufferview_buffer];
 
    auto endIndex = bufferview_byteOffset + byteOffset + bufferview_byteLength;
-   if (endIndex >= buffPtr->size)
+   if (endIndex >= buffPtr->size())
         throw(GltfException(std::string("Data sizes exceeds buffer length for accessor ")
         + std::to_string(index)));
 
-   uint8_t* nptr = (uint8_t*)buffPtr->memory_block + bufferview_byteOffset + byteOffset;
+   uint8_t* nptr = (uint8_t*)buffPtr->data() + bufferview_byteOffset + byteOffset;
 
-   return make_shared<GltfDataAccessor::DataBlock>(
+   return make_unique<GltfDataAccessor::DataBlock>(
         type,
         componentType,
         count, nptr);

@@ -189,7 +189,7 @@ GltfTextureReference::GltfTextureReference(PGltfMaterialLibraryImpl _lib, const 
     fipImage img;
     int format;
 
-    fipMemoryIO mem((BYTE*)(textureContent->memory_block), (DWORD)textureContent->size);
+    fipMemoryIO mem((BYTE*)(textureContent->data()), (DWORD)textureContent->size());
     bool result = img.loadFromMemory(mem);
     if (!result)
         throw GltfException(string("Error loading texture file: ") + ref.getPath().c_str());
