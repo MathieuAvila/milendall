@@ -218,6 +218,7 @@ GltfTextureReference::~GltfTextureReference()
     if (lib) {
         console->debug("Report to release texture {}", ref.getPath().c_str());
         lib->releaseTexture(ref);
+        glDeleteTextures(1, &gl_texture);
     } else {
         console->debug("Unable to report to release texture {}, library left", ref.getPath().c_str());
     }
