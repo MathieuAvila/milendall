@@ -83,25 +83,9 @@ FileContentPtr FileLibrary::UriReference::readContent() const
 
 std::string FileLibrary::UriReference::readStringContent() const
 {
-   console->debug("Tenatatively open file", path);
-   for (auto dir_path: master->root_list) {
-      // Get first filename that matches requested name
-      auto final_path = dir_path + path;
-      console->debug("Check if file {} is a match", final_path);
-      if (std::filesystem::is_regular_file(final_path)) {
-         console->debug("Is a match, now try to open", final_path);
-         std::string str;
-         std::ifstream t(final_path);
-         t.seekg(0, std::ios::end);
-         str.reserve(t.tellg());
-         t.seekg(0, std::ios::beg);
-         str.assign((std::istreambuf_iterator<char>(t)),
-            std::istreambuf_iterator<char>());
-         return str;
-      }
-   }
-   console->error("file not found: ", path);
-   return "";
+   console->debug("Tentatively open file for string", path);
+   auto content = readContent();
+   return string(content->data(), content->data()+content->size());
 }
 
 bool FileLibrary::UriReference::operator<(const FileLibrary::UriReference& r ) const

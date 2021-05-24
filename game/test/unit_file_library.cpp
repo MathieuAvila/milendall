@@ -183,9 +183,7 @@ TEST(FILE_LIBRARY, Get_string_file_content_does_not_exist) {
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library");
     auto no_file = fl.getRoot().getSubPath("no_entry");
-    auto content = no_file.readStringContent();
-
-    EXPECT_TRUE( content == "" );
+    EXPECT_THROW(no_file.readStringContent(), LibraryException);
 }
 
 TEST(FILE_LIBRARY, Get_string_file_content_ok_simple_content) {
