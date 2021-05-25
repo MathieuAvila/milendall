@@ -5,6 +5,7 @@
 #include <list>
 #include <vector>
 #include <memory>
+#include <stdexcept>
 
 /** @brief A single GLTF exception when a loading errors happens */
 class LibraryException: public std::runtime_error
