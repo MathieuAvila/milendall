@@ -6,23 +6,14 @@
 
 #include <memory>
 #include <iostream>
-/*
-int main(int argc, char** argv)
-{
-    auto fl = FileLibrary();
-    Level* level = new Level(fl.getRoot());
-    std::cout << level;
-    return 0;
-}*/
-
-
-
 #include <stdio.h>
 #include <string>
 #include <vector>
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include <filesystem>
+
 using namespace std;
 
 
@@ -323,8 +314,12 @@ void glfw_callback(int error_code, const char* description)
     printf("%i %s \n", error_code, description);
 }
 
+#include "common.hxx"
+
 int main( void )
 {
+    set_level(level::debug);
+
 	// Initialise GLFW
 
     glfwSetErrorCallback(glfw_callback);
@@ -369,6 +364,8 @@ int main( void )
     glfwPollEvents();
     glfwSetCursorPos(window, 1024/2, 768/2);
 
+
+
 	// Dark blue background
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
@@ -395,6 +392,7 @@ int main( void )
 
 	// Get a handle for our "myTextureSampler" uniform
 	GLuint TextureID  = glGetUniformLocation(programID, "myTextureSampler");
+    fprintf( stderr, "TextureID = %u\n" , TextureID);
 
 	// Our vertices. Tree consecutive floats give a 3D vertex; Three consecutive vertices give a triangle.
 	// A cube has 6 faces with 2 triangles each, so this makes 6*2=12 triangles, and 12*3 vertices
@@ -487,6 +485,15 @@ int main( void )
 	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_uv_buffer_data), g_uv_buffer_data, GL_STATIC_DRAW);
 
+
+    auto fl = FileLibrary();
+    fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/room1/"));
+    auto ref = fl.getRoot().getSubPath("room.gltf");
+    GltfMaterialLibraryIfacePtr materialLibrary = GltfMaterialLibraryIface::getMaterialLibray();
+    auto model = make_unique<GltfModel>(materialLibrary, ref);
+
+
+
 	do{
 
 		// Clear the screen
@@ -541,6 +548,8 @@ int main( void )
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
+
+        model->draw();
 
 		// Swap buffers
 		glfwSwapBuffers(window);
