@@ -95,3 +95,10 @@ GltfModel::GltfModel(GltfMaterialLibraryIfacePtr materialLibrary, const FileLibr
 GltfModel::~GltfModel()
 {
 }
+
+void GltfModel::draw()
+{
+    for (auto mesh : meshTable) {
+        mesh->Draw();
+    }
+}

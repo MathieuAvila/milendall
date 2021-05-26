@@ -37,7 +37,7 @@ class GltfModel
 
         /** @brief to be subclassed in case of application specific data
          * that needs specific handling (i.e: rooms) */
-        std::shared_ptr<GltfMesh> instantiateMesh(
+        virtual std::shared_ptr<GltfMesh> instantiateMesh(
             nlohmann::json& json,
             GltfDataAccessorIFace* data_accessor,
             SGltfMaterialAccessorIFace material_accessor);
@@ -61,7 +61,11 @@ class GltfModel
         GltfModel() = delete;
         GltfModel(const GltfModel&) = delete;
 
+        void getInstance();
+
         GltfModel(GltfMaterialLibraryIfacePtr materialLibrary, const FileLibrary::UriReference ref);
         virtual ~GltfModel();
+
+        void draw();
 };
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 #include <nlohmann/json.hpp>
 
 #include "gltf_data_accessor_iface.hxx"
@@ -10,6 +11,10 @@
 class GltfMesh
 {
     protected:
+
+    class GltfPrimitive;
+
+    std::vector< std::unique_ptr<GltfPrimitive> > primitives;
 
     virtual void parseApplicationData(nlohmann::json& json);
 
@@ -27,6 +32,8 @@ class GltfMesh
         GltfDataAccessorIFace* data_accessor,
         SGltfMaterialAccessorIFace material_accessor
         );
+
+    void Draw();
 
     virtual ~GltfMesh();
 
