@@ -24,6 +24,16 @@ nlohmann::json& jsonGetElementByIndex(json& file, string element, int index)
     return file[element][index]; //[index];
 }
 
+nlohmann::json& jsonGetIndex(json& file, int index)
+{
+    if (file.size() <= index) {
+        console->error("JSON sub element has not element with index:'{}'. Max is '{}'. Will throw",
+                        index, file.size());
+        throw GltfException(string("Index out of range (") + to_string(index));
+    }
+    return file[index]; //[index];
+}
+
 void jsonExecuteIfElement(
     json& file,
     string element,

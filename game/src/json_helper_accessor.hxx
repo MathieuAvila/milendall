@@ -14,6 +14,11 @@ nlohmann::json& jsonGetElementByIndex(nlohmann::json&, std::string element, int 
 nlohmann::json& jsonGetElementByName(nlohmann::json&, std::string element);
 
 /**
+ * Helper function to return an element given its index. Check validity and throw if not present
+ */
+nlohmann::json& jsonGetIndex(nlohmann::json& file, int index);
+
+/**
  * Helper function to execute code if node exists
  */
 void jsonExecuteIfElement(
