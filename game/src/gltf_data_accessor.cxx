@@ -5,7 +5,7 @@
 using namespace std;
 using namespace nlohmann;
 
-GltfDataAccessor::GltfDataAccessor(nlohmann::json& _json, const FileLibrary::UriReference ref) : json(_json)
+GltfDataAccessor::GltfDataAccessor(nlohmann::json& json, const FileLibrary::UriReference ref)
 {
         /** load all buffers in memory now */
         auto buffers_json = json["buffers"];
@@ -14,6 +14,8 @@ GltfDataAccessor::GltfDataAccessor(nlohmann::json& _json, const FileLibrary::Uri
                 //auto content = buf_ref.readContent();
                 loaded_buffers.push_back(buf_ref.readContent());
         }
+        accessors = jsonGetElementByName(json, "accessors");
+        bufferViews = jsonGetElementByName(json, "bufferViews");
 }
 
 std::unique_ptr<GltfDataAccessor::DataBlock> GltfDataAccessor::accessId(uint32_t index)
@@ -27,7 +29,7 @@ std::unique_ptr<GltfDataAccessor::DataBlock> GltfDataAccessor::accessId(uint32_t
            {5126, GltfDataAccessor::DataBlock::FLOAT},
            {5123, GltfDataAccessor::DataBlock::UNSIGNED_SHORT}
     };
-   auto accessor = jsonGetElementByIndex(json, "accessors", index);
+   auto accessor = jsonGetIndex(accessors, index);
 
    auto bufferView = jsonGetElementByName(accessor, "bufferView").get<int>();
    auto byteOffset = jsonGetElementByName(accessor, "byteOffset").get<int>();
@@ -36,7 +38,7 @@ std::unique_ptr<GltfDataAccessor::DataBlock> GltfDataAccessor::accessId(uint32_t
    auto type = mapper_type[jsonGetElementByName(accessor, "type").get<std::string>()];
 
 
-   auto bufferView_json = jsonGetElementByIndex(json, "bufferViews", bufferView);
+   auto bufferView_json = jsonGetIndex(bufferViews, bufferView);
    auto bufferview_byteOffset = jsonGetElementByName(bufferView_json, "byteOffset").get<int>();
    auto bufferview_byteLength = jsonGetElementByName(bufferView_json, "byteLength").get<int>();
    auto bufferview_buffer = jsonGetElementByName(bufferView_json, "buffer").get<int>();
@@ -50,9 +52,11 @@ std::unique_ptr<GltfDataAccessor::DataBlock> GltfDataAccessor::accessId(uint32_t
    FileContentPtr& buffPtr = loaded_buffers[bufferview_buffer];
 
    auto endIndex = bufferview_byteOffset + byteOffset + bufferview_byteLength;
-   if (endIndex >= buffPtr->size())
+   if (endIndex > buffPtr->size())
         throw(GltfException(std::string("Data sizes exceeds buffer length for accessor ")
-        + std::to_string(index)));
+        + std::to_string(index)
+        + " . endIndex=" + std::to_string(endIndex)
+        + " . buff=" + std::to_string(buffPtr->size()) ));
 
    uint8_t* nptr = (uint8_t*)buffPtr->data() + bufferview_byteOffset + byteOffset;
 

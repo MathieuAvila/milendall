@@ -6,23 +6,30 @@
 #include "file_library.hxx"
 #include "gltf_data_accessor.hxx"
 #include "gltf_exception.hxx"
+#include "common.hxx"
 
 using namespace nlohmann;
 using namespace std;
 
-TEST(GLTF_DATA_ACCESSOR, GLTF_DATA_ACCESSOR) {
+static auto console = spdlog::stdout_color_mt("unit_gltf_data_accessor");
 
+std::unique_ptr<GltfDataAccessor> get_test_accessor()
+{
     auto fl = FileLibrary();
     std::string pwd = std::filesystem::current_path();
     fl.addRootFilesystem(pwd + "/../game/test/sample/cube");
     auto ref = fl.getRoot().getSubPath("room_preview.gltf");
     auto raw_json = ref.readStringContent();
     auto json_element = json::parse(raw_json.c_str());
+    console->debug(to_string(json_element));
+    auto elem = std::make_unique<GltfDataAccessor>(json_element, ref.getDirPath());
+    return elem;
+}
 
-    //unique_ptr<GltfDataAccessorIFace> data_accessor(new GltfDataAccessor(json_element, ref.getDirPath()));
+TEST(GltfDataAccessor, getVec3) {
 
-    auto data_accessor = std::make_unique<GltfDataAccessor>(json_element, ref.getDirPath());
-    {
+    auto data_accessor = get_test_accessor();
+
     auto data = data_accessor->accessId(0);
 
     EXPECT_TRUE(data->unit_type == GltfDataAccessorIFace::DataBlock::FLOAT);
@@ -61,7 +68,10 @@ TEST(GLTF_DATA_ACCESSOR, GLTF_DATA_ACCESSOR) {
     EXPECT_TRUE(data_float[22] == 1.0);
     EXPECT_TRUE(data_float[23] == 0.0);
     }
-    {
+
+TEST(GltfDataAccessor, getScalar) {
+
+    auto data_accessor = get_test_accessor();
     auto data = data_accessor->accessId(1);
 
     EXPECT_TRUE(data->unit_type == GltfDataAccessorIFace::DataBlock::UNSIGNED_SHORT);
@@ -81,7 +91,10 @@ TEST(GLTF_DATA_ACCESSOR, GLTF_DATA_ACCESSOR) {
     EXPECT_TRUE(data_int[10] == 7);
     EXPECT_TRUE(data_int[11] == 4);
     }
-    {
+
+TEST(GltfDataAccessor, getVec2) {
+
+    auto data_accessor = get_test_accessor();
     auto data = data_accessor->accessId(2);
 
     EXPECT_TRUE(data->unit_type == GltfDataAccessorIFace::DataBlock::FLOAT);
@@ -112,5 +125,18 @@ TEST(GLTF_DATA_ACCESSOR, GLTF_DATA_ACCESSOR) {
     EXPECT_TRUE(data_float[14] == 1);
     EXPECT_TRUE(data_float[15] == 1);
     }
+
+TEST(GltfDataAccessor, getInvalid) {
+
+    auto data_accessor = get_test_accessor();
+    EXPECT_THROW(data_accessor->accessId(42), GltfException);
 }
 
+TEST(GltfDataAccessor, getLast) {
+
+    auto data_accessor = get_test_accessor();
+    auto data = data_accessor->accessId(5);
+    EXPECT_TRUE(data->unit_type == GltfDataAccessorIFace::DataBlock::FLOAT);
+    EXPECT_TRUE(data->vec_type == GltfDataAccessorIFace::DataBlock::VEC2);
+    EXPECT_TRUE(data->count == 8);
+}
