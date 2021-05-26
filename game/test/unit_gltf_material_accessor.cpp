@@ -20,15 +20,25 @@ TEST(GltfMaterial, ReadValidMaterial ) {
     GLMock mock;
 
     EXPECT_CALL(mock, gl_GenTextures(1, _)).WillOnce(Return());
-    EXPECT_CALL(mock, gl_BindTexture(GL_TEXTURE_2D, _)).WillOnce(Return());
-    EXPECT_CALL(mock, gl_TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_BYTE,  GL_RGB, _)).WillOnce(Return());
     EXPECT_CALL(mock, gl_GetError()).WillOnce(Return(0));
+    EXPECT_CALL(mock, gl_BindTexture(GL_TEXTURE_2D, _)).WillOnce(Return());
+    EXPECT_CALL(mock, gl_GetError()).WillOnce(Return(0));
+    EXPECT_CALL(mock, gl_TexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_BGR,  GL_UNSIGNED_BYTE, _)).WillOnce(Return());
+    EXPECT_CALL(mock, gl_GetError()).WillOnce(Return(0));
+    EXPECT_CALL(mock, gl_TexParameteri(_,_,_)).WillRepeatedly(Return());
+    EXPECT_CALL(mock, gl_GetError()).WillOnce(Return(0));
+
 
     EXPECT_CALL(mock, gl_GenTextures(1, _)).WillOnce(Return());
+    EXPECT_CALL(mock, gl_GetError()).WillOnce(Return(0));
     EXPECT_CALL(mock, gl_BindTexture(GL_TEXTURE_2D, _)).WillOnce(Return());
-    EXPECT_CALL(mock, gl_TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_BYTE,  GL_RGB, _)).WillOnce(Return());
+    EXPECT_CALL(mock, gl_GetError()).WillOnce(Return(0));
+    EXPECT_CALL(mock, gl_TexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_BGR,  GL_UNSIGNED_BYTE, _)).WillOnce(Return());
+    EXPECT_CALL(mock, gl_GetError()).WillOnce(Return(0));
+    EXPECT_CALL(mock, gl_TexParameteri(_,_,_)).WillRepeatedly(Return());
     EXPECT_CALL(mock, gl_GetError()).WillOnce(Return(0));
 
+    EXPECT_CALL(mock, gl_DeleteTextures(_, _)).WillRepeatedly(Return());
     EXPECT_CALL(mock, gl_DeleteTextures(_, _)).WillRepeatedly(Return());
 
     auto fl = FileLibrary();

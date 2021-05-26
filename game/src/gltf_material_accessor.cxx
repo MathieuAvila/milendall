@@ -120,7 +120,7 @@ class GltfMaterialAccessorImpl : public GltfMaterialAccessorIFace {
         if (index >= textureList.size())
             throw GltfException("No such material with index ");
         console->debug("Apply texture {}", index);
-        //textureList[index]->apply();
+        textureList[index]->apply();
     }
 
     ~GltfMaterialAccessorImpl() override
@@ -184,7 +184,8 @@ GltfMaterialAccessorIFace::~GltfMaterialAccessorIFace() {}
 GltfTextureReference::GltfTextureReference(PGltfMaterialLibraryImpl _lib, const FileLibrary::UriReference _ref) :
         ref(_ref), lib(_lib)
 {
-    console->debug("Load texture {}", ref.getPath().c_str());
+    string f_path = ref.getPath().c_str();
+    console->info("Load texture {}", f_path);
     FileContentPtr textureContent = ref.readContent();
     fipImage img;
     int format;
@@ -192,8 +193,8 @@ GltfTextureReference::GltfTextureReference(PGltfMaterialLibraryImpl _lib, const 
     fipMemoryIO mem((BYTE*)(textureContent->data()), (DWORD)textureContent->size());
     bool result = img.loadFromMemory(mem);
     if (!result)
-        throw GltfException(string("Error loading texture file: ") + ref.getPath().c_str());
-    console->debug("Load texture {} returned {} size {}x{}, image type={}, BPP={}", ref.getPath().c_str(), result,
+        throw GltfException(string("Error loading texture file: ") + f_path);
+    console->info("Load texture {} returned {} size {}x{}, image type={}, BPP={}", f_path, result,
         img.getWidth(), img.getHeight(), img.getImageType(), img.getBitsPerPixel());
     switch (img.getBitsPerPixel())
     {
@@ -202,15 +203,26 @@ GltfTextureReference::GltfTextureReference(PGltfMaterialLibraryImpl _lib, const 
         default: throw GltfException("Unhandled pixel size: " + to_string(img.getBitsPerPixel()));
     }
     glGenTextures(1, &gl_texture);
-	glBindTexture(GL_TEXTURE_2D, gl_texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.getWidth(), img.getHeight(), 0, GL_BYTE,  format, (*img).data);
-	GLenum err = glGetError();
-    console->debug("glTexImage2D returned {}", err);
+    gltf_check_gl_error("glGenTextures " + f_path);
+    glBindTexture(GL_TEXTURE_2D, gl_texture);
+	gltf_check_gl_error("glBindTexture " + f_path);
+    glTexImage2D(GL_TEXTURE_2D, 0, format, img.getWidth(), img.getHeight(), 0, GL_BGR,  GL_UNSIGNED_BYTE, (*img).data);
+	gltf_check_gl_error("glTexImage2D " + f_path);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glGenerateMipmap(GL_TEXTURE_2D);
+    gltf_check_gl_error("glGenerateMipmap " + f_path);
 };
 
 void GltfTextureReference::apply()
 {
-    console->debug("Apply texture {}", ref.getPath().c_str());
+    console->debug("Apply texture {} {}", ref.getPath().c_str(), gl_texture);
+    glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, gl_texture);
+    //glUniform1i(1, 0);
+	//glUniform1i(TextureID, 0);
 }
 
 GltfTextureReference::~GltfTextureReference()
