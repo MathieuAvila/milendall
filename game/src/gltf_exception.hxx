@@ -9,3 +9,5 @@ class GltfException: public std::runtime_error
 
         GltfException(const std::string err): runtime_error(err) {};
 };
+
+void gltf_check_gl_error(std::string context);
