@@ -59,7 +59,24 @@ add_library(game_lib STATIC
   game/src/helper_math.cxx
 )
 
-# add the executable
+# add the preview executable
+add_executable(preview_room
+        game/src/main_preview_room.cxx
+        )
+
+target_link_libraries(preview_room
+  ${Boost_LIBRARIES}
+  game_lib
+  nlohmann_json::nlohmann_json
+  spdlog::spdlog
+  glm::glm
+  ${FREEIMAGEPLUS_LIBRARIES} ${FreeImage_LIBRARIES}
+  ${OPENGL_LIBRARY}
+  GLEW::GLEW
+  glfw
+)
+
+# add the game executable
 add_executable(milendall
         game/src/main.cxx
         )
