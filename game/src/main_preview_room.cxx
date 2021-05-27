@@ -144,7 +144,7 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
 			VertexShaderCode += "\n" + Line;
 		VertexShaderStream.close();
 	}else{
-		printf("Impossible to open %s. Are you in the right directory ? Don't forget to read the FAQ !\n", vertex_file_path);
+		console->error("Impossible to open {}.", vertex_file_path);
 		getchar();
 		return 0;
 	}
@@ -163,7 +163,7 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
 	int InfoLogLength;
 
 	// Compile Vertex Shader
-	printf("Compiling shader : %s\n", vertex_file_path);
+	console->info("Compiling shader : {}", vertex_file_path);
 	char const * VertexSourcePointer = VertexShaderCode.c_str();
 	glShaderSource(VertexShaderID, 1, &VertexSourcePointer , NULL);
 	glCompileShader(VertexShaderID);
@@ -174,13 +174,13 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
 	if ( InfoLogLength > 0 ){
 		std::vector<char> VertexShaderErrorMessage(InfoLogLength+1);
 		glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
-		printf("%s\n", &VertexShaderErrorMessage[0]);
+		console->error("{}", &VertexShaderErrorMessage[0]);
 	}
 
 
 
 	// Compile Fragment Shader
-	printf("Compiling shader : %s\n", fragment_file_path);
+	console->info("Compiling shader : {}", fragment_file_path);
 	char const * FragmentSourcePointer = FragmentShaderCode.c_str();
 	glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer , NULL);
 	glCompileShader(FragmentShaderID);
@@ -191,13 +191,13 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
 	if ( InfoLogLength > 0 ){
 		std::vector<char> FragmentShaderErrorMessage(InfoLogLength+1);
 		glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
-		printf("%s\n", &FragmentShaderErrorMessage[0]);
+		console->error("{}", &FragmentShaderErrorMessage[0]);
 	}
 
 
 
 	// Link the program
-	printf("Linking program\n");
+	console->info("Linking program");
 	GLuint ProgramID = glCreateProgram();
 	glAttachShader(ProgramID, VertexShaderID);
 	glAttachShader(ProgramID, FragmentShaderID);
@@ -209,7 +209,7 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
 	if ( InfoLogLength > 0 ){
 		std::vector<char> ProgramErrorMessage(InfoLogLength+1);
 		glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-		printf("%s\n", &ProgramErrorMessage[0]);
+		console->error("{}", &ProgramErrorMessage[0]);
 	}
 
 	glDeleteShader(VertexShaderID);
@@ -221,7 +221,7 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
 
 void glfw_callback(int error_code, const char* description)
 {
-    printf("%i %s \n", error_code, description);
+    console->error("{}={}", error_code, description);
 }
 
 #include "common.hxx"
@@ -235,10 +235,9 @@ int main( void )
     glfwSetErrorCallback(glfw_callback);
 	if( !glfwInit() )
 	{
-		fprintf( stderr, "Failed to initialize GLFW\n" );
+		console->error("Failed to initialize GLFW");
 		return -1;
 	}
-
 
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -249,7 +248,7 @@ int main( void )
 	// Open a window and create its OpenGL context
 	window = glfwCreateWindow( 1024, 768, "Tutorial 0 - Keyboard and Mouse", NULL, NULL);
 	if( window == NULL ){
-		fprintf( stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n" );
+		console->error("Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible");
 		getchar();
 		glfwTerminate();
 		return -1;
@@ -259,7 +258,7 @@ int main( void )
 	// Initialize GLEW
 	glewExperimental = true; // Needed for core profile
 	if (glewInit() != GLEW_OK) {
-		fprintf(stderr, "Failed to initialize GLEW\n");
+		console->error("Failed to initialize GLEW");
 		getchar();
 		glfwTerminate();
 		return -1;
@@ -297,7 +296,6 @@ int main( void )
 
 	// Get a handle for our "myTextureSampler" uniform
 	GLuint TextureID  = glGetUniformLocation(programID, "myTextureSampler");
-    fprintf( stderr, "TextureID = %u\n" , TextureID);
 
     auto fl = FileLibrary();
     fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/room1/"));
@@ -306,7 +304,6 @@ int main( void )
     auto model = make_unique<GltfModel>(materialLibrary, ref);
 
 	do{
-
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
