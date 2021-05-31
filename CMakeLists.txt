@@ -59,38 +59,45 @@ add_library(game_lib STATIC
   game/src/helper_math.cxx
 )
 
+add_library(real_gl STATIC
+    game/src/gl_init.cxx
+    game/src/gl_init.hxx
+)
+
+set(core_lib
+    ${Boost_LIBRARIES}
+    game_lib
+    nlohmann_json::nlohmann_json
+    spdlog::spdlog
+    glm::glm
+    ${FREEIMAGEPLUS_LIBRARIES} ${FreeImage_LIBRARIES}
+)
+
+set(gl_libs
+    ${OPENGL_LIBRARY}
+    real_gl
+    GLEW::GLEW
+    glfw
+)
+
 # add the preview executable
 add_executable(preview_room
-        game/src/main_preview_room.cxx
-        )
+    game/src/main_preview_room.cxx
+)
 
 target_link_libraries(preview_room
-  ${Boost_LIBRARIES}
-  game_lib
-  nlohmann_json::nlohmann_json
-  spdlog::spdlog
-  glm::glm
-  ${FREEIMAGEPLUS_LIBRARIES} ${FreeImage_LIBRARIES}
-  ${OPENGL_LIBRARY}
-  GLEW::GLEW
-  glfw
+    ${core_lib}
+    ${gl_libs}
 )
 
 # add the game executable
 add_executable(milendall
-        game/src/main.cxx
-        )
+    game/src/main.cxx
+    )
 
 target_link_libraries(milendall
-  ${Boost_LIBRARIES}
-  game_lib
-  nlohmann_json::nlohmann_json
-  spdlog::spdlog
-  glm::glm
-  ${FREEIMAGEPLUS_LIBRARIES} ${FreeImage_LIBRARIES}
-  ${OPENGL_LIBRARY}
-  GLEW::GLEW
-  glfw
+    ${core_lib}
+    ${gl_libs}
 )
 
 add_library(glmock SHARED game/test/glmock/glmock.cpp)
@@ -109,12 +116,7 @@ game/test/unit_gltf_node.cxx
 
 enable_testing()
 target_link_libraries(unit_test
-    ${Boost_LIBRARIES}
-    game_lib
-    nlohmann_json::nlohmann_json
-    glm::glm
-    ${FREEIMAGEPLUS_LIBRARIES} ${FreeImage_LIBRARIES}
-
+    ${core_lib}
     glmock
     gtest gtest_main gmock pthread
 )
