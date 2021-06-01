@@ -11,6 +11,9 @@
 #include "level.hxx"
 #include "gl_init.hxx"
 
+#include <stdlib.h>
+#include <unistd.h>
+
 using namespace std;
 
 static auto console = spdlog::stdout_color_mt("room_preview");
@@ -20,15 +23,56 @@ static auto console = spdlog::stdout_color_mt("room_preview");
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
-int main( void )
+void help()
+{
+    console->info("preview_room [-h] -d model_file [-f path ...]");
+    exit(1);
+}
+
+tuple<string, vector<string> > readParams(int argc, char* argv[])
+{
+    string modelPath;
+    vector<string> libPaths;
+
+    int c;
+    while ((c = getopt (argc, argv, "f:d:h")) != -1)
+    {
+        switch (c)
+            {
+            case 'f':
+                modelPath = optarg;
+                break;
+            case 'd':
+                libPaths.push_back(optarg);
+                break;
+            case 'h':
+                help();
+                break;
+            default:
+                console->error("Unknown option {}", char(c));
+                help();
+            }
+    }
+    if (modelPath.empty())
+    {
+        console->error("Need to specify 1 model path", c);
+        help();
+    }
+    return tuple{modelPath, libPaths};
+}
+
+int main(int argc, char* argv[])
 {
     set_level(level::debug);
+
+    auto [modelPath, libPaths] = readParams(argc, argv);
 
     milendall_gl_init();
 
     auto fl = FileLibrary();
-    fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/room1/"));
-    auto ref = fl.getRoot().getSubPath("room.gltf");
+    for (auto p: libPaths)
+        fl.addRootFilesystem(p);
+    auto ref = fl.getRoot().getSubPath(modelPath);
     GltfMaterialLibraryIfacePtr materialLibrary = GltfMaterialLibraryIface::getMaterialLibray();
     auto model = make_unique<GltfModel>(materialLibrary, ref);
 
