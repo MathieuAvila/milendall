@@ -13,7 +13,7 @@ import cgtypes.mat4
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
 
-class TestRoomImpl(unittest.TestCase):
+class TestConcreteRoomImpl(unittest.TestCase):
 
     def test_parent_child(self):
         """Test creating a simple impl with parent/child relationships for nodes"""
@@ -210,6 +210,33 @@ class TestRoomImpl(unittest.TestCase):
             {'name': 'child1_2', 'mesh': 3},
             {'name': 'child2_1', 'mesh': 4},
             {'name': 'child2_2', 'mesh': 5}
+        ])
+
+    def test_dump_objects_matrix(self):
+        """ test dumping hierachy of nodes """
+        room = concrete_room.ConcreteRoom()
+        parent1 = room.add_child(None, "parent1")
+        child1_1 = room.add_child("parent1", "child1_1", cgtypes.mat4(
+                        1.0, 2.0, 3.0, 4.0,
+                        5.0, 6.0, 7.0, 8.0,
+                        9.0, 10.0, 11.0, 12.0,
+                        13.0, 14.0, 15.0, 16.0))
+        self.assertIsNotNone(parent1)
+        self.assertIsNotNone(child1_1)
+        room.generate_gltf("/tmp")
+        with open("/tmp/room.gltf", "r") as room_file:
+            obj = json.load(room_file)
+        objects = obj["nodes"]
+        self.assertEqual(objects,
+        [
+            {'children': [1]},
+            {'name': 'parent1', 'children': [2], 'mesh': 0},
+            {'name': 'child1_1', 'mesh': 1, 'matrix': [
+              1.0,              5.0,              9.0,              0,
+              2.0,              6.0,              10.0,              0,
+              3.0,              7.0,              11.0,              0,
+              4.0,              8.0,              12.0,              1
+              ],},
         ])
 
     def test_proj_matrix(self):

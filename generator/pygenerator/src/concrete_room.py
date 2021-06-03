@@ -317,7 +317,12 @@ class ConcreteRoom:
             if node.children != []:
                 gltf_node["children"] = node.children
             if node.matrix is not None:
-                gltf_node["matrix"] = node.matrix
+                gltf_node["matrix"] = [
+                    node.matrix[0][0], node.matrix[0][1], node.matrix[0][2], 0,
+                    node.matrix[1][0], node.matrix[1][1], node.matrix[1][2], 0,
+                    node.matrix[2][0], node.matrix[2][1], node.matrix[2][2], 0,
+                    node.matrix[3][0], node.matrix[3][1], node.matrix[3][2], 1,
+                    ]
             #gltf_node["mesh"] = [ count ]
             gltf_nodes.append(gltf_node)
 
