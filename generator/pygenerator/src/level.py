@@ -212,19 +212,6 @@ class Level:
         element = None
         self._element_instantiation(element)
 
-    def structure(self):
-        """ 1. For each gate, call type to generate parameters
-            2. For each room, pass gates information and forced parameters to sekected type
-               type will use its private structure information to store types' parameters"""
-        for _element in self.values.gates + self.values.rooms:
-            self._element_structure(_element)
-
-    def _element_structure(self, _room):
-        """ Perform structure only on one element"""
-
-    def element_structure(self, _id):
-        """ Perform structure only on one room"""
-
     def dressing(self, output_dir, preview=False):
         """ Perform final dressing on every room and gate"""
         for _element in self.values.rooms:
