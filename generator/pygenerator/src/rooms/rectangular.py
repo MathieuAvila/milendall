@@ -134,7 +134,7 @@ class RectangularRoom(RoomStructure):
                 # todo : 0 to be set correctly
                 append_wall(wall_list, gate_def["pre"] + dims["margin"][0], 0)
                 # at this point, add the gate reference
-                gates_list.append({"gate":gate, "offset":get_sum_walls_width(wall_list)})
+                gates_list.append({"gate":gate, "gate_id": gate_id, "offset":get_sum_walls_width(wall_list)})
                 # adding gate itself
                 append_wall(wall_list, dims["portal"][0], dims["portal"][1])
                 # adding post-gate
@@ -199,22 +199,22 @@ class RectangularRoom(RoomStructure):
                 1.0, 0.0, 0.0, 0.0,
                 0.0, 1.0, 0.0, 0.0,
                 0.0, 0.0, 1.0, 0.0,
-                0.0, 0.0, 0.0, 0.0),
+                0.0, 0.0, 0.0, 1.0),
             cgtypes.mat4(
                 -1.0, 0.0, 0.0, direction_size[0],
                 0.0, 1.0, 0.0,  0.0,
                 0.0, 0.0, -1.0, direction_size[1],
-                0.0, 0.0, 0.0, 0.0),
+                0.0, 0.0, 0.0, 1.0),
             cgtypes.mat4(
-                0.0, 0.0, 0.0, direction_size[0],
+                0.0, 0.0, 1.0, direction_size[0],
                 0.0, 1.0, 0.0, 0.0,
-                1.0, 0.0, 1.0, 0.0,
-                0.0, 0.0, 0.0, 0.0),
+                1.0, 0.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 1.0),
             cgtypes.mat4(
-                0.0, 0.0, 0.0, 0.0,
+                0.0, 0.0, -1.0, 0.0,
                 0.0, 1.0, 0.0, 0.0,
-                -1.0, 0.0, -1.0, direction_size[1],
-                0.0, 0.0, 0.0, 0.0),
+                -1.0, 0.0, 0.0, direction_size[1],
+                0.0, 0.0, 0.0, 1.0),
         ]
         for wall_dir in range(0,4):
             cdir = int(wall_dir / 2)
@@ -246,7 +246,36 @@ class RectangularRoom(RoomStructure):
                     [] )
                 offset += width
 
-        # add gates special places
+            # append gates entry
+            gates_list = gates[wall_dir]
+            logging.info("gates_list %s", gates_list)
+            for gate_def in gates_list:
+                gate_id = gate_def["gate_id"]
+                logging.info("Adding gate child, direction %i gate: %s", wall_dir, dir(gate))
+                gate = gate_def["gate"]
+                offset = gate_def["offset"]
+                # create gate object
+                gate_mat = wall_mat* cgtypes.mat4(
+                        1.0, 0.0, 0.0, offset,
+                        0.0, 1.0, 0.0, 0.0,
+                        0.0, 0.0, 1.0, 0.0,
+                        0.0, 0.0, 0.0, 1.0)
+
+                child_object = concrete.add_child("parent", gate_id, gate_mat)
+                index_wall = child_object.add_structure_points(
+                    [
+                    cgtypes.vec4(0, 0, 0,1),
+                    cgtypes.vec4(0, 1, 0,1),
+                    cgtypes.vec4(2, 1, 0,1),
+                    cgtypes.vec4(2, 0, 0,1),
+                ])
+                child_object.add_structure_faces(
+                    index_wall,
+                    [ [ 3,2,1,0 ] ],
+                    concrete_room.Node.CAT_PHYS_VIS,
+                    [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
+                    [])
+
 
 
 register_room_type(RectangularRoom())
