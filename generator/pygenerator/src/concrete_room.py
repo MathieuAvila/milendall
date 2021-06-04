@@ -214,7 +214,6 @@ class ConcreteRoom:
     def __init__(self):
         self.objects = []
         self.gravity = None
-        self.counter = 0
 
     def get_objects(self):
         """return direct references to the list of objects included in the room
@@ -252,6 +251,9 @@ class ConcreteRoom:
         this is not the expected final output. Use generate_gltf for this.
         """
         return json.dumps(self, cls=JSONEncoder, indent=1)
+
+    def merge(self, other_room):
+        self.objects.extend(other_room.objects)
 
     def generate_gltf(self, directory):
         """

@@ -282,6 +282,53 @@ class TestConcreteRoomImpl(unittest.TestCase):
                 0.0, 0.0, 0.0, 0.0,
                 0.0, 0.0, 0.0, 0.0)})
 
+    def test_merge(self):
+        """
+        test merging 2 concrete rooms. 2nd structure is linked to first
+        by the name of one of its node's parent child.
+        """
+        default_tex = concrete_room.get_texture_definition(
+                "texture.png")
+        room1 = concrete_room.ConcreteRoom()
+        parent1 = room1.add_child(None, "parent1")
+        child1_1 = room1.add_child("parent1", "child1_1")
+        child1_2 = room1.add_child("parent1", "child1_2")
+        index0 = child1_1.add_structure_points([ cgtypes.vec3(0), cgtypes.vec3(1), cgtypes.vec3(2) ])
+        self.assertEqual(0, index0)
+        child1_1.add_structure_faces(
+            index0,
+            [ [0,1,2]],
+            [concrete_room.Node.CATEGORY_PHYSICS], [concrete_room.Node.HINT_BUILDING], [ 0 ] )
+
+        room2 = concrete_room.ConcreteRoom()
+        parent2 = room2.add_child("child1_1", "parent2") # volontarily linked to previous
+        child2_1 = room2.add_child("parent2", "child2_1")
+        child2_2 = room2.add_child("parent2", "child1_2")
+        index0 = child2_1.add_structure_points([ cgtypes.vec3(4), cgtypes.vec3(5), cgtypes.vec3(6) ])
+        self.assertEqual(0, index0)
+        child2_1.add_structure_faces(
+            index0,
+            [ [0,1,2]],
+            [concrete_room.Node.CATEGORY_PHYSICS], [concrete_room.Node.HINT_BUILDING], [ 0 ] )
+
+        room1.merge(room2)
+        nodes = room1.get_objects()
+        node_names = [ n.name for n in nodes]
+        self.assertEqual(node_names, ['parent1', 'child1_1', 'child1_2', 'parent2', 'child2_1', 'child1_2'])
+        room1.generate_gltf("/tmp/")
+        with open("/tmp/room.gltf", "r") as room_file:
+            obj = json.load(room_file)
+        objects = obj["nodes"]
+        print(objects)
+        self.assertEqual(objects,
+            [{'children': [1]},
+            {'name': 'parent1', 'children': [2, 3], 'mesh': 0},
+            {'name': 'child1_1', 'children': [4], 'mesh': 1},
+            {'name': 'child1_2', 'mesh': 2},
+            {'name': 'parent2', 'children': [5, 6], 'mesh': 3},
+            {'name': 'child2_1', 'mesh': 4},
+            {'name': 'child1_2', 'mesh': 5}])
+
     def test_dump_1_face_3_points(self):
         """ test dumping 1 face with 3 points (aka triangle)  """
         room = concrete_room.ConcreteRoom()
