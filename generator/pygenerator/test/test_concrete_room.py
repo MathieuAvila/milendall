@@ -204,12 +204,12 @@ class TestConcreteRoomImpl(unittest.TestCase):
         self.assertEqual(objects,
         [
             {'children': [1, 2]},
-            {'name': 'parent1', 'children': [3, 4], 'mesh': 0},
-            {'name': 'parent2', 'children': [5, 6], 'mesh': 1},
-            {'name': 'child1_1', 'mesh': 2},
-            {'name': 'child1_2', 'mesh': 3},
-            {'name': 'child2_1', 'mesh': 4},
-            {'name': 'child2_2', 'mesh': 5}
+            {'name': 'parent1', 'children': [3, 4] },
+            {'name': 'parent2', 'children': [5, 6] },
+            {'name': 'child1_1'},
+            {'name': 'child1_2'},
+            {'name': 'child2_1'},
+            {'name': 'child2_2'}
         ])
 
     def test_dump_objects_matrix(self):
@@ -230,8 +230,8 @@ class TestConcreteRoomImpl(unittest.TestCase):
         self.assertEqual(objects,
         [
             {'children': [1]},
-            {'name': 'parent1', 'children': [2], 'mesh': 0},
-            {'name': 'child1_1', 'mesh': 1, 'matrix': [
+            {'name': 'parent1', 'children': [2]},
+            {'name': 'child1_1', 'matrix': [
               1.0,              5.0,              9.0,              0,
               2.0,              6.0,              10.0,              0,
               3.0,              7.0,              11.0,              0,
@@ -322,12 +322,12 @@ class TestConcreteRoomImpl(unittest.TestCase):
         print(objects)
         self.assertEqual(objects,
             [{'children': [1]},
-            {'name': 'parent1', 'children': [2, 3], 'mesh': 0},
-            {'name': 'child1_1', 'children': [4], 'mesh': 1},
-            {'name': 'child1_2', 'mesh': 2},
-            {'name': 'parent2', 'children': [5, 6], 'mesh': 3},
-            {'name': 'child2_1', 'mesh': 4},
-            {'name': 'child1_2', 'mesh': 5}])
+            {'name': 'parent1', 'children': [2, 3]},
+            {'name': 'child1_1', 'children': [4]},
+            {'name': 'child1_2'},
+            {'name': 'parent2', 'children': [5, 6]},
+            {'name': 'child2_1'},
+            {'name': 'child1_2'}])
 
     def test_dump_1_face_3_points(self):
         """ test dumping 1 face with 3 points (aka triangle)  """
