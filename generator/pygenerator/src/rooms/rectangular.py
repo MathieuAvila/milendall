@@ -58,7 +58,7 @@ class RectangularRoom(RoomStructure):
         if "gate_pre_post_range" not in structure_private:
             # for each gate, min and max space before and after
             # [ [pre min, pre max] [post min, post_max] ]
-            structure_private["gate_pre_post_range"] = [ [ 1.0 , 1.0 ] , [ 1.0 , 1.0 ] ]
+            structure_private["gate_pre_post_range"] = [ [ 1.0 , 1.0 ] , [ 4.0 , 4.0 ] ]
         gate_pre_post_range = structure_private["gate_pre_post_range"]
 
         # instantiate ceiling height range over highest gate
@@ -199,22 +199,22 @@ class RectangularRoom(RoomStructure):
                 1.0, 0.0, 0.0, 0.0,
                 0.0, 1.0, 0.0, 0.0,
                 0.0, 0.0, 1.0, 0.0,
-                0.0, 0.0, 0.0, 1.0),
+                1.0, 1.0, 1.0, 1.0),
             cgtypes.mat4(
                 -1.0, 0.0, 0.0, direction_size[0],
                 0.0, 1.0, 0.0,  0.0,
                 0.0, 0.0, -1.0, direction_size[1],
-                0.0, 0.0, 0.0, 1.0),
+                1.0, 1.0, 1.0, 1.0),
             cgtypes.mat4(
-                0.0, 0.0, 1.0, direction_size[0],
-                0.0, 1.0, 0.0, 0.0,
-                1.0, 0.0, 0.0, 0.0,
-                0.0, 0.0, 0.0, 1.0),
-            cgtypes.mat4(
-                0.0, 0.0, -1.0, 0.0,
+                0.0, 0.0, 1.0, 0,
                 0.0, 1.0, 0.0, 0.0,
                 -1.0, 0.0, 0.0, direction_size[1],
-                0.0, 0.0, 0.0, 1.0),
+                1.0, 1.0, 1.0, 1.0),
+            cgtypes.mat4(
+                0.0, 0.0, -1.0, direction_size[0],
+                0.0, 1.0, 0.0, 0.0,
+                1.0, 0.0, 0.0, 0,
+                1.0, 1.0, 1.0, 1.0),
         ]
         for wall_dir in range(0,4):
             cdir = int(wall_dir / 2)
@@ -234,9 +234,9 @@ class RectangularRoom(RoomStructure):
                 index_wall = parent.add_structure_points(
                     [
                     wall_mat*cgtypes.vec4(offset,         wall["start"],   0,1),
-                    wall_mat*cgtypes.vec4(offset,         height,       0,1),
+                    wall_mat*cgtypes.vec4(offset,         height,          0,1),
                     wall_mat*cgtypes.vec4(offset + width, wall["start"],   0,1),
-                    wall_mat*cgtypes.vec4(offset + width, height,       0,1),
+                    wall_mat*cgtypes.vec4(offset + width, height,          0,1),
                 ])
                 parent.add_structure_faces(
                     index_wall,
@@ -257,7 +257,7 @@ class RectangularRoom(RoomStructure):
                 # create gate object
                 gate_mat = wall_mat* cgtypes.mat4(
                         1.0, 0.0, 0.0, offset,
-                        0.0, 1.0, 0.0, 0.0,
+                        0.0, 1.0, 0.0, wall_dir/4,
                         0.0, 0.0, 1.0, 0.0,
                         0.0, 0.0, 0.0, 1.0)
 
