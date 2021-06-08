@@ -262,19 +262,6 @@ class RectangularRoom(RoomStructure):
                         0.0, 0.0, 0.0, 1.0)
 
                 child_object = concrete.add_child("parent", gate_id, gate_mat)
-                index_wall = child_object.add_structure_points(
-                    [
-                    cgtypes.vec4(0, 0, 0,1),
-                    cgtypes.vec4(0, 1, 0,1),
-                    cgtypes.vec4(2, 1, 0,1),
-                    cgtypes.vec4(2, 0, 0,1),
-                ])
-                child_object.add_structure_faces(
-                    index_wall,
-                    [ [ 3,2,1,0 ] ],
-                    concrete_room.Node.CAT_PHYS_VIS,
-                    [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
-                    [])
 
 
 

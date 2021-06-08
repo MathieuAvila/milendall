@@ -146,11 +146,6 @@ class Level:
         element = None
         self._element_instantiation(element)
 
-    def dressing(self, output_dir, preview=False):
-        """ Perform final dressing on every room and gate"""
-        for room in self.values.rooms:
-            room.finalize(output_dir, preview)
-
     def objects(self):
         """ Place objects in room acording to specs"""
 
@@ -172,12 +167,9 @@ class Level:
             }
         level_content["game_type"] = self.values.game_type
         level_content["section"] = self.values.section
-        for _element in self.values.rooms:
-            level_content["rooms"].append({"room_id": _element.get_id(), "name": _element.values.name})
-            self.element_dressing(output_directory, _element, preview)
+        for room in self.values.rooms:
+            level_content["rooms"].append({"room_id": room.get_id(), "name": room.values.name})
+            room.finalize(output_directory, preview)
         level_json = json.dumps(level_content, indent=1)
         with open(level_file, "w") as output_file:
             output_file.write(level_json)
-
-    def room_finalize(self, room_id):
-        """ Finalize only one room"""
