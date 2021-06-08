@@ -37,6 +37,16 @@ def_gate_1 = {
    "structure_class": "simple_door",
 }
 
+def_gate_2 = {
+   "gate_id": "gate2",
+   "structure_class": "simple_door",
+}
+
+def_gate_3 = {
+   "gate_id": "gate3",
+   "structure_class": "simple_door",
+}
+
 class TestRoomRectangular(unittest.TestCase):
 
     selector = selector_regular.SelectorRegular()
@@ -92,6 +102,39 @@ class TestRoomRectangular(unittest.TestCase):
 
         # finalize
         custom_room.finalize("/tmp/test_rectangular_basic_2_gate/output", preview=True)
+
+    def test_generate_4_gate(self):
+        """generate one rectangular with 4 gates"""
+        stream_handler = logging.StreamHandler(sys.stdout)
+        logger.addHandler(stream_handler)
+
+        custom_room = room.Room(def_0)
+
+        # add gate 1
+        door0 = gate.Gate(def_gate_0)
+        door0.instantiation(self.selector)
+        custom_room.gates.append(door0)
+
+        # add gate 2
+        door1 = gate.Gate(def_gate_1)
+        door1.instantiation(self.selector)
+        custom_room.gates.append(door1)
+
+        # add gate 3
+        door2 = gate.Gate(def_gate_2)
+        door2.instantiation(self.selector)
+        custom_room.gates.append(door2)
+
+        # add gate 4
+        door3 = gate.Gate(def_gate_3)
+        door3.instantiation(self.selector)
+        custom_room.gates.append(door3)
+
+        # instantiante room as gates are done
+        custom_room.instantiation(self.selector)
+
+        # finalize
+        custom_room.finalize("/tmp/test_rectangular_basic_4_gate/output", preview=True)
 
 
 if __name__ == '__main__':
