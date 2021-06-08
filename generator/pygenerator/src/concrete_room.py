@@ -390,11 +390,12 @@ class ConcreteRoom:
                             "mode": 4,
                             "material": texture_id
                         })
-            gltf_meshes.append({
+            if primitives != []:
+                gltf_meshes.append({
                         "primitives": primitives,
                         "name": "Mesh_%s" %(node.name)
-            })
-            gltf_node["mesh"] = len(gltf_meshes) - 1
+                })
+                gltf_node["mesh"] = len(gltf_meshes) - 1
 
         gltf["buffers"][0]["byteLength"] = data_file.tell()
         j = json.dumps(gltf, indent=1)
