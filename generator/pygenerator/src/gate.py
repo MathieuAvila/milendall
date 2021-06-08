@@ -2,7 +2,9 @@
 
 from munch import DefaultMunch
 
-class Gate:
+from element import Element
+
+class Gate(Element):
 
     def __init__(self, values):
         self.values = DefaultMunch.fromDict(values)

@@ -65,7 +65,7 @@ class TestLevel(unittest.TestCase):
         loaded_level = level.Level("../test/test_samples/simple/level-user.json", selector)
         self.assertIsNotNone(loaded_level)
         loaded_level.instantiation()
-        loaded_level.dressing("/tmp/test_dressing")
+        loaded_level.room_finalize("/tmp/test_dressing")
 
     def test_finalize(self):
         """Test the finalize"""

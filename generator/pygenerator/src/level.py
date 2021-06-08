@@ -1,7 +1,6 @@
 """ A level definition"""
 
 import logging
-import random
 import pathlib
 import os
 
@@ -132,72 +131,7 @@ class Level:
                     _room)
 
     def _element_instantiation(self, _element):
-        """ 1. Sort element types that matches constraints: list of gates with format of each.
-            Note: it's up to the element type to check criterias
-            2. Associate weights for each
-            3. Random selection of one type"""
-
-        # start with structure
-
-        if _element.values.structure_class is None:
-            logging.info("Need to select class for element: %s", _element.get_id())
-            fit_list = self.selector.get_structure_fit(_element)
-            logging.info("Fit list is: %s", str([a.get_name() for a in fit_list]))
-            if fit_list == []:
-                logging.error("Fit list is void, cannot choose any structure."
-                              "This is unrecoverable.")
-                raise Exception ("Void fit list for element: " + _element.get_id())
-            # just random selection for the moment
-            choice = random.choice(fit_list)
-            logging.info("Chosen structure %s for element: %s",
-                            choice.get_name(),
-                            _element.get_id())
-            _element.values.structure_class = choice.get_name()
-        else:
-            logging.info("No need to select class for element: %s", _element.get_id())
-        _element.structure = self.selector.get_structure_from_name(
-                _element.values.structure_class,
-                _element)
-        if _element.structure is None:
-            logging.error("Unknown class name: %s", _element.values.structure_class)
-            raise Exception ("Void fit list for element: " + _element.get_id())
-        _element.structure.instantiate_defaults()
-        logging.info("Run instantiation structure parameters for element: %s", _element.get_id())
-        _element.structure.instantiate()
-
-        # same for dressing
-
-        if _element.values.dressing_class is None:
-            logging.info("Need to select dressing class for element: %s", _element.get_id())
-            fit_list = self.selector.get_dressing_fit(_element)
-            logging.info("Fit list is: %s", str([a.get_name() for a in fit_list]))
-            if fit_list == []:
-                logging.error("Fit list is void, cannot choose any dressing."
-                              "This is unrecoverable.")
-                raise Exception ("Void fit list for element: " + _element.get_id())
-            # just random selection for the moment
-            choice = random.choice(fit_list)
-            logging.info("Chosen dressing %s for element: %s", choice.get_name() ,_element.get_id())
-            _element.values.dressing_class = choice.get_name()
-        else:
-            logging.info("No need to select dressing  class for element: %s", _element.get_id())
-        _element.dressing = self.selector.get_dressing_from_name(
-                _element.values.dressing_class,
-                _element)
-        if _element.dressing is None:
-            logging.error("Unknown dressing class name: %s", _element.values.dressing_class)
-            raise Exception ("Void fit list for element: " + _element.get_id())
-
-        if _element.values.dressing_private is None:
-            _element.values.dressing_private = {}
-            logging.info("Create private parameters for element: %s", _element.get_id())
-        if _element.values.dressing_parameters is None:
-            _element.values.dressing_parameters = {}
-            logging.info("Create structure parameters for element: %s", _element.get_id())
-
-        _element.values.dressing_private.update(_element.values.dressing_parameters)
-        logging.info("Run instantiation dressing parameters for element: %s", _element.get_id())
-        _element.dressing.instantiate()
+        _element.instantiation(self.selector)
 
     def instantiation(self):
         """ 1. For each gate, choose gate format if not already done
@@ -214,20 +148,8 @@ class Level:
 
     def dressing(self, output_dir, preview=False):
         """ Perform final dressing on every room and gate"""
-        for _element in self.values.rooms:
-            self.element_dressing(output_dir, _element, preview)
-
-    def element_dressing(self, output_dir, element, preview=False):
-        """ Perform final dressing one element"""
-
-        concrete = concrete_room.ConcreteRoom()
-        element.structure.generate(concrete)
-        element.dressing.generate(concrete)
-        room_path = output_dir + "/" + element.values.room_id
-        pathlib.Path(room_path).mkdir(parents=True, exist_ok=True)
-        concrete.generate_gltf(room_path)
-        if preview:
-            concrete_room.preview(room_path + "/room.gltf", room_path + "/room_preview.gltf")
+        for room in self.values.rooms:
+            room.finalize(output_dir, preview)
 
     def objects(self):
         """ Place objects in room acording to specs"""

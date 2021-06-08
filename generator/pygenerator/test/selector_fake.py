@@ -37,6 +37,15 @@ class GateStructureFake1(GateStructure):
         logging.debug("Check fit gate: %s", self.gate.values.gate_id)
         return True
 
+    def generate(self, concrete):
+        """generate 1 structure triangle to be able to check validity"""
+        parent = concrete.add_child(self.gate.values.gate_id, self.gate.values.gate_id + "_impl")
+        index0 = parent.add_structure_points([ cgtypes.vec3(3), cgtypes.vec3(4), cgtypes.vec3(5) ])
+        parent.add_structure_faces(
+            index0,
+            [ [0,1,2], [3,4,5], [6,7,8] ],
+            [concrete_room.Node.CATEGORY_PHYSICS], [concrete_room.Node.HINT_BUILDING], [ 0 ] )
+
 class GateDressingFake1(Dressing):
     _name = "gate_dressing_1"
 
@@ -51,6 +60,14 @@ class GateDressingFake1(Dressing):
     def instantiate(self):
         """ performs parameters selection. Parameters should be enough to generate specific file"""
         return True
+
+    def generate(self, concrete):
+        """Instantiate only 1 triangle to pass validity check"""
+        parent = concrete.get_node(self._element.values.gate_id + "_impl")
+        parent.add_dressing_faces(
+            [ cgtypes.vec3(3), cgtypes.vec3(4), cgtypes.vec3(5) ],
+            [ [0,1,2] ],
+            concrete_room.get_texture_definition("../texture.png"))
 
 class RoomDressingFake1(Dressing):
     _name = "room_dressing_1"
@@ -136,7 +153,7 @@ class SelectorFake(Selector):
 
     def __init__(self):
 
-        self.classes = { 
+        self.classes = {
             "structure": { "room":{}, "gate":{} },
             "dressing": { "room":{}, "gate":{} }
         }
