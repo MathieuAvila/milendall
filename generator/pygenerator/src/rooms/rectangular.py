@@ -257,7 +257,7 @@ class RectangularRoom(RoomStructure):
                 # create gate object
                 gate_mat = wall_mat* cgtypes.mat4(
                         1.0, 0.0, 0.0, offset,
-                        0.0, 1.0, 0.0, wall_dir/4,
+                        0.0, 1.0, 0.0, 0,
                         0.0, 0.0, 1.0, 0.0,
                         0.0, 0.0, 0.0, 1.0)
 
