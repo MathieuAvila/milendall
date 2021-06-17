@@ -7,8 +7,10 @@
 #include "gltf_mesh.hxx"
 
 #include "gltf_material_accessor_library_iface.hxx"
+#include "gltf_instance_iface.hxx"
 
 class GltfDataAccessorIFace;
+class GltfInstance;
 
 struct GltfNode
 {
@@ -54,18 +56,32 @@ class GltfModel
          */
         std::vector<std::shared_ptr<GltfNode>> nodeTable;
 
+        /** Holds the root node that is the Father of Them All */
+        std::vector<int> root_nodes;
+
         SGltfMaterialAccessorIFace materialAccessor;
+
+        /** recursive method to draw things */
+        void draw(GltfInstance*, int);
+
+        /** recursive method to apply default transform */
+        void applyDefaultTransform(GltfInstance* instance, int index, glm::mat4& position);
 
     public:
 
         GltfModel() = delete;
         GltfModel(const GltfModel&) = delete;
 
-        void getInstance();
-
         GltfModel(GltfMaterialLibraryIfacePtr materialLibrary, const FileLibrary::UriReference ref);
         virtual ~GltfModel();
 
-        void draw();
+        /** Get node count, in order to create instance */
+        int getInstanceParameters();
+
+        /** Set a default transformation in an instance, no animation */
+        void applyDefaultTransform(GltfInstance* instance, glm::mat4& position);
+
+        /** Draw an instance, using matrices from it */
+        void draw(GltfInstance* instance);
 };
 

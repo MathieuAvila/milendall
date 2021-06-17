@@ -280,6 +280,16 @@ int milendall_gl_init()
     return 0;
 }
 
+static glm::mat4 ModelMatrix = glm::mat4(1.0);
+
+void setMeshMatrix(glm::mat4 mat)
+{
+    ModelMatrix = mat;
+	glm::mat4 MVP = getProjectionMatrix() * getViewMatrix() * ModelMatrix;
+
+	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+}
+
 void milendall_gl_close()
 {
 	glDeleteProgram(programID);

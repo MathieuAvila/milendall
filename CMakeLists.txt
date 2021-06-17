@@ -41,6 +41,8 @@ add_library(game_lib STATIC
   game/src/gltf_mesh.cxx
   game/src/gltf_model.hxx
   game/src/gltf_model.cxx
+  game/src/gltf_instance_iface.hxx
+  game/src/gltf_instance_iface.cxx
   game/src/gltf_material_accessor_iface.hxx
   game/src/gltf_material_accessor_library_iface.hxx
   game/src/gltf_material_accessor.cxx

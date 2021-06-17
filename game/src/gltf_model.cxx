@@ -9,6 +9,8 @@
 
 #include "helper_math.hxx"
 
+#include "gl_init.hxx"
+
 static auto console = spdlog::stdout_color_mt("gltf_model");
 
 static glm::mat4x4 identity = glm::mat4(1.0f);
@@ -42,7 +44,6 @@ GltfNode::GltfNode(json& json): default_transform(identity)
         auto quat = glm::qua(xyzw[3], xyzw[0], xyzw[1], xyzw[2]);
         default_transform = default_transform * toMat4(quat);
     });
-
     /* read matrix for translation */
     jsonExecuteIfElement(json, "translation", [this](nlohmann::json& child) {
         default_transform = glm::translate(default_transform, jsonGetVec3(child));
@@ -87,18 +88,64 @@ GltfModel::GltfModel(GltfMaterialLibraryIfacePtr materialLibrary, const FileLibr
 
     auto my_scene = jsonGetElementByName(file_json, "scene").get<int>();
     auto j_scenes = jsonGetElementByName(file_json, "scenes");
-    auto j_scenes_0 = jsonGetElementByIndex(file_json, "scenes", 0);
-    auto scene_child_count = j_scenes_0.size();
-    console->info("scene ID={} (amongst {}), has children count:{}", my_scene, j_scenes.size(), scene_child_count);
+    auto j_scenes_i = jsonGetElementByIndex(file_json, "scenes", my_scene);
+    auto scene_child_count = j_scenes_i.size();
+    auto j_scenes_i_nodes = jsonGetElementByName(j_scenes_i, "nodes");
+
+    std::string output;
+    for (auto node: j_scenes_i_nodes ) {
+        auto i = node.get<int>();
+        root_nodes.push_back(i);
+        output += to_string(i) + " ";
+    }
+    console->info("scene ID={} (amongst {}), has children count:{}, root_nodes is:{}",
+    my_scene, j_scenes.size(), scene_child_count, output);
 }
 
 GltfModel::~GltfModel()
 {
 }
 
-void GltfModel::draw()
+int GltfModel::getInstanceParameters()
 {
-    for (auto mesh : meshTable) {
-        mesh->Draw();
+    return nodeTable.size();
+}
+
+void GltfModel::draw(GltfInstance* instance, int index)
+{
+    auto myNode = nodeTable[index].get();
+    auto instanceNode = instance->getNode(index);
+    if (myNode->my_mesh != -1)
+    {
+		setMeshMatrix(instanceNode->getNodeMatrix());
+        meshTable[myNode->my_mesh]->Draw();
+    }
+    for (auto child_node: myNode->children) {
+        draw(instance, child_node);
+    }
+}
+
+void GltfModel::draw(GltfInstance* instance)
+{
+    for (auto i: root_nodes)
+        draw(instance, i);
+}
+
+void GltfModel::applyDefaultTransform(GltfInstance* instance, int index, glm::mat4& position)
+{
+    auto myNode = nodeTable[index].get();
+    auto instanceNode = instance->getNode(index);
+
+    auto& mat = instanceNode->getNodeMatrix();
+    mat = position * myNode->default_transform;
+
+    for (int i : myNode->children)
+        applyDefaultTransform(instance, i, mat);
+}
+
+void GltfModel::applyDefaultTransform(GltfInstance* instance, glm::mat4& position)
+{
+    for (auto i: root_nodes) {
+        applyDefaultTransform(instance, i, position);
     }
 }

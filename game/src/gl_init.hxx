@@ -2,6 +2,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include <glm/mat4x4.hpp>
+
 int milendall_gl_init();
 void milendall_gl_close();
 
@@ -16,3 +18,4 @@ extern glm::mat4 ProjectionMatrix;
 
 glm::mat4 getViewMatrix();
 glm::mat4 getProjectionMatrix();
+void setMeshMatrix(glm::mat4);

@@ -4,6 +4,10 @@
 
 #include <stdint.h>
 
+#include "gl_init.hxx"
+
+void setMeshMatrix(glm::mat4 mat) {};
+
 void glewGenerateMipmap(uint32_t target){};
 PFNGLGENERATEMIPMAPPROC __glewGenerateMipmap = glewGenerateMipmap;
 

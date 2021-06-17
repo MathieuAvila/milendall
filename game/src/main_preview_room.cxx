@@ -75,6 +75,10 @@ int main(int argc, char* argv[])
     auto ref = fl.getRoot().getSubPath(modelPath);
     GltfMaterialLibraryIfacePtr materialLibrary = GltfMaterialLibraryIface::getMaterialLibray();
     auto model = make_unique<GltfModel>(materialLibrary, ref);
+    auto instance = make_unique<GltfInstance>(model->getInstanceParameters());
+    glm::mat4 mat_id(1.0);
+    model->applyDefaultTransform(instance.get(), mat_id);
+
 
 	do{
 		// Clear the screen
@@ -85,14 +89,8 @@ int main(int argc, char* argv[])
 
 		// Compute the MVP matrix from keyboard and mouse input
 		computeMatricesFromInputs();
-		glm::mat4 ProjectionMatrix = getProjectionMatrix();
-		glm::mat4 ViewMatrix = getViewMatrix();
-		glm::mat4 ModelMatrix = glm::mat4(1.0);
-		glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
-		// Send our transformation to the currently bound shader,
-		// in the "MVP" uniform
-		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+		setMeshMatrix(glm::mat4(1.0));
 
 		// Bind our texture in Texture Unit 0
 		glActiveTexture(GL_TEXTURE0);
@@ -100,7 +98,7 @@ int main(int argc, char* argv[])
 		// Set our "myTextureSampler" sampler to use Texture Unit 0
 		glUniform1i(TextureID, 0);
 
-        model->draw();
+        model->draw(instance.get());
 
 		// Swap buffers
 		glfwSwapBuffers(window);
