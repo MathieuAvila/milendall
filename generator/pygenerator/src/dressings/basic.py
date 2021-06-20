@@ -21,7 +21,7 @@ class DressingBasic(Dressing):
         """ return a self instance of this dressing, operating on any object"""
         return DressingBasic(element)
 
-    def instantiate(self):
+    def instantiate(self, selector):
         """ force set values:
         - set default values to dressing"""
         self.element.values.dressing_private={}

@@ -3,7 +3,6 @@ interface definition for room/gate element
 """
 
 import logging
-import random
 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
@@ -35,7 +34,7 @@ class Element():
                               "This is unrecoverable.")
                 raise Exception ("Void fit list for element: " + self.get_id())
             # just random selection for the moment
-            choice = random.choice(fit_list)
+            choice = selector.get_random_choice(fit_list)
             logging.info("Chosen structure %s for element: %s",
                             choice.get_name(),
                             self.get_id())
@@ -50,7 +49,7 @@ class Element():
             raise Exception ("Void fit list for element: " + self.get_id())
         self.structure.instantiate_defaults()
         logging.info("Run instantiation structure parameters for element: %s", self.get_id())
-        self.structure.instantiate()
+        self.structure.instantiate(selector)
 
         # same for dressing
 
@@ -63,7 +62,7 @@ class Element():
                               "This is unrecoverable.")
                 raise Exception ("Void fit list for element: " + self.get_id())
             # just random selection for the moment
-            choice = random.choice(fit_list)
+            choice = selector.get_random_choice(fit_list)
             logging.info("Chosen dressing %s for element: %s", choice.get_name() ,self.get_id())
             self.values.dressing_class = choice.get_name()
         else:
@@ -84,4 +83,4 @@ class Element():
 
         self.values.dressing_private.update(self.values.dressing_parameters)
         logging.info("Run instantiation dressing parameters for element: %s", self.get_id())
-        self.dressing.instantiate()
+        self.dressing.instantiate(selector)

@@ -3,6 +3,7 @@ Real room selector based on catalog
 """
 
 import logging
+import random
 
 from selector import Selector
 from rooms import register as room_register
@@ -14,7 +15,7 @@ class SelectorRegular(Selector):
     def __init__(self):
         self.classes["structure"]["room"] = room_register.roomTypes
         self.classes["structure"]["gate"] = gate_register.gateTypes
-        # todo: differentiate gates and rooms dressing 
+        # todo: differentiate gates and rooms dressing
         self.classes["dressing"]["room"] = dressing_register.dressingTypes
         self.classes["dressing"]["gate"] = dressing_register.dressingTypes
 
@@ -22,3 +23,14 @@ class SelectorRegular(Selector):
         logging.info("Gate structure list is: %s", " ".join(self.classes["structure"]["gate"]) )
         logging.info("Room dressing list is: %s", " ".join(self.classes["dressing"]["room"]) )
         logging.info("Gate dressing list is: %s", " ".join(self.classes["dressing"]["gate"]) )
+
+    def get_random_choice(self, l):
+        return random.choice(l)
+
+    def get_random_int(self, min,max):
+        """Random number wrapper, to allow UT control over random-itude."""
+        return random.randint(min,max)
+
+    def get_random_float(self, min,max):
+        """Random number wrapper, to allow UT control over random-itude."""
+        return random.random()* (max-min) + min

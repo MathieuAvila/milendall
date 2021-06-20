@@ -22,7 +22,7 @@ class GateStructureFake1(GateStructure):
         """ return a self instance of this gate"""
         return GateStructureFake1(gate)
 
-    def instantiate(self):
+    def instantiate(self, selector):
         """ force set values:
         - set values to gate size"""
         self.gate.values.structure_private={}
@@ -57,7 +57,7 @@ class GateDressingFake1(Dressing):
         """ Return instance for a given gate """
         return GateDressingFake1(element)
 
-    def instantiate(self):
+    def instantiate(self, selector):
         """ performs parameters selection. Parameters should be enough to generate specific file"""
         return True
 
@@ -80,7 +80,7 @@ class RoomDressingFake1(Dressing):
         """ Return instance for a given gate """
         return RoomDressingFake1(element)
 
-    def instantiate(self):
+    def instantiate(self, selector):
         """ performs parameters selection. Parameters should be enough to generate specific file"""
         return True
 
@@ -114,7 +114,7 @@ class RoomStructureFake1(RoomStructure):
         """ return instance"""
         return RoomStructureFake1(room)
 
-    def instantiate(self):
+    def instantiate(self, selector):
         """ force set values:
         - set values to room size
         - set values for gates"""
@@ -165,3 +165,37 @@ class SelectorFake(Selector):
 
         self.classes["dressing"]["room"][RoomDressingFake1().get_name()] = RoomDressingFake1()
         self.classes["dressing"]["gate"][GateDressingFake1().get_name()] = GateDressingFake1()
+
+        self.choice_selector = []
+        self.choice_counter = 0
+
+        self.int_selector = []
+        self.int_counter = 0
+
+        self.float_selector = []
+        self.float_counter = 0.0
+
+    def get_random_choice(self, l):
+        if len(self.choice_selector) != 0:
+            num = self.choice_selector.pop()
+            return l[num]
+        else:
+            n = self.choice_counter
+            self.choice_counter += 1
+            return l[n % (len(l))]
+
+    def get_random_int(self, min,max):
+        if len(self.int_selector) != 0:
+            return self.int_selector.pop()
+        else:
+            n = self.int_counter
+            self.int_counter += 1
+            return min + (n % (max-min))
+
+    def get_random_float(self, min,max):
+        if len(self.float_selector) != 0:
+                return self.float_selector.pop()
+        else:
+            n = self.float_counter
+            self.float_counter += 0.1
+            return min + (n % (max-min))

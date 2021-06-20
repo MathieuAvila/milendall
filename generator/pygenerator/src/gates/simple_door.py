@@ -32,7 +32,7 @@ class DoorGate(GateStructure):
         logging.info("checking if door is ok: always ! door rules the world !")
         return True
 
-    def instantiate(self):
+    def instantiate(self, selector):
         """ force set values:
         - set values to gate size"""
         self.gate.values.private_parameters={}

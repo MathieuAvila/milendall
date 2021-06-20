@@ -39,7 +39,7 @@ class ElementalStructure():
         """
         raise "subclass me"
 
-    def instantiate(self):
+    def instantiate(self, selector):
         """ performs parameters selection. Parameters should be enough to generate specific file"""
         raise "subclass me"
 

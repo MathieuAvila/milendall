@@ -3,7 +3,6 @@ structure definition for a simple rectangular room
 """
 
 import logging
-import random
 from room_structure import RoomStructure
 import concrete_room
 import cgtypes.vec3
@@ -47,7 +46,7 @@ class RectangularRoom(RoomStructure):
         logging.info("checking if rectangular is ok: always ! rectangular rules the world !")
         return True
 
-    def instantiate(self):
+    def instantiate(self, selector):
         """ force set values:
         - set values to room size
         - set values for gates"""
@@ -71,7 +70,7 @@ class RectangularRoom(RoomStructure):
         # whatever the number and height of gates, a minimum of height of 2.0 will be taken
         if "height_over_gate" not in structure_private:
             height_range = structure_private["height_over_gate_range"]
-            structure_private["height_over_gate"] = random.randint(height_range[0], height_range[1])
+            structure_private["height_over_gate"] = selector.get_random_float(height_range[0], height_range[1])
 
         # instantiate range for walls pre-post
         if "wall_pre_post_range" not in structure_private:
@@ -83,8 +82,8 @@ class RectangularRoom(RoomStructure):
         # instantiate wall pre/post
         if "wall_pre_post" not in structure_private:
             structure_private["wall_pre_post"] = [
-                [random.randint(wall_pre_post_range[0][0], wall_pre_post_range[0][1]),
-                 random.randint(wall_pre_post_range[1][0], wall_pre_post_range[1][1])
+                [selector.get_random_float(wall_pre_post_range[0][0], wall_pre_post_range[0][1]),
+                 selector.get_random_float(wall_pre_post_range[1][0], wall_pre_post_range[1][1])
                 ] for i in range(0,4)
             ]
 
@@ -93,9 +92,9 @@ class RectangularRoom(RoomStructure):
             structure_private["setup"] = [ [],[],[],[],[] ] # x0, x1, y0, y1
             setup = structure_private["setup"]
             for gate in self._element.gates:
-                pos = random.randint(0, 3)
-                pre = random.randint(gate_pre_post_range[0][0], gate_pre_post_range[0][1])
-                post =  random.randint(gate_pre_post_range[1][0], gate_pre_post_range[1][1])
+                pos = selector.get_random_int(0, 3)
+                pre = selector.get_random_float(gate_pre_post_range[0][0], gate_pre_post_range[0][1])
+                post =  selector.get_random_float(gate_pre_post_range[1][0], gate_pre_post_range[1][1])
                 setup[pos].append({"gate": gate.get_id(), "pre":pre, "post":post})
 
         logging.info("setup: %s", str(structure_private["setup"]))

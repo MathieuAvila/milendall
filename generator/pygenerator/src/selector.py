@@ -31,3 +31,15 @@ class Selector:
     def get_dressing_from_name(self, name, element):
         """ return the class from the loaded name"""
         return self.classes["dressing"][element.get_class()][name].get_instance(element)
+
+    def get_random_choice(self, l):
+        """Random number wrapper, to allow UT control over random-itude."""
+        raise "subclass me"
+
+    def get_random_int(self, min,max):
+        """Random number wrapper, to allow UT control over random-itude."""
+        raise "subclass me"
+
+    def get_random_float(self, min,max):
+        """Random number wrapper, to allow UT control over random-itude."""
+        raise "subclass me"
