@@ -209,6 +209,26 @@ def create_accessor(data_file, gltf, elements):
                 })
     return len(gltf_accessors) - 1
 
+def get_texture_id(gltf, texture_list, texture):
+    """Get a texture id if it was already created, of insert it otherwise """
+    gltf_textures = gltf["textures"]
+    gltf_images = gltf["images"]
+    gltf_materials = gltf["materials"]
+    if texture not in texture_list:  # need to insert
+        gltf_images.append({ "uri": texture })
+        gltf_textures.append( { "sampler": 0, "source": len(gltf_images)-1 } )
+        gltf_materials.append(
+            {
+                "pbrMetallicRoughness": {
+                    "baseColorTexture": {
+                        "index": len(gltf_textures) -1
+                    },
+                    "metallicFactor": 0.0
+                },
+            })
+        texture_list[texture] = len(gltf_materials)-1
+    return texture_list[texture]
+
 class ConcreteRoom:
 
     def __init__(self):
@@ -309,9 +329,6 @@ class ConcreteRoom:
         roots = [count+1 for count, value in enumerate(self.objects) if value.parent is None ]
         gltf_nodes = gltf["nodes"]
         gltf_meshes = gltf["meshes"]
-        gltf_textures = gltf["textures"]
-        gltf_images = gltf["images"]
-        gltf_materials = gltf["materials"]
         gltf_nodes.append( { "children" : roots } )
         texture_list = {}
         for node in self.objects:
@@ -339,23 +356,7 @@ class ConcreteRoom:
                         gltf,
                         points)
 
-                # add texture even if it already exist. No additional cost in the engine
-                texture = faces_block["texture"]["texture"]
-                texture_id = 0
-                if texture not in texture_list:  # need to insert
-                    gltf_images.append({ "uri": faces_block["texture"]["texture"] })
-                    gltf_textures.append( { "sampler": 0, "source": len(gltf_images)-1 } )
-                    gltf_materials.append(
-                        {
-                            "pbrMetallicRoughness": {
-                                "baseColorTexture": {
-                                    "index": len(gltf_textures) -1
-                                },
-                                "metallicFactor": 0.0
-                            },
-                        })
-                    texture_list[texture] = len(gltf_materials)-1
-                texture_id = texture_list[texture]
+                texture_id = get_texture_id(gltf, texture_list, faces_block["texture"]["texture"])
 
                 # compute indices
                 poly_list = []
