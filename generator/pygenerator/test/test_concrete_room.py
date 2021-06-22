@@ -134,53 +134,47 @@ class TestConcreteRoomImpl(unittest.TestCase):
 
     def test_dressing_faces(self):
         """Test creating a simple impl with 1 node with multiple points and faces sets
-        for dressing"""
+        for dressing. This tests both multi-textures and merging of faces with the same texture"""
         room = concrete_room.ConcreteRoom()
         self.assertIsNotNone(room)
         parent = room.add_child(None, "parent")
         self.assertIsNotNone(parent)
         parent.add_dressing_faces(
-            [ cgtypes.vec3(0), cgtypes.vec3(1), cgtypes.vec3(2) ],
-            [ [0,1,2], [3,4,5], [6,7,8] ],
+            [ cgtypes.vec3(0), cgtypes.vec3(1), cgtypes.vec3(2) , cgtypes.vec3(3) ],
+            [ [0,1,2], [1,2,3], [2,3,0] ],
             concrete_room.get_texture_definition("myfilename"))
         parent.add_dressing_faces(
-            [ cgtypes.vec3(3), cgtypes.vec3(4), cgtypes.vec3(5) ],
-            [ [9,10,11], [12,13,14]],
+            [  cgtypes.vec3(2) , cgtypes.vec3(3) , cgtypes.vec3(4) ],
+            [ [0,1,2] ],
+            concrete_room.get_texture_definition("myfilename"))
+        parent.add_dressing_faces(
+            [ cgtypes.vec3(0), cgtypes.vec3(1), cgtypes.vec3(2) , cgtypes.vec3(3) ],
+            [ [0,1,2], [1,2,3], [2,3,0]],
             concrete_room.get_texture_definition("myfilename2"))
         j = json.loads(room.dump_to_json())
         faces = j["objects"][0]["dressing"]
         print(faces)
-        self.assertEqual(faces,
-            [{
-            'points':
-            [{'x': 0.0, 'y': 0.0, 'z': 0.0},
-            {'x': 1.0, 'y': 1.0, 'z': 1.0},
-            {'x': 2.0, 'y': 2.0, 'z': 2.0}],
-            'faces': [[0, 1, 2], [3, 4, 5], [6, 7, 8]],
-            'texture': {
-                'texture': 'myfilename',
-                'proj': {'mlist': [
-                    1.0, 0.0, 0.0, 0.0,
-                    0.0, 1.0, 0.0, 0.0,
-                    0.0, 0.0, 0.0, 0.0,
-                    0.0, 0.0, 0.0, 0.0]}
-                }
-            },
-            {'points':
-            [{'x': 3.0, 'y': 3.0, 'z': 3.0},
-            {'x': 4.0, 'y': 4.0, 'z': 4.0},
-            {'x': 5.0, 'y': 5.0, 'z': 5.0}],
-            'faces': [[9, 10, 11], [12, 13, 14]],
-            'texture': {
-                'texture': 'myfilename2',
-                'proj': {'mlist': [
-                    1.0, 0.0, 0.0, 0.0,
-                    0.0, 1.0, 0.0, 0.0,
-                    0.0, 0.0, 0.0, 0.0,
-                    0.0, 0.0, 0.0, 0.0]}
-                }
-            }]
+        self.assertEqual(faces, {
+            'myfilename': {
+                'points': [
+                    {'x': 0.0, 'y': 0.0, 'z': 0.0, 'u': 0.0, 'v': 0.0},
+                    {'x': 1.0, 'y': 1.0, 'z': 1.0, 'u': 1.0, 'v': 1.0},
+                    {'x': 2.0, 'y': 2.0, 'z': 2.0, 'u': 2.0, 'v': 2.0},
+                    {'x': 3.0, 'y': 3.0, 'z': 3.0, 'u': 3.0, 'v': 3.0},
+                    {'x': 4.0, 'y': 4.0, 'z': 4.0, 'u': 4.0, 'v': 4.0}],
+                'faces': [
+                    [0, 1, 2], [1, 2, 3], [2, 3, 0], [2, 3, 4]]},
+            'myfilename2': {
+                'points': [
+                    {'x': 0.0, 'y': 0.0, 'z': 0.0, 'u': 0.0, 'v': 0.0},
+                    {'x': 1.0, 'y': 1.0, 'z': 1.0, 'u': 1.0, 'v': 1.0},
+                    {'x': 2.0, 'y': 2.0, 'z': 2.0, 'u': 2.0, 'v': 2.0},
+                    {'x': 3.0, 'y': 3.0, 'z': 3.0, 'u': 3.0, 'v': 3.0}],
+                'faces': [
+                    [0, 1, 2], [1, 2, 3], [2, 3, 0]
+            ]}}
         )
+
 
     def test_dump_objects(self):
         """ test dumping hierachy of nodes """

@@ -47,7 +47,7 @@ class Node:
     def __init__(self, _name, _parent = None, _matrix = None):
         self.structure_points = []
         self.structure_faces = []
-        self.dressing = []
+        self.dressing = {}
         self.matrix = _matrix
         self.name = _name
         self.parent = _parent
@@ -126,11 +126,35 @@ class Node:
         texture is metadata for textures and is mandatory. There is only one per call. Do
         multiple calls to have different textures.
         """
-        self.dressing.append({
-            "points":points,
-            "faces":faces,
-            "texture": texture
-            })
+
+        if texture["texture"] not in self.dressing:
+            self.dressing[texture["texture"]] = { "points": [], "faces":[] } # points are x,y,z,u,v
+        texture_block = self.dressing[texture["texture"]]
+        points_block = texture_block["points"]
+        faces_block = texture_block["faces"]
+
+        # compute projections
+        for point in points:
+            point4 = cgtypes.vec4(point.x, point.y, point.z, 0.0)
+            tex_proj = texture["proj"] * point4
+            point.u = tex_proj.x
+            point.v = tex_proj.y
+        # map points
+        new_point = [] # for each point, contain the position in the final list
+        for point in points:
+            if point not in points_block:
+               points_block.append(point)
+            new_index = points_block.index(point)
+            new_point.append(new_index)
+            print("Point [%f,%f,%f %f,%f] new_index is: %i" % (
+                        point.x, point.y, point.z, point.u, point.v,
+                        new_index))
+        # insert new faces
+        for face in faces:
+            print("face ",face)
+            new_face = [ new_point[p] for p in face ]
+            print("new face ",new_face)
+            faces_block.append(new_face)
 
 class JSONEncoder(json.JSONEncoder):
 
@@ -342,23 +366,27 @@ class ConcreteRoom:
                     node.matrix[2][0], node.matrix[2][1], node.matrix[2][2], 0,
                     node.matrix[3][0], node.matrix[3][1], node.matrix[3][2], 1,
                     ]
-            #gltf_node["mesh"] = [ count ]
             gltf_nodes.append(gltf_node)
 
             primitives = []
-            for faces_block in node.dressing:
 
-                # write list of points
-                points = [ [n.x, n.y, n.z]
-                            for n in faces_block["points"]]
-                points_buffer = create_accessor(
+            for texture, faces_block in node.dressing.items():
+
+                # add 2 accessors: points and uv
+                points = [ [n.x, n.y, n.z] for n in faces_block["points"]]
+                points_accessor = create_accessor(
                         data_file,
                         gltf,
                         points)
+                uvs = [ [n.u, n.v] for n in faces_block["points"]]
+                tex_coords_accessor = create_accessor(
+                        data_file,
+                        gltf,
+                        uvs)
 
-                texture_id = get_texture_id(gltf, texture_list, faces_block["texture"]["texture"])
+                texture_id = get_texture_id(gltf, texture_list, texture)
 
-                # compute indices
+                # accessor for indices, convert faces to triangles
                 poly_list = []
                 for poly in faces_block["faces"]:
                     for end_index in range(2,len(poly)):
@@ -370,21 +398,11 @@ class ConcreteRoom:
                     gltf,
                     poly_list)
 
-                # compute texture projections
-                projs = []
-                for point in faces_block["points"]:
-                    point4 = cgtypes.vec4(point.x, point.y, point.z, 0.0)
-                    tex_proj = faces_block["texture"]["proj"] * point4
-                    projs.append([tex_proj.x, tex_proj.y])
-                tex_coords_accessor = create_accessor(
-                        data_file,
-                        gltf,
-                        projs)
-
+                # append a primitive object
                 primitives.append(
                         {
                             "attributes": {
-                                "POSITION": points_buffer,
+                                "POSITION": points_accessor,
                                 "TEXCOORD_0": tex_coords_accessor
                             },
                             "indices": indices_accessor,
