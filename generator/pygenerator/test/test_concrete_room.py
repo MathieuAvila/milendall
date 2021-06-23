@@ -132,6 +132,48 @@ class TestConcreteRoomImpl(unittest.TestCase):
             concrete_room.Node.HINT_CEILING])
         self.assertEqual(0, len(list_building_ceiling))
 
+    def test_dressing_filter_points(self):
+        """test filtering points when adding faces, so that only useful points are kept
+        and there is no useless data"""
+        room = concrete_room.ConcreteRoom()
+        self.assertIsNotNone(room)
+        parent = room.add_child(None, "parent")
+        self.assertIsNotNone(parent)
+        parent.add_dressing_faces(
+            [
+                cgtypes.vec3(0),
+                cgtypes.vec3(1),
+                cgtypes.vec3(1),
+                cgtypes.vec3(2),
+                cgtypes.vec3(3),
+                cgtypes.vec3(4),
+                cgtypes.vec3(5),
+                cgtypes.vec3(6),
+                cgtypes.vec3(7),
+                cgtypes.vec3(8),
+                cgtypes.vec3(9),
+                cgtypes.vec3(10)
+            ],
+            [ [1,2,3], [2,3,4], [6,7,8]],
+            concrete_room.get_texture_definition("myfilename"))
+        j = json.loads(room.dump_to_json())
+        faces = j["objects"][0]["dressing"]
+        print(faces)
+        self.assertEqual(faces, {
+            'myfilename': {
+                'points': [
+                    {'x': 1.0, 'y': 1.0, 'z': 1.0, 'u': 1.0, 'v': 1.0},
+                    {'x': 2.0, 'y': 2.0, 'z': 2.0, 'u': 2.0, 'v': 2.0},
+                    {'x': 3.0, 'y': 3.0, 'z': 3.0, 'u': 3.0, 'v': 3.0},
+                    {'x': 5.0, 'y': 5.0, 'z': 5.0, 'u': 5.0, 'v': 5.0},
+                    {'x': 6.0, 'y': 6.0, 'z': 6.0, 'u': 6.0, 'v': 6.0},
+                    {'x': 7.0, 'y': 7.0, 'z': 7.0, 'u': 7.0, 'v': 7.0}],
+                'faces': [
+                    [0, 0, 1],
+                    [0, 1, 2],
+                    [3, 4, 5]]}})
+
+
     def test_dressing_faces(self):
         """Test creating a simple impl with 1 node with multiple points and faces sets
         for dressing. This tests both multi-textures and merging of faces with the same texture"""
@@ -174,7 +216,6 @@ class TestConcreteRoomImpl(unittest.TestCase):
                     [0, 1, 2], [1, 2, 3], [2, 3, 0]
             ]}}
         )
-
 
     def test_dump_objects(self):
         """ test dumping hierachy of nodes """
@@ -244,7 +285,7 @@ class TestConcreteRoomImpl(unittest.TestCase):
                 1.0, 0.0, 0.0, 0.0,
                 0.0, 1.0, 0.0, 0.0,
                 0.0, 0.0, 0.0, 0.0,
-                0.0, 0.0, 0.0, 0.0)})
+                1.0, 1.0, 1.0, 0.0)})
         offset_tex = concrete_room.get_texture_definition(
                 "texture.png", offset = cgtypes.vec3(1,2,3))
         self.assertEqual(offset_tex,
@@ -254,7 +295,7 @@ class TestConcreteRoomImpl(unittest.TestCase):
                 1.0, 0.0, 0.0, 1.0,
                 0.0, 1.0, 0.0, 2.0,
                 0.0, 0.0, 0.0, 3.0,
-                0.0, 0.0, 0.0, 0.0)})
+                1.0, 1.0, 1.0, 0.0)})
         scale_tex = concrete_room.get_texture_definition(
                 "texture.png", scale = 2.0)
         self.assertEqual(scale_tex,
@@ -264,7 +305,7 @@ class TestConcreteRoomImpl(unittest.TestCase):
                 2.0, 0.0, 0.0, 0.0,
                 0.0, 2.0, 0.0, 0.0,
                 0.0, 0.0, 0.0, 0.0,
-                0.0, 0.0, 0.0, 0.0)})
+                1.0, 1.0, 1.0, 0.0)})
         axes_tex = concrete_room.get_texture_definition(
                 "texture.png", axes=[ ["x","y"], [ "z"] ])
         self.assertEqual(axes_tex,
@@ -274,7 +315,7 @@ class TestConcreteRoomImpl(unittest.TestCase):
                 1.0, 1.0, 0.0, 0.0,
                 0.0, 0.0, 1.0, 0.0,
                 0.0, 0.0, 0.0, 0.0,
-                0.0, 0.0, 0.0, 0.0)})
+                1.0, 1.0, 1.0, 0.0)})
 
     def test_merge(self):
         """

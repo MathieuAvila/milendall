@@ -46,6 +46,6 @@ class DressingBasic(Dressing):
                         obj.add_dressing_faces(
                             obj.structure_points,
                             faces["faces"],
-                            concrete_room.get_texture_definition(texture, axes))
+                            concrete_room.get_texture_definition(texture, axes=axes))
 
 register_dressing_type(DressingBasic())

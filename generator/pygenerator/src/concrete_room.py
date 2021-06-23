@@ -15,6 +15,7 @@ import itertools
 import struct
 import shutil
 import os
+import copy
 
 import cgtypes.vec3
 import cgtypes.mat4
@@ -30,7 +31,7 @@ def get_texture_definition(filename, axes=[ ["x"], [ "y"] ] , scale = 1.0, offse
         0, 0, 0, offset.x,
         0, 0, 0, offset.y,
         0, 0, 0, offset.z,
-        0, 0, 0,     0)
+        1.0, 1.0, 1.0,     0)
     for u_v in range(0,2):
         for my_axe in axes[u_v]:
             if my_axe == "x":
@@ -127,18 +128,32 @@ class Node:
         multiple calls to have different textures.
         """
 
+        print ("ADD TO TEXTURE: " + texture["texture"])
+
         if texture["texture"] not in self.dressing:
             self.dressing[texture["texture"]] = { "points": [], "faces":[] } # points are x,y,z,u,v
         texture_block = self.dressing[texture["texture"]]
         points_block = texture_block["points"]
         faces_block = texture_block["faces"]
 
-        # compute projections
-        for point in points:
-            point4 = cgtypes.vec4(point.x, point.y, point.z, 0.0)
-            tex_proj = texture["proj"] * point4
-            point.u = tex_proj.x
-            point.v = tex_proj.y
+        # compute used points and projections at the same time
+        used_points = sorted(set([ n for f in faces for n in f]))
+        used_points_translation = {}
+        new_points = []
+        for index in used_points:
+            old_point = points[index]
+            projected_uv = texture["proj"] * cgtypes.vec4(old_point.x, old_point.y, old_point.z, 1.0)
+            new_point = copy.deepcopy(old_point)
+            new_point.u = projected_uv.x
+            new_point.v = projected_uv.y
+            used_points_translation[index] = len(new_points)
+            new_points.append(new_point)
+
+        new_faces = [ [ used_points_translation[n] for n in f ] for f in faces ]
+
+        faces = new_faces
+        points = new_points
+
         # map points
         new_point = [] # for each point, contain the position in the final list
         for point in points:
@@ -146,14 +161,12 @@ class Node:
                points_block.append(point)
             new_index = points_block.index(point)
             new_point.append(new_index)
-            print("Point [%f,%f,%f %f,%f] new_index is: %i" % (
-                        point.x, point.y, point.z, point.u, point.v,
-                        new_index))
+            #print("Point [%f,%f,%f %f,%f] new_index is: %i" % (
+            #            point.x, point.y, point.z, point.u, point.v,
+            #            new_index))
         # insert new faces
         for face in faces:
-            print("face ",face)
             new_face = [ new_point[p] for p in face ]
-            print("new face ",new_face)
             faces_block.append(new_face)
 
 class JSONEncoder(json.JSONEncoder):
