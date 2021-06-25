@@ -5,6 +5,7 @@ test level
 import logging
 import json
 import pathlib
+import struct
 
 import unittest
 import concrete_room
@@ -13,7 +14,49 @@ import cgtypes.mat4
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
 
+
 class TestConcreteRoomImpl(unittest.TestCase):
+
+
+
+    def get_data_from_accessor(self, json_content, index, root_path):
+        """return accessor data in table, format depends on type"""
+        accessor = json_content["accessors"][index]
+        data_type = accessor["type"]
+        data_count = accessor["count"]
+        data_low_type = accessor["componentType"]
+        buffer_view = json_content["bufferViews"][accessor["bufferView"]]
+        byte_length = buffer_view["byteLength"]
+        buffer = json_content["buffers"][buffer_view["buffer"]]
+        file_path = root_path + "/" + buffer["uri"]
+        offset = buffer_view["byteOffset"]
+        data_file = open(file_path, "rb")
+        data_file.seek(offset)
+        if data_type == "VEC3":
+            self.assertEqual(data_low_type, 5126)  # expect a float
+            self.assertEqual(byte_length, data_count * 3 * 4) # 4 bytes for each float, and 3 to make a vector
+            result = []
+            for i in range(data_count):
+                read_p = struct.unpack('fff', data_file.read(4*3))
+                result.append(cgtypes.vec3(read_p[0],read_p[1],read_p[2]))
+            return result
+        if data_type == "VEC2":
+            self.assertEqual(data_low_type, 5126)  # expect a float
+            self.assertEqual(byte_length, data_count * 3 * 4) # 4 bytes for each float, and 2 to make a vector
+            result = []
+            for i in range(data_count):
+                read_p = struct.unpack('ff', data_file.read(4*2))
+                result.append(cgtypes.vec3(read_p[0],read_p[1]))
+            return result
+        if data_type == "SCALAR":
+            self.assertEqual(data_low_type, 5123)  # expect a short int
+            self.assertEqual(byte_length, data_count * 2) # 2 bytes for each
+            result = []
+            for i in range(data_count):
+                read_p = struct.unpack('H', data_file.read(2))
+                result.append(read_p[0])
+            return result
+
 
     def test_parent_child(self):
         """Test creating a simple impl with parent/child relationships for nodes"""
@@ -75,6 +118,76 @@ class TestConcreteRoomImpl(unittest.TestCase):
                     'physics': [1]
                 }
             ])
+
+    def test_structure_faces_dump(self):
+        """Test generation of structural faces in gltf file"""
+        room = concrete_room.ConcreteRoom()
+        parent = room.add_child(None, "parent")
+        self.assertIsNotNone(parent)
+        index0 = parent.add_structure_points([
+            cgtypes.vec3(0),
+            cgtypes.vec3(1),
+            cgtypes.vec3(2),
+            cgtypes.vec3(3),
+            cgtypes.vec3(4),
+            cgtypes.vec3(5),
+            cgtypes.vec3(6),
+            cgtypes.vec3(7),
+            ])
+        self.assertEqual(0, index0)
+        data_0 = { "type":"gate", "gate_target":"roomX"} # intended to be added as is
+        parent.add_structure_faces(
+            index0,
+            [ [0,1,2,3], [4,5,6,7] ],
+            [concrete_room.Node.CATEGORY_PHYSICS], [concrete_room.Node.HINT_BUILDING], data_0 )
+        data_1 = { "any_other_metadata" : 0 } # intended to be added as is
+        parent.add_structure_faces(
+            index0,
+            [ [0,2,4]],
+            [concrete_room.Node.CATEGORY_PHYSICS], [concrete_room.Node.HINT_BUILDING],
+                data_1 )
+        path_gen = "/tmp/test_dump_structure_faces"
+        pathlib.Path(path_gen).mkdir(parents=True, exist_ok=True)
+        room.generate_gltf(path_gen)
+        with open(path_gen + "/room.gltf", "r") as room_file:
+            obj = json.load(room_file)
+        parent_object = obj["nodes"][1]
+        self.assertEqual(parent_object, {
+            'name': 'parent',
+            'extra': {
+                'phys_faces': [
+                    {
+                    'data': data_0,
+                    'accessor': 1 # expect in call order, although not in contract
+                    }, {
+                    'data':data_1,
+                    'accessor': 2 # expect in call order, although not in contract
+                    }],
+                'points': 0 # 'points first' not in contract
+                }
+            }
+        )
+        # check points
+        data_points = self.get_data_from_accessor(obj, 0, path_gen)
+        self.assertEquals(len(data_points), 8)
+        self.assertEquals(data_points[0], cgtypes.vec3(0))
+        self.assertEquals(data_points[1], cgtypes.vec3(1))
+        self.assertEquals(data_points[2], cgtypes.vec3(2))
+        self.assertEquals(data_points[3], cgtypes.vec3(3))
+        self.assertEquals(data_points[4], cgtypes.vec3(4))
+        self.assertEquals(data_points[5], cgtypes.vec3(5))
+        self.assertEquals(data_points[6], cgtypes.vec3(6))
+        self.assertEquals(data_points[7], cgtypes.vec3(7))
+        # check 1st row of indexes
+        data_points = self.get_data_from_accessor(obj, 1, path_gen)
+        self.assertEquals(len(data_points), 10)
+        self.assertEquals(data_points, [4, 0, 1, 2, 3, 4, 4, 5, 6, 7])
+        # check 2nd row of indexes
+        data_points = self.get_data_from_accessor(obj, 2, path_gen)
+        self.assertEquals(len(data_points), 4)
+        self.assertEquals(data_points, [3, 0, 2, 4])
+
+
 
     def test_get_visual_faces(self):
         """test that we can get visuals only"""
@@ -358,10 +471,10 @@ class TestConcreteRoomImpl(unittest.TestCase):
         self.assertEqual(objects,
             [{'children': [1]},
             {'name': 'parent1', 'children': [2, 3]},
-            {'name': 'child1_1', 'children': [4]},
+            {'name': 'child1_1', 'children': [4], 'extra': {'phys_faces': [{'data': [0], 'accessor': 1}], 'points': 0}},
             {'name': 'child1_2'},
             {'name': 'parent2', 'children': [5, 6]},
-            {'name': 'child2_1'},
+            {'name': 'child2_1', 'extra': {'phys_faces': [{'data': [0], 'accessor': 3}], 'points': 2}},
             {'name': 'child1_2'}])
 
     def test_dump_1_face_3_points(self):

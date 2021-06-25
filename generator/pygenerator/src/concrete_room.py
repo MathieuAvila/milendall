@@ -119,6 +119,14 @@ class Node:
                     result.append(faces)
         return result
 
+    def get_physical_faces(self):
+        """get physical faces, matching those hints"""
+        result = []
+        for faces in self.structure_faces:
+            if self.CATEGORY_PHYSICS in faces["category"]:
+                result.append(faces)
+        return result
+
     def add_dressing_faces(self, points, faces, texture):
         """
         Add dressing faces to object. Used by dressings, not structures
@@ -168,6 +176,39 @@ class Node:
         for face in faces:
             new_face = [ new_point[p] for p in face ]
             faces_block.append(new_face)
+
+    def gltf_generate_physical_faces(self, gltf, gltf_node, data_file):
+        list_physical_faces = self.get_physical_faces()
+        if list_physical_faces != []:
+            # generate only if there are real faces
+            gltf_node["extra"] = {}
+            extra = gltf_node["extra"]
+            extra["phys_faces"] = []
+            extra_phys_faces = extra["phys_faces"]
+            # add points accessor
+            points = [ [n.x, n.y, n.z] for n in self.structure_points]
+            extra["points"] = create_accessor(
+                        data_file,
+                        gltf,
+                        points)
+
+            for faces in list_physical_faces:
+                # add faces accessor.
+                # this is a stupid "point_count, point0, point1... pointX, point_count..." list
+                poly_list = []
+                for poly in faces["faces"]:
+                    poly_list.append(len(poly))
+                    for index in poly:
+                        poly_list.append(index)
+                print(poly_list)
+                face_accessor = create_accessor(
+                        data_file,
+                        gltf,
+                        poly_list)
+                extra_phys_faces.append({ "data": faces["physics"] , "accessor": face_accessor})
+
+
+        print(gltf_node)
 
 class JSONEncoder(json.JSONEncoder):
 
@@ -428,6 +469,9 @@ class ConcreteRoom:
                         "name": "Mesh_%s" %(node.name)
                 })
                 gltf_node["mesh"] = len(gltf_meshes) - 1
+
+            # generate list of physical faces
+            node.gltf_generate_physical_faces(gltf, gltf_node, data_file)
 
         gltf["buffers"][0]["byteLength"] = data_file.tell()
         j = json.dumps(gltf, indent=1)
