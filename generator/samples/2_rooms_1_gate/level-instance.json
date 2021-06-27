@@ -1,0 +1,211 @@
+{
+ "$schema": "../../schema/generator.level.schema.json",
+ "name": [
+  {
+   "lang": "en",
+   "value": "Simple Level with 2 rooms and 1 gate"
+  }
+ ],
+ "section": "samples",
+ "game_type": {
+  "single_mode": {
+   "execution_time": 10.0,
+   "entry_point_room": "room1",
+   "end_point_room": "room2"
+  }
+ },
+ "rooms": [
+  {
+   "room_id": "room1",
+   "name": [
+    {
+     "lang": "en",
+     "value": "nightmare"
+    }
+   ],
+   "structure_class": "rectangular",
+   "dressing_class": "basic",
+   "structure_private": {
+    "gate_pre_post_range": [
+     [
+      1.0,
+      1.0
+     ],
+     [
+      4.0,
+      4.0
+     ]
+    ],
+    "height_over_gate_range": [
+     1.0,
+     1.0
+    ],
+    "height_over_gate": 1.0,
+    "wall_pre_post_range": [
+     [
+      2.0,
+      2.0
+     ],
+     [
+      2.0,
+      2.0
+     ]
+    ],
+    "wall_pre_post": [
+     [
+      2.0,
+      2.0
+     ],
+     [
+      2.0,
+      2.0
+     ],
+     [
+      2.0,
+      2.0
+     ],
+     [
+      2.0,
+      2.0
+     ]
+    ],
+    "setup": [
+     [],
+     [
+      {
+       "gate": "r1r2",
+       "pre": 1.0,
+       "post": 4.0
+      }
+     ],
+     [],
+     [],
+     []
+    ]
+   },
+   "structure_parameters": {},
+   "dressing_private": {},
+   "dressing_parameters": {}
+  },
+  {
+   "room_id": "room2",
+   "structure_class": "rectangular",
+   "dressing_class": "basic",
+   "name": [
+    {
+     "lang": "en",
+     "value": "heaven"
+    }
+   ],
+   "structure_private": {
+    "gate_pre_post_range": [
+     [
+      1.0,
+      1.0
+     ],
+     [
+      4.0,
+      4.0
+     ]
+    ],
+    "height_over_gate_range": [
+     1.0,
+     1.0
+    ],
+    "height_over_gate": 1.0,
+    "wall_pre_post_range": [
+     [
+      2.0,
+      2.0
+     ],
+     [
+      2.0,
+      2.0
+     ]
+    ],
+    "wall_pre_post": [
+     [
+      2.0,
+      2.0
+     ],
+     [
+      2.0,
+      2.0
+     ],
+     [
+      2.0,
+      2.0
+     ],
+     [
+      2.0,
+      2.0
+     ]
+    ],
+    "setup": [
+     [],
+     [],
+     [
+      {
+       "gate": "r1r2",
+       "pre": 1.0,
+       "post": 4.0
+      }
+     ],
+     [],
+     []
+    ]
+   },
+   "structure_parameters": {},
+   "dressing_private": {},
+   "dressing_parameters": {}
+  }
+ ],
+ "gates": [
+  {
+   "gate_id": "r1r2",
+   "connect": [
+    "room1",
+    "room2"
+   ],
+   "accessible": "from-to",
+   "visible": "from-to",
+   "see_through": "from-to",
+   "structure_class": "simple_door",
+   "dressing_class": "basic",
+   "structure_private": {
+    "geometry": {
+     "portal": [
+      2.5,
+      2.5
+     ],
+     "margin": [
+      1.0,
+      1.0
+     ],
+     "floor": [
+      "x0"
+     ],
+     "shift": {
+      "x_floor_start_ext": -0.5,
+      "x_floor_start_int": 0.1,
+      "x_floor_end_int": 2.4,
+      "x_floor_end_ext": 3.0,
+      "x_up_start_ext": -0.3,
+      "x_up_start_int": 0.2,
+      "x_up_end_int": 2.3,
+      "x_up_end_ext": 2.8,
+      "y_up_start_ext": 2.7,
+      "y_up_start_int": 2.5,
+      "y_up_end_ext": 2.7,
+      "y_up_end_int": 2.5,
+      "w_in": 0.2,
+      "w_out": -0.2
+     }
+    }
+   },
+   "structure_parameters": {},
+   "dressing_private": {},
+   "dressing_parameters": {}
+  }
+ ]
+}
