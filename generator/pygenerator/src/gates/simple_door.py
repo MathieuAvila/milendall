@@ -89,6 +89,10 @@ class DoorGate(GateStructure):
                     cgtypes.vec4(s["x_up_end_ext"],        s["y_up_end_ext"],       s["w_out"], 0),
                     cgtypes.vec4(s["x_up_start_ext"],      s["y_up_start_ext"],     s["w_out"], 0),
 
+                    cgtypes.vec4(s["x_floor_start_int"],   0,                       0, 0),
+                    cgtypes.vec4(s["x_up_start_int"],      s["y_up_start_int"],     0, 0),
+                    cgtypes.vec4(s["x_up_end_int"],        s["y_up_end_int"],       0, 0),
+                    cgtypes.vec4(s["x_floor_end_ext"],     0,                       0, 0),
                 ])
         child_object.add_structure_faces(
             index_wall,
@@ -111,8 +115,20 @@ class DoorGate(GateStructure):
             ],
             concrete_room.Node.CAT_PHYS_VIS,
             [concrete_room.Node.HINT_GROUND, concrete_room.Node.HINT_BUILDING],
-            [])
+            {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
 
+        child_object.add_structure_faces(
+            index_wall,
+            [
+                [ 16,17,18,19 ],
+            ],
+            concrete_room.Node.CAT_PHYS,
+            [],
+            {
+                concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_PORTAL,
+                concrete_room.Node.PORTAL_CONNECT : self._element.values.connect
+            }
+        )
 
 
 register_gate_type(DoorGate())

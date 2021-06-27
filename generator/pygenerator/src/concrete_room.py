@@ -83,6 +83,12 @@ class Node:
     HINT_HOLE       = "hole"
     HINT_PORTAL     = "portal"
 
+    # for physical, metadata types
+    PHYS_TYPE        = "type"     # key for types
+    PHYS_TYPE_PORTAL = "portal"   # for portals, only to be used by gates, with 1 face
+    PHYS_TYPE_HARD   = "hard"     # can be used for walls or ground
+    PORTAL_CONNECT   = "connect"
+
     def add_structure_faces(self, point_offset, faces, categories, hints, physics = None):
         """
         Add faces to object, with a given category. Used by structures, not dressings
@@ -120,7 +126,7 @@ class Node:
         return result
 
     def get_physical_faces(self):
-        """get physical faces, matching those hints"""
+        """get physical faces"""
         result = []
         for faces in self.structure_faces:
             if self.CATEGORY_PHYSICS in faces["category"]:
