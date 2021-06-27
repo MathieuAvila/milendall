@@ -141,9 +141,6 @@ class Node:
         texture is metadata for textures and is mandatory. There is only one per call. Do
         multiple calls to have different textures.
         """
-
-        print ("ADD TO TEXTURE: " + texture["texture"])
-
         if texture["texture"] not in self.dressing:
             self.dressing[texture["texture"]] = { "points": [], "faces":[] } # points are x,y,z,u,v
         texture_block = self.dressing[texture["texture"]]
@@ -175,9 +172,6 @@ class Node:
                points_block.append(point)
             new_index = points_block.index(point)
             new_point.append(new_index)
-            #print("Point [%f,%f,%f %f,%f] new_index is: %i" % (
-            #            point.x, point.y, point.z, point.u, point.v,
-            #            new_index))
         # insert new faces
         for face in faces:
             new_face = [ new_point[p] for p in face ]
@@ -206,15 +200,12 @@ class Node:
                     poly_list.append(len(poly))
                     for index in poly:
                         poly_list.append(index)
-                print(poly_list)
                 face_accessor = create_accessor(
                         data_file,
                         gltf,
                         poly_list)
                 extra_phys_faces.append({ "data": faces["physics"] , "accessor": face_accessor})
 
-
-        print(gltf_node)
 
 class JSONEncoder(json.JSONEncoder):
 
@@ -408,7 +399,6 @@ class ConcreteRoom:
         for node in self.objects:
             node.children=[ count+1 for count, value in enumerate(self.objects)
                             if node.name == value.parent]
-            print ("node: %s , children: %s" %( node.name, str(node.children)))
         # get root nodes
         roots = [count+1 for count, value in enumerate(self.objects) if value.parent is None ]
         gltf_nodes = gltf["nodes"]

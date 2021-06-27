@@ -51,4 +51,4 @@ class Gate(Element):
         "floor" tells which direction is a floor
         Should be set by a gate structure
         """
-        return self.values.private_parameters["geometry"]
+        return self.values.structure_private["geometry"]

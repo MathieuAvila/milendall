@@ -29,7 +29,6 @@ class Room(Element):
         """
 
         label = self.values.room_id
-        print(label)
         if self.values.triggers is not None:
             label += "<BR/><B>".join(["\n"] + [t.trigger_id for t in self.values.triggers])+"</B>"
         if self.values.structure_class is not None:

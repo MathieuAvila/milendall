@@ -35,8 +35,8 @@ class DoorGate(GateStructure):
     def instantiate(self, selector):
         """ force set values:
         - set values to gate size"""
-        self.gate.values.private_parameters={}
-        self.gate.values.private_parameters["geometry"] =  {
+        self.gate.values.structure_private={}
+        self.gate.values.structure_private["geometry"] =  {
             "portal":[2.5 ,2.5],
             "margin":[ 1.0, 1.0],
             "floor":["x0"],
@@ -63,7 +63,7 @@ class DoorGate(GateStructure):
 
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""
-        structure_private = self._element.values.private_parameters
+        structure_private = self._element.values.structure_private
         s = structure_private["geometry"]["shift"]
         logging.info("generate a door")
 
