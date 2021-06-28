@@ -30,6 +30,8 @@ SET (CMAKE_CXX_COMPILER             "/usr/bin/clang++-11")
 SET (CMAKE_CXX_FLAGS                "-std=c++17 -Wall")
 SET (CMAKE_CXX_FLAGS_DEBUG          "-g")
 
+# Cannot be set due to local static "console" variable in all files.
+# SET (CMAKE_UNITY_BUILD ON)
 
 add_library(game_lib STATIC
   game/src/common.hxx
@@ -108,6 +110,7 @@ add_executable(unit_test
 game/test/unit_main.cpp
 game/test/unit_file_library.cpp
 game/test/unit_level.cpp
+game/test/unit_room.cpp
 game/test/unit_gltf_material_accessor.cpp
 game/test/unit_gltf_table_accessor.cpp
 game/test/unit_gltf_data_accessor.cpp

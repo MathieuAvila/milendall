@@ -19,7 +19,7 @@ Level::Level(FileLibrary::UriReference ref)
     for(auto room_it : jsonGetElementByName(j_level, "rooms")) {
             auto room_id = jsonGetElementByName(room_it, "room_id").get<string>();
             console->info("Found room_id: {}", room_id);
-            auto ref_room = ref.getDirPath().getSubPath(room_id+ "/");
+            auto ref_room = ref.getDirPath().getSubPath(room_id+ "/room.gltf");
             auto room = std::make_shared<Room>(materialLibrary, ref_room);
     }
 }

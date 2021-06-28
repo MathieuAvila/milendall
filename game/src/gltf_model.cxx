@@ -22,6 +22,10 @@ GltfNode::GltfNode(json& json): default_transform(identity)
     if (json.contains("mesh")) {
         my_mesh = jsonGetElementByName(json, "mesh").get<int>();
     }
+     if (json.contains("name")) {
+        name = jsonGetElementByName(json, "name").get<string>();
+        console->info("Node name is {}", name);
+    }
     /* get all children nodes */
     jsonExecuteAllIfElement(json, "children", [this](nlohmann::json& child, int node_index) {
         console->info("found child:{}", to_string(child));
@@ -50,20 +54,24 @@ GltfNode::GltfNode(json& json): default_transform(identity)
     });
 
 }
-std::shared_ptr<GltfMesh> GltfModel::instantiateMesh(
-            nlohmann::json& json,
-            GltfDataAccessorIFace* data_accessor,
-            SGltfMaterialAccessorIFace material_accessor)
-{
-    return make_shared<GltfMesh>(json, data_accessor, material_accessor);
-}
 
 void GltfModel::parseApplicationData(nlohmann::json& json)
 {
     // do nothing
 }
 
-GltfModel::GltfModel(GltfMaterialLibraryIfacePtr materialLibrary, const FileLibrary::UriReference ref)
+std::shared_ptr<GltfNode> gltfInstantiateNode(nlohmann::json& json, GltfDataAccessorIFace* data_accessor)
+{
+    return make_shared<GltfNode>(json);
+}
+
+GltfModel::GltfModel(GltfMaterialLibraryIfacePtr materialLibrary, const FileLibrary::UriReference ref):
+ GltfModel(materialLibrary, ref, gltfInstantiateNode)
+ {
+}
+
+GltfModel::GltfModel(GltfMaterialLibraryIfacePtr materialLibrary, const FileLibrary::UriReference ref,
+                    GltfNodeProvider nodeProvider)
 {
     console->info("Load level: {}", ref.getPath());
     auto raw_json = ref.readStringContent();
@@ -77,13 +85,13 @@ GltfModel::GltfModel(GltfMaterialLibraryIfacePtr materialLibrary, const FileLibr
     // Load all meshes, whether used or not
     jsonExecuteAllIfElement(file_json, "meshes", [this, &data_accessor](nlohmann::json& child, int node_index) {
         console->info("Load mesh: {}", node_index);
-        meshTable.push_back(instantiateMesh(child, data_accessor.get(), materialAccessor));
+        meshTable.push_back(make_shared<GltfMesh>(child, data_accessor.get(), materialAccessor));
     });
 
     // Load all nodes, whether used or not
-    jsonExecuteAllIfElement(file_json, "nodes", [this](nlohmann::json& child, int node_index) {
-        console->debug("Load node: {}", node_index);
-        nodeTable.push_back(make_shared<GltfNode>(child));
+    jsonExecuteAllIfElement(file_json, "nodes", [this, &nodeProvider, &data_accessor](nlohmann::json& child, int node_index) {
+        console->info("Load node: {}", node_index);
+        nodeTable.push_back(nodeProvider(child, data_accessor.get()));
     });
 
     auto my_scene = jsonGetElementByName(file_json, "scene").get<int>();

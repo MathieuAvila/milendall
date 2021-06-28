@@ -685,13 +685,13 @@
  ],
  "images": [
   {
-   "uri": "common/basic/ground.jpg"
+   "uri": "/common/basic/ground.jpg"
   },
   {
-   "uri": "common/basic/wall.jpg"
+   "uri": "/common/basic/wall.jpg"
   },
   {
-   "uri": "common/basic/ceiling.jpg"
+   "uri": "/common/basic/ceiling.jpg"
   }
  ],
  "textures": [

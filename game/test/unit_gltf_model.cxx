@@ -71,3 +71,8 @@ TEST(GLTF_MODEL, multi_scene_multi_children_matrices) {
     EXPECT_EQ(instance->getNode(5)->getNodeMatrix()[0][0], (3.0 * 2.0 * 3.0 * 3.0) );
 
 }
+
+
+TEST(GLTF_MODEL, draw_multi_scene_multi_children_matrices) {
+
+}
