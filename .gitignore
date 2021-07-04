@@ -44,3 +44,10 @@ d.patch
 generator/src/build_bin_mesh
 workspace.code-workspace
 Makefile
+
+# build and editor stuff
+logs
+.Trash-1000
+build_local.sh
+build_remote.sh
+
