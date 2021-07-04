@@ -181,8 +181,8 @@ class Node:
         list_physical_faces = self.get_physical_faces()
         if list_physical_faces != []:
             # generate only if there are real faces
-            gltf_node["extra"] = {}
-            extra = gltf_node["extra"]
+            gltf_node["extras"] = {}
+            extra = gltf_node["extras"]
             extra["phys_faces"] = []
             extra_phys_faces = extra["phys_faces"]
             # add points accessor

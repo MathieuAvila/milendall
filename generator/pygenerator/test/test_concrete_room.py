@@ -154,7 +154,7 @@ class TestConcreteRoomImpl(unittest.TestCase):
         parent_object = obj["nodes"][1]
         self.assertEqual(parent_object, {
             'name': 'parent',
-            'extra': {
+            'extras': {
                 'phys_faces': [
                     {
                     'data': data_0,
@@ -471,10 +471,10 @@ class TestConcreteRoomImpl(unittest.TestCase):
         self.assertEqual(objects,
             [{'children': [1]},
             {'name': 'parent1', 'children': [2, 3]},
-            {'name': 'child1_1', 'children': [4], 'extra': {'phys_faces': [{'data': [0], 'accessor': 1}], 'points': 0}},
+            {'name': 'child1_1', 'children': [4], 'extras': {'phys_faces': [{'data': [0], 'accessor': 1}], 'points': 0}},
             {'name': 'child1_2'},
             {'name': 'parent2', 'children': [5, 6]},
-            {'name': 'child2_1', 'extra': {'phys_faces': [{'data': [0], 'accessor': 3}], 'points': 2}},
+            {'name': 'child2_1', 'extras': {'phys_faces': [{'data': [0], 'accessor': 3}], 'points': 2}},
             {'name': 'child1_2'}])
 
     def test_dump_1_face_3_points(self):

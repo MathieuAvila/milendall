@@ -23,7 +23,7 @@
     2
    ],
    "mesh": 0,
-   "extra": {
+   "extras": {
     "phys_faces": [
      {
       "data": [],
@@ -88,7 +88,7 @@
   {
    "name": "r1r2_impl",
    "mesh": 1,
-   "extra": {
+   "extras": {
     "phys_faces": [
      {
       "data": {

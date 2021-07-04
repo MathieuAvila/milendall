@@ -34,9 +34,9 @@ class DressingBasic(Dressing):
             # get each kind of walls and associate a texture.
 
             for kind_texture, texture, axes in [
-                [concrete_room.Node.HINT_GROUND, "common/basic/ground.jpg", [["x"], ["z"]] ],
-                [concrete_room.Node.HINT_WALL, "common/basic/wall.jpg",  [["x","z"], ["y"]] ],
-                [concrete_room.Node.HINT_CEILING, "common/basic/ceiling.jpg", [["x"], ["z"]] ]
+                [concrete_room.Node.HINT_GROUND, "/common/basic/ground.jpg", [["x"], ["z"]] ],
+                [concrete_room.Node.HINT_WALL, "/common/basic/wall.jpg",  [["x","z"], ["y"]] ],
+                [concrete_room.Node.HINT_CEILING, "/common/basic/ceiling.jpg", [["x"], ["z"]] ]
                 ]:
                 list_faces = obj.get_visual_face([kind_texture])
                 logging.info("kind: %s, texture:%s , len:%i",

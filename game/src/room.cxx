@@ -20,7 +20,7 @@ struct RoomNode : public GltfNode
 RoomNode::RoomNode(nlohmann::json& json, GltfDataAccessorIFace* data_accessor) :
         GltfNode(json)
 {
-    if (json.contains("extra")) {
+    if (json.contains("extras")) {
       console->info("Found application data for RoomNode");
     }
 }
