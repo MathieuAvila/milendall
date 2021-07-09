@@ -181,7 +181,7 @@ class RectangularRoom(RoomStructure):
             [ [6,4,2,0] ],
             concrete_room.Node.CAT_PHYS_VIS,
             [concrete_room.Node.HINT_GROUND, concrete_room.Node.HINT_BUILDING],
-            [] )
+            {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
 
         # add ceiling
         parent.add_structure_faces(
@@ -189,7 +189,7 @@ class RectangularRoom(RoomStructure):
             [ [1,3,5,7] ],
             concrete_room.Node.CAT_PHYS_VIS,
             [concrete_room.Node.HINT_CEILING, concrete_room.Node.HINT_BUILDING],
-            [] )
+            {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
 
         # add walls in every direction
 
@@ -242,7 +242,7 @@ class RectangularRoom(RoomStructure):
                     [ [2,3,1,0] ],
                     concrete_room.Node.CAT_PHYS_VIS,
                     [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
-                    [] )
+                    {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
                 offset += width
 
             # append gates entry
