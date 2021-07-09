@@ -26,35 +26,51 @@
    "extras": {
     "phys_faces": [
      {
-      "data": [],
+      "data": {
+       "type": "hard"
+      },
       "accessor": 10
      },
      {
-      "data": [],
+      "data": {
+       "type": "hard"
+      },
       "accessor": 11
      },
      {
-      "data": [],
+      "data": {
+       "type": "hard"
+      },
       "accessor": 12
      },
      {
-      "data": [],
+      "data": {
+       "type": "hard"
+      },
       "accessor": 13
      },
      {
-      "data": [],
+      "data": {
+       "type": "hard"
+      },
       "accessor": 14
      },
      {
-      "data": [],
+      "data": {
+       "type": "hard"
+      },
       "accessor": 15
      },
      {
-      "data": [],
+      "data": {
+       "type": "hard"
+      },
       "accessor": 16
      },
      {
-      "data": [],
+      "data": {
+       "type": "hard"
+      },
       "accessor": 17
      }
     ],
