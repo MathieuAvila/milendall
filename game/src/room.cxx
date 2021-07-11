@@ -11,43 +11,35 @@
 
 static auto console = spdlog::stdout_color_mt("room");
 
-struct RoomNode : public GltfNode
+RoomNode::FacePortal::FacePortal(
+    std::shared_ptr<PointsBlock> points,
+    std::unique_ptr<GltfDataAccessorIFace::DataBlock> accessor,
+    nlohmann::json& json) : face(points, move(accessor))
 {
-    public:
-
-    RoomNode(nlohmann::json& json, GltfDataAccessorIFace* data_accessor);
-
-};
+    connect[0] = jsonGetElementByIndex(json, "connect", 0).get<string>();
+    connect[1] = jsonGetElementByIndex(json, "connect", 1).get<string>();
+    console->info("Portal connecting {} and {}", connect[0], connect[1]);
+}
 
 RoomNode::RoomNode(nlohmann::json& json, GltfDataAccessorIFace* data_accessor) :
         GltfNode(json)
 {
-
-
     if (json.contains("extras")) {
         auto extras = json["extras"];
-        auto points = jsonGetElementByName(extras, "points").get<int>();
-        console->info("Found application data (extras) for RoomNode, points are {}", points);
-        auto points_accessor = data_accessor->accessId(points);
-        if (points_accessor->unit_type != points_accessor->FLOAT)
-            throw GltfException("invalid data type, except float");
-        if (points_accessor->vec_type != points_accessor->VEC3)
-            throw GltfException("invalid unit type, except VEC3 for points");
-        float* raw_data = (float*)(points_accessor->data);
-        console->info("points count {}", points_accessor->count);
-        for (auto i = 0; i < points_accessor->count; i++)
-        {
-            console->info("point {}, [ {} {} {} ]", i, raw_data[i*3], raw_data[i*3 + 1], raw_data[i*3 + 2]);
-        }
+        auto accessor_points = jsonGetElementByName(extras, "points").get<int>();
+        console->info("Found application data (extras) for RoomNode, points are {}", accessor_points);
+        auto points_accessor = data_accessor->accessId(accessor_points);
+        points = make_shared<PointsBlock>(move(points_accessor));
 
         jsonExecuteAllIfElement(extras, "phys_faces", [this, data_accessor](nlohmann::json& phys, int node_index) {
             auto data = jsonGetElementByName(phys, "data");
             auto type = jsonGetElementByName(data, "type").get<string>();
             auto accessor = jsonGetElementByName(phys, "accessor").get<int>();
             console->info("found phys_face:{} with accessor={}, type is {}", to_string(data), accessor, type);
-            auto node_data = data_accessor->accessId(accessor);
-
-            uint16_t* raw_data = (uint16_t*)(node_data->data);
+            auto faces_data = data_accessor->accessId(accessor);
+            if (type == "portal") {
+                portals.push_back(FacePortal(points, move(faces_data), data));
+            }
         });
     }
 }

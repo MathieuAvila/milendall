@@ -32,6 +32,7 @@ struct GltfNode
      * @param json pointer to direct JSON of the node
     */
     GltfNode(nlohmann::json& json);
+    virtual ~GltfNode() = default;
 };
 
 using GltfNodeProvider = std::shared_ptr<GltfNode>(*) (nlohmann::json& json, GltfDataAccessorIFace* data_accessor);
