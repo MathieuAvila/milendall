@@ -27,7 +27,7 @@ include(GoogleTest)
 
 SET (CMAKE_C_COMPILER               "/usr/bin/clang-11")
 SET (CMAKE_CXX_COMPILER             "/usr/bin/clang++-11")
-SET (CMAKE_CXX_FLAGS                "-std=c++17 -Wall")
+SET (CMAKE_CXX_FLAGS                "-std=c++17 -Wall -O0")
 SET (CMAKE_CXX_FLAGS_DEBUG          "-g")
 
 # Cannot be set due to local static "console" variable in all files.
@@ -61,6 +61,8 @@ add_library(game_lib STATIC
   game/src/file_library.cxx
   game/src/helper_math.hxx
   game/src/helper_math.cxx
+  game/src/face_list.hxx
+  game/src/face_list.cxx
 )
 
 add_library(real_gl STATIC
@@ -117,6 +119,7 @@ game/test/unit_gltf_data_accessor.cpp
 game/test/unit_json_helper_math.cpp
 game/test/unit_gltf_model.cxx
 game/test/unit_gltf_node.cxx
+game/test/unit_face_list.cpp
 )
 
 enable_testing()

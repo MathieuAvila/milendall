@@ -41,9 +41,9 @@ FaceList::FaceList(std::shared_ptr<PointsBlock> _points, std::unique_ptr<GltfDat
             throw GltfException("Indices exceeds total size");
         faces.push_back(FaceList::Face());
         auto& face = faces.back();
-        console->info("face, total={}, index {} ]", p_count, index);
+        console->debug("face, total={}, index {} ]", p_count, index);
         for (auto i = index + 1; i < index + 1 + p_count; i++) {
-            console->info("face, index point = {} ]", raw_data[i]);
+            console->debug("face, index point = {} ]", raw_data[i]);
             face.points.push_back(raw_data[i]);
         }
         index += p_count + 1;
