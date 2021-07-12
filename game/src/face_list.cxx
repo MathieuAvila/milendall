@@ -1,3 +1,5 @@
+#include <glm/glm.hpp>
+
 #include "face_list.hxx"
 
 #include "common.hxx"
@@ -26,6 +28,17 @@ const std::vector<glm::vec3>& PointsBlock::getPoints() const
     return points;
 }
 
+FaceList::FaceList::Face::Face(std::shared_ptr<PointsBlock> _points, vector<unsigned int>&& _indices)
+: points(_points), indices(_indices)
+{
+    if (indices.size() < 3)
+        throw GltfException("invalid number of points for a face: must be 3 at least");
+    auto & a = points.get()->getPoints()[indices[0]];
+    auto & b = points.get()->getPoints()[indices[1]];
+    auto & c = points.get()->getPoints()[indices[2]];
+    normal = glm::normalize(glm::cross(c - a, b - a));
+}
+
 FaceList::FaceList(std::shared_ptr<PointsBlock> _points, std::unique_ptr<GltfDataAccessorIFace::DataBlock> data)
 {
     points = _points;
@@ -39,13 +52,14 @@ FaceList::FaceList(std::shared_ptr<PointsBlock> _points, std::unique_ptr<GltfDat
         auto p_count = raw_data[index];
         if (p_count + index >= data->count)
             throw GltfException("Indices exceeds total size");
-        faces.push_back(FaceList::Face());
-        auto& face = faces.back();
         console->debug("face, total={}, index {} ]", p_count, index);
+        std::vector<unsigned int> index_points;
         for (auto i = index + 1; i < index + 1 + p_count; i++) {
             console->debug("face, index point = {} ]", raw_data[i]);
-            face.points.push_back(raw_data[i]);
+            index_points.push_back(raw_data[i]);
         }
+        faces.push_back(FaceList::Face(points, move(index_points)));
+
         index += p_count + 1;
     }
 }

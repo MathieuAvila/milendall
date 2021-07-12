@@ -11,6 +11,8 @@
 #include "face_list.hxx"
 #include "gltf_data_accessor.hxx"
 
+#include <glm/gtx/string_cast.hpp>
+
 using namespace std;
 
 static auto console = spdlog::stdout_color_mt("unit_face_list");
@@ -66,11 +68,11 @@ TEST(FaceList, Load_1_faces) {
     auto faces = faceList.getFaces();
 
     EXPECT_EQ(faces.size(), 1);
-    EXPECT_EQ(faces.front().points.size(), 4);
-    EXPECT_EQ(faces.front().points[0], 16);
-    EXPECT_EQ(faces.front().points[1], 17);
-    EXPECT_EQ(faces.front().points[2], 18);
-    EXPECT_EQ(faces.front().points[3], 19);
+    EXPECT_EQ(faces.front().indices.size(), 4);
+    EXPECT_EQ(faces.front().indices[0], 16);
+    EXPECT_EQ(faces.front().indices[1], 17);
+    EXPECT_EQ(faces.front().indices[2], 18);
+    EXPECT_EQ(faces.front().indices[3], 19);
 }
 
 TEST(FaceList, Load_faces_invalid_types) {
@@ -100,16 +102,40 @@ TEST(FaceList, Load__multi_faces) {
     EXPECT_EQ(faces.size(), 12);
 
     // check first face
-    EXPECT_EQ(faces.front().points.size(), 4);
-    EXPECT_EQ(faces.front().points[0], 0);
-    EXPECT_EQ(faces.front().points[1], 1);
-    EXPECT_EQ(faces.front().points[2], 2);
-    EXPECT_EQ(faces.front().points[3], 7);
+    EXPECT_EQ(faces.front().indices.size(), 4);
+    EXPECT_EQ(faces.front().indices[0], 0);
+    EXPECT_EQ(faces.front().indices[1], 1);
+    EXPECT_EQ(faces.front().indices[2], 2);
+    EXPECT_EQ(faces.front().indices[3], 7);
 
     // check last face
-    EXPECT_EQ(faces.back().points.size(), 4);
-    EXPECT_EQ(faces.back().points[0], 15);
-    EXPECT_EQ(faces.back().points[1], 8);
-    EXPECT_EQ(faces.back().points[2], 0);
-    EXPECT_EQ(faces.back().points[3], 7);
+    EXPECT_EQ(faces.back().indices.size(), 4);
+    EXPECT_EQ(faces.back().indices[0], 15);
+    EXPECT_EQ(faces.back().indices[1], 8);
+    EXPECT_EQ(faces.back().indices[2], 0);
+    EXPECT_EQ(faces.back().indices[3], 7);
+}
+
+void check_normal(GltfDataAccessor* data_accessor, shared_ptr<PointsBlock> points, int index, glm::vec3 normal)
+{
+        auto data_portal = data_accessor->accessId(index);
+        FaceList faceList(points, move(data_portal));
+        auto faces = faceList.getFaces();
+        auto& f = faces.front();
+        console->info("{}", glm::to_string(f.normal));
+        EXPECT_EQ(f.normal, normal);
+}
+
+TEST(FaceList, normals) {
+
+    auto data_accessor = get_test_face_list_accessor();
+    auto data_points = data_accessor->accessId(9);
+    shared_ptr<PointsBlock> points = make_shared<PointsBlock>(move(data_points));
+
+    // ground : up
+    check_normal(data_accessor.get(), points, 10, glm::vec3(0,  -1.0,  0));
+    // ceiling : down
+    check_normal(data_accessor.get(), points, 11, glm::vec3(0,  1.0,   0));
+    // first wall : horizontal
+    check_normal(data_accessor.get(), points, 12, glm::vec3(0,  0,     -1.0));
 }

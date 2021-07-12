@@ -27,7 +27,7 @@ include(GoogleTest)
 
 SET (CMAKE_C_COMPILER               "/usr/bin/clang-11")
 SET (CMAKE_CXX_COMPILER             "/usr/bin/clang++-11")
-SET (CMAKE_CXX_FLAGS                "-std=c++17 -Wall -O0")
+SET (CMAKE_CXX_FLAGS                "-std=c++17 -Wall -O0 -DGLM_ENABLE_EXPERIMENTAL")
 SET (CMAKE_CXX_FLAGS_DEBUG          "-g")
 
 # Cannot be set due to local static "console" variable in all files.
