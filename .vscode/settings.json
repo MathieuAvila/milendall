@@ -87,5 +87,6 @@
         "valarray": "cpp",
         "variant": "cpp"
     },
-    "restructuredtext.languageServer.disabled": true
+    "restructuredtext.languageServer.disabled": true,
+    "C_Cpp.errorSquiggles": "Enabled"
 }
