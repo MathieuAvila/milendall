@@ -33,6 +33,10 @@ FaceList::FaceList::Face::Face(std::shared_ptr<PointsBlock> _points, vector<unsi
 {
     if (indices.size() < 3)
         throw GltfException("invalid number of points for a face: must be 3 at least");
+    for (auto i : indices) {
+        if (i >= points->getPoints().size())
+            throw GltfException("invalid array index: over points");
+    }
     auto & a = points.get()->getPoints()[indices[0]];
     auto & b = points.get()->getPoints()[indices[1]];
     auto & c = points.get()->getPoints()[indices[2]];

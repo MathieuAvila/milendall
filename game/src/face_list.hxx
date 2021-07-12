@@ -24,8 +24,8 @@ class FaceList
     public:
 
     struct Face {
-            std::vector<unsigned int> indices;
             std::shared_ptr<PointsBlock> points;
+            std::vector<unsigned int> indices;
             glm::vec3 normal;
 
             Face(std::shared_ptr<PointsBlock> _points, std::vector<unsigned int>&& _indices);
