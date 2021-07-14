@@ -42,7 +42,14 @@ glm::mat4 getProjectionMatrix(){
 }
 
 // Initial position : on +Z
-glm::vec3 position = glm::vec3( 0, 0, 5 );
+glm::vec3 position = glm::vec3( 0, 2, 5 );
+
+// view direction
+glm::vec3 direction;
+
+// up direction
+glm::vec3 up;
+
 // Initial horizontal angle : toward -Z
 float horizontalAngle = 3.14f;
 // Initial vertical angle : none
@@ -88,7 +95,7 @@ void computeMatricesFromInputs(){
 	);
 
 	// Up vector
-	glm::vec3 up = glm::cross( right, direction );
+	up = glm::cross( right, direction );
 
 	// Move forward
 	if (glfwGetKey( window, GLFW_KEY_UP ) == GLFW_PRESS){

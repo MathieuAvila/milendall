@@ -74,11 +74,16 @@ int main(int argc, char* argv[])
         fl.addRootFilesystem(p);
     auto ref = fl.getRoot().getSubPath(modelPath);
     GltfMaterialLibraryIfacePtr materialLibrary = GltfMaterialLibraryIface::getMaterialLibray();
-    auto model = make_unique<GltfModel>(materialLibrary, ref);
-    auto instance = make_unique<GltfInstance>(model->getInstanceParameters());
-    glm::mat4 mat_id(1.0);
-    model->applyDefaultTransform(instance.get(), mat_id);
+    //auto room = make_unique<Room>(materialLibrary, ref);
+    //room->applyTransform();
+    auto level = make_unique<Level>(ref);
+    auto room_ids = level.get()->getRoomNames();
+    level.get()->update(0.0);
+    auto current_room = room_ids.begin();
+    console->info("Set current room to {}", *current_room);
 
+    auto new_space_state = GLFW_RELEASE;
+    auto space_state = GLFW_RELEASE;
 
 	do{
 		// Clear the screen
@@ -98,11 +103,23 @@ int main(int argc, char* argv[])
 		// Set our "myTextureSampler" sampler to use Texture Unit 0
 		glUniform1i(TextureID, 0);
 
-        model->draw(instance.get());
+        level.get()->draw(*current_room, position, direction, up);
+        //current_room->draw(position, direction, up);
 
 		// Swap buffers
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
+        // iterate through rooms with SPACE
+        new_space_state = glfwGetKey(window, GLFW_KEY_SPACE);
+        if ((new_space_state == GLFW_PRESS) && (space_state != new_space_state))
+        {
+            current_room++;
+            if (current_room == room_ids.end())
+                current_room = room_ids.begin();
+            console->info("Current room set to {}", *current_room);
+        }
+        space_state = new_space_state;
 
 	} // Check if the ESC key was pressed or the window was closed
 	while( glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&

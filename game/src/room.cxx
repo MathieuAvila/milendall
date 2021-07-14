@@ -56,10 +56,25 @@ void Room::parseApplicationData(nlohmann::json& json) {
     console->info("Parse application data for room");
 }
 
-Room::Room(GltfMaterialLibraryIfacePtr materialLibrary, FileLibrary::UriReference& ref) : GltfModel(materialLibrary, ref, instantiateRoomNode)
+Room::Room(
+    GltfMaterialLibraryIfacePtr materialLibrary,
+    FileLibrary::UriReference& ref,
+    RoomResolver* _room_resolver)
+    :
+    GltfModel(materialLibrary, ref, instantiateRoomNode),
+    room_resolver(_room_resolver)
 {
+    instance = make_unique<GltfInstance>(getInstanceParameters());
     console->info("Loaded room: {}", ref.getPath());
-    //FileLibrary::UriReference room_ref = ref.getSubPath("room.gltf");
-    //model = std::make_unique<GltfModel>(materialLibrary, room_ref);
-    //model.reset(new GltfModel(room_ref));
+}
+
+void Room::applyTransform()
+{
+    glm::mat4 mat_id(1.0);
+    applyDefaultTransform(instance.get(), mat_id);
+}
+
+void Room::draw(glm::vec3 position, glm::vec3 direction, glm::vec3 up)
+{
+    GltfModel::draw(instance.get());
 }
