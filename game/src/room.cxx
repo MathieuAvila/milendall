@@ -21,8 +21,8 @@ RoomNode::FacePortal::FacePortal(
     console->info("Portal connecting {} and {}", connect[0], connect[1]);
 }
 
-RoomNode::RoomNode(nlohmann::json& json, GltfDataAccessorIFace* data_accessor) :
-        GltfNode(json)
+RoomNode::RoomNode(nlohmann::json& json, GltfDataAccessorIFace* data_accessor, RoomResolver* _room_resolver) :
+        GltfNode(json), room_resolver(_room_resolver)
 {
     if (json.contains("extras")) {
         auto extras = json["extras"];
@@ -44,14 +44,6 @@ RoomNode::RoomNode(nlohmann::json& json, GltfDataAccessorIFace* data_accessor) :
     }
 }
 
-
-std::shared_ptr<GltfNode> instantiateRoomNode(
-            nlohmann::json& json,
-            GltfDataAccessorIFace* data_accessor)
-{
-    return make_shared<RoomNode>(json, data_accessor);
-}
-
 void Room::parseApplicationData(nlohmann::json& json) {
     console->info("Parse application data for room");
 }
@@ -61,7 +53,11 @@ Room::Room(
     FileLibrary::UriReference& ref,
     RoomResolver* _room_resolver)
     :
-    GltfModel(materialLibrary, ref, instantiateRoomNode),
+    GltfModel(materialLibrary, ref,
+            [_room_resolver](nlohmann::json& json,
+            GltfDataAccessorIFace* data_accessor) {
+                return make_shared<RoomNode>(json, data_accessor, _room_resolver);
+            }),
     room_resolver(_room_resolver)
 {
     instance = make_unique<GltfInstance>(getInstanceParameters());
@@ -77,4 +73,6 @@ void Room::applyTransform()
 void Room::draw(glm::vec3 position, glm::vec3 direction, glm::vec3 up)
 {
     GltfModel::draw(instance.get());
+
+
 }

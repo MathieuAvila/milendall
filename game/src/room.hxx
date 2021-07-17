@@ -29,10 +29,14 @@ struct RoomNode : public GltfNode
 
     std::shared_ptr<PointsBlock> points;
     std::list<FacePortal> portals;
+    RoomResolver* room_resolver;
 
     public:
 
-    RoomNode(nlohmann::json& json, GltfDataAccessorIFace* data_accessor);
+    RoomNode(nlohmann::json& json, GltfDataAccessorIFace* data_accessor, RoomResolver* _room_resolver);
+
+    /** specialized recursive draw for portals */
+    void draw(glm::vec3 position, glm::vec3 direction, glm::vec3 up);
 };
 
 /** @brief A room is both a Model (through inheritance) and an instance (through a class field) */

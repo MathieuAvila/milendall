@@ -35,7 +35,7 @@ struct GltfNode
     virtual ~GltfNode() = default;
 };
 
-using GltfNodeProvider = std::shared_ptr<GltfNode>(*) (nlohmann::json& json, GltfDataAccessorIFace* data_accessor);
+using GltfNodeProvider = std::function<std::shared_ptr<GltfNode>(nlohmann::json& json, GltfDataAccessorIFace* data_accessor)>;
 
 /** @brief A GLTF model represents a GLTF file. Application-specific data is read and interpreted
  * through subclassable */
@@ -55,7 +55,7 @@ class GltfModel
          */
         std::vector<std::shared_ptr<GltfNode>> nodeTable;
 
-        /** Holds the root node that is the Father of Them All */
+        /** Holds the root nodes that are the Fathers of Them All */
         std::vector<int> root_nodes;
 
         SGltfMaterialAccessorIFace materialAccessor;
