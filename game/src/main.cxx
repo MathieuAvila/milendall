@@ -43,11 +43,11 @@ int main( void )
 
 	// Initialise GLFW
 
-    milendall_gl_init();
-
-
     auto fl = FileLibrary();
     fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/room1/"));
+
+    milendall_gl_init(fl);
+
     auto ref = fl.getRoot().getSubPath("room.gltf");
     GltfMaterialLibraryIfacePtr materialLibrary = GltfMaterialLibraryIface::getMaterialLibray();
     auto model = make_unique<GltfModel>(materialLibrary, ref);

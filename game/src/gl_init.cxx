@@ -12,14 +12,11 @@
 #include <algorithm>
 #include <filesystem>
 
-#include "common.hxx"
-
-using namespace std;
-
-static auto console = spdlog::stdout_color_mt("gl_init");
-
 // Include GLEW
 #include <GL/glew.h>
+
+#include "common.hxx"
+#include "gl_init.hxx"
 
 // Include GLFW
 #include <GLFW/glfw3.h>
@@ -28,7 +25,11 @@ GLFWwindow* window;
 // Include GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
 using namespace glm;
+using namespace std;
+
+static auto console = spdlog::stdout_color_mt("gl_init");
 
 
 glm::mat4 ViewMatrix;
@@ -129,35 +130,17 @@ void computeMatricesFromInputs(){
 	lastTime = currentTime;
 }
 
-GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path){
+GLuint LoadShaders(FileLibrary& library, std::string vertex_file_path, std::string fragment_file_path){
 
 	// Create the shaders
 	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
 	// Read the Vertex Shader code from the file
-	std::string VertexShaderCode;
-	std::ifstream VertexShaderStream(vertex_file_path, std::ios::in);
-	if(VertexShaderStream.is_open()){
-		std::string Line = "";
-		while(getline(VertexShaderStream, Line))
-			VertexShaderCode += "\n" + Line;
-		VertexShaderStream.close();
-	}else{
-		console->error("Impossible to open {}.", vertex_file_path);
-		getchar();
-		return 0;
-	}
+    std::string VertexShaderCode = library.getRoot().getSubPath("common/shaders/" + vertex_file_path).readStringContent();
 
 	// Read the Fragment Shader code from the file
-	std::string FragmentShaderCode;
-	std::ifstream FragmentShaderStream(fragment_file_path, std::ios::in);
-	if(FragmentShaderStream.is_open()){
-		std::string Line = "";
-		while(getline(FragmentShaderStream, Line))
-			FragmentShaderCode += "\n" + Line;
-		FragmentShaderStream.close();
-	}
+	std::string FragmentShaderCode = library.getRoot().getSubPath("common/shaders/" + fragment_file_path).readStringContent();
 
 	GLint Result = GL_FALSE;
 	int InfoLogLength;
@@ -224,18 +207,15 @@ GLuint programID;
 GLuint MatrixID;
 GLuint TextureID;
 
-int milendall_gl_init()
+int milendall_gl_init(FileLibrary& library)
 {
-
 	// Initialise GLFW
-
     glfwSetErrorCallback(glfw_callback);
 	if( !glfwInit() )
 	{
 		console->error("Failed to initialize GLFW");
 		return -1;
 	}
-
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -243,7 +223,7 @@ int milendall_gl_init()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Open a window and create its OpenGL context
-	window = glfwCreateWindow( 1024, 768, "Tutorial 0 - Keyboard and Mouse", NULL, NULL);
+	window = glfwCreateWindow( 1024, 768, "Milendall", NULL, NULL);
 	if( window == NULL ){
 		console->error("Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible");
 		getchar();
@@ -280,7 +260,7 @@ int milendall_gl_init()
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
-	programID = LoadShaders( "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
+	programID = LoadShaders(library, "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
 	MatrixID = glGetUniformLocation(programID, "MVP");
 	TextureID  = glGetUniformLocation(programID, "myTextureSampler");
 

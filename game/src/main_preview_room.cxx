@@ -67,11 +67,12 @@ int main(int argc, char* argv[])
 
     auto [modelPath, libPaths] = readParams(argc, argv);
 
-    milendall_gl_init();
-
     auto fl = FileLibrary();
     for (auto p: libPaths)
         fl.addRootFilesystem(p);
+
+    milendall_gl_init(fl);
+
     auto ref = fl.getRoot().getSubPath(modelPath);
     GltfMaterialLibraryIfacePtr materialLibrary = GltfMaterialLibraryIface::getMaterialLibray();
     //auto room = make_unique<Room>(materialLibrary, ref);

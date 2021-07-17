@@ -4,7 +4,9 @@
 
 #include <glm/mat4x4.hpp>
 
-int milendall_gl_init();
+#include "file_library.hxx"
+
+int milendall_gl_init(FileLibrary& library);
 void milendall_gl_close();
 
 void computeMatricesFromInputs();
