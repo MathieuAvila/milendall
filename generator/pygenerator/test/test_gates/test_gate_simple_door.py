@@ -52,7 +52,7 @@ class TestGate_SimpleDoor(unittest.TestCase):
         portal_faces = [ faces for faces in phys_faces if object.PHYS_TYPE_PORTAL == faces["physics"]["type"] ]
         self.assertEquals(len(portal_faces), 1)
         portal_face = portal_faces[0]
-        self.assertEquals(portal_face["physics"], {'type': 'portal', 'connect': ['room1', 'room2']})
+        self.assertEquals(portal_face["physics"], {'type': 'portal', 'connect': ['room1', 'room2'], 'gate' : 'gate0'})
 
         # won't check face itself, left to visual QC
 

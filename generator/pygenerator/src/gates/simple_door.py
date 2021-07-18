@@ -126,7 +126,8 @@ class DoorGate(GateStructure):
             [],
             {
                 concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_PORTAL,
-                concrete_room.Node.PORTAL_CONNECT : self._element.values.connect
+                concrete_room.Node.PORTAL_CONNECT : self._element.values.connect,
+                concrete_room.Node.GATE_ID : self._element.values.gate_id
             }
         )
 

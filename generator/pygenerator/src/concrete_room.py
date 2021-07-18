@@ -88,6 +88,7 @@ class Node:
     PHYS_TYPE_PORTAL = "portal"   # for portals, only to be used by gates, with 1 face
     PHYS_TYPE_HARD   = "hard"     # can be used for walls or ground
     PORTAL_CONNECT   = "connect"
+    GATE_ID          = "gate"
 
     def add_structure_faces(self, point_offset, faces, categories, hints, physics = None):
         """
