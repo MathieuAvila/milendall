@@ -44,11 +44,27 @@ RoomNode::RoomNode(nlohmann::json& json, GltfDataAccessorIFace* data_accessor, R
     }
 }
 
+void RoomNode::draw(GltfNodeInstanceIface * nodeInstance, DrawContext& roomContext)
+{
+    for (auto& portal: portals) {
+        // Am I in or out ?
+        int factorInOut = roomContext.room_name == portal.connect[0] ? 1 : -1;
+        for (auto face : portal.face.getFaces()) {
+            // check normal is valid
+            console->info("check normal for room {} ( {} / {}) , factor {}",
+                roomContext.room_name,
+                portal.connect[0], portal.connect[1],
+                factorInOut);
+        }
+    }
+}
+
 void Room::parseApplicationData(nlohmann::json& json) {
     console->info("Parse application data for room");
 }
 
 Room::Room(
+    std::string _room_name,
     GltfMaterialLibraryIfacePtr materialLibrary,
     FileLibrary::UriReference& ref,
     RoomResolver* _room_resolver)
@@ -58,6 +74,7 @@ Room::Room(
             GltfDataAccessorIFace* data_accessor) {
                 return make_shared<RoomNode>(json, data_accessor, _room_resolver);
             }),
+    room_name(_room_name),
     room_resolver(_room_resolver)
 {
     instance = make_unique<GltfInstance>(getInstanceParameters());

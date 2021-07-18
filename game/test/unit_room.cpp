@@ -25,7 +25,7 @@ TEST(Room, LoadLevel2Rooms1Gate_Room1) {
     fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../game/test/sample/"));
     fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../data/"));
     auto roomPath = fl.getRoot().getSubPath("/2_rooms_1_gate/room1/room.gltf");
-    auto room = make_unique<Room>(materialLibrary, roomPath);
+    auto room = make_unique<Room>("test", materialLibrary, roomPath);
     EXPECT_TRUE( room.get() != nullptr );
 
     EXPECT_EQ(room.get()->nodeTable.size(), 4);

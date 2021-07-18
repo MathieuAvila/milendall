@@ -45,7 +45,10 @@ class Room : public GltfModel
 
     protected:
 
-        virtual void parseApplicationData(nlohmann::json& json);
+        /** My name, as defined by Level */
+        std::string room_name;
+
+        virtual void parseApplicationData(nlohmann::json& json) override;
 
         /** my very own instance */
         std::unique_ptr<GltfInstance> instance;
@@ -61,6 +64,7 @@ class Room : public GltfModel
 
         /** build the room from the directory path */
         Room(
+            std::string _room_name,
             GltfMaterialLibraryIfacePtr materialLibrary,
             FileLibrary::UriReference& ref,
             RoomResolver*  _room_resolver = nullptr);
