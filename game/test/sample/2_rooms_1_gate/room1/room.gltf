@@ -118,7 +118,8 @@
        "connect": [
         "room1",
         "room2"
-       ]
+       ],
+       "gate" : "r1r2"
       },
       "accessor": 23
      }
