@@ -119,7 +119,7 @@ int GltfModel::getInstanceParameters()
     return nodeTable.size();
 }
 
-void GltfModel::draw(GltfInstance* instance, int index)
+void GltfModel::draw(GltfInstance* instance, int index, void* context)
 {
     auto myNode = nodeTable[index].get();
     auto instanceNode = instance->getNode(index);
@@ -129,14 +129,14 @@ void GltfModel::draw(GltfInstance* instance, int index)
         meshTable[myNode->my_mesh]->Draw();
     }
     for (auto child_node: myNode->children) {
-        draw(instance, child_node);
+        draw(instance, child_node, context);
     }
 }
 
-void GltfModel::draw(GltfInstance* instance)
+void GltfModel::draw(GltfInstance* instance, void* context)
 {
     for (auto i: root_nodes)
-        draw(instance, i);
+        draw(instance, i, context);
 }
 
 void GltfModel::applyDefaultTransform(GltfInstance* instance, int index, glm::mat4& position)

@@ -11,6 +11,13 @@
 
 static auto console = spdlog::stdout_color_mt("room");
 
+struct DrawContext {
+    glm::vec3 position;
+    glm::vec3 direction;
+    glm::vec3 up;
+    std::string room_name;
+};
+
 RoomNode::FacePortal::FacePortal(
     std::shared_ptr<PointsBlock> points,
     std::unique_ptr<GltfDataAccessorIFace::DataBlock> accessor,
@@ -89,7 +96,16 @@ void Room::applyTransform()
 
 void Room::draw(glm::vec3 position, glm::vec3 direction, glm::vec3 up)
 {
-    GltfModel::draw(instance.get());
+    //console->debug("Main room draw");
+    struct DrawContext drawContext {position, direction, up, room_name};
+    GltfModel::draw(instance.get(), &drawContext);
+}
 
-
+void Room::draw(GltfInstance* instance, int index, void* context)
+{
+    //console->debug("room draw index {}", index);
+    GltfModel::draw(instance, index, context);
+    auto myNode = dynamic_cast<RoomNode*>(nodeTable[index].get());
+    auto instanceNode = instance->getNode(index);
+    myNode->draw(instanceNode, *(struct DrawContext*)(context));
 }

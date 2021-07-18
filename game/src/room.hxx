@@ -16,6 +16,8 @@ struct RoomResolver
     virtual ~RoomResolver() = default;
 };
 
+struct DrawContext;
+
 struct RoomNode : public GltfNode
 {
 
@@ -31,12 +33,10 @@ struct RoomNode : public GltfNode
     std::list<FacePortal> portals;
     RoomResolver* room_resolver;
 
-    public:
-
     RoomNode(nlohmann::json& json, GltfDataAccessorIFace* data_accessor, RoomResolver* _room_resolver);
 
     /** specialized recursive draw for portals */
-    void draw(glm::vec3 position, glm::vec3 direction, glm::vec3 up);
+    void draw(GltfNodeInstanceIface * nodeInstance, DrawContext& roomContext);
 };
 
 /** @brief A room is both a Model (through inheritance) and an instance (through a class field) */
@@ -59,6 +59,9 @@ class Room : public GltfModel
          * No ownership, should be valid for the life duration of the object.
          */
         RoomResolver* room_resolver;
+
+        /** Overload recursive method to draw things, will draw portals */
+        virtual void draw(GltfInstance*, int, void* context = nullptr) override;
 
     public:
 

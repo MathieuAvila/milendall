@@ -61,7 +61,7 @@ class GltfModel
         SGltfMaterialAccessorIFace materialAccessor;
 
         /** recursive method to draw things */
-        void draw(GltfInstance*, int);
+        virtual void draw(GltfInstance*, int, void* context = nullptr);
 
         /** recursive method to apply default transform */
         void applyDefaultTransform(GltfInstance* instance, int index, glm::mat4& position);
@@ -83,6 +83,6 @@ class GltfModel
         void applyDefaultTransform(GltfInstance* instance, glm::mat4& position);
 
         /** Draw an instance, using matrices from it */
-        void draw(GltfInstance* instance);
+        void draw(GltfInstance* instance, void* context = nullptr);
 };
 
