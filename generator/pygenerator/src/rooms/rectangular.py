@@ -247,10 +247,9 @@ class RectangularRoom(RoomStructure):
 
             # append gates entry
             gates_list = gates[wall_dir]
-            logging.info("gates_list %s", gates_list)
             for gate_def in gates_list:
                 gate_id = gate_def["gate_id"]
-                logging.info("Adding gate child, direction %i gate: %s", wall_dir, dir(gate))
+                logging.info("Adding gate child, direction %i gate %s", wall_dir, gate.values.gate_id)
                 gate = gate_def["gate"]
                 offset = gate_def["offset"]
                 # create gate object

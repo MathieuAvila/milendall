@@ -131,5 +131,4 @@ class DoorGate(GateStructure):
             }
         )
 
-
 register_gate_type(DoorGate())
