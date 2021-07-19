@@ -9,6 +9,22 @@
 int milendall_gl_init(FileLibrary& library);
 void milendall_gl_close();
 
+/** @brief Reference to a valid FBO */
+struct FboIndex {
+    /** @brief the texture associated to it, to be used when available */
+    GLuint textureIndex;
+    /** @brief the FBO intdex itself */
+    GLuint fboIndex;
+};
+
+/** @brief Get a FBO from the FBO heap
+ * @result 0 if OK, -1 if none available anymore
+ */
+int getValidFbo(FboIndex* result);
+
+/** Release all FBO, can be used again */
+int releaseAllFbo(FboIndex* result);
+
 void computeMatricesFromInputs();
 
 extern GLuint programID;

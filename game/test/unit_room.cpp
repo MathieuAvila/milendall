@@ -15,6 +15,8 @@ using ::testing::_;
 using ::testing::InSequence;
 using namespace std;
 
+static auto console = spdlog::stdout_color_mt("ut_room");
+
 TEST(Room, LoadLevel2Rooms1Gate_Room1) {
 
     InSequence s;
@@ -51,4 +53,33 @@ TEST(Room, LoadLevel2Rooms1Gate_Room1) {
 
 }
 
+TEST(Room, GateLoading__LoadLevel3Rooms3Gate_Room1) {
+
+    InSequence s;
+    GLMock mock;
+
+    auto materialLibrary = GltfMaterialLibraryIface::getMaterialLibray();
+    auto fl = FileLibrary();
+    fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../game/test/sample/"));
+    fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../data/"));
+    auto roomPath = fl.getRoot().getSubPath("/3_rooms_3_gates/room1/room.gltf");
+    auto room = make_unique<Room>("room1", materialLibrary, roomPath);
+    auto room_ptr = room.get();
+    EXPECT_NE( room_ptr, nullptr );
+
+    auto portal_list = room_ptr->getGateNameList();
+
+    for (auto e: portal_list)
+        console->info("{} {}", e.from, e.gate);
+
+    EXPECT_EQ( portal_list, (std::set<GateIdentifier>{
+        GateIdentifier{"r2r1",false},
+        GateIdentifier{"r1r2",true},
+        GateIdentifier{"r3r1",false}}) );
+
+    auto [room_node, instance] = room_ptr->getGateNode(GateIdentifier{"r2r1",false});
+    EXPECT_EQ( room_node->name, "r2r1_impl" );
+    //EXPECT_EQ( instance->, "" ); // don't know how to check this
+
+}
 

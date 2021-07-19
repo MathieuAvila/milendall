@@ -3,18 +3,9 @@
 #include "file_library.hxx"
 #include "gltf_material_accessor_library_iface.hxx"
 #include "room.hxx"
+#include "level_exception.hxx"
 
-//struct LevelRoomResolver;
-
-/** @brief Any exception related to loader */
-class LevelException: public std::runtime_error
-{
-    public:
-
-        LevelException(const std::string err): runtime_error(err) {};
-};
-
-class LevelRoomResolver;
+struct LevelRoomResolver;
 
 class Level
 {

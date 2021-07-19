@@ -1,0 +1,41 @@
+{
+ "$schema": "/home/avila/milendall/generator/schema/final.level.schema.json",
+ "version": "1.0",
+ "rooms": [
+  {
+   "room_id": "room1",
+   "name": [
+    {
+     "lang": "en",
+     "value": "hell"
+    }
+   ]
+  },
+  {
+   "room_id": "room2",
+   "name": [
+    {
+     "lang": "en",
+     "value": "heaven"
+    }
+   ]
+  },
+  {
+   "room_id": "room3",
+   "name": [
+    {
+     "lang": "en",
+     "value": "earth"
+    }
+   ]
+  }
+ ],
+ "section": "samples",
+ "game_type": {
+  "single_mode": {
+   "execution_time": 10.0,
+   "entry_point_room": "room1",
+   "end_point_room": "room2"
+  }
+ }
+}
