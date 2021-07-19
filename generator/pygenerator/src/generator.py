@@ -58,7 +58,7 @@ def my_help():
     print("   Input: roomdress-$roomid.json")
     print("   Output: roomfinal-$roomid.json (for given room)")
     print()
-    print("generator.py level-finalize        -i level-directory")
+    print("generator.py level-finalize     [-p,--preview]   -i level-directory")
     print("   Generate final format. This generates gltf format files for rooms"
           " with extra-metadata")
     print("   If the dressing has not been done, work at the structure level (ugly)")
@@ -95,8 +95,9 @@ def main(argv):
     """
     directory = ""
     room = ""
+    preview = False
     try:
-        opts,args = getopt.getopt(argv,"hvi:r:",["directory=","room="])
+        opts,args = getopt.getopt(argv,"hvi:r:p",["directory=","room="])
     except getopt.GetoptError:
         help()
     for opt, arg in opts:
@@ -106,6 +107,8 @@ def main(argv):
             directory = arg
         elif opt in ("-r", "--room"):
             room = arg
+        elif opt in ("-p", "--preview"):
+            preview = True
         elif opt in ("-v", "--verbose"):
             logging.getLogger().setLevel(logging.DEBUG)
             logging.debug("Set verbose to debug")
@@ -131,7 +134,7 @@ def main(argv):
         #print(loaded_level.dump_json() + "\n")
     elif action == "level-finalize":
         loaded_level = check_level_instance(directory)
-        loaded_level.finalize(directory, True)
+        loaded_level.finalize(directory, preview)
     else:
         print("Error, action '" + action + "' unknown. See --help for info.")
         sys.exit(1)
