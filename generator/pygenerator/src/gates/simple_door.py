@@ -39,8 +39,8 @@ class DoorGate(GateStructure):
         self.gate.values.structure_private["geometry"] =  {
             "portal":[2.5 ,2.5],
             "margin":[ 1.0, 1.0],
-            "floor":["x0"],
-            "shift": {
+            "floor":["x0"]}
+        self.gate.values.structure_private["shift"]= {
                 "x_floor_start_ext": -0.5,
                 "x_floor_start_int": 0.1,
                 "x_floor_end_int": 2.4,
@@ -56,15 +56,14 @@ class DoorGate(GateStructure):
                 "y_up_end_ext": 2.7,
                 "y_up_end_int": 2.5,
 
-                "w_in" : 0.2,
+                "w_in" : 1.2,
                 "w_out" : -0.2
             }
-        }
 
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""
         structure_private = self._element.values.structure_private
-        s = structure_private["geometry"]["shift"]
+        s = structure_private["shift"]
         logging.info("generate a door")
 
         child_object = concrete.add_child(self.gate.get_id(), self.gate.get_id() + "_impl")
