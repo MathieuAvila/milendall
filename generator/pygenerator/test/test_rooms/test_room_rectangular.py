@@ -27,24 +27,32 @@ def_0 = {
    "structure_class": "rectangular",
   }
 
+# in
 def_gate_0 = {
    "gate_id": "gate0",
    "structure_class": "simple_door",
+   "connect" : ["room0", "room1"]
 }
 
+# out
 def_gate_1 = {
    "gate_id": "gate1",
    "structure_class": "simple_door",
+   "connect" : ["room2", "room0"]
 }
 
+# in
 def_gate_2 = {
    "gate_id": "gate2",
    "structure_class": "simple_door",
+   "connect" : ["room0", "room3"]
 }
 
+# in
 def_gate_3 = {
    "gate_id": "gate3",
    "structure_class": "simple_door",
+   "connect" : ["room0", "room4"]
 }
 
 class TestRoomRectangular(unittest.TestCase):

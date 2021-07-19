@@ -249,14 +249,26 @@ class RectangularRoom(RoomStructure):
             gates_list = gates[wall_dir]
             for gate_def in gates_list:
                 gate_id = gate_def["gate_id"]
-                logging.info("Adding gate child, direction %i gate %s", wall_dir, gate.values.gate_id)
                 gate = gate_def["gate"]
+                # compute rotation argument depending on room is gate in or out.
+                # This rotates locally gate sub object in order to present correct face.
+                is_in = 1
+                dims = gate.get_dimensions()
+                if gate.values.connect[0] == self._element.values.room_id:
+                    is_in = -1
+                logging.info("Adding gate child, direction %i gate %s, connect %s - is_in %s",
+                    wall_dir, gate.values.gate_id, gate.values.connect, is_in)
                 offset = gate_def["offset"]
                 # create gate object
-                gate_mat = wall_mat* cgtypes.mat4(
-                        1.0, 0.0, 0.0, offset,
-                        0.0, 1.0, 0.0, 0,
+                gate_mat = wall_mat * cgtypes.mat4(
+                        1.0, 0.0, 0.0, offset - ( is_in - 1 ) / 2 * dims["portal"][0],
+                        0.0, 1.0, 0.0, 0.0,
                         0.0, 0.0, 1.0, 0.0,
+                        0.0, 0.0, 0.0, 1.0
+                        ) * cgtypes.mat4(
+                        is_in, 0.0, 0.0, 0.0,
+                        0.0, 1.0, 0.0, 0.0,
+                        0.0, 0.0, is_in, 0.0,
                         0.0, 0.0, 0.0, 1.0)
 
                 child_object = concrete.add_child("parent", gate_id, gate_mat)
