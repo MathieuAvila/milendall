@@ -3,7 +3,7 @@
  "name": [
   {
    "lang": "en",
-   "value": "Simple Level with 2 rooms and 1 gate"
+   "value": "Simple Level with 3 rooms and 3 gates"
   }
  ],
  "section": "samples",
@@ -70,7 +70,6 @@
      ]
     ],
     "setup": [
-     [],
      [
       {
        "gate": "r1r2",
@@ -78,18 +77,19 @@
        "post": 4.0
       },
       {
-       "gate": "r3r1",
-       "pre": 1.0,
-       "post": 4.0
-      }
+        "gate": "r2r1",
+        "pre": 1.0,
+        "post": 4.0
+       }
      ],
-     [],
+     [{
+        "gate": "r3r1",
+        "pre": 1.0,
+        "post": 4.0
+       }],
      [
-      {
-       "gate": "r2r1",
-       "pre": 1.0,
-       "post": 4.0
-      }
+     ],
+     [
      ],
      []
     ]
@@ -153,22 +153,18 @@
      ]
     ],
     "setup": [
+     [{
+        "gate": "r1r2",
+        "pre": 1.0,
+        "post": 4.0
+       },{
+        "gate": "r2r1",
+        "pre": 1.0,
+        "post": 4.0
+       }],
      [],
      [],
-     [
-      {
-       "gate": "r1r2",
-       "pre": 1.0,
-       "post": 4.0
-      }
-     ],
-     [
-      {
-       "gate": "r2r1",
-       "pre": 1.0,
-       "post": 4.0
-      }
-     ],
+     [],
      []
     ]
    },
@@ -232,8 +228,6 @@
     ],
     "setup": [
      [],
-     [],
-     [],
      [
       {
        "gate": "r3r1",
@@ -241,6 +235,8 @@
        "post": 4.0
       }
      ],
+     [],
+     [],
      []
     ]
    },
@@ -273,23 +269,23 @@
      ],
      "floor": [
       "x0"
-     ],
-     "shift": {
-      "x_floor_start_ext": -0.5,
-      "x_floor_start_int": 0.1,
-      "x_floor_end_int": 2.4,
-      "x_floor_end_ext": 3.0,
-      "x_up_start_ext": -0.3,
-      "x_up_start_int": 0.2,
-      "x_up_end_int": 2.3,
-      "x_up_end_ext": 2.8,
-      "y_up_start_ext": 2.7,
-      "y_up_start_int": 2.5,
-      "y_up_end_ext": 2.7,
-      "y_up_end_int": 2.5,
-      "w_in": 0.2,
-      "w_out": -0.2
-     }
+     ]
+    },
+    "shift": {
+     "x_floor_start_ext": -0.5,
+     "x_floor_start_int": 0.1,
+     "x_floor_end_int": 2.4,
+     "x_floor_end_ext": 3.0,
+     "x_up_start_ext": -0.3,
+     "x_up_start_int": 0.2,
+     "x_up_end_int": 2.3,
+     "x_up_end_ext": 2.8,
+     "y_up_start_ext": 2.7,
+     "y_up_start_int": 2.5,
+     "y_up_end_ext": 2.7,
+     "y_up_end_int": 2.5,
+     "w_in": 1.2,
+     "w_out": -0.2
     }
    },
    "structure_parameters": {},
@@ -319,23 +315,23 @@
      ],
      "floor": [
       "x0"
-     ],
-     "shift": {
-      "x_floor_start_ext": -0.5,
-      "x_floor_start_int": 0.1,
-      "x_floor_end_int": 2.4,
-      "x_floor_end_ext": 3.0,
-      "x_up_start_ext": -0.3,
-      "x_up_start_int": 0.2,
-      "x_up_end_int": 2.3,
-      "x_up_end_ext": 2.8,
-      "y_up_start_ext": 2.7,
-      "y_up_start_int": 2.5,
-      "y_up_end_ext": 2.7,
-      "y_up_end_int": 2.5,
-      "w_in": 0.2,
-      "w_out": -0.2
-     }
+     ]
+    },
+    "shift": {
+     "x_floor_start_ext": -0.5,
+     "x_floor_start_int": 0.1,
+     "x_floor_end_int": 2.4,
+     "x_floor_end_ext": 3.0,
+     "x_up_start_ext": -0.3,
+     "x_up_start_int": 0.2,
+     "x_up_end_int": 2.3,
+     "x_up_end_ext": 2.8,
+     "y_up_start_ext": 2.7,
+     "y_up_start_int": 2.5,
+     "y_up_end_ext": 2.7,
+     "y_up_end_int": 2.5,
+     "w_in": 1.2,
+     "w_out": -0.2
     }
    },
    "structure_parameters": {},
@@ -365,23 +361,23 @@
      ],
      "floor": [
       "x0"
-     ],
-     "shift": {
-      "x_floor_start_ext": -0.5,
-      "x_floor_start_int": 0.1,
-      "x_floor_end_int": 2.4,
-      "x_floor_end_ext": 3.0,
-      "x_up_start_ext": -0.3,
-      "x_up_start_int": 0.2,
-      "x_up_end_int": 2.3,
-      "x_up_end_ext": 2.8,
-      "y_up_start_ext": 2.7,
-      "y_up_start_int": 2.5,
-      "y_up_end_ext": 2.7,
-      "y_up_end_int": 2.5,
-      "w_in": 0.2,
-      "w_out": -0.2
-     }
+     ]
+    },
+    "shift": {
+     "x_floor_start_ext": -0.5,
+     "x_floor_start_int": 0.1,
+     "x_floor_end_int": 2.4,
+     "x_floor_end_ext": 3.0,
+     "x_up_start_ext": -0.3,
+     "x_up_start_int": 0.2,
+     "x_up_end_int": 2.3,
+     "x_up_end_ext": 2.8,
+     "y_up_start_ext": 2.7,
+     "y_up_start_int": 2.5,
+     "y_up_end_ext": 2.7,
+     "y_up_end_int": 2.5,
+     "w_in": 1.2,
+     "w_out": -0.2
     }
    },
    "structure_parameters": {},
