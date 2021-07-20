@@ -19,3 +19,24 @@ std::string mat4x4_to_string(glm::mat4x4 mat)
     result+="\n]";
     return result;
 }
+
+std::string vec3_to_string(glm::vec3 v)
+{
+    return string("[ ") + to_string(v.x) + " , "  + to_string(v.y) + " , "  + to_string(v.z) + " ]" ;
+}
+
+std::string vec4_to_string(glm::vec4 v)
+{
+   return string("[ ") + to_string(v.x) + " , "  + to_string(v.y) + " , " + to_string(v.z)  + " , " + to_string(v.w) + " ]" ;
+}
+
+glm::vec4 getPlaneEquation(glm::vec3 p, glm::vec3 n)
+{
+    n = normalize(n);
+    return glm::vec4(n.x, n.y, n.z, -glm::dot(p,n));
+}
+
+float pointPlaneProjection(glm::vec4 plane, glm::vec3 point)
+{
+    return glm::dot(plane, glm::vec4(point.x, point.y, point.z, 1.0));
+}
