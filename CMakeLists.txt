@@ -118,6 +118,7 @@ game/test/unit_gltf_material_accessor.cpp
 game/test/unit_gltf_table_accessor.cpp
 game/test/unit_gltf_data_accessor.cpp
 game/test/unit_json_helper_math.cpp
+game/test/unit_helper_math.cpp
 game/test/unit_gltf_model.cxx
 game/test/unit_gltf_node.cxx
 game/test/unit_face_list.cpp
