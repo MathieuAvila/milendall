@@ -5,6 +5,7 @@
 #include <list>
 
 #include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
 #include "gltf_data_accessor_iface.hxx"
 
@@ -27,6 +28,7 @@ class FaceList
             std::shared_ptr<PointsBlock> points;
             std::vector<unsigned int> indices;
             glm::vec3 normal;
+            glm::vec4 plane;
 
             Face(std::shared_ptr<PointsBlock> _points, std::vector<unsigned int>&& _indices);
     };

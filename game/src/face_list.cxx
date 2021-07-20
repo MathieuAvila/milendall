@@ -5,6 +5,8 @@
 #include "common.hxx"
 #include "gltf_exception.hxx"
 
+#include "helper_math.hxx"
+
 static auto console = spdlog::stdout_color_mt("face_list");
 
 PointsBlock::PointsBlock(std::unique_ptr<GltfDataAccessorIFace::DataBlock> data)
@@ -41,6 +43,7 @@ FaceList::FaceList::Face::Face(std::shared_ptr<PointsBlock> _points, vector<unsi
     auto & b = points.get()->getPoints()[indices[1]];
     auto & c = points.get()->getPoints()[indices[2]];
     normal = glm::normalize(glm::cross(c - a, b - a));
+    plane = getPlaneEquation(a, normal);
 }
 
 FaceList::FaceList(std::shared_ptr<PointsBlock> _points, std::unique_ptr<GltfDataAccessorIFace::DataBlock> data)

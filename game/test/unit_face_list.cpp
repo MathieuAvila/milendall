@@ -116,26 +116,42 @@ TEST(FaceList, Load__multi_faces) {
     EXPECT_EQ(faces.back().indices[3], 7);
 }
 
-void check_normal(GltfDataAccessor* data_accessor, shared_ptr<PointsBlock> points, int index, glm::vec3 normal)
+void check_normal_plane(
+    GltfDataAccessor* data_accessor,
+    shared_ptr<PointsBlock> points,
+    int index,
+    glm::vec3 normal,
+    glm::vec4 plane)
 {
         auto data_portal = data_accessor->accessId(index);
         FaceList faceList(points, move(data_portal));
         auto faces = faceList.getFaces();
         auto& f = faces.front();
         console->info("{}", glm::to_string(f.normal));
+        console->info("{}", glm::to_string(f.plane));
         EXPECT_EQ(f.normal, normal);
+        EXPECT_EQ(f.plane, plane);
 }
 
-TEST(FaceList, normals) {
+TEST(FaceList, normals_planes) {
 
     auto data_accessor = get_test_face_list_accessor();
     auto data_points = data_accessor->accessId(9);
     shared_ptr<PointsBlock> points = make_shared<PointsBlock>(move(data_points));
 
     // ground : up
-    check_normal(data_accessor.get(), points, 10, glm::vec3(0,  -1.0,  0));
+    check_normal_plane(data_accessor.get(), points, 10,
+        glm::vec3(0,  -1.0,  0),
+        glm::vec4(0,  -1.0,  0, 0.0)
+        );
     // ceiling : down
-    check_normal(data_accessor.get(), points, 11, glm::vec3(0,  1.0,   0));
+    check_normal_plane(data_accessor.get(), points, 11,
+        glm::vec3(0,  1.0,   0),
+        glm::vec4(0,  1.0,  0, -4.5)
+        );
     // first wall : horizontal
-    check_normal(data_accessor.get(), points, 12, glm::vec3(0,  0,     -1.0));
+    check_normal_plane(data_accessor.get(), points, 12,
+        glm::vec3(0,  0,     -1.0),
+        glm::vec4(0,  0,  -1.0 , 0.0)
+        );
 }
