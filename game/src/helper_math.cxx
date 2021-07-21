@@ -40,3 +40,13 @@ float pointPlaneProjection(glm::vec4 plane, glm::vec3 point)
 {
     return glm::dot(plane, glm::vec4(point.x, point.y, point.z, 1.0));
 }
+
+glm::vec4 positionToVec4(glm::vec3 p)
+{
+    return glm::vec4(p.x, p.y, p.z, 1.0);
+}
+
+glm::vec4 vectorToVec4(glm::vec3 v)
+{
+   return glm::vec4(v.x, v.y, v.z, 0.0);
+}

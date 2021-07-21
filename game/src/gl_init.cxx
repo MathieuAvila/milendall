@@ -35,13 +35,6 @@ static auto console = spdlog::stdout_color_mt("gl_init");
 glm::mat4 ViewMatrix;
 glm::mat4 ProjectionMatrix;
 
-glm::mat4 getViewMatrix(){
-	return ViewMatrix;
-}
-glm::mat4 getProjectionMatrix(){
-	return ProjectionMatrix;
-}
-
 // Initial position : on +Z
 glm::vec3 position = glm::vec3( 0, 2, 5 );
 
@@ -60,6 +53,23 @@ float initialFoV = 45.0f;
 
 float speed = 3.0f; // 3 units / second
 float mouseSpeed = 0.005f;
+
+/* FBO management */
+#define TOTAL_COUNT_FBO 32
+static FboIndex fboTable[TOTAL_COUNT_FBO];
+static int currentFboIndex;
+static int currentActiveFbo;
+
+/* Shaders management */
+GLuint defaultProgramID;
+GLuint MatrixID;
+GLuint TextureID;
+
+GLuint portalProgramID;
+GLuint MatrixIDportal;
+GLuint TextureIDportal;
+
+bool usingMainProgram = true;
 
 void computeMatricesFromInputs(){
 
@@ -82,7 +92,7 @@ void computeMatricesFromInputs(){
 	verticalAngle   += mouseSpeed * float( 768/2 - ypos );
 
 	// Direction : Spherical coordinates to Cartesian coordinates conversion
-	glm::vec3 direction(
+	direction = glm::vec3(
 		cos(verticalAngle) * sin(horizontalAngle),
 		sin(verticalAngle),
 		cos(verticalAngle) * cos(horizontalAngle)
@@ -203,9 +213,119 @@ void glfw_callback(int error_code, const char* description)
     console->error("{}={}", error_code, description);
 }
 
-GLuint programID;
-GLuint MatrixID;
-GLuint TextureID;
+static glm::mat4 ModelMatrix = glm::mat4(1.0);
+
+static void updateTransformMatrix()
+{
+    glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+    if (usingMainProgram)
+    	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+    else
+        glUniformMatrix4fv(MatrixIDportal, 1, GL_FALSE, &MVP[0][0]);
+}
+
+void setMeshMatrix(glm::mat4 mat)
+{
+    ModelMatrix = mat;
+	updateTransformMatrix();
+}
+
+void setViewComponents(glm::vec3 position, glm::vec3 direction, glm::vec3 up)
+{
+    float FoV = initialFoV;// - 5 * glfwGetMouseWheel(); // Now GLFW 3 requires setting up a callback for this. It's a bit too complicated for this beginner's tutorial, so it's disabled instead.
+	ProjectionMatrix = glm::perspective(glm::radians(FoV), 4.0f / 3.0f, 0.1f, 100.0f);
+	ViewMatrix       = glm::lookAt(
+								position,           // Camera is here
+								position+direction, // and looks here : at the same position, plus "direction"
+								up                  // Head is up (set to 0,-1,0 to look upside-down)
+						   );
+    updateTransformMatrix();
+}
+
+void initFbo()
+{
+    for (auto i = 0; i < TOTAL_COUNT_FBO; i++)
+    {
+        unsigned int fbo;
+        unsigned int texColorBuffer;
+        unsigned int rbo;
+        glGenFramebuffers(1, &fbo);
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+        // generate texture
+        glGenTextures(1, &texColorBuffer);
+        glBindTexture(GL_TEXTURE_2D, texColorBuffer);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0);
+        // rbo
+        glGenRenderbuffers(1, &rbo);
+        glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+        // sanity check
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+            std::stringstream stream;
+            stream << std::hex << glCheckFramebufferStatus(GL_FRAMEBUFFER);
+            throw GlException(std::string("Unable to init FBO index: ") + to_string(i) + "  " + stream.str());
+        }
+        // reset
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        // store information
+        fboTable[i].fboIndex = fbo;
+        fboTable[i].textureIndex = texColorBuffer;
+        fboTable[i].rbo = rbo;
+    };
+    unlockAllFbo();
+}
+
+int getValidFbo(FboIndex* result)
+{
+    if (currentFboIndex < TOTAL_COUNT_FBO) {
+        *result = fboTable[currentFboIndex];
+        glBindFramebuffer(GL_FRAMEBUFFER, result->fboIndex);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glBindFramebuffer(GL_FRAMEBUFFER, currentActiveFbo);
+        currentFboIndex++;
+        return 0;
+    } else {
+        return -1;
+    }
+}
+
+void unlockAllFbo()
+{
+    currentFboIndex = 0;
+    currentActiveFbo = 0;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void setActiveFbo(FboIndex* fbo)
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo->fboIndex);
+    currentActiveFbo = fbo->fboIndex;
+}
+
+void activateDefaultDrawingProgram()
+{
+	glUseProgram(defaultProgramID);
+    glActiveTexture(GL_TEXTURE0);
+	glUniform1i(TextureID, 0);
+    usingMainProgram = true;
+    updateTransformMatrix();
+}
+
+void activatePortalDrawingProgram()
+{
+	glUseProgram(portalProgramID);
+    glActiveTexture(GL_TEXTURE0);
+	glUniform1i(TextureIDportal, 0);
+    usingMainProgram = false;
+    updateTransformMatrix();
+}
 
 int milendall_gl_init(FileLibrary& library)
 {
@@ -260,26 +380,23 @@ int milendall_gl_init(FileLibrary& library)
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
-	programID = LoadShaders(library, "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
-	MatrixID = glGetUniformLocation(programID, "MVP");
-	TextureID  = glGetUniformLocation(programID, "myTextureSampler");
+	defaultProgramID = LoadShaders(library, "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
+    MatrixID = glGetUniformLocation(defaultProgramID, "MVP");
+	TextureID  = glGetUniformLocation(defaultProgramID, "myTextureSampler");
+
+    portalProgramID = LoadShaders(library, "Portal.vertexshader", "Portal.fragmentshader" );
+    MatrixIDportal = glGetUniformLocation(portalProgramID, "MVP");
+	TextureIDportal  = glGetUniformLocation(defaultProgramID, "myTextureSampler");
+
+    initFbo();
 
     return 0;
 }
 
-static glm::mat4 ModelMatrix = glm::mat4(1.0);
-
-void setMeshMatrix(glm::mat4 mat)
-{
-    ModelMatrix = mat;
-	glm::mat4 MVP = getProjectionMatrix() * getViewMatrix() * ModelMatrix;
-
-	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-}
-
 void milendall_gl_close()
 {
-	glDeleteProgram(programID);
+	glDeleteProgram(defaultProgramID);
+	glDeleteProgram(portalProgramID);
 	glfwTerminate();
 }
 

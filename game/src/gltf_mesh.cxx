@@ -114,11 +114,6 @@ GltfMesh::GltfMesh(
         auto name = j_mesh["name"].get<string>();
         console->info("Mesh has name {}", name);
     }
-    if (j_mesh.contains("name")) {
-        auto name = j_mesh["name"].get<string>();
-        console->info("Mesh has name {}", name);
-    }
-
 }
 
 void GltfMesh::GltfPrimitive::draw()

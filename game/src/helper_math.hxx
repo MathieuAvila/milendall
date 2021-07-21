@@ -26,3 +26,9 @@ glm::vec4 getPlaneEquation(glm::vec3 p, glm::vec3 n);
  * Abs value is distance
  */
 float pointPlaneProjection(glm::vec4 plane, glm::vec3 point);
+
+/** @brief Useful to append the extra W=1 */
+glm::vec4 positionToVec4(glm::vec3);
+
+/** @brief Useful to append the extra W=0 */
+glm::vec4 vectorToVec4(glm::vec3);

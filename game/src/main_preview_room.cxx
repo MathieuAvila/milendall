@@ -87,25 +87,17 @@ int main(int argc, char* argv[])
     auto space_state = GLFW_RELEASE;
 
 	do{
-		// Clear the screen
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        unlockAllFbo();
 
 		// Use our shader
-		glUseProgram(programID);
+		activateDefaultDrawingProgram();
 
 		// Compute the MVP matrix from keyboard and mouse input
 		computeMatricesFromInputs();
 
 		setMeshMatrix(glm::mat4(1.0));
 
-		// Bind our texture in Texture Unit 0
-		glActiveTexture(GL_TEXTURE0);
-		//glBindTexture(GL_TEXTURE_2D, Texture);
-		// Set our "myTextureSampler" sampler to use Texture Unit 0
-		glUniform1i(TextureID, 0);
-
         level.get()->draw(*current_room, position, direction, up);
-        //current_room->draw(position, direction, up);
 
 		// Swap buffers
 		glfwSwapBuffers(window);

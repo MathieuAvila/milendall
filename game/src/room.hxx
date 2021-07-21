@@ -60,6 +60,16 @@ struct RoomNode : public GltfNode
         RoomResolver* _room_resolver,
         const std::string& room_name);
 
+    /** internal method to check if a gate is drawable, and return new draw context.
+     * exposed for testability
+     */
+    bool checkDrawGate(
+        GltfNodeInstanceIface * currentNodeInstance,
+        const DrawContext& currentDrawContext,
+        const FacePortal& portal,
+        const FaceList::Face& face,
+        DrawContext& newDrawContext) const;
+
     /** specialized recursive draw for portals */
     void draw(GltfNodeInstanceIface * nodeInstance, DrawContext& roomContext);
 
@@ -96,6 +106,14 @@ class Room : public GltfModel
         */
         std::map<GateIdentifier, int> portalsIndices;
 
+        /** @brief Full context information for drawing. Used by Room for bootstrapping, and RoomNode for recursing.
+         * Draws all: room itself (all nodes), objects, portals.
+         * Pass position, direction, up of the room. Those are set in GL context
+         * (caller must set them back)
+         * recurse_level is used to indicate depth of tree of gates. Clip to a given
+         * limit as it may not be useful to go too deep.*/
+        void draw(DrawContext& draw_context);
+
     public:
 
         /** build the room from the directory path */
@@ -105,9 +123,7 @@ class Room : public GltfModel
             FileLibrary::UriReference& ref,
             RoomResolver*  _room_resolver = nullptr);
 
-        /** @brief full draw: room itself (all nodes), objects, portals.
-         * Pass position, direction, up of the room. Those are set in GL context
-         * (caller must set them back)
+        /** @brief full draw entry point
         */
         void draw(glm::vec3 position, glm::vec3 direction, glm::vec3 up);
 
@@ -122,6 +138,8 @@ class Room : public GltfModel
         std::pair<RoomNode*, GltfNodeInstanceIface*> getGateNode(const GateIdentifier& gate) const;
 
         virtual ~Room() = default;
+
+        friend struct RoomNode;
 
     FRIEND_TEST(Room, LoadLevel2Rooms1Gate_Room1);
 };

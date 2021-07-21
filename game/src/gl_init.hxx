@@ -9,12 +9,22 @@
 int milendall_gl_init(FileLibrary& library);
 void milendall_gl_close();
 
+/** @brief Any exception related to loader */
+class GlException: public std::runtime_error
+{
+    public:
+
+        GlException(const std::string err): runtime_error(err) {};
+};
+
 /** @brief Reference to a valid FBO */
 struct FboIndex {
     /** @brief the texture associated to it, to be used when available */
-    GLuint textureIndex;
+    unsigned int textureIndex;
     /** @brief the FBO intdex itself */
-    GLuint fboIndex;
+    unsigned int fboIndex;
+    /** @brief RBO object */
+    unsigned int rbo;
 };
 
 /** @brief Get a FBO from the FBO heap
@@ -22,14 +32,21 @@ struct FboIndex {
  */
 int getValidFbo(FboIndex* result);
 
-/** Release all FBO, can be used again */
-int releaseAllFbo(FboIndex* result);
+/** Signal to unlock all FBO, can be used again */
+void unlockAllFbo();
+
+/** Set active FBO */
+void setActiveFbo(FboIndex* fbo);
+
+/** Activate main program for drawing */
+void activateDefaultDrawingProgram();
+
+/** Activate portal program for drawing */
+void activatePortalDrawingProgram();
+
 
 void computeMatricesFromInputs();
 
-extern GLuint programID;
-extern GLuint MatrixID;
-extern GLuint TextureID;
 extern GLFWwindow* window;
 extern glm::mat4 ViewMatrix;
 extern glm::mat4 ProjectionMatrix;
@@ -42,3 +59,4 @@ extern glm::vec3 direction;
 extern glm::vec3 up;
 
 void setMeshMatrix(glm::mat4);
+void setViewComponents(glm::vec3 position, glm::vec3 direction, glm::vec3 up);

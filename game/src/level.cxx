@@ -13,13 +13,13 @@ static auto console = spdlog::stdout_color_mt("level");
 
 struct LevelRoomResolver : public RoomResolver
 {
-    std::map<std::string, std::shared_ptr<Room>> rooms;
+    std::map<std::string, std::shared_ptr<Room>>& rooms;
 
     /** Used by room to go through portal */
     virtual Room* getRoom(std::string name) { return rooms[name].get();};
 
     /** Init with ref to room list. This is linked to lifespan of level, so no dangling ptr here */
-    LevelRoomResolver(std::map<std::string, std::shared_ptr<Room>> _rooms) : rooms(_rooms) {};
+    LevelRoomResolver(std::map<std::string, std::shared_ptr<Room>>& _rooms) : rooms(_rooms) {};
 
     virtual ~LevelRoomResolver() {};
 };

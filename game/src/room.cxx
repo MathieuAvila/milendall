@@ -10,14 +10,21 @@
 #include "gltf_exception.hxx"
 #include "level_exception.hxx"
 
+#include "helper_math.hxx"
+#include "gl_init.hxx"
+
 static auto console = spdlog::stdout_color_mt("room");
 
 struct DrawContext {
     glm::vec3 position;
     glm::vec3 direction;
     glm::vec3 up;
-    std::string room_name;
+    Room* room;
+    RoomResolver* room_resolver;
+    int recurse_level;
+    FboIndex fbo;
 };
+
 bool GateIdentifier::operator< (const GateIdentifier& b) const
 {
     if (gate == b.gate)
@@ -41,7 +48,6 @@ RoomNode::FacePortal::FacePortal(
     gate = jsonGetElementByName(json, "gate").get<string>();
     in = (room_name == connect[0]);
     console->info("Portal from {} connecting {} and {}, is IN={}", room_name, connect[0], connect[1], in);
-
 }
 
 RoomNode::RoomNode(
@@ -71,17 +77,126 @@ RoomNode::RoomNode(
     }
 }
 
+bool RoomNode::checkDrawGate(
+    GltfNodeInstanceIface * currentNodeInstance,
+    const DrawContext& currentDrawContext,
+    const FacePortal& portal,
+    const FaceList::Face& face,
+    DrawContext& newDrawContext) const
+{
+    float factor = portal.in ? 1.0 : -1.0;
+
+    // compute vectors in local referential
+    DrawContext localOriginDC;
+    glm::mat4x4 localOriginM(currentNodeInstance->getNodeMatrix());
+    auto localOriginMInv = glm::inverse(localOriginM);
+    localOriginDC.position = localOriginMInv * positionToVec4(currentDrawContext.position);
+    localOriginDC.direction = localOriginMInv * vectorToVec4(currentDrawContext.direction);
+    localOriginDC.up = localOriginMInv * vectorToVec4(currentDrawContext.up);
+/*
+    console->info("org global pos {}", vec3_to_string(currentDrawContext.position));
+    console->info("org global dir {}", vec3_to_string(currentDrawContext.direction));
+    console->info("org global up  {}", vec3_to_string(currentDrawContext.up));
+    console->info("org local  pos {}", vec3_to_string(localOriginDC.position));
+    console->info("org local  dir {}", vec3_to_string(localOriginDC.direction));
+    console->info("org local  up  {}", vec3_to_string(localOriginDC.up));
+*/
+    // compute position side and exclude if we're not on the right side
+    auto side = pointPlaneProjection(face.plane, localOriginDC.position) * factor;
+ //   console->info("factor {} side {}", factor, side);
+    if (side > 0.0)
+        return false;
+
+    // TODO: use frustum clipping instead
+
+    // retrieve target room, and node_room objects for gate
+    auto target_room_name = portal.in ? portal.connect[1] : portal.connect[0];
+    auto target_room = currentDrawContext.room_resolver->getRoom(target_room_name);
+    if (target_room == nullptr) {
+        throw LevelException("Unable to get room:" + target_room_name);
+    }
+    auto [target_room_node, target_room_node_instance] = target_room->getGateNode(GateIdentifier{portal.gate, !portal.in});
+    if (target_room_node == nullptr) {
+        throw LevelException("Unable to get room node for gate:" + portal.gate + " with in/out: " + to_string(!portal.in));
+    }
+    if (target_room_node_instance == nullptr) {
+        throw LevelException("Unable to get room node instance for gate:" + portal.gate + " with in/out: " + to_string(!portal.in));
+    }
+    // compute target
+    newDrawContext = currentDrawContext;
+    auto& matTarget = target_room_node_instance->getNodeMatrix();
+    newDrawContext.position = matTarget * positionToVec4(localOriginDC.position);
+    newDrawContext.direction = target_room_node_instance->getNodeMatrix() * vectorToVec4(localOriginDC.direction);
+    newDrawContext.up = target_room_node_instance->getNodeMatrix() * vectorToVec4(localOriginDC.up);
+    newDrawContext.room = target_room;
+
+    return true;
+}
+
 void RoomNode::draw(GltfNodeInstanceIface * nodeInstance, DrawContext& roomContext)
 {
     for (auto& portal: portals) {
-        // Am I in or out ?
-        int factorInOut = roomContext.room_name == portal.connect[0] ? 1 : -1;
-        for (auto face : portal.face.getFaces()) {
-            // check normal is valid
-            console->info("check normal for room {} ( {} / {}) , factor {}",
-                roomContext.room_name,
-                portal.connect[0], portal.connect[1],
-                factorInOut);
+        for (const auto& face : portal.face.getFaces()) {
+            DrawContext newDrawContext;
+            console->info("check gate {} from room {} ( {} / {})",
+                portal.gate,
+                portal.in ? portal.connect[0]: portal.connect[1],
+                portal.connect[0], portal.connect[1]);
+            bool valid = checkDrawGate(nodeInstance, roomContext, portal, face, newDrawContext);
+            console->info(" ==> {}", valid);
+            newDrawContext.recurse_level = roomContext.recurse_level + 1;
+            if (valid) {
+                // Get a FBO to draw to
+                int result = getValidFbo(&newDrawContext.fbo);
+                if (result) {
+                    console->warn("No available FBO, must have gone too far. Sad.");
+                    return;
+                }
+                console->info("FBO = " + to_string(newDrawContext.fbo.fboIndex));
+                newDrawContext.room->draw(newDrawContext);
+
+                // switch to portal program
+                activatePortalDrawingProgram();
+
+                // draw portal
+                glActiveTexture(GL_TEXTURE0);
+	            glBindTexture(GL_TEXTURE_2D, newDrawContext.fbo.textureIndex);
+                        /*
+
+                glEnableVertexAttribArray(0);
+	            glBindBuffer(GL_ARRAY_BUFFER, portal.face.getFaces() vertexbuffer);
+	glVertexAttribPointer(
+			0,                  // attribute
+			3,                  // size
+			GL_FLOAT,           // type
+			GL_FALSE,           // normalized?
+			0,                  // stride
+			(void*)0            // array buffer offset
+		);
+
+	// Index buffer
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+
+		// Draw the triangles !
+	glDrawElements(
+		GL_TRIANGLES,      // mode
+		indicesCount,    // count
+		GL_UNSIGNED_SHORT,   // type
+		(void*)0           // element array buffer offset
+	);
+
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);*/
+
+
+                // switch back to main program
+                activateDefaultDrawingProgram();
+
+                // get back to my FBO and context
+                setActiveFbo(&roomContext.fbo);
+                setViewComponents(roomContext.position, roomContext.direction, roomContext.up);
+            }
         }
     }
 }
@@ -132,10 +247,23 @@ void Room::applyTransform()
     applyDefaultTransform(instance.get(), mat_id);
 }
 
+void Room::draw(DrawContext& draw_context)
+{
+    console->debug("Room draw: {} - level={}", room_name, draw_context.recurse_level);
+    setActiveFbo(&draw_context.fbo);
+    setViewComponents(draw_context.position, draw_context.direction, draw_context.up);
+    GltfModel::draw(instance.get(), &draw_context);
+}
+
 void Room::draw(glm::vec3 position, glm::vec3 direction, glm::vec3 up)
 {
-    //console->debug("Main room draw");
-    struct DrawContext drawContext {position, direction, up, room_name};
+    struct DrawContext drawContext {
+        position, direction, up,
+        this,
+        room_resolver,
+        0,
+        FboIndex{0,0}
+    };
     GltfModel::draw(instance.get(), &drawContext);
 }
 
