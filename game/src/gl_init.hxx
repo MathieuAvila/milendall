@@ -1,8 +1,12 @@
 #pragma once
 
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include <glm/mat4x4.hpp>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include "span.hxx"
 
 #include "file_library.hxx"
 
@@ -30,7 +34,7 @@ struct FboIndex {
 /** @brief Get a FBO from the FBO heap
  * @result 0 if OK, -1 if none available anymore
  */
-int getValidFbo(FboIndex* result);
+int getValidFbo(struct FboIndex* result);
 
 /** Signal to unlock all FBO, can be used again */
 void unlockAllFbo();
@@ -60,3 +64,24 @@ extern glm::vec3 up;
 
 void setMeshMatrix(glm::mat4);
 void setViewComponents(glm::vec3 position, glm::vec3 direction, glm::vec3 up);
+
+class TrianglesBufferInfo
+{
+    unsigned int vertexBuffer;
+    unsigned int uvbuffer;
+    unsigned int elementbuffer;
+    unsigned int indicesCount;
+
+    public:
+
+    void draw();
+
+    TrianglesBufferInfo(
+        std::span<glm::vec3> vertices,
+        std::span<glm::vec2> uv,
+        std::span<unsigned short> indices);
+    TrianglesBufferInfo(
+        std::span<glm::vec3> vertices,
+        std::span<unsigned short> indices);
+    ~TrianglesBufferInfo();
+};

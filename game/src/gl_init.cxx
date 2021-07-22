@@ -1,7 +1,3 @@
-
-#define GLM_FORCE_MESSAGES
-#include <glm/glm.hpp>
-
 #include <memory>
 #include <iostream>
 #include <stdio.h>
@@ -11,9 +7,6 @@
 #include <fstream>
 #include <algorithm>
 #include <filesystem>
-
-// Include GLEW
-#include <GL/glew.h>
 
 #include "common.hxx"
 #include "gl_init.hxx"
@@ -254,7 +247,7 @@ void initFbo()
         // generate texture
         glGenTextures(1, &texColorBuffer);
         glBindTexture(GL_TEXTURE_2D, texColorBuffer);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1024, 768, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -262,7 +255,7 @@ void initFbo()
         // rbo
         glGenRenderbuffers(1, &rbo);
         glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1024, 768);
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
         // sanity check
@@ -400,3 +393,96 @@ void milendall_gl_close()
 	glfwTerminate();
 }
 
+void TrianglesBufferInfo::draw()
+{
+    // 1rst attribute buffer : vertices
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+	glVertexAttribPointer(
+			0,                  // attribute
+			3,                  // size
+			GL_FLOAT,           // type
+			GL_FALSE,           // normalized?
+			0,                  // stride
+			(void*)0            // array buffer offset
+		);
+
+	// 2nd attribute buffer : UVs
+    if (uvbuffer != 0) {
+        glEnableVertexAttribArray(1);
+	    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+	    glVertexAttribPointer(
+		    1,                                // attribute
+			2,                                // size
+			GL_FLOAT,                         // type
+			GL_FALSE,                         // normalized?
+			0,                                // stride
+			(void*)0                          // array buffer offset
+		);
+    }
+
+	// Index buffer
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+
+		// Draw the triangles !
+	glDrawElements(
+		GL_TRIANGLES,      // mode
+		indicesCount,    // count
+		GL_UNSIGNED_SHORT,   // type
+		(void*)0           // element array buffer offset
+	);
+
+	glDisableVertexAttribArray(0);
+	if (uvbuffer != 0)
+        glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
+}
+
+TrianglesBufferInfo::TrianglesBufferInfo(
+        std::span<glm::vec3> vertices,
+        std::span<unsigned short> indices) : uvbuffer(0)
+{
+    glGenBuffers(1, &vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), vertices.data(), GL_STATIC_DRAW);
+
+    glGenBuffers(1, &elementbuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned short), indices.data(), GL_STATIC_DRAW);
+
+    indicesCount = indices.size();
+
+    console->info("TrianglesBufferInfo p={} uv={} i={} - indices={}",
+                vertexBuffer, uvbuffer, elementbuffer, indicesCount);
+}
+
+TrianglesBufferInfo::TrianglesBufferInfo(
+        std::span<glm::vec3> vertices,
+        std::span<glm::vec2> uv,
+        std::span<unsigned short> indices)
+{
+    glGenBuffers(1, &vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), vertices.data(), GL_STATIC_DRAW);
+
+    glGenBuffers(1, &uvbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+	glBufferData(GL_ARRAY_BUFFER, uv.size() * sizeof(glm::vec2), uv.data(), GL_STATIC_DRAW);
+
+    glGenBuffers(1, &elementbuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned short), indices.data(), GL_STATIC_DRAW);
+
+    indicesCount = indices.size();
+
+    console->info("TrianglesBufferInfo p={} uv={} i={} - indices={}",
+                vertexBuffer, uvbuffer, elementbuffer, indicesCount);
+}
+
+TrianglesBufferInfo::~TrianglesBufferInfo()
+{
+    glDeleteBuffers(1, &vertexBuffer);
+    if (uvbuffer)
+        glDeleteBuffers(1, &uvbuffer);
+    glDeleteBuffers(1, &elementbuffer);
+}
