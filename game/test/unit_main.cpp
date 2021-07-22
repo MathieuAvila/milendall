@@ -14,6 +14,19 @@ void setActiveFbo(FboIndex* fbo) {};
 void activateDefaultDrawingProgram() {};
 void activatePortalDrawingProgram() {};
 
+void TrianglesBufferInfo::draw() {}
+
+TrianglesBufferInfo::TrianglesBufferInfo(
+        std::span<glm::vec3> vertices,
+        std::span<unsigned short> indices) : uvbuffer(0) {}
+
+TrianglesBufferInfo::TrianglesBufferInfo(
+        std::span<glm::vec3> vertices,
+        std::span<glm::vec2> uv,
+        std::span<unsigned short> indices) {}
+
+TrianglesBufferInfo::~TrianglesBufferInfo() {}
+
 void glewGenerateMipmap(uint32_t target){};
 PFNGLGENERATEMIPMAPPROC __glewGenerateMipmap = glewGenerateMipmap;
 
