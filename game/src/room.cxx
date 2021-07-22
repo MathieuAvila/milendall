@@ -47,6 +47,25 @@ RoomNode::FacePortal::FacePortal(
     connect[1] = jsonGetElementByIndex(json, "connect", 1).get<string>();
     gate = jsonGetElementByName(json, "gate").get<string>();
     in = (room_name == connect[0]);
+    // compute list of triangles
+    std::vector<unsigned short> triangles;
+    for (auto& f: face.getFaces()) {
+        for (auto i=0; i < f.indices.size()-2; i++) {
+            // for "in"
+            triangles.push_back(f.indices[0]);
+            triangles.push_back(f.indices[i+1]);
+            triangles.push_back(f.indices[i+2]);
+            // for "out"
+            triangles.push_back(f.indices[0]);
+            triangles.push_back(f.indices[i+2]);
+            triangles.push_back(f.indices[i+1]);
+        }
+    }
+    auto& p = points.get()->getPoints();
+    portal_triangles = make_unique<TrianglesBufferInfo>(
+        std::span<glm::vec3>(const_cast<glm::vec3*>(&p[0]), p.size()),
+        std::span<unsigned short>(&triangles[0], triangles.size())
+        );
     console->info("Portal from {} connecting {} and {}, is IN={}", room_name, connect[0], connect[1], in);
 }
 
@@ -103,7 +122,6 @@ bool RoomNode::checkDrawGate(
 */
     // compute position side and exclude if we're not on the right side
     auto side = pointPlaneProjection(face.plane, localOriginDC.position) * factor;
- //   console->info("factor {} side {}", factor, side);
     if (side > 0.0)
         return false;
 
@@ -138,12 +156,12 @@ void RoomNode::draw(GltfNodeInstanceIface * nodeInstance, DrawContext& roomConte
     for (auto& portal: portals) {
         for (const auto& face : portal.face.getFaces()) {
             DrawContext newDrawContext;
-            console->info("check gate {} from room {} ( {} / {})",
+            console->debug("check gate {} from room {} ( {} / {})",
                 portal.gate,
                 portal.in ? portal.connect[0]: portal.connect[1],
                 portal.connect[0], portal.connect[1]);
             bool valid = checkDrawGate(nodeInstance, roomContext, portal, face, newDrawContext);
-            console->info(" ==> {}", valid);
+            console->debug(" ==> {}", valid);
             newDrawContext.recurse_level = roomContext.recurse_level + 1;
             if (valid) {
                 // Get a FBO to draw to
@@ -152,50 +170,25 @@ void RoomNode::draw(GltfNodeInstanceIface * nodeInstance, DrawContext& roomConte
                     console->warn("No available FBO, must have gone too far. Sad.");
                     return;
                 }
-                console->info("FBO = " + to_string(newDrawContext.fbo.fboIndex));
+                //console->info("FBO = " + to_string(newDrawContext.fbo.fboIndex));
+
+                // draw room
                 newDrawContext.room->draw(newDrawContext);
 
-                // switch to portal program
-                activatePortalDrawingProgram();
+                // switch to original FBO and context
+                setActiveFbo(&roomContext.fbo);
+                setViewComponents(roomContext.position, roomContext.direction, roomContext.up);
+                setMeshMatrix(nodeInstance->getNodeMatrix());
 
-                // draw portal
+                // switch to portal program and draw portal
+                activatePortalDrawingProgram();
                 glActiveTexture(GL_TEXTURE0);
 	            glBindTexture(GL_TEXTURE_2D, newDrawContext.fbo.textureIndex);
-                        /*
-
-                glEnableVertexAttribArray(0);
-	            glBindBuffer(GL_ARRAY_BUFFER, portal.face.getFaces() vertexbuffer);
-	glVertexAttribPointer(
-			0,                  // attribute
-			3,                  // size
-			GL_FLOAT,           // type
-			GL_FALSE,           // normalized?
-			0,                  // stride
-			(void*)0            // array buffer offset
-		);
-
-	// Index buffer
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
-
-		// Draw the triangles !
-	glDrawElements(
-		GL_TRIANGLES,      // mode
-		indicesCount,    // count
-		GL_UNSIGNED_SHORT,   // type
-		(void*)0           // element array buffer offset
-	);
-
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(2);*/
-
+                portal.portal_triangles->draw();
 
                 // switch back to main program
                 activateDefaultDrawingProgram();
 
-                // get back to my FBO and context
-                setActiveFbo(&roomContext.fbo);
-                setViewComponents(roomContext.position, roomContext.direction, roomContext.up);
             }
         }
     }
@@ -249,7 +242,7 @@ void Room::applyTransform()
 
 void Room::draw(DrawContext& draw_context)
 {
-    console->debug("Room draw: {} - level={}", room_name, draw_context.recurse_level);
+    console->info("Room draw: {} - level={}", room_name, draw_context.recurse_level);
     setActiveFbo(&draw_context.fbo);
     setViewComponents(draw_context.position, draw_context.direction, draw_context.up);
     GltfModel::draw(instance.get(), &draw_context);
