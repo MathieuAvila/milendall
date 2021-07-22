@@ -9,6 +9,8 @@
 
 #include <gtest/gtest_prod.h>
 
+#include "gl_init.hxx"
+
 class Room;
 
 struct RoomResolver
@@ -42,6 +44,9 @@ struct RoomNode : public GltfNode
 
         /** @brief Should contain 1 face only */
         FaceList face; // Should contain 1 face only
+
+        /** @brief triangles, ready to be passed to GL */
+        std::unique_ptr<TrianglesBufferInfo> portal_triangles;
 
         FacePortal(
             std::shared_ptr<PointsBlock>,
