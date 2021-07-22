@@ -64,11 +64,12 @@ add_library(game_lib STATIC
   game/src/helper_math.cxx
   game/src/face_list.hxx
   game/src/face_list.cxx
+  game/src/span.hxx
+  game/src/gl_init.hxx
 )
 
 add_library(real_gl STATIC
     game/src/gl_init.cxx
-    game/src/gl_init.hxx
 )
 
 set(core_lib
