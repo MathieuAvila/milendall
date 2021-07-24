@@ -66,6 +66,7 @@ add_library(game_lib STATIC
   game/src/face_list.cxx
   game/src/span.hxx
   game/src/gl_init.hxx
+  game/src/movable_object.hxx
 )
 
 add_library(real_gl STATIC
