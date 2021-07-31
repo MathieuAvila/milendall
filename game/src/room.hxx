@@ -55,8 +55,20 @@ struct RoomNode : public GltfNode
             const std::string& room_name);
     };
 
+    struct FaceHard
+    {
+        /** @brief Should contain 1 face only */
+        FaceList face; // Should contain 1 face only
+
+        FaceHard(
+            std::shared_ptr<PointsBlock>,
+            std::unique_ptr<GltfDataAccessorIFace::DataBlock>,
+            nlohmann::json& json);
+    };
+
     std::shared_ptr<PointsBlock> points;
     std::list<FacePortal> portals;
+    std::list<FaceHard> walls;
     RoomResolver* room_resolver;
 
     RoomNode(

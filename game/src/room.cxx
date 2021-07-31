@@ -69,6 +69,14 @@ RoomNode::FacePortal::FacePortal(
     console->info("Portal from {} connecting {} and {}, is IN={}", room_name, connect[0], connect[1], in);
 }
 
+RoomNode::FaceHard::FaceHard(
+    std::shared_ptr<PointsBlock> points,
+    std::unique_ptr<GltfDataAccessorIFace::DataBlock> accessor,
+    nlohmann::json& json) : face(points, move(accessor))
+{
+    console->info("Hard walls");
+}
+
 RoomNode::RoomNode(
     nlohmann::json& json,
     GltfDataAccessorIFace* data_accessor,
@@ -91,6 +99,9 @@ RoomNode::RoomNode(
             auto faces_data = data_accessor->accessId(accessor);
             if (type == "portal") {
                 portals.push_back(FacePortal(points, move(faces_data), data, room_name));
+            }
+            if (type == "hard") {
+                walls.push_back(FaceHard(points, move(faces_data), data));
             }
         });
     }
