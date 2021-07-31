@@ -19,6 +19,11 @@ struct MovableObject
         const float weight;
         /** @brief how much it is possible to rise when there's a stair */
         const float jumpable_height;
+        /** @brief roughness indicates how much object "adheres" to a surface.
+         * 0.0 means it glides
+         * 1.0 means it is rough and stops as soon a wall is reached
+         */
+        const float roughness;
 
         /** @brief current position, will be updated */
         glm::vec3 position;
@@ -33,6 +38,6 @@ struct MovableObject
          * This may change in case a portal is gone through */
         std::string room;
 
-        MovableObject(float _radius, float _weight, float _jumpable_height):
-            radius(_radius), weight(_weight), jumpable_height(_jumpable_height) {};
+        MovableObject(float _radius, float _weight, float _jumpable_height, float _roughness):
+            radius(_radius), weight(_weight), jumpable_height(_jumpable_height), roughness(_roughness) {};
 };
