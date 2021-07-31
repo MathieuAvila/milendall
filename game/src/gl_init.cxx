@@ -29,7 +29,7 @@ glm::mat4 ViewMatrix;
 glm::mat4 ProjectionMatrix;
 
 // Initial position : on +Z
-glm::vec3 position = glm::vec3( 0, 2, 5 );
+glm::vec3 position = glm::vec3( 2, 2, 2 );
 
 // view direction
 glm::vec3 direction;
