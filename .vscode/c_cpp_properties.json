@@ -1,0 +1,23 @@
+{
+    "env": {
+        "myDefaultIncludePath": ["${workspaceFolder}/**"],
+        "myCompilerPath": "/usr/bin/clang-11"
+    },
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/game/test/glmock/**",
+                "${workspaceFolder}/game/src/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/clang-11",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-clang-x64",
+            "configurationProvider": "ms-vscode.cmake-tools"
+        }
+    ],
+    "version": 4
+}
