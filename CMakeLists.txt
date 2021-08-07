@@ -64,7 +64,12 @@ add_library(game_lib STATIC
   game/src/face_list.cxx
   game/src/span.hxx
   game/src/gl_init.hxx
-  game/src/movable_object.hxx
+  game/src/objects/movable_object.hxx
+  game/src/objects/object_manager.cxx
+  game/src/objects/object_manager.hxx
+  game/src/objects/managed_object.hxx
+  game/src/objects/player.hxx
+  game/src/objects/player.cxx
 )
 
 add_library(real_gl STATIC

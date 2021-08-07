@@ -24,6 +24,11 @@ struct LevelRoomResolver : public RoomResolver
     virtual ~LevelRoomResolver() {};
 };
 
+RoomResolver* Level::getRoomResolver()
+{
+    return room_resolver.get();
+}
+
 Level::Level(FileLibrary::UriReference ref)
 {
     console->info("Load level: {}", ref.getPath());

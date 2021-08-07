@@ -27,6 +27,9 @@ class Level
         /** mandatory for dtor of unique_ptr of fwd declaration LevelRoomResolver */
         virtual ~Level();
 
+        /** get room resolver, for services that need access to particular rooms, like objet_manager */
+        RoomResolver* getRoomResolver();
+
     private:
 
         /** Pass RoomResolver to rooms */

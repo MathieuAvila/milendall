@@ -14,6 +14,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "objects/player.hxx"
+#include "objects/object_manager.hxx"
+
 using namespace std;
 
 static auto console = spdlog::stdout_color_mt("room_preview");
@@ -85,6 +88,9 @@ int main(int argc, char* argv[])
 
     auto new_space_state = GLFW_RELEASE;
     auto space_state = GLFW_RELEASE;
+
+    auto player = make_shared<Player>();
+    auto object_manager = make_unique<ObjectManager>(level->getRoomResolver());
 
 	do{
         unlockAllFbo();
