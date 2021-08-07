@@ -17,8 +17,6 @@ set(GLFW_LIBRARY "" CACHE FILEPATH "libglfw.a or glfw.lib" )
 set(GLEW_INCLUDE_PATH "" CACHE PATH "The directory that contains GL/glew.h" )
 set(GLEW_LIBRARY "" CACHE FILEPATH "libglew.a or glew.lib" )
 
-find_package(Boost 1.40 COMPONENTS program_options REQUIRED)
-
 find_package(GTest REQUIRED)
 find_package(GMock REQUIRED)
 include(GoogleTest)
@@ -74,7 +72,6 @@ add_library(real_gl STATIC
 )
 
 set(core_lib
-    ${Boost_LIBRARIES}
     game_lib
     nlohmann_json::nlohmann_json
     spdlog::spdlog
