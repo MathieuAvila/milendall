@@ -73,3 +73,167 @@ TEST(HelperMath, vec4_to_string) {
     ASSERT_EQ(vec4_to_string(v4A), "[ 1.000000 , 2.000000 , 3.000000 , 4.000000 ]");
 
 }
+
+TEST(HelperMath, intersectSphereTrajectoryPlane_no_radius) {
+
+    // plane is X/Y, starting at pZ
+    // trajectory is from 0 to 2*pZ
+    // sphere is a point , radius = 0.0
+    // intersect at pZ.
+    glm::vec3 position1(pO);
+    glm::vec3 position2(pZ * 2.0f);
+    glm::vec4 plane = getPlaneEquation(pZ, -vZ);
+    glm::vec3 intersect_point;
+    float distance;
+
+    bool result = intersectSphereTrajectoryPlane(
+        position1, position2, 0.0,
+        plane,
+        intersect_point,
+        distance
+    );
+    console->info("result {}, intersect_point {}", result, vec3_to_string(intersect_point));
+    ASSERT_TRUE(result);
+    ASSERT_EQ(intersect_point, glm::vec3(0,0,1));
+    ASSERT_EQ(distance, 1);
+}
+
+TEST(HelperMath, intersectSphereTrajectoryPlane_radius) {
+
+    // plane is X/Y, starting at pZ
+    // trajectory is from 0 to 2*pZ
+    // sphere radius = 0.5
+    // intersect at pZ.
+    glm::vec3 position1(pO);
+    glm::vec3 position2(pZ * 2.0f);
+    glm::vec4 plane = getPlaneEquation(pZ, -vZ);
+    glm::vec3 intersect_point;
+    float distance;
+    bool result = intersectSphereTrajectoryPlane(
+        position1, position2, 0.5,
+        plane,
+        intersect_point,
+        distance
+    );
+    console->info("result {}, intersect_point {}", result, vec3_to_string(intersect_point));
+    ASSERT_TRUE(result);
+    ASSERT_EQ(intersect_point, glm::vec3(0,0,0.5));
+    ASSERT_EQ(distance, 0.5);
+}
+
+TEST(HelperMath, intersectSphereTrajectoryPlane_bad_direction) {
+
+    // plane is X/Y, starting at pZ
+    // trajectory is from 2*pZ to 0
+    // sphere radius = 0.5
+    // intersect at pZ, but will return FALSE because it's not the right orientation.
+    glm::vec3 position1(pZ * 2.0f);
+    glm::vec3 position2(pO);
+    glm::vec4 plane = getPlaneEquation(pZ, -vZ);
+    glm::vec3 intersect_point;
+    float distance;
+    bool result = intersectSphereTrajectoryPlane(
+        position1, position2, 0.5,
+        plane,
+        intersect_point,
+        distance
+    );
+    console->info("result {}, intersect_point {}", result, vec3_to_string(intersect_point));
+    ASSERT_FALSE(result);
+}
+
+
+TEST(HelperMath, intersectSphereTrajectorySegment1_radius1) {
+    // Simple check with sphere radius 1
+
+    // Segment : A = - 2*pZ, B = + 2*pZ ==> follows Z around Origin
+    // trajectory is from -2 pX to 2 px
+    // sphere is a point , radius = 1.0
+    glm::vec3 position1(pX * -2.0f);
+    glm::vec3 position2(pX * 2.0f);
+    glm::vec3 A = - pZ * 2.0f;
+    glm::vec3 B = + pZ * 2.0f;
+
+    glm::vec3 intersect_center, normal;
+    float distance;
+    bool result = intersectSphereTrajectorySegment(
+        position1, position2, 1.0f,
+        A, B,
+        intersect_center, distance, normal);
+    ASSERT_TRUE(result);
+    ASSERT_EQ(intersect_center, glm::vec3(-1.0, 0.0, 0.0));
+    ASSERT_EQ(distance, 1.0f);
+    ASSERT_EQ(normal, glm::vec3(-1.0, 0.0, 0.0));
+
+};
+
+TEST(HelperMath, intersectSphereTrajectorySegment2_radius15) {
+
+    // Simple check with sphere radius 1.5, 2 solutions, first solution
+
+    // Segment : A = - 2*pZ, B = + 2*pZ ==> follows Z around Origin
+    // trajectory is from -2 pX to 2 px
+    // sphere is a point , radius = 1.5
+    glm::vec3 position1(pX * -2.0f);
+    glm::vec3 position2(pX * 2.0f);
+    glm::vec3 A = - pZ * 2.0f;
+    glm::vec3 B = + pZ * 2.0f;
+
+    glm::vec3 intersect_center, normal;
+    float distance;
+    bool result = intersectSphereTrajectorySegment(
+        position1, position2, 1.5f,
+        A, B,
+        intersect_center, distance, normal);
+    ASSERT_TRUE(result);
+    ASSERT_EQ(intersect_center, glm::vec3(-1.5, 0.0, 0.0));
+    ASSERT_EQ(distance, 0.5f);
+    ASSERT_EQ(normal, glm::vec3(-1.0, 0.0, 0.0));
+};
+
+TEST(HelperMath, intersectSphereTrajectorySegment3_radius15_at_origin) {
+
+    // Simple check with sphere radius 1.5, 2 solutions with origin between the 2,
+    // so that it is already in it.
+
+    // Segment : A = - 1, B = + 2*pZ ==> follows Z around Origin
+    // trajectory is from -0.5 pX to 2 px
+    // sphere is a point , radius = 1.5
+    glm::vec3 position1(pX * -0.5f); // past 1st solution
+    glm::vec3 position2(pX * 2.0f);
+    glm::vec3 A = - pZ * 2.0f;
+    glm::vec3 B = + pZ * 2.0f;
+
+    glm::vec3 intersect_center, normal;
+    float distance;
+    bool result = intersectSphereTrajectorySegment(
+        position1, position2, 1.5f,
+        A, B,
+        intersect_center, distance, normal);
+    ASSERT_TRUE(result);
+    ASSERT_EQ(intersect_center, position1);
+    ASSERT_EQ(distance, 0.0f); // start point
+    ASSERT_EQ(normal, glm::vec3(-1.0, 0.0, 0.0));
+};
+
+
+TEST(HelperMath, intersectSphereTrajectorySegment4_radius15_not_center) {
+
+    // Segment : A = - 2*pZ + pY, B = + 2*pZ + pY==> follows Z around Origin
+    // trajectory is from -2 pX to 2 px
+    // sphere is a point , radius = 1.5
+    glm::vec3 position1(pX * -2.0f + pY);
+    glm::vec3 position2(pX * 2.0f + pY);
+    glm::vec3 A = - pZ * 2.0f;
+    glm::vec3 B = + pZ * 2.0f;
+
+    glm::vec3 intersect_center, normal;
+    float distance;
+    bool result = intersectSphereTrajectorySegment(
+        position1, position2, 1.5f,
+        A, B,
+        intersect_center, distance, normal);
+    ASSERT_TRUE(result);
+    ASSERT_EQ(distance, 0.881966f);
+    ASSERT_TRUE(0.01 > glm::length(normal - glm::vec3(-0.745356 , 0.666667 , 0.000000))); // XXX should be computed
+};
