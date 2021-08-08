@@ -91,6 +91,16 @@ int main(int argc, char* argv[])
 
     auto player = make_shared<Player>();
     auto object_manager = make_unique<ObjectManager>(level->getRoomResolver());
+    auto player_id = object_manager ->insertObject(player,
+        MovableObjectPosition{
+            glm::vec3( 2, 2, 2 ),
+            glm::vec3( 1.0, 0, 0),
+            glm::vec3( 0.0, 0, 0),
+            glm::vec3( 1.0, 0, 0),
+            *room_ids.begin()}
+    );
+
+    auto current_time = std::chrono::steady_clock::now();
 
 	do{
         unlockAllFbo();
@@ -103,7 +113,19 @@ int main(int argc, char* argv[])
 
 		setMeshMatrix(glm::mat4(1.0));
 
+        MovableObjectPosition player_position;
+        bool found = object_manager->getObjectPosition(player_id, player_position);
+        if (found == false)
+            throw system_error();
+
         level.get()->draw(*current_room, position, direction, up);
+
+        auto new_time = std::chrono::steady_clock::now();
+        auto elapsed = float(std::chrono::duration_cast<std::chrono::microseconds>(new_time - current_time).count())
+            /(1000.0f*1000.0f);
+        console->info("Elapsed time={}", elapsed);
+        object_manager->update(elapsed);
+        current_time = new_time;
 
 		// Swap buffers
 		glfwSwapBuffers(window);

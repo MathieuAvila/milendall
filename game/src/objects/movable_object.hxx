@@ -27,6 +27,10 @@ struct MovableObjectPosition
 
     /** @brief current room this definition applies to. */
     std::string room;
+
+    MovableObjectPosition() = default;
+
+    MovableObjectPosition(MovableObjectPosition& obj2) = default;
 };
 
 /** @brief interface object that represents the definition of an object.

@@ -11,7 +11,8 @@ class Player : public ManagedObject
 {
     public:
 
-    virtual MovableObjectDefinition& getMovableObject() override;
+    virtual MovableObjectDefinition& getObjectDefinition() override;
+    virtual MovableObjectPosition getRequestedMovement() override;
     virtual bool checkEol() override;
 
     Player();

@@ -11,7 +11,12 @@ class ManagedObject
     public:
 
         // get main parameters of the object and advance it
-        virtual MovableObjectDefinition& getMovableObject() = 0;
+        virtual MovableObjectDefinition& getObjectDefinition() = 0;
+
+        // get requested movement.
+        // direction and up are copied "as is"
+        // position and room are ignored
+        virtual MovableObjectPosition getRequestedMovement() = 0;
 
         // Check if it must be released.
         virtual bool checkEol() = 0;

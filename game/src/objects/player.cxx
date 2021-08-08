@@ -11,9 +11,14 @@ Player::~Player()
 
 }
 
-MovableObjectDefinition& Player::getMovableObject()
+MovableObjectDefinition& Player::getObjectDefinition()
 {
     return movable_definition;
+}
+
+MovableObjectPosition Player::getRequestedMovement()
+{
+    return MovableObjectPosition();
 }
 
 bool Player::checkEol()
