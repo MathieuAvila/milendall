@@ -253,7 +253,7 @@ void Room::applyTransform()
 
 void Room::draw(DrawContext& draw_context)
 {
-    console->info("Room draw: {} - level={}", room_name, draw_context.recurse_level);
+    //console->info("Room draw: {} - level={}", room_name, draw_context.recurse_level);
     setActiveFbo(&draw_context.fbo);
     setViewComponents(draw_context.position, draw_context.direction, draw_context.up);
     GltfModel::draw(instance.get(), &draw_context);
