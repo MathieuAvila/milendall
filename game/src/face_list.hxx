@@ -25,12 +25,32 @@ class FaceList
     public:
 
     struct Face {
+
+            struct PointInfo {
+                unsigned int index;
+                glm::vec4 plane;
+            };
+
             std::shared_ptr<PointsBlock> points;
-            std::vector<unsigned int> indices;
+            std::vector<PointInfo> indices;
             glm::vec3 normal;
             glm::vec4 plane;
 
             Face(std::shared_ptr<PointsBlock> _points, std::vector<unsigned int>&& _indices);
+
+            /** @brief Check a given point is inside volume defined by normals of all points
+             */
+            bool checkInVolume(glm::vec3 p);
+
+            /** @brief Check a given trajectory crosses face
+             */
+            bool checkTrajectoryCross(glm::vec3 p0, glm::vec3 p1, glm::vec3& impact, float& distance);
+
+            /** @brief Check a given sphere trajectory crosses face
+             */
+            bool checkSphereTrajectoryCross(glm::vec3 p0, glm::vec3 p1, float radius, glm::vec3& impact, float& distance);
+
+
     };
 
     protected:

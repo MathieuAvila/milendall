@@ -21,9 +21,11 @@ static const auto index_points = 21;
 static const auto index_hard = 22;
 static const auto index_portal = 23;
 
+static const auto index_points_room_ground = 9;
+static const auto index_faces_room_ground = 10;
+
 std::unique_ptr<GltfDataAccessor> get_test_face_list_accessor()
 {
-
     auto fl = FileLibrary();
     std::string pwd = std::filesystem::current_path();
     fl.addRootFilesystem(pwd + "/../game/test/sample/face_list_sample");
@@ -35,7 +37,7 @@ std::unique_ptr<GltfDataAccessor> get_test_face_list_accessor()
     return elem;
 }
 
-TEST(FaceList, Load_points) {
+TEST(FaceList, PointsBlock_Load_points) {
 
     auto data_accessor = get_test_face_list_accessor();
     auto data = data_accessor->accessId(index_points);
@@ -49,14 +51,14 @@ TEST(FaceList, Load_points) {
 
 }
 
-TEST(FaceList, Load_points_invalid_types) {
+TEST(FaceList, PointsBlock_Load_points_invalid_types) {
     auto data_accessor = get_test_face_list_accessor();
     auto data = data_accessor->accessId(index_portal);
     EXPECT_THROW(PointsBlock(std::move(data)), GltfException);
 }
 
 
-TEST(FaceList, Load_1_faces) {
+TEST(FaceList, FaceList_Load_1_faces) {
     auto data_accessor = get_test_face_list_accessor();
 
     auto data_points = data_accessor->accessId(index_points);
@@ -69,13 +71,13 @@ TEST(FaceList, Load_1_faces) {
 
     EXPECT_EQ(faces.size(), 1);
     EXPECT_EQ(faces.front().indices.size(), 4);
-    EXPECT_EQ(faces.front().indices[0], 16);
-    EXPECT_EQ(faces.front().indices[1], 17);
-    EXPECT_EQ(faces.front().indices[2], 18);
-    EXPECT_EQ(faces.front().indices[3], 19);
+    EXPECT_EQ(faces.front().indices[0].index, 16);
+    EXPECT_EQ(faces.front().indices[1].index, 17);
+    EXPECT_EQ(faces.front().indices[2].index, 18);
+    EXPECT_EQ(faces.front().indices[3].index, 19);
 }
 
-TEST(FaceList, Load_faces_invalid_types) {
+TEST(FaceList, FaceList_Load_faces_invalid_types) {
 
     auto data_accessor = get_test_face_list_accessor();
 
@@ -87,7 +89,7 @@ TEST(FaceList, Load_faces_invalid_types) {
 
 }
 
-TEST(FaceList, Load__multi_faces) {
+TEST(FaceList, FaceList_Load_multi_faces) {
     auto data_accessor = get_test_face_list_accessor();
 
     auto data_points = data_accessor->accessId(index_points);
@@ -103,17 +105,17 @@ TEST(FaceList, Load__multi_faces) {
 
     // check first face
     EXPECT_EQ(faces.front().indices.size(), 4);
-    EXPECT_EQ(faces.front().indices[0], 0);
-    EXPECT_EQ(faces.front().indices[1], 1);
-    EXPECT_EQ(faces.front().indices[2], 2);
-    EXPECT_EQ(faces.front().indices[3], 7);
+    EXPECT_EQ(faces.front().indices[0].index, 0);
+    EXPECT_EQ(faces.front().indices[1].index, 1);
+    EXPECT_EQ(faces.front().indices[2].index, 2);
+    EXPECT_EQ(faces.front().indices[3].index, 7);
 
     // check last face
     EXPECT_EQ(faces.back().indices.size(), 4);
-    EXPECT_EQ(faces.back().indices[0], 15);
-    EXPECT_EQ(faces.back().indices[1], 8);
-    EXPECT_EQ(faces.back().indices[2], 0);
-    EXPECT_EQ(faces.back().indices[3], 7);
+    EXPECT_EQ(faces.back().indices[0].index, 15);
+    EXPECT_EQ(faces.back().indices[1].index, 8);
+    EXPECT_EQ(faces.back().indices[2].index, 0);
+    EXPECT_EQ(faces.back().indices[3].index, 7);
 }
 
 void check_normal_plane(
@@ -133,7 +135,7 @@ void check_normal_plane(
         EXPECT_EQ(f.plane, plane);
 }
 
-TEST(FaceList, normals_planes) {
+TEST(FaceList, FaceList_normals_planes) {
 
     auto data_accessor = get_test_face_list_accessor();
     auto data_points = data_accessor->accessId(9);
@@ -154,4 +156,60 @@ TEST(FaceList, normals_planes) {
         glm::vec3(0,  0,     -1.0),
         glm::vec4(0,  0,  -1.0 , 0.0)
         );
+}
+
+std::list<FaceList::Face> getGroundFaces()
+{
+    auto data_accessor = get_test_face_list_accessor();
+    auto data_points = data_accessor->accessId(index_points_room_ground);
+    shared_ptr<PointsBlock> points = make_shared<PointsBlock>(move(data_points));
+    auto data_portal = data_accessor->accessId(index_faces_room_ground);
+    FaceList faceList(points, move(data_portal));
+    return faceList.getFaces();
+}
+
+TEST(FaceList, FaceList_normals_planes_for_each_point) {
+
+    // will check normals computations for each point
+
+    auto faces = getGroundFaces();
+
+    EXPECT_EQ(faces.size(), 1);
+    EXPECT_EQ(faces.front().indices.size(), 4);
+    EXPECT_EQ(faces.front().indices[0].plane, glm::vec4(0,0,-1,13.5));
+    EXPECT_EQ(faces.front().indices[1].plane, glm::vec4(-1,0,0,4));
+    EXPECT_EQ(faces.front().indices[2].plane, glm::vec4(0,0,1,0));
+    EXPECT_EQ(faces.front().indices[3].plane, glm::vec4(1,0,0,0));
+}
+
+TEST(FaceList, FaceList_check_point_inside_space) {
+
+    // will check computing if a point is inside space defined by points normals
+    // will check normals computations for each point
+
+    auto faces = getGroundFaces();
+    EXPECT_EQ(faces.size(), 1);
+    auto& face = faces.front();
+    ASSERT_TRUE(face.checkInVolume(glm::vec3(1.0, 0.0, 1.0) )); // center, same level
+    ASSERT_TRUE(face.checkInVolume(glm::vec3(1.0, 1000.0, 1.0) )); // center, up
+    ASSERT_TRUE(face.checkInVolume(glm::vec3(1.0, -1000.0, 1.0) )); // center, down
+
+    ASSERT_FALSE(face.checkInVolume(glm::vec3(5.0, 0.0, 1.0) )); // outside first border
+    ASSERT_FALSE(face.checkInVolume(glm::vec3(5.0, 0.0, 1.0) )); // outside 2nd border
+    ASSERT_FALSE(face.checkInVolume(glm::vec3(0.0, 0.0, -1.0) )); // outside 4th border
+}
+
+TEST(FaceList, FaceList_trajectory) {
+
+    // will check trajectory intersection, if any
+
+    auto faces = getGroundFaces();
+    EXPECT_EQ(faces.size(), 1);
+    auto& face = faces.front();
+    glm::vec3 impact;
+    float distance;
+
+    ASSERT_TRUE(face.checkTrajectoryCross(
+        glm::vec3(1.0, 1000.0, 1.0), glm::vec3(1.0, -1000.0, 1.0),
+        impact, distance));
 }

@@ -31,19 +31,32 @@ const std::vector<glm::vec3>& PointsBlock::getPoints() const
 }
 
 FaceList::FaceList::Face::Face(std::shared_ptr<PointsBlock> _points, vector<unsigned int>&& _indices)
-: points(_points), indices(_indices)
+: points(_points)
 {
-    if (indices.size() < 3)
+    if (_indices.size() < 3)
         throw GltfException("invalid number of points for a face: must be 3 at least");
-    for (auto i : indices) {
+    for (auto i : _indices) {
         if (i >= points->getPoints().size())
             throw GltfException("invalid array index: over points");
+        indices.push_back(PointInfo{i});
     }
-    auto & a = points.get()->getPoints()[indices[0]];
-    auto & b = points.get()->getPoints()[indices[1]];
-    auto & c = points.get()->getPoints()[indices[2]];
+
+    auto & a = points.get()->getPoints()[indices[0].index];
+    auto & b = points.get()->getPoints()[indices[1].index];
+    auto & c = points.get()->getPoints()[indices[2].index];
     normal = glm::normalize(glm::cross(c - a, b - a));
     plane = getPlaneEquation(a, normal);
+    for (int i=0; i < indices.size(); i++ ) {
+        auto p0 = points.get()->getPoints()[indices[i].index];
+        auto p1 = points.get()->getPoints()[indices[ (i + 1) % indices.size()].index];
+        //auto p2 = p0 + normal;
+        indices[i].plane = getPlaneEquation(p0, glm::normalize(glm::cross(p1 - p0, normal)));
+
+        //console->info("{}", vec3_to_string(p0));
+        //console->info("{}", vec3_to_string(p1));
+        //console->info("{}", vec3_to_string(normal));
+        //console->info("== > {}", vec4_to_string(indices[i].plane));
+    }
 }
 
 FaceList::FaceList(std::shared_ptr<PointsBlock> _points, std::unique_ptr<GltfDataAccessorIFace::DataBlock> data)
@@ -62,7 +75,7 @@ FaceList::FaceList(std::shared_ptr<PointsBlock> _points, std::unique_ptr<GltfDat
         console->debug("face, total={}, index {} ]", p_count, index);
         std::vector<unsigned int> index_points;
         for (auto i = index + 1; i < index + 1 + p_count; i++) {
-            console->debug("face, index point = {} ]", raw_data[i]);
+            //console->debug("face, index point = {} ]", raw_data[i]);
             index_points.push_back(raw_data[i]);
         }
         faces.push_back(FaceList::Face(points, move(index_points)));
@@ -74,4 +87,30 @@ FaceList::FaceList(std::shared_ptr<PointsBlock> _points, std::unique_ptr<GltfDat
 const std::list<FaceList::Face>& FaceList::getFaces() const
 {
     return faces;
+}
+
+bool FaceList::Face::checkInVolume(glm::vec3 p)
+{
+    for (auto& i: indices) {
+        //console->info("valued {}", pointPlaneProjection(i.plane, p));
+        if (pointPlaneProjection(i.plane, p) < 0.0)
+            return false;
+    }
+    return true;
+}
+
+bool FaceList::Face::checkTrajectoryCross(glm::vec3 p0, glm::vec3 p1, glm::vec3& impact, float& distance)
+{
+    checkSphereTrajectoryCross(p0, p1, 0.0f, impact,distance);
+}
+
+bool FaceList::Face::checkSphereTrajectoryCross(glm::vec3 p0, glm::vec3 p1, float radius, glm::vec3& impact, float& distance)
+{
+    if (!intersectSphereTrajectoryPlane(
+        p0, p1, radius,
+        plane,
+        impact,
+        distance))
+        return false;
+    return checkInVolume(impact);
 }
