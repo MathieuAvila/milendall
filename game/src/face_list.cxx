@@ -44,13 +44,13 @@ FaceList::FaceList::Face::Face(std::shared_ptr<PointsBlock> _points, vector<unsi
     auto & a = points.get()->getPoints()[indices[0].index];
     auto & b = points.get()->getPoints()[indices[1].index];
     auto & c = points.get()->getPoints()[indices[2].index];
-    normal = glm::normalize(glm::cross(c - a, b - a));
+    normal = glm::normalize(glm::cross(b - a, c - a));
     plane = getPlaneEquation(a, normal);
     for (int i=0; i < indices.size(); i++ ) {
         auto p0 = points.get()->getPoints()[indices[i].index];
         auto p1 = points.get()->getPoints()[indices[ (i + 1) % indices.size()].index];
         //auto p2 = p0 + normal;
-        indices[i].plane = getPlaneEquation(p0, glm::normalize(glm::cross(p1 - p0, normal)));
+        indices[i].plane = getPlaneEquation(p0, glm::normalize(glm::cross(normal, p1 - p0)));
 
         //console->info("{}", vec3_to_string(p0));
         //console->info("{}", vec3_to_string(p1));
@@ -92,7 +92,7 @@ const std::list<FaceList::Face>& FaceList::getFaces() const
 bool FaceList::Face::checkInVolume(glm::vec3 p)
 {
     for (auto& i: indices) {
-        //console->info("valued {}", pointPlaneProjection(i.plane, p));
+        console->info("valued {}", pointPlaneProjection(i.plane, p));
         if (pointPlaneProjection(i.plane, p) < 0.0)
             return false;
     }
@@ -101,11 +101,18 @@ bool FaceList::Face::checkInVolume(glm::vec3 p)
 
 bool FaceList::Face::checkTrajectoryCross(glm::vec3 p0, glm::vec3 p1, glm::vec3& impact, float& distance)
 {
-    checkSphereTrajectoryCross(p0, p1, 0.0f, impact,distance);
+    console->debug("p={}", (void*)this);
+
+    return checkSphereTrajectoryCross(p0, p1, 0.0f, impact,distance);
 }
 
 bool FaceList::Face::checkSphereTrajectoryCross(glm::vec3 p0, glm::vec3 p1, float radius, glm::vec3& impact, float& distance)
 {
+    console->debug("p={}", intersectSphereTrajectoryPlane(
+        p0, p1, radius,
+        plane,
+        impact,
+        distance));
     if (!intersectSphereTrajectoryPlane(
         p0, p1, radius,
         plane,

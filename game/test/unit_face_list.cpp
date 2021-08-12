@@ -143,18 +143,18 @@ TEST(FaceList, FaceList_normals_planes) {
 
     // ground : up
     check_normal_plane(data_accessor.get(), points, 10,
-        glm::vec3(0,  -1.0,  0),
-        glm::vec4(0,  -1.0,  0, 0.0)
+        glm::vec3(0,  1.0,  0),
+        glm::vec4(0,  1.0,  0, 0.0)
         );
     // ceiling : down
     check_normal_plane(data_accessor.get(), points, 11,
-        glm::vec3(0,  1.0,   0),
-        glm::vec4(0,  1.0,  0, -4.5)
+        glm::vec3(0,  -1.0,   0),
+        glm::vec4(0,  -1.0,  0, 4.5)
         );
     // first wall : horizontal
     check_normal_plane(data_accessor.get(), points, 12,
-        glm::vec3(0,  0,     -1.0),
-        glm::vec4(0,  0,  -1.0 , 0.0)
+        glm::vec3(0,  0,  1.0),
+        glm::vec4(0,  0,  1.0 , 0.0)
         );
 }
 
@@ -199,17 +199,45 @@ TEST(FaceList, FaceList_check_point_inside_space) {
     ASSERT_FALSE(face.checkInVolume(glm::vec3(0.0, 0.0, -1.0) )); // outside 4th border
 }
 
-TEST(FaceList, FaceList_trajectory) {
+TEST(FaceList, FaceList_trajectory_ok) {
 
-    // will check trajectory intersection, if any
-
+    // will check trajectory intersection is fine
     auto faces = getGroundFaces();
-    EXPECT_EQ(faces.size(), 1);
     auto& face = faces.front();
     glm::vec3 impact;
     float distance;
 
     ASSERT_TRUE(face.checkTrajectoryCross(
         glm::vec3(1.0, 1000.0, 1.0), glm::vec3(1.0, -1000.0, 1.0),
+        impact, distance));
+    ASSERT_EQ(impact, glm::vec3(1.0, 0.0, 1.0));
+    ASSERT_EQ(distance, 1000.0f);
+}
+
+TEST(FaceList, FaceList_trajectory_bad_direction) {
+
+    // will check trajectory crosses face in bad direction
+
+    auto faces = getGroundFaces();
+    auto& face = faces.front();
+    glm::vec3 impact;
+    float distance;
+
+    ASSERT_FALSE(face.checkTrajectoryCross(
+        glm::vec3(1.0, -1000.0, 1.0), glm::vec3(1.0, 1000.0, 1.0),
+        impact, distance));
+}
+
+TEST(FaceList, FaceList_trajectory_doesnt_touch) {
+
+    // will check trajectory doesn't reach surface
+
+    auto faces = getGroundFaces();
+    auto& face = faces.front();
+    glm::vec3 impact;
+    float distance;
+
+    ASSERT_FALSE(face.checkTrajectoryCross(
+        glm::vec3(1.0, 1000.0, 1.0), glm::vec3(1.0, 10.0, 1.0), // 10.0 more than surface.
         impact, distance));
 }

@@ -84,6 +84,8 @@ bool intersectSphereTrajectoryPlane(
         intersect_center = position1 + vec_direction * distance;
         console->info("intersect_center {}", vec3_to_string(intersect_center));
     }
+    if ((distance <= 0.0f)||(distance > glm::length(position2 - position1)) )
+        return false;
     return result;
 };
 
