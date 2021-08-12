@@ -52,13 +52,13 @@ RoomNode::FacePortal::FacePortal(
     for (auto& f: face.getFaces()) {
         for (auto i=0; i < f.indices.size()-2; i++) {
             // for "in"
-            triangles.push_back(f.indices[0]);
-            triangles.push_back(f.indices[i+1]);
-            triangles.push_back(f.indices[i+2]);
+            triangles.push_back(f.indices[0].index);
+            triangles.push_back(f.indices[i+1].index);
+            triangles.push_back(f.indices[i+2].index);
             // for "out"
-            triangles.push_back(f.indices[0]);
-            triangles.push_back(f.indices[i+2]);
-            triangles.push_back(f.indices[i+1]);
+            triangles.push_back(f.indices[0].index);
+            triangles.push_back(f.indices[i+2].index);
+            triangles.push_back(f.indices[i+1].index);
         }
     }
     auto& p = points.get()->getPoints();
