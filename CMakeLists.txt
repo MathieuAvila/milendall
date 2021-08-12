@@ -3,6 +3,9 @@ project(milendall)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
+# to be set with an option
+set(CMAKE_BUILD_TYPE Debug)
+
 find_package(nlohmann_json 3.2.0 REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(glm REQUIRED)
