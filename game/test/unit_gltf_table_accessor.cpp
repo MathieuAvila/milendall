@@ -6,7 +6,7 @@
 #include "file_library.hxx"
 #include "json_helper_accessor.hxx"
 
-#include "gltf_exception.hxx"
+#include "gltf/gltf_exception.hxx"
 
 using namespace nlohmann;
 

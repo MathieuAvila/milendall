@@ -125,7 +125,6 @@ bool RoomNode::checkDrawGate(
     }
     // compute target
     newDrawContext = currentDrawContext;
-    auto& matTarget = target_room_node_instance->getNodeMatrix();
     newDrawContext.pov = localOriginDC.changeCoordinateSystem(
         target_room_name,
         target_room_node_instance->getNodeMatrix());

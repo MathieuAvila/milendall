@@ -7,7 +7,7 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-#include "gltf_data_accessor_iface.hxx"
+#include "gltf/gltf_data_accessor_iface.hxx"
 
 class PointsBlock {
 

@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include "common.hxx"
-#include "gltf_model.hxx"
+#include "gltf/gltf_model.hxx"
 #include "helper_math.hxx"
 
 #include <glm/mat4x4.hpp>

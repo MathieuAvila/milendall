@@ -1,7 +1,7 @@
 #pragma once
 
 #include "gltf_data_accessor_iface.hxx"
-#include "file_library.hxx"
+#include "../file_library.hxx"
 #include <nlohmann/json.hpp>
 
 #include <memory>

@@ -6,7 +6,7 @@
 
 #include "glmock.hpp"
 
-#include "gltf_model.hxx"
+#include "gltf/gltf_model.hxx"
 
 using ::testing::_;
 using ::testing::InSequence;

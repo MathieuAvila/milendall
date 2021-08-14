@@ -45,20 +45,20 @@ add_library(game_lib STATIC
   game/src/room_node.cxx
   game/src/room_resolver.hxx
   game/src/room_draw_context.hxx
-  game/src/gltf_mesh.hxx
-  game/src/gltf_mesh.cxx
-  game/src/gltf_model.hxx
-  game/src/gltf_model.cxx
-  game/src/gltf_instance_iface.hxx
-  game/src/gltf_instance_iface.cxx
-  game/src/gltf_material_accessor_iface.hxx
-  game/src/gltf_material_accessor_library_iface.hxx
-  game/src/gltf_material_accessor.cxx
-  game/src/gltf_data_accessor_iface.hxx
-  game/src/gltf_data_accessor.hxx
-  game/src/gltf_data_accessor.cxx
-  game/src/gltf_exception.hxx
-  game/src/gltf_exception.cxx
+  game/src/gltf/gltf_mesh.hxx
+  game/src/gltf/gltf_mesh.cxx
+  game/src/gltf/gltf_model.hxx
+  game/src/gltf/gltf_model.cxx
+  game/src/gltf/gltf_instance_iface.hxx
+  game/src/gltf/gltf_instance_iface.cxx
+  game/src/gltf/gltf_material_accessor_iface.hxx
+  game/src/gltf/gltf_material_accessor_library_iface.hxx
+  game/src/gltf/gltf_material_accessor.cxx
+  game/src/gltf/gltf_data_accessor_iface.hxx
+  game/src/gltf/gltf_data_accessor.hxx
+  game/src/gltf/gltf_data_accessor.cxx
+  game/src/gltf/gltf_exception.hxx
+  game/src/gltf/gltf_exception.cxx
   game/src/json_helper_accessor.hxx
   game/src/json_helper_accessor.cxx
   game/src/json_helper_math.hxx
@@ -80,6 +80,8 @@ add_library(game_lib STATIC
   game/src/point_of_view.hxx
   game/src/point_of_view.cxx
 )
+
+target_include_directories(game_lib PRIVATE game/src/ game/src/objects/ game/src/gltf/ )
 
 add_library(real_gl STATIC
     game/src/gl_init.cxx
@@ -105,6 +107,8 @@ add_executable(preview_room
     game/src/main_preview_room.cxx
 )
 
+target_include_directories(preview_room PRIVATE game/src/ game/src/objects/ game/src/gltf/ )
+
 target_link_libraries(preview_room
     ${core_lib}
     ${gl_libs}
@@ -119,6 +123,8 @@ target_link_libraries(milendall
     ${core_lib}
     ${gl_libs}
 )
+
+target_include_directories(milendall PRIVATE game/src/ game/src/objects/ game/src/gltf/ )
 
 add_library(glmock SHARED game/test/glmock/glmock.cpp)
 
@@ -146,4 +152,4 @@ target_link_libraries(unit_test
 include(GoogleTest)
 gtest_discover_tests(unit_test)
 
-target_include_directories(unit_test PRIVATE game/src/ game/test/glmock/ )
+target_include_directories(unit_test PRIVATE game/src/ game/src/objects/ game/src/gltf/ game/test/glmock/ )

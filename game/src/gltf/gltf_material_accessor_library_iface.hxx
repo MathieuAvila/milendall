@@ -2,7 +2,7 @@
 
 #include "gltf_material_accessor_iface.hxx"
 
-#include "file_library.hxx"
+#include <file_library.hxx>
 #include <nlohmann/json.hpp>
 
 /** @file Provide a material loader, common to all rooms for a levels

@@ -7,9 +7,9 @@
 #include "glmock.hpp"
 
 #include "common.hxx"
-#include "gltf_exception.hxx"
+#include "gltf/gltf_exception.hxx"
 #include "face_list.hxx"
-#include "gltf_data_accessor.hxx"
+#include "gltf/gltf_data_accessor.hxx"
 
 #include <glm/gtx/string_cast.hpp>
 
