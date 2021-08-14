@@ -206,12 +206,14 @@ TEST(FaceList, FaceList_trajectory_ok) {
     auto& face = faces.front();
     glm::vec3 impact;
     float distance;
+    glm::vec3 normal;
 
     ASSERT_TRUE(face.checkTrajectoryCross(
         glm::vec3(1.0, 1000.0, 1.0), glm::vec3(1.0, -1000.0, 1.0),
-        impact, distance));
+        impact, distance, normal));
     ASSERT_EQ(impact, glm::vec3(1.0, 0.0, 1.0));
     ASSERT_EQ(distance, 1000.0f);
+    ASSERT_EQ(normal, glm::vec3(0.0, 1.0, 0.0));
 }
 
 TEST(FaceList, FaceList_trajectory_bad_direction) {
@@ -222,10 +224,11 @@ TEST(FaceList, FaceList_trajectory_bad_direction) {
     auto& face = faces.front();
     glm::vec3 impact;
     float distance;
+    glm::vec3 normal;
 
     ASSERT_FALSE(face.checkTrajectoryCross(
         glm::vec3(1.0, -1000.0, 1.0), glm::vec3(1.0, 1000.0, 1.0),
-        impact, distance));
+        impact, distance, normal));
 }
 
 TEST(FaceList, FaceList_trajectory_doesnt_touch) {
@@ -236,8 +239,40 @@ TEST(FaceList, FaceList_trajectory_doesnt_touch) {
     auto& face = faces.front();
     glm::vec3 impact;
     float distance;
+    glm::vec3 normal;
 
     ASSERT_FALSE(face.checkTrajectoryCross(
         glm::vec3(1.0, 1000.0, 1.0), glm::vec3(1.0, 10.0, 1.0), // 10.0 more than surface.
-        impact, distance));
+        impact, distance, normal));
+}
+
+TEST(FaceList, FaceList_trajectory_borders) {
+
+    // will check trajectory doesn't reach surface
+
+    auto faces = getGroundFaces();
+    auto& face = faces.front();
+    glm::vec3 impact;
+    float distance;
+    glm::vec3 normal;
+
+    // 1st border
+    ASSERT_TRUE(face.checkSphereTrajectoryCross(
+        glm::vec3(-1.0, 1000.0, 1.0), glm::vec3(-1.0, -1000.0, 1.0), // should hit at 1.0
+        2.0,
+        impact, distance, normal));
+    console->info("{}", glm::to_string(impact));
+    console->info("{}", distance);
+    console->info("{}", glm::to_string(normal));
+
+     // 3th border
+    ASSERT_TRUE(face.checkSphereTrajectoryCross(
+        glm::vec3(-1.0, 1000.0, 14.0), glm::vec3(-1.0, -1000.0, 14.0), // should hit at 1.0
+        2.0,
+        impact, distance, normal));
+    console->info("{}", glm::to_string(impact));
+    console->info("{}", distance);
+    console->info("{}", glm::to_string(normal));
+
+
 }

@@ -99,25 +99,45 @@ bool FaceList::Face::checkInVolume(glm::vec3 p)
     return true;
 }
 
-bool FaceList::Face::checkTrajectoryCross(glm::vec3 p0, glm::vec3 p1, glm::vec3& impact, float& distance)
+bool FaceList::Face::checkTrajectoryCross(glm::vec3 p0, glm::vec3 p1, glm::vec3& impact, float& distance, glm::vec3& impact_normal)
 {
     console->debug("p={}", (void*)this);
 
-    return checkSphereTrajectoryCross(p0, p1, 0.0f, impact,distance);
+    return checkSphereTrajectoryCross(p0, p1, 0.0f, impact,distance, impact_normal);
 }
 
-bool FaceList::Face::checkSphereTrajectoryCross(glm::vec3 p0, glm::vec3 p1, float radius, glm::vec3& impact, float& distance)
+bool FaceList::Face::checkSphereTrajectoryCross(glm::vec3 p0, glm::vec3 p1, float radius, glm::vec3& impact, float& distance, glm::vec3& impact_normal)
 {
-    console->debug("p={}", intersectSphereTrajectoryPlane(
-        p0, p1, radius,
-        plane,
-        impact,
-        distance));
     if (!intersectSphereTrajectoryPlane(
         p0, p1, radius,
         plane,
         impact,
         distance))
-        return false;
-    return checkInVolume(impact);
+            return false;
+
+    if (checkInVolume(impact))
+        {
+            impact_normal = normal;
+            return true;
+        }
+
+    // not radial contact, but may be side contact. Check ALL borders.
+    bool found = false;
+    glm::vec3 shortest_normal;
+
+    for (auto i = 0 ; i<indices.size(); i++) {
+        auto A = points.get()->getPoints()[indices[i].index];
+        auto B = points.get()->getPoints()[indices[(i + 1) % indices.size()].index];
+        if (intersectSphereTrajectorySegment(
+            p0, p1, radius,
+            A,B,
+            impact,
+            distance,
+            shortest_normal)) {
+                found = true;
+                p1 = impact;
+                impact_normal = shortest_normal;
+            }
+        }
+    return found;
 }
