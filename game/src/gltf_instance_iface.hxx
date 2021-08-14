@@ -10,12 +10,21 @@ class GltfNodeInstanceIface
 
     glm::mat4x4 local_matrix = glm::mat4(1.0);
 
+    bool isInvertedMatrixValid;
+    glm::mat4x4 inverted_local_matrix = glm::mat4(1.0);
+
     public:
 
     /**
      * Accessor to local matrix
      */
-    glm::mat4x4& getNodeMatrix() { return local_matrix; };
+    const glm::mat4x4& getNodeMatrix();
+    void setNodeMatrix(const glm::mat4x4&);
+
+     /**
+     * Accessor to inverted local matrix
+     */
+    const glm::mat4x4& getInvertedNodeMatrix();
 
     /** default instantiate */
     GltfNodeInstanceIface() = default;

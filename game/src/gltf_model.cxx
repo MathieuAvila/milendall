@@ -144,8 +144,9 @@ void GltfModel::applyDefaultTransform(GltfInstance* instance, int index, glm::ma
     auto myNode = nodeTable[index].get();
     auto instanceNode = instance->getNode(index);
 
-    auto& mat = instanceNode->getNodeMatrix();
+    auto mat = instanceNode->getNodeMatrix();
     mat = position * myNode->default_transform;
+    instanceNode->setNodeMatrix(mat);
 
     for (int i : myNode->children)
         applyDefaultTransform(instance, i, mat);
