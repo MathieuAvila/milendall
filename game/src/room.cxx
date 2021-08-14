@@ -133,7 +133,7 @@ bool RoomNode::checkDrawGate(
 */
     // compute position side and exclude if we're not on the right side
     auto side = pointPlaneProjection(face.plane, localOriginDC.position) * factor;
-    if (side > 0.0)
+    if (side < 0.0)
         return false;
 
     // TODO: use frustum clipping instead
