@@ -141,6 +141,7 @@ game/test/unit_helper_math.cpp
 game/test/unit_gltf_model.cxx
 game/test/unit_gltf_node.cxx
 game/test/unit_face_list.cpp
+game/test/unit_point_of_view.cxx
 )
 
 enable_testing()
