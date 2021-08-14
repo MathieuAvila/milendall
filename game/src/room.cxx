@@ -13,13 +13,16 @@
 #include "helper_math.hxx"
 #include "gl_init.hxx"
 
+#include "point_of_view.hxx"
+
 static auto console = spdlog::stdout_color_mt("room");
 
 struct DrawContext {
-    glm::vec3 position;
+    PointOfView pov;
+    /*glm::vec3 position;
     glm::vec3 direction;
     glm::vec3 up;
-    Room* room;
+    Room* room;*/
     RoomResolver* room_resolver;
     int recurse_level;
     FboIndex fbo;
@@ -117,12 +120,9 @@ bool RoomNode::checkDrawGate(
     float factor = portal.in ? 1.0 : -1.0;
 
     // compute vectors in local referential
-    DrawContext localOriginDC;
-    glm::mat4x4 localOriginM(currentNodeInstance->getNodeMatrix());
-    auto localOriginMInv = glm::inverse(localOriginM);
-    localOriginDC.position = localOriginMInv * positionToVec4(currentDrawContext.position);
-    localOriginDC.direction = localOriginMInv * vectorToVec4(currentDrawContext.direction);
-    localOriginDC.up = localOriginMInv * vectorToVec4(currentDrawContext.up);
+    PointOfView localOriginDC = currentDrawContext.pov.changeCoordinateSystem(
+        currentDrawContext.pov.room,
+        currentNodeInstance->getInvertedNodeMatrix());
 /*
     console->info("org global pos {}", vec3_to_string(currentDrawContext.position));
     console->info("org global dir {}", vec3_to_string(currentDrawContext.direction));
@@ -154,10 +154,14 @@ bool RoomNode::checkDrawGate(
     // compute target
     newDrawContext = currentDrawContext;
     auto& matTarget = target_room_node_instance->getNodeMatrix();
-    newDrawContext.position = matTarget * positionToVec4(localOriginDC.position);
-    newDrawContext.direction = target_room_node_instance->getNodeMatrix() * vectorToVec4(localOriginDC.direction);
-    newDrawContext.up = target_room_node_instance->getNodeMatrix() * vectorToVec4(localOriginDC.up);
-    newDrawContext.room = target_room;
+    newDrawContext.pov = localOriginDC.changeCoordinateSystem(
+        target_room_name,
+        target_room_node_instance->getNodeMatrix());
+
+    //newDrawContext.position = matTarget * positionToVec4(localOriginDC.position);
+    //newDrawContext.direction = target_room_node_instance->getNodeMatrix() * vectorToVec4(localOriginDC.direction);
+    //newDrawContext.up = target_room_node_instance->getNodeMatrix() * vectorToVec4(localOriginDC.up);
+    //newDrawContext.room = target_room;
 
     return true;
 }
@@ -184,11 +188,11 @@ void RoomNode::draw(GltfNodeInstanceIface * nodeInstance, DrawContext& roomConte
                 //console->info("FBO = " + to_string(newDrawContext.fbo.fboIndex));
 
                 // draw room
-                newDrawContext.room->draw(newDrawContext);
+                newDrawContext.room_resolver->getRoom(newDrawContext.pov.room)->draw(newDrawContext);
 
                 // switch to original FBO and context
                 setActiveFbo(&roomContext.fbo);
-                setViewComponents(roomContext.position, roomContext.direction, roomContext.up);
+                setViewComponents(roomContext.pov.position, roomContext.pov.direction, roomContext.pov.up);
                 setMeshMatrix(nodeInstance->getNodeMatrix());
 
                 // switch to portal program and draw portal
@@ -255,15 +259,16 @@ void Room::draw(DrawContext& draw_context)
 {
     //console->info("Room draw: {} - level={}", room_name, draw_context.recurse_level);
     setActiveFbo(&draw_context.fbo);
-    setViewComponents(draw_context.position, draw_context.direction, draw_context.up);
+    setViewComponents(draw_context.pov.position, draw_context.pov.direction, draw_context.pov.up);
     GltfModel::draw(instance.get(), &draw_context);
 }
 
 void Room::draw(glm::vec3 position, glm::vec3 direction, glm::vec3 up)
 {
     struct DrawContext drawContext {
+        PointOfView{
         position, direction, up,
-        this,
+        this->room_name},
         room_resolver,
         0,
         FboIndex{0,0}

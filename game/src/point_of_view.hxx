@@ -24,5 +24,5 @@ struct PointOfView
     PointOfView() = default;
     PointOfView(PointOfView& obj) = default;
 
-    PointOfView changeCoordinateSystem(std::string newRoom, glm::mat4& newMatrix);
+    PointOfView changeCoordinateSystem(std::string newRoom, const glm::mat4& newMatrix) const;
 };
