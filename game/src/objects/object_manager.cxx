@@ -7,12 +7,12 @@ class ManagedObjectInstance
     std::shared_ptr<ManagedObject> object;
 
     /** This is the real position of the center of the object*/
-    MovableObjectPosition mainPosition;
+    PointOfView mainPosition;
 
     /** This is other positions that the object crosses */
-    std::list<MovableObjectPosition> otherPosition;
+    std::list<PointOfView> otherPosition;
 
-    ManagedObjectInstance(std::shared_ptr<ManagedObject> _object, MovableObjectPosition _mainPosition):
+    ManagedObjectInstance(std::shared_ptr<ManagedObject> _object, PointOfView _mainPosition):
         object(_object), mainPosition(_mainPosition) {};
 
 };
@@ -22,7 +22,7 @@ ObjectManager::ObjectManager(RoomResolver* _roomResolver) : roomResolver(_roomRe
 
 }
 
-int ObjectManager::insertObject(std::shared_ptr<ManagedObject> object, MovableObjectPosition pos)
+int ObjectManager::insertObject(std::shared_ptr<ManagedObject> object, PointOfView pos)
 {
     static int ID = 0;
     managed_objects.insert(std::pair<int, std::unique_ptr<ManagedObjectInstance>>(++ID,
@@ -35,7 +35,7 @@ void ObjectManager::update(float time_delta)
 
 }
 
-bool ObjectManager::getObjectPosition(int objectId, MovableObjectPosition& pos)
+bool ObjectManager::getObjectPosition(int objectId, PointOfView& pos)
 {
     if (managed_objects.count(objectId) != 1)
         return false;

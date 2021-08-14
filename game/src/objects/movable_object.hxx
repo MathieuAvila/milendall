@@ -8,31 +8,6 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-/** Position of an object inside a room. There is at least 1 definition like this per objects,
- * and any other if the object is crossing a portal
- */
-struct MovableObjectPosition
-{
-    /** @brief current position, will be updated */
-    glm::vec3 position;
-
-    /** @brief direction vector */
-    glm::vec3 direction;
-
-    /** @brief up vector */
-    glm::vec3 up;
-
-    /** @brief speed vector */
-    glm::vec3 speed;
-
-    /** @brief current room this definition applies to. */
-    std::string room;
-
-    MovableObjectPosition() = default;
-
-    MovableObjectPosition(MovableObjectPosition& obj2) = default;
-};
-
 /** @brief interface object that represents the definition of an object.
  * however it can be just used as a message for computing a more complex
  * position/speed

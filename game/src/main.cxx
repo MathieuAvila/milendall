@@ -92,10 +92,9 @@ int main(int argc, char* argv[])
     auto player = make_shared<Player>();
     auto object_manager = make_unique<ObjectManager>(level->getRoomResolver());
     auto player_id = object_manager ->insertObject(player,
-        MovableObjectPosition{
+        PointOfView{
             glm::vec3( 2, 2, 2 ),
             glm::vec3( 1.0, 0, 0),
-            glm::vec3( 0.0, 0, 0),
             glm::vec3( 1.0, 0, 0),
             *room_ids.begin()}
     );
@@ -113,7 +112,7 @@ int main(int argc, char* argv[])
 
 		setMeshMatrix(glm::mat4(1.0));
 
-        MovableObjectPosition player_position;
+        PointOfView player_position;
         bool found = object_manager->getObjectPosition(player_id, player_position);
         if (found == false)
             throw system_error();

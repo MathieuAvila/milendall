@@ -2,6 +2,11 @@
 
 #include "movable_object.hxx"
 
+
+struct MovementWish {
+    glm::vec3 impulse;
+};
+
 /** @brief  interface object that represents an object that can be managed by ObjectManager.
  *          It is the root object of any rela object
  */
@@ -16,7 +21,7 @@ class ManagedObject
         // get requested movement.
         // direction and up are copied "as is"
         // position and room are ignored
-        virtual MovableObjectPosition getRequestedMovement() = 0;
+        virtual MovementWish getRequestedMovement() = 0;
 
         // Check if it must be released.
         virtual bool checkEol() = 0;

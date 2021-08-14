@@ -16,9 +16,9 @@ MovableObjectDefinition& Player::getObjectDefinition()
     return movable_definition;
 }
 
-MovableObjectPosition Player::getRequestedMovement()
+MovementWish Player::getRequestedMovement()
 {
-    return MovableObjectPosition();
+    return MovementWish();
 }
 
 bool Player::checkEol()
