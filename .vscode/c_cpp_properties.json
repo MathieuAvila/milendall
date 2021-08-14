@@ -9,7 +9,9 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/game/test/glmock/**",
-                "${workspaceFolder}/game/src/**"
+                "${workspaceFolder}/game/src/**",
+                "${workspaceFolder}/game/src/objects/**",
+                "${workspaceFolder}/game/src/gltf/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang-11",
