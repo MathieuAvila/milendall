@@ -73,6 +73,8 @@ add_library(game_lib STATIC
   game/src/objects/managed_object.hxx
   game/src/objects/player.hxx
   game/src/objects/player.cxx
+  game/src/point_of_view.hxx
+  game/src/point_of_view.cxx
 )
 
 add_library(real_gl STATIC
