@@ -41,6 +41,10 @@ add_library(game_lib STATIC
   game/src/level.cxx
   game/src/room.hxx
   game/src/room.cxx
+  game/src/room_node.hxx
+  game/src/room_node.cxx
+  game/src/room_resolver.hxx
+  game/src/room_draw_context.hxx
   game/src/gltf_mesh.hxx
   game/src/gltf_mesh.cxx
   game/src/gltf_model.hxx
