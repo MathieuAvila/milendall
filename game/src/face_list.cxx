@@ -89,7 +89,7 @@ const std::list<FaceList::Face>& FaceList::getFaces() const
     return faces;
 }
 
-bool FaceList::Face::checkInVolume(glm::vec3 p)
+bool FaceList::Face::checkInVolume(glm::vec3 p) const
 {
     for (auto& i: indices) {
         console->info("valued {}", pointPlaneProjection(i.plane, p));
@@ -99,14 +99,14 @@ bool FaceList::Face::checkInVolume(glm::vec3 p)
     return true;
 }
 
-bool FaceList::Face::checkTrajectoryCross(glm::vec3 p0, glm::vec3 p1, glm::vec3& impact, float& distance, glm::vec3& impact_normal)
+bool FaceList::Face::checkTrajectoryCross(glm::vec3 p0, glm::vec3 p1, glm::vec3& impact, float& distance, glm::vec3& impact_normal) const
 {
     console->debug("p={}", (void*)this);
 
     return checkSphereTrajectoryCross(p0, p1, 0.0f, impact,distance, impact_normal);
 }
 
-bool FaceList::Face::checkSphereTrajectoryCross(glm::vec3 p0, glm::vec3 p1, float radius, glm::vec3& impact, float& distance, glm::vec3& impact_normal)
+bool FaceList::Face::checkSphereTrajectoryCross(glm::vec3 p0, glm::vec3 p1, float radius, glm::vec3& impact, float& distance, glm::vec3& impact_normal) const
 {
     if (!intersectSphereTrajectoryPlane(
         p0, p1, radius,

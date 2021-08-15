@@ -40,16 +40,15 @@ class FaceList
 
             /** @brief Check a given point is inside volume defined by normals of all points
              */
-            bool checkInVolume(glm::vec3 p);
+            bool checkInVolume(glm::vec3 p) const;
 
             /** @brief Check a given trajectory crosses face
              */
-            bool checkTrajectoryCross(glm::vec3 p0, glm::vec3 p1, glm::vec3& impact, float& distance, glm::vec3& normal);
+            bool checkTrajectoryCross(glm::vec3 p0, glm::vec3 p1, glm::vec3& impact, float& distance, glm::vec3& normal) const;
 
             /** @brief Check a given sphere trajectory crosses face
              */
-            bool checkSphereTrajectoryCross(glm::vec3 p0, glm::vec3 p1, float radius, glm::vec3& impact, float& distance, glm::vec3& normal);
-
+            bool checkSphereTrajectoryCross(glm::vec3 p0, glm::vec3 p1, float radius, glm::vec3& impact, float& distance, glm::vec3& normal) const;
 
     };
 
