@@ -46,6 +46,7 @@ FaceList::FaceList::Face::Face(std::shared_ptr<PointsBlock> _points, vector<unsi
     auto & c = points.get()->getPoints()[indices[2].index];
     normal = glm::normalize(glm::cross(b - a, c - a));
     plane = getPlaneEquation(a, normal);
+    //console->info("== > {}", vec4_to_string(plane));
     for (int i=0; i < indices.size(); i++ ) {
         auto p0 = points.get()->getPoints()[indices[i].index];
         auto p1 = points.get()->getPoints()[indices[ (i + 1) % indices.size()].index];
@@ -55,7 +56,6 @@ FaceList::FaceList::Face::Face(std::shared_ptr<PointsBlock> _points, vector<unsi
         //console->info("{}", vec3_to_string(p0));
         //console->info("{}", vec3_to_string(p1));
         //console->info("{}", vec3_to_string(normal));
-        //console->info("== > {}", vec4_to_string(indices[i].plane));
     }
 }
 
@@ -92,7 +92,7 @@ const std::list<FaceList::Face>& FaceList::getFaces() const
 bool FaceList::Face::checkInVolume(glm::vec3 p) const
 {
     for (auto& i: indices) {
-        console->info("valued {}", pointPlaneProjection(i.plane, p));
+        //console->info("valued {}", pointPlaneProjection(i.plane, p));
         if (pointPlaneProjection(i.plane, p) < 0.0)
             return false;
     }
@@ -101,8 +101,7 @@ bool FaceList::Face::checkInVolume(glm::vec3 p) const
 
 bool FaceList::Face::checkTrajectoryCross(glm::vec3 p0, glm::vec3 p1, glm::vec3& impact, float& distance, glm::vec3& impact_normal) const
 {
-    console->debug("p={}", (void*)this);
-
+    //console->debug("p={}", (void*)this);
     return checkSphereTrajectoryCross(p0, p1, 0.0f, impact,distance, impact_normal);
 }
 
