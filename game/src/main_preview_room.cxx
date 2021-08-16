@@ -97,7 +97,12 @@ int main(int argc, char* argv[])
 
 		setMeshMatrix(glm::mat4(1.0));
 
-        level.get()->draw(*current_room, position, direction, up);
+        level.get()->draw(PointOfView{
+            position,
+            direction,
+            up,
+            //glm::mat4x4(),
+            *current_room});
 
 		// Swap buffers
 		glfwSwapBuffers(window);

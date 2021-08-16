@@ -51,12 +51,12 @@ std::list<std::string> Level::getRoomNames()
     return result;
 }
 
-void Level::draw(std::string room_id, glm::vec3 position, glm::vec3 direction, glm::vec3 up)
+void Level::draw(PointOfView pov)
 {
-    if (rooms.count(room_id) == 0)
-        throw LevelException("No such room with this ID: " + room_id);
-    auto room = rooms[room_id];
-    room->draw(position, direction, up);
+    if (rooms.count(pov.room) == 0)
+        throw LevelException("No such room with this ID: " + pov.room);
+    auto room = rooms[pov.room];
+    room->draw(pov);
 }
 
 void Level::update(float elapsed_time)

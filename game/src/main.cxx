@@ -83,11 +83,10 @@ int main(int argc, char* argv[])
     auto level = make_unique<Level>(ref);
     auto room_ids = level.get()->getRoomNames();
     level.get()->update(0.0);
-    auto current_room = room_ids.begin();
-    console->info("Set current room to {}", *current_room);
-
-    auto new_space_state = GLFW_RELEASE;
-    auto space_state = GLFW_RELEASE;
+    PointOfView currentPov;
+    currentPov.room = *room_ids.begin();
+    currentPov.position = position;
+    console->info("Set current room to {}", currentPov.room);
 
     auto player = make_shared<Player>();
     auto object_manager = make_unique<ObjectManager>(level->getRoomResolver());
@@ -108,38 +107,44 @@ int main(int argc, char* argv[])
 		activateDefaultDrawingProgram();
 
 		// Compute the MVP matrix from keyboard and mouse input
-		computeMatricesFromInputs();
+        PointOfView origin = currentPov;
+        computeMatricesFromInputs();
+        currentPov.position = position;
+        currentPov.direction = direction;
+        currentPov.up = up;
 
 		setMeshMatrix(glm::mat4(1.0));
+
+        currentPov = level.get()->getDestinationPov(origin, currentPov.position);
+        if (currentPov.room != origin.room) {
+            position = currentPov.position;
+            //direction = newPov.direction;
+            //up = newPov.up;
+            console->info("Entering={}", currentPov.room);
+        }
 
         PointOfView player_position;
         bool found = object_manager->getObjectPosition(player_id, player_position);
         if (found == false)
             throw system_error();
 
-        level.get()->draw(*current_room, position, direction, up);
-
+        //level.get()->draw(currentPov);
+        level.get()->draw(PointOfView{
+            position,
+            direction,
+            up,
+            //glm::mat4x4(),
+            currentPov.room});
         auto new_time = std::chrono::steady_clock::now();
         auto elapsed = float(std::chrono::duration_cast<std::chrono::microseconds>(new_time - current_time).count())
             /(1000.0f*1000.0f);
-        console->info("Elapsed time={}", elapsed);
+        //console->info("Elapsed time={}", elapsed);
         object_manager->update(elapsed);
         current_time = new_time;
 
 		// Swap buffers
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-
-        // iterate through rooms with SPACE
-        new_space_state = glfwGetKey(window, GLFW_KEY_SPACE);
-        if ((new_space_state == GLFW_PRESS) && (space_state != new_space_state))
-        {
-            current_room++;
-            if (current_room == room_ids.end())
-                current_room = room_ids.begin();
-            console->info("Current room set to {}", *current_room);
-        }
-        space_state = new_space_state;
 
 	} // Check if the ESC key was pressed or the window was closed
 	while( glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&

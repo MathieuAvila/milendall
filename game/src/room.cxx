@@ -76,12 +76,10 @@ void Room::draw(DrawContext& draw_context)
     GltfModel::draw(instance.get(), &draw_context);
 }
 
-void Room::draw(glm::vec3 position, glm::vec3 direction, glm::vec3 up)
+void Room::draw(PointOfView pov)
 {
     struct DrawContext drawContext {
-        PointOfView{
-        position, direction, up,
-        this->room_name},
+        pov,
         room_resolver,
         0,
         FboIndex{0,0}

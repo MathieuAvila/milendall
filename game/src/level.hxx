@@ -19,7 +19,7 @@ class Level
         std::list<std::string> getRoomNames();
 
         /** Rendering the level, from the position of a given room */
-        void draw(std::string room_id, glm::vec3 position, glm::vec3 direction, glm::vec3 up);
+        void draw(PointOfView pov);
 
         /** Update, given an elapsed time */
         void update(float elapsed_time);

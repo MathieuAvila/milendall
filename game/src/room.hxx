@@ -6,10 +6,11 @@
 #include "file_library.hxx"
 #include "gltf_model.hxx"
 #include "face_list.hxx"
+#include "point_of_view.hxx"
+#include "room_node.hxx"
 
 #include <gtest/gtest_prod.h>
 
-#include "room_node.hxx"
 
 struct RoomResolver;
 struct DrawContext;
@@ -62,7 +63,7 @@ class Room : public GltfModel
 
         /** @brief full draw entry point
         */
-        void draw(glm::vec3 position, glm::vec3 direction, glm::vec3 up);
+        void draw(PointOfView pov);
 
         /** @brief apply transformation to instance
         */
