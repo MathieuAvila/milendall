@@ -45,7 +45,8 @@ glm::vec4 vectorToVec4(glm::vec3);
 bool intersectSphereTrajectoryPlane(
     glm::vec3 position1, glm::vec3 position2, float radius,
     glm::vec4 plane,
-    glm::vec3& intersect_center, float& distance
+    glm::vec3& intersect_center, float& distance,
+    bool reversed_face = false
     );
 
 /** @brief Sphere trajectory intersection with segment.

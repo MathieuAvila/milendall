@@ -142,6 +142,28 @@ TEST(HelperMath, intersectSphereTrajectoryPlane_bad_direction) {
     ASSERT_FALSE(result);
 }
 
+TEST(HelperMath, intersectSphereTrajectoryPlane_bad_direction_reversed) {
+
+    // plane is X/Y, starting at pZ
+    // trajectory is from 2*pZ to 0
+    // sphere radius = 0.5
+    // intersect at pZ, but will return TRUE because it's not the right orientation BUT with reversed request.
+    glm::vec3 position1(pZ * 2.0f);
+    glm::vec3 position2(pO);
+    glm::vec4 plane = getPlaneEquation(pZ, -vZ);
+    glm::vec3 intersect_point;
+    float distance;
+    bool result = intersectSphereTrajectoryPlane(
+        position1, position2, 0.5,
+        plane,
+        intersect_point,
+        distance,
+        true
+    );
+    console->info("result {}, intersect_point {}", result, vec3_to_string(intersect_point));
+    ASSERT_TRUE(result);
+}
+
 
 TEST(HelperMath, intersectSphereTrajectorySegment1_radius1) {
     // Simple check with sphere radius 1
