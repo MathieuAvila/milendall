@@ -43,12 +43,14 @@ class FaceList
             bool checkInVolume(glm::vec3 p) const;
 
             /** @brief Check a given trajectory crosses face
+             * @p reversed is used to inform to check traversal in the opposite direction
              */
-            bool checkTrajectoryCross(glm::vec3 p0, glm::vec3 p1, glm::vec3& impact, float& distance, glm::vec3& normal) const;
+            bool checkTrajectoryCross(glm::vec3 p0, glm::vec3 p1, glm::vec3& impact, float& distance, glm::vec3& normal, bool reversed = false) const;
 
             /** @brief Check a given sphere trajectory crosses face
+             * @p reversed is used to inform to check traversal in the opposite direction
              */
-            bool checkSphereTrajectoryCross(glm::vec3 p0, glm::vec3 p1, float radius, glm::vec3& impact, float& distance, glm::vec3& normal) const;
+            bool checkSphereTrajectoryCross(glm::vec3 p0, glm::vec3 p1, float radius, glm::vec3& impact, float& distance, glm::vec3& normal, bool reversed = false) const;
 
     };
 

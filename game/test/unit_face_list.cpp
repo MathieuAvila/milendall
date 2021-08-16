@@ -231,6 +231,21 @@ TEST(FaceList, FaceList_trajectory_bad_direction) {
         impact, distance, normal));
 }
 
+TEST(FaceList, FaceList_trajectory_bad_direction_reversed) {
+
+    // will check trajectory crosses face in bad direction, but in reversed mode that is OK
+
+    auto faces = getGroundFaces();
+    auto& face = faces.front();
+    glm::vec3 impact;
+    float distance;
+    glm::vec3 normal;
+
+    ASSERT_TRUE(face.checkTrajectoryCross(
+        glm::vec3(1.0, -1000.0, 1.0), glm::vec3(1.0, 1000.0, 1.0),
+        impact, distance, normal, true));
+}
+
 TEST(FaceList, FaceList_trajectory_doesnt_touch) {
 
     // will check trajectory doesn't reach surface
