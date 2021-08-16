@@ -44,7 +44,7 @@ TEST(Room, LoadLevel2Rooms1Gate_Room1) {
     EXPECT_EQ(nodePortal->portals.size(), 1);
     EXPECT_EQ(nodePortal->portals.front().connect[0], "room1");
     EXPECT_EQ(nodePortal->portals.front().connect[1], "room2");
-    EXPECT_EQ(nodePortal->portals.front().face.getFaces().size(), 1); // should contain 1 face
+    EXPECT_EQ(nodePortal->portals.front().face->getFaces().size(), 1); // should contain 1 face
 
     // checking one that has no portals
     GltfNode* node_parent = table[1].get();

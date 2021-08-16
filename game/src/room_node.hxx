@@ -36,7 +36,7 @@ struct RoomNode : public GltfNode
         std::string gate;
 
         /** @brief Should contain 1 face only */
-        FaceList face; // Should contain 1 face only
+        std::unique_ptr<FaceList> face; // Should contain 1 face only
 
         /** @brief triangles, ready to be passed to GL */
         std::unique_ptr<TrianglesBufferInfo> portal_triangles;

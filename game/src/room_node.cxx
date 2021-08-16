@@ -23,15 +23,16 @@ RoomNode::FacePortal::FacePortal(
     std::shared_ptr<PointsBlock> points,
     std::unique_ptr<GltfDataAccessorIFace::DataBlock> accessor,
     nlohmann::json& json,
-    const std::string& room_name) : face(points, move(accessor))
+    const std::string& room_name)
 {
     connect[0] = jsonGetElementByIndex(json, "connect", 0).get<string>();
     connect[1] = jsonGetElementByIndex(json, "connect", 1).get<string>();
     gate = jsonGetElementByName(json, "gate").get<string>();
     in = (room_name == connect[0]);
+    face = make_unique<FaceList>(points, move(accessor));
     // compute list of triangles
     std::vector<unsigned short> triangles;
-    for (auto& f: face.getFaces()) {
+    for (auto& f: face->getFaces()) {
         for (auto i=0; i < f.indices.size()-2; i++) {
             // for "in"
             triangles.push_back(f.indices[0].index);
@@ -135,7 +136,7 @@ bool RoomNode::checkDrawGate(
 void RoomNode::draw(GltfNodeInstanceIface * nodeInstance, DrawContext& roomContext)
 {
     for (auto& portal: portals) {
-        for (const auto& face : portal.face.getFaces()) {
+        for (const auto& face : portal.face->getFaces()) {
             DrawContext newDrawContext;
             console->debug("check gate {} from room {} ( {} / {})",
                 portal.gate,
@@ -169,7 +170,6 @@ void RoomNode::draw(GltfNodeInstanceIface * nodeInstance, DrawContext& roomConte
 
                 // switch back to main program
                 activateDefaultDrawingProgram();
-
             }
         }
     }
