@@ -10,7 +10,7 @@ class GltfNodeInstanceIface
 
     glm::mat4x4 local_matrix = glm::mat4(1.0);
 
-    bool isInvertedMatrixValid;
+    bool isInvertedMatrixValid = false;
     glm::mat4x4 inverted_local_matrix = glm::mat4(1.0);
 
     public:
