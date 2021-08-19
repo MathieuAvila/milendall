@@ -39,9 +39,7 @@ class Room : public GltfModel
         /** Overload recursive method to draw things, will draw portals */
         virtual void draw(GltfInstance*, int, void* context = nullptr) override;
 
-        /** @brief Mapping a list of portals and in/out to indices
-         * WARNING: this is not a map, as there can be portals connecting a room to itself.
-        */
+        /** @brief Mapping a list of portals and in/out to indices */
         std::map<GateIdentifier, int> portalsIndices;
 
         /** @brief Full context information for drawing. Used by Room for bootstrapping, and RoomNode for recursing.
@@ -74,6 +72,24 @@ class Room : public GltfModel
 
         /** get the objects for a given portal */
         std::pair<RoomNode*, GltfNodeInstanceIface*> getGateNode(const GateIdentifier& gate) const;
+
+        /** @brief get an updated POV if it goes through a portal.
+         * @param origin is the original POV, ie. start of trajectory
+         * @param destination is the end of trajectory, all other parameters are kept
+         * @param changePoint is filled with the point where the portal is reached, if a portal is reached
+         * @param distance is filled with the distance, if a portal is reached
+         * @param newPov is filled with the POV where the portal is reached, if portal is reached
+         * @param gate is the ID of the portal that was reached
+         * @return True if a portal was reached
+          */
+        bool getDestinationPov(
+            const PointOfView& origin,
+            const PointOfView& destination,
+            glm::vec3& changePoint,
+            float& distance,
+            PointOfView& newPov,
+            GateIdentifier& gate
+            );
 
         virtual ~Room() = default;
 

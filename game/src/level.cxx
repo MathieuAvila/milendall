@@ -65,6 +65,21 @@ void Level::update(float elapsed_time)
         r.second->applyTransform();
 }
 
+PointOfView Level::getDestinationPov(const PointOfView& origin, const glm::vec3& destination)
+{
+    auto room = room_resolver->getRoom(origin.room);
+    PointOfView result(origin);
+    result.position = destination;
+    PointOfView destinationPov(result);
+    glm::vec3 changePoint; // ignored
+    float distance; // ignored
+    GateIdentifier gateId; // ignored
+    PointOfView newPov = origin;
+    if (room->getDestinationPov(origin, destinationPov, changePoint, distance, newPov, gateId))
+        result = newPov;
+    return result;
+}
+
 Level::~Level()
 {
 }

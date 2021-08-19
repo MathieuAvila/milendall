@@ -85,4 +85,20 @@ struct RoomNode : public GltfNode
 
     /** Accessor to the list of portals it connects. */
     std::list<GateIdentifier> getPortalNameList();
+
+    /** @brief compute destination point if given portal is crossed
+     * @param origin start position in Room referential
+     * @param destination end position in Room referential
+     * @param gate Which gate must be checked
+     * @param changePoint At which poistion is portal is crossed
+     * @param distance At which distance from the start the portal is crossed
+     * @return true if portal is crossed
+     */
+    bool checkPortalCrossing(
+            const glm::vec3& origin,
+            const glm::vec3& destination,
+            std::string& roomTarget, GateIdentifier& gate,
+            glm::vec3& changePoint,
+            float& distance
+            );
 };

@@ -30,6 +30,14 @@ class Level
         /** get room resolver, for services that need access to particular rooms, like objet_manager */
         RoomResolver* getRoomResolver();
 
+        /** Get a POV if a portal is crossed. This is used to draw in the right POV, as draw POV is higher (head) than
+         * the player's sphere radius.
+         * @param origin Is the original POV
+         * @param destination is the desintation position in the origin's POV space
+         * @result the final POV. It may be different than the one passed as origin.
+         */
+        PointOfView getDestinationPov(const PointOfView& origin, const glm::vec3& destination);
+
     private:
 
         /** Pass RoomResolver to rooms */

@@ -84,6 +84,7 @@ void Room::draw(PointOfView pov)
         0,
         FboIndex{0,0}
     };
+    setViewComponents(pov.position, pov.direction, pov.up);
     GltfModel::draw(instance.get(), &drawContext);
 }
 
@@ -107,10 +108,55 @@ std::set<GateIdentifier> Room::getGateNameList() const
 std::pair<RoomNode*, GltfNodeInstanceIface*> Room::getGateNode(const GateIdentifier& gate) const
 {
     if (portalsIndices.count(gate) == 0)
-        throw LevelException("Requested gate does not exist in this room");
+        throw LevelException(string("Requested gate ") + gate.gate + " " + (gate.from? "from":"to") + " does not exist in room:" + room_name);
     auto i = portalsIndices.find(gate)->second;
     return std::pair<RoomNode*, GltfNodeInstanceIface*>{
         dynamic_cast<RoomNode*>(nodeTable[i].get()),
         dynamic_cast<GltfNodeInstanceIface*>(instance->getNode(i))
         };
+}
+
+bool Room::getDestinationPov(
+            const PointOfView& origin,
+            const PointOfView& destination,
+            glm::vec3& changePoint,
+            float& distance,
+            PointOfView& newPov,
+            GateIdentifier& newGate
+            )
+{
+    bool result = false;
+    for (auto i = 0; i < nodeTable.size(); i++) {
+        RoomNode* roomNode = dynamic_cast<RoomNode*>(nodeTable[i].get());
+        GltfNodeInstanceIface* roomNodeInstance = dynamic_cast<GltfNodeInstanceIface*>(instance->getNode(i));
+
+
+       // auto localOrigin = origin.changeCoordinateSystem(origin.room, roomNodeInstance->getNodeMatrix());
+       // auto localDestination = destination.changeCoordinateSystem(destination.room, roomNodeInstance->getNodeMatrix());
+
+        auto localOrigin = origin.changeCoordinateSystem(origin.room, roomNodeInstance->getInvertedNodeMatrix());
+        auto localDestination = destination.changeCoordinateSystem(destination.room, roomNodeInstance->getInvertedNodeMatrix());
+
+
+        GateIdentifier gate;
+        string target_room;
+        glm::vec3 changePoint;
+        float distance;
+        bool crossed = roomNode->checkPortalCrossing(localOrigin.position, localDestination.position, target_room, gate, changePoint, distance);
+        if (crossed) {
+            changePoint = roomNodeInstance->getInvertedNodeMatrix() * positionToVec4(changePoint);
+            console->info("Crossed portal at: {}, distance={}, portal={}/{}==>{}",
+                vec3_to_string(changePoint), distance, gate.gate, gate.from, target_room);
+
+            // compute target position
+            auto new_room = room_resolver->getRoom(target_room);
+            auto [new_node, new_instance] = new_room->getGateNode(gate);
+            newPov = localDestination.changeCoordinateSystem(
+                target_room,
+                new_instance->getNodeMatrix());
+            result = true;
+        }
+    }
+
+    return result;
 }

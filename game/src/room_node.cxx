@@ -138,12 +138,13 @@ void RoomNode::draw(GltfNodeInstanceIface * nodeInstance, DrawContext& roomConte
     for (auto& portal: portals) {
         for (const auto& face : portal.face->getFaces()) {
             DrawContext newDrawContext;
-            console->debug("check gate {} from room {} ( {} / {})",
+            /*
+            console->info("check gate {} from room {} ( {} / {})",
                 portal.gate,
                 portal.in ? portal.connect[0]: portal.connect[1],
-                portal.connect[0], portal.connect[1]);
+                portal.connect[0], portal.connect[1]);*/
             bool valid = checkDrawGate(nodeInstance, roomContext, portal, face, newDrawContext);
-            console->debug(" ==> {}", valid);
+            //console->info(" ==> {}", valid);
             newDrawContext.recurse_level = roomContext.recurse_level + 1;
             if (valid) {
                 // Get a FBO to draw to
@@ -180,5 +181,42 @@ std::list<GateIdentifier> RoomNode::getPortalNameList()
     std::list<GateIdentifier> result;
     for (auto& p: portals)
         result.push_back(GateIdentifier{p.gate, p.in});
+    return result;
+}
+
+bool RoomNode::checkPortalCrossing(
+            const glm::vec3& origin,
+            const glm::vec3& destination,
+            std::string& roomTarget, GateIdentifier& gate,
+            glm::vec3& changePoint,
+            float& distance
+            )
+{
+    bool result = false;
+
+    for (auto& portal: portals) {
+        FaceList& pFace = *portal.face.get();
+        for (auto& facePortal: pFace.getFaces()) {
+            glm::vec3 impact;
+            float portalDistance;
+            glm::vec3 normal;
+            //console->info("Check portal {} from {} to {}",
+            //    gate.gate,
+            //    vec3_to_string(origin),
+            //    vec3_to_string(destination)
+            //    );
+            bool crossed = facePortal.checkTrajectoryCross(origin, destination, impact, portalDistance, normal, !portal.in);
+            if (crossed) {
+                if ((result == false)||(portalDistance < distance)) {
+                    changePoint = impact;
+                    distance = portalDistance;
+                    gate = GateIdentifier{portal.gate, !portal.in};
+                    roomTarget = portal.in ? portal.connect[1] : portal.connect[0];
+                    result = true;
+                    console->info("Portal {} was crossed, going to room {}", gate.gate, roomTarget);
+                }
+            }
+        }
+    }
     return result;
 }
