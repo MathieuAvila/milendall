@@ -14,6 +14,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "helper_math.hxx"
+
 using namespace std;
 
 static auto console = spdlog::stdout_color_mt("room_preview");
@@ -101,7 +103,7 @@ int main(int argc, char* argv[])
             position,
             direction,
             up,
-            //glm::mat4x4(),
+            glm::mat4(1.0f),
             *current_room});
 
 		// Swap buffers
@@ -118,6 +120,11 @@ int main(int argc, char* argv[])
             console->info("Current room set to {}", *current_room);
         }
         space_state = new_space_state;
+
+        if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+            console->info("Position = {}", vec3_to_string(position));
+        }
+
 
 	} // Check if the ESC key was pressed or the window was closed
 	while( glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
