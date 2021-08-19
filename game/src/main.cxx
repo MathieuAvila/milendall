@@ -19,7 +19,7 @@
 
 using namespace std;
 
-static auto console = spdlog::stdout_color_mt("room_preview");
+static auto console = spdlog::stdout_color_mt("Milendall");
 
 // Include GLM
 #include <glm/glm.hpp>
@@ -83,9 +83,12 @@ int main(int argc, char* argv[])
     auto level = make_unique<Level>(ref);
     auto room_ids = level.get()->getRoomNames();
     level.get()->update(0.0);
-    PointOfView currentPov;
-    currentPov.room = *room_ids.begin();
-    currentPov.position = position;
+    PointOfView currentPov{
+            position,
+            verticalAngle,
+            horizontalAngle,
+            mat4(1.0f), //glm::rotate(mat4(1.0f), 1.0f, glm::vec3(1.0, 0.0, 0.0) ),
+            *room_ids.begin()};
     console->info("Set current room to {}", currentPov.room);
 
     auto player = make_shared<Player>();
@@ -95,6 +98,7 @@ int main(int argc, char* argv[])
             glm::vec3( 2, 2, 2 ),
             glm::vec3( 1.0, 0, 0),
             glm::vec3( 1.0, 0, 0),
+            glm::mat3(1.0f),
             *room_ids.begin()}
     );
 
@@ -106,20 +110,17 @@ int main(int argc, char* argv[])
 		// Use our shader
 		activateDefaultDrawingProgram();
 
-		// Compute the MVP matrix from keyboard and mouse input
-        PointOfView origin = currentPov;
+		PointOfView origin = PointOfView(currentPov.position, verticalAngle, horizontalAngle, currentPov.local_reference, currentPov.room);
+
+        auto previousPos = position;
         computeMatricesFromInputs();
-        currentPov.position = position;
-        currentPov.direction = direction;
-        currentPov.up = up;
+        auto diffPos = position - previousPos;
+        auto transformedDiffPos = currentPov.local_reference * diffPos;
 
-		setMeshMatrix(glm::mat4(1.0));
-
-        currentPov = level.get()->getDestinationPov(origin, currentPov.position);
+        currentPov = level.get()->getDestinationPov(origin, currentPov.position + transformedDiffPos);
         if (currentPov.room != origin.room) {
             position = currentPov.position;
-            //direction = newPov.direction;
-            //up = newPov.up;
+            console->info("pov={}", to_string(currentPov));
             console->info("Entering={}", currentPov.room);
         }
 
@@ -128,17 +129,12 @@ int main(int argc, char* argv[])
         if (found == false)
             throw system_error();
 
-        //level.get()->draw(currentPov);
-        level.get()->draw(PointOfView{
-            position,
-            direction,
-            up,
-            //glm::mat4x4(),
-            currentPov.room});
+    	setMeshMatrix(glm::mat4(1.0));
+        level.get()->draw(currentPov);
+
         auto new_time = std::chrono::steady_clock::now();
         auto elapsed = float(std::chrono::duration_cast<std::chrono::microseconds>(new_time - current_time).count())
             /(1000.0f*1000.0f);
-        //console->info("Elapsed time={}", elapsed);
         object_manager->update(elapsed);
         current_time = new_time;
 
