@@ -69,6 +69,8 @@ add_library(game_lib STATIC
   game/src/helper_math.cxx
   game/src/face_list.hxx
   game/src/face_list.cxx
+  game/src/face_hard.hxx
+  game/src/face_hard.cxx
   game/src/span.hxx
   game/src/gl_init.hxx
   game/src/objects/movable_object.hxx
