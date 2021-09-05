@@ -130,13 +130,8 @@ bool Room::getDestinationPov(
         RoomNode* roomNode = dynamic_cast<RoomNode*>(nodeTable[i].get());
         GltfNodeInstanceIface* roomNodeInstance = dynamic_cast<GltfNodeInstanceIface*>(instance->getNode(i));
 
-
-       // auto localOrigin = origin.changeCoordinateSystem(origin.room, roomNodeInstance->getNodeMatrix());
-       // auto localDestination = destination.changeCoordinateSystem(destination.room, roomNodeInstance->getNodeMatrix());
-
         auto localOrigin = origin.changeCoordinateSystem(origin.room, roomNodeInstance->getInvertedNodeMatrix());
         auto localDestination = destination.changeCoordinateSystem(destination.room, roomNodeInstance->getInvertedNodeMatrix());
-
 
         GateIdentifier gate;
         string target_room;
@@ -158,5 +153,42 @@ bool Room::getDestinationPov(
         }
     }
 
+    return result;
+}
+
+bool Room::isWallReached(
+            const glm::vec3& _origin,
+            const glm::vec3& _destination,
+            float radius,
+            glm::vec3& changePoint,
+            glm::vec3& normal,
+            float& distance,
+            FaceHard*& face
+            )
+{
+    auto origin = positionToVec4(_origin);
+    auto destination = positionToVec4(_destination);
+    bool result = false;
+    for (auto i = 0; i < nodeTable.size(); i++) {
+        RoomNode* roomNode = dynamic_cast<RoomNode*>(nodeTable[i].get());
+        GltfNodeInstanceIface* roomNodeInstance = dynamic_cast<GltfNodeInstanceIface*>(instance->getNode(i));
+
+        auto localOrigin = roomNodeInstance->getInvertedNodeMatrix() * origin;
+        auto localDestination = roomNodeInstance->getInvertedNodeMatrix() * destination;
+
+        glm::vec3 wallChangePoint;
+        glm::vec3 wallNormal;
+        float distanceWall = distance;
+        FaceHard* hitFace;
+        bool crossed = roomNode->isWallReached(localOrigin, localDestination, radius, wallChangePoint, wallNormal, distanceWall, hitFace);
+        if (crossed && distanceWall < distance) {
+            normal = wallNormal;
+            distance = distanceWall;
+            changePoint = wallChangePoint;
+            face = hitFace;
+            console->info("Hit wall at: {}, distance={}", vec3_to_string(changePoint), distance);
+            result = true;
+        }
+    }
     return result;
 }

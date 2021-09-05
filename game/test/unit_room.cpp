@@ -10,6 +10,7 @@
 #include "glmock.hpp"
 
 #include "common.hxx"
+#include "helper_math.hxx"
 
 using ::testing::_;
 using ::testing::InSequence;
@@ -82,4 +83,97 @@ TEST(Room, GateLoading__LoadLevel3Rooms3Gate_Room1) {
     auto [room_node, instance] = room->getGateNode(GateIdentifier{"r2r1",false});
     EXPECT_EQ( room_node->name, "r2r1_impl" );
     //EXPECT_EQ( instance->, "" ); // don't know how to check this
+}
+
+
+TEST(Room, isWallReached_0_simple_NOT_reached) {
+
+    // don't touch anything
+
+    InSequence s;
+    GLMock mock;
+
+    auto room = loadRoom("/3_rooms_3_gates/room1/room.gltf");
+
+    glm::vec3 origin(3.0f, 3.0f, 3.0f);
+    glm::vec3 destination(3.0f, 2.0f, 3.0f);
+    float radius = 1.0f;
+
+    glm::vec3 hitPoint;
+    glm::vec3 normal;
+    float distance = glm::length(origin - destination);
+    FaceHard *face;
+
+    bool reached = room->isWallReached(origin, destination,radius,hitPoint, normal, distance, face);
+
+    //console->info("Check wall org {}", vec3_to_string(origin));
+    //console->info("Check wall dst {}", vec3_to_string(destination));
+    console->info("Check wall distance {}", distance);
+    console->info("Check wall normal {}", vec3_to_string(normal));
+    console->info("Check wall hitPoint {}", vec3_to_string(hitPoint));
+
+    EXPECT_FALSE(reached);
+}
+
+TEST(Room, isWallReached_1_simple_reached) {
+
+    // just hit the floor on 1 point
+
+    InSequence s;
+    GLMock mock;
+
+    auto room = loadRoom("/3_rooms_3_gates/room1/room.gltf");
+
+    glm::vec3 origin(3.0f, 3.0f, 3.0f);
+    glm::vec3 destination(3.0f, -1.0f, 3.0f);
+    float radius = 1.0f;
+
+    glm::vec3 hitPoint;
+    glm::vec3 normal;
+    float distance = glm::length(origin - destination);
+    FaceHard *face;
+
+    bool reached = room->isWallReached(origin, destination,radius,hitPoint, normal, distance, face);
+
+    //console->info("Check wall org {}", vec3_to_string(origin));
+    //console->info("Check wall dst {}", vec3_to_string(destination));
+    console->info("Check wall distance {}", distance);
+    console->info("Check wall normal {}", vec3_to_string(normal));
+    console->info("Check wall hitPoint {}", vec3_to_string(hitPoint));
+
+    EXPECT_TRUE(reached);
+    EXPECT_EQ(distance, 2.0f);
+    EXPECT_EQ(normal, glm::vec3(0.0f, 1.0f, 0.0f)); // up
+    EXPECT_EQ(hitPoint, glm::vec3(3.0f, 1.0f, 3.0f));
+}
+
+
+TEST(Room, isWallReached_2_simple_CORNER_reached) {
+
+    // corner, there are 3 possible walls
+
+    InSequence s;
+    GLMock mock;
+
+    auto room = loadRoom("/3_rooms_3_gates/room1/room.gltf");
+
+    glm::vec3 origin(2.2f, 2.0f, 2.2f);
+    glm::vec3 destination(-1.8f, -2.0f, -1.8f);
+    float radius = 1.0f;
+
+    glm::vec3 hitPoint;
+    glm::vec3 normal;
+    float distance = glm::length(origin - destination);
+    FaceHard *face;
+
+    bool reached = room->isWallReached(origin, destination,radius,hitPoint, normal, distance, face);
+
+    console->info("Check wall distance {}", distance);
+    console->info("Check wall normal {}", vec3_to_string(normal));
+    console->info("Check wall hitPoint {}", vec3_to_string(hitPoint));
+
+    EXPECT_TRUE(reached);
+    EXPECT_EQ(distance, 2.0f);
+    EXPECT_EQ(normal, glm::vec3(0.0f, 1.0f, 0.0f)); // up
+    EXPECT_EQ(hitPoint, glm::vec3(3.0f, 1.0f, 3.0f));
 }

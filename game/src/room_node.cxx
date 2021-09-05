@@ -52,14 +52,6 @@ RoomNode::FacePortal::FacePortal(
     console->info("Portal from {} connecting {} and {}, is IN={}", room_name, connect[0], connect[1], in);
 }
 
-RoomNode::FaceHard::FaceHard(
-    std::shared_ptr<PointsBlock> points,
-    std::unique_ptr<GltfDataAccessorIFace::DataBlock> accessor,
-    nlohmann::json& json) : face(points, move(accessor))
-{
-    console->info("Hard walls");
-}
-
 RoomNode::RoomNode(
     nlohmann::json& json,
     GltfDataAccessorIFace* data_accessor,
@@ -215,6 +207,40 @@ bool RoomNode::checkPortalCrossing(
                     result = true;
                     console->info("Portal {} was crossed, going to room {}", gate.gate, roomTarget);
                 }
+            }
+        }
+    }
+    return result;
+}
+
+bool RoomNode::isWallReached(
+            const glm::vec3& origin,
+            const glm::vec3& destination,
+            float radius,
+            glm::vec3& hitPoint,
+            glm::vec3& normal,
+            float& distance,
+            FaceHard*& face
+            )
+{
+    bool result = false;
+
+    for (auto& wall: walls) {
+        FaceList& lFace = wall.face;
+        for (auto& c_face: lFace.getFaces()) {
+            glm::vec3 wallHitPoint;
+            glm::vec3 wallNormal;
+            float distanceWall = distance;
+            bool crossed = c_face.checkSphereTrajectoryCross(origin, destination, radius, wallHitPoint, distanceWall, wallNormal);
+            //console->info("Check wall org {}, dst {} distance {}",
+            //    vec3_to_string(origin), vec3_to_string(destination), distance);
+            if (crossed && distanceWall < distance) {
+                normal = wallNormal;
+                distance = distanceWall;
+                hitPoint = wallHitPoint;
+                face = &wall;
+                result = true;
+                console->info("Hit wall at: {}, distance={}", vec3_to_string(wallHitPoint), distance);
             }
         }
     }

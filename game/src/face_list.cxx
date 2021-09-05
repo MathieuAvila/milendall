@@ -117,6 +117,12 @@ bool FaceList::Face::checkSphereTrajectoryCross(glm::vec3 p0, glm::vec3 p1, floa
 
     if (checkInVolume(impact))
         {
+            console->info("radial contact\n distance={}\n impact={}\n plane={}",
+                distance,
+                vec3_to_string(impact),
+                vec4_to_string(plane)
+                );
+
             impact_normal = normal;
             return true;
         }

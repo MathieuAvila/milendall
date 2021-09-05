@@ -80,6 +80,18 @@ PointOfView Level::getDestinationPov(const PointOfView& origin, const glm::vec3&
     return result;
 }
 
+bool Level::isWallReached(
+            PointOfView& origin,
+            const glm::vec3& destination,
+            float radius,
+            PointOfView& endPoint,
+            glm::vec3& normal,
+            float& distance
+            )
+{
+    return false;
+}
+
 Level::~Level()
 {
 }

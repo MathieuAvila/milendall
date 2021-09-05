@@ -38,6 +38,25 @@ class Level
          */
         PointOfView getDestinationPov(const PointOfView& origin, const glm::vec3& destination);
 
+        /** @brief Check if a wall is reached. It checks if it goes through a portal,
+         *         and makes the appropriate POV translation
+         * @param origin is the original position, ie. start of trajectory
+         * @param destination is the end of trajectory
+         * @param radius is the size of the object
+         * @param endPoint is ALWAYS filled with the destination point, either where the wall is reached or the end portal.
+         * @param normal is filled with the normal of the wall
+         * @param distance is filled with the distance, if a wall is reached
+         * @return True if a wall was reached, but
+        */
+        bool isWallReached(
+            PointOfView& origin,
+            const glm::vec3& destination,
+            float radius,
+            PointOfView& endPoint,
+            glm::vec3& normal,
+            float& distance
+            );
+
     private:
 
         /** Pass RoomResolver to rooms */
