@@ -32,7 +32,11 @@ int ObjectManager::insertObject(std::shared_ptr<ManagedObject> object, PointOfVi
 
 void ObjectManager::update(float time_delta)
 {
-
+    for (auto& _obj: managed_objects) {
+        auto p = _obj.second.get();
+        // ATM, accept whatever the object requests
+        p->mainPosition.position += p->object.get()->getRequestedMovement().impulse;
+    }
 }
 
 bool ObjectManager::getObjectPosition(int objectId, PointOfView& pos)
