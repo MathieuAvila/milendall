@@ -29,6 +29,7 @@ std::unique_ptr<Room> loadRoom(std::string roomPath)
     auto room = make_unique<Room>("room1", materialLibrary, roomPathRef);
     auto room_ptr = room.get();
     EXPECT_NE( room_ptr, nullptr );
+    room->applyTransform();
     return room;
 }
 
@@ -157,23 +158,23 @@ TEST(Room, isWallReached_2_simple_CORNER_reached) {
 
     auto room = loadRoom("/3_rooms_3_gates/room1/room.gltf");
 
-    glm::vec3 origin(2.2f, 2.0f, 2.2f);
-    glm::vec3 destination(-1.8f, -2.0f, -1.8f);
     float radius = 1.0f;
-
     glm::vec3 hitPoint;
     glm::vec3 normal;
-    float distance = glm::length(origin - destination);
+    float distance;
     FaceHard *face;
+    bool reached;
 
-    bool reached = room->isWallReached(origin, destination,radius,hitPoint, normal, distance, face);
-
+    // 1: hit ground
+    glm::vec3 origin(2.1f, 2.0f, 2.1f);
+    glm::vec3 destination(-1.9f, -2.0f, -1.9f);
+    distance = glm::length(origin - destination);
+    reached = room->isWallReached(origin, destination,radius,hitPoint, normal, distance, face);
     console->info("Check wall distance {}", distance);
     console->info("Check wall normal {}", vec3_to_string(normal));
     console->info("Check wall hitPoint {}", vec3_to_string(hitPoint));
-
     EXPECT_TRUE(reached);
-    EXPECT_EQ(distance, 2.0f);
-    EXPECT_EQ(normal, glm::vec3(0.0f, 1.0f, 0.0f)); // up
-    EXPECT_EQ(hitPoint, glm::vec3(3.0f, 1.0f, 3.0f));
+    EXPECT_EQ(distance, 1.7320509f);
+    EXPECT_TRUE(glm::length(normal - glm::vec3(0.0f, 1.0f, 0.0f)) < 0.1f); // up
+    EXPECT_TRUE(glm::length(hitPoint - glm::vec3(1.1f, 1.0f, 1.1f)) < 0.1f);
 }
