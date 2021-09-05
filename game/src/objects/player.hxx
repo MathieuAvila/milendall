@@ -11,9 +11,23 @@ class Player : public ManagedObject
 {
     public:
 
+    struct ActionSet {
+        bool forward;
+        bool backward;
+        bool right;
+        bool left;
+        bool jump;
+        bool action;
+        bool fire;
+        float horizontalAngle;
+        float verticalAngle;
+    };
+
     virtual MovableObjectDefinition& getObjectDefinition() override;
     virtual MovementWish getRequestedMovement() override;
     virtual bool checkEol() override;
+
+    void setActionSet(ActionSet actions);
 
     Player();
     virtual ~Player();
@@ -21,5 +35,6 @@ class Player : public ManagedObject
     private:
 
     MovableObjectDefinition movable_definition;
+    ActionSet currentActions;
 
 };

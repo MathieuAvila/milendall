@@ -25,3 +25,8 @@ bool Player::checkEol()
 {
     return false;
 }
+
+void Player::setActionSet(ActionSet actions)
+{
+    currentActions = actions;
+}
