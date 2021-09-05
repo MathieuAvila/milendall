@@ -143,7 +143,7 @@ TEST(Room, isWallReached_1_simple_reached) {
     console->info("Check wall hitPoint {}", vec3_to_string(hitPoint));
 
     EXPECT_TRUE(reached);
-    EXPECT_EQ(distance, 2.0f);
+    ASSERT_FLOAT_EQ(distance, 2.0f);
     EXPECT_EQ(normal, glm::vec3(0.0f, 1.0f, 0.0f)); // up
     EXPECT_EQ(hitPoint, glm::vec3(3.0f, 1.0f, 3.0f));
 }
@@ -174,7 +174,7 @@ TEST(Room, isWallReached_2_simple_CORNER_reached) {
     console->info("Check wall normal {}", vec3_to_string(normal));
     console->info("Check wall hitPoint {}", vec3_to_string(hitPoint));
     EXPECT_TRUE(reached);
-    EXPECT_EQ(distance, 1.7320509f);
+    ASSERT_FLOAT_EQ(distance, 1.7320509f);
     EXPECT_TRUE(glm::length(normal - glm::vec3(0.0f, 1.0f, 0.0f)) < 0.1f); // up
     EXPECT_TRUE(glm::length(hitPoint - glm::vec3(1.1f, 1.0f, 1.1f)) < 0.1f);
 
@@ -200,7 +200,7 @@ TEST(Room, isWallReached_2_simple_CORNER_reached) {
     console->info("Check wall normal {}", vec3_to_string(normal));
     console->info("Check wall hitPoint {}", vec3_to_string(hitPoint));
     EXPECT_TRUE(reached);
-    EXPECT_EQ(distance, 1.7320509f);
+    ASSERT_FLOAT_EQ(distance, 1.7320509f);
     EXPECT_TRUE(glm::length(normal - glm::vec3(0.0f, 0.0f, 1.0f)) < 0.1f); // up
     EXPECT_TRUE(glm::length(hitPoint - glm::vec3(1.1f, 1.1f, 1.0f)) < 0.1f);
 }
