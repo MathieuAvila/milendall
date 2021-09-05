@@ -184,7 +184,7 @@ bool Room::isWallReached(
         if (crossed && distanceWall < distance) {
             normal = wallNormal;
             distance = distanceWall;
-            changePoint = wallChangePoint;
+            changePoint = roomNodeInstance->getNodeMatrix() * positionToVec4(wallChangePoint);
             face = hitFace;
             console->info("Hit wall at: {}, distance={}", vec3_to_string(changePoint), distance);
             result = true;

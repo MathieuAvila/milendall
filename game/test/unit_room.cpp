@@ -177,4 +177,61 @@ TEST(Room, isWallReached_2_simple_CORNER_reached) {
     EXPECT_EQ(distance, 1.7320509f);
     EXPECT_TRUE(glm::length(normal - glm::vec3(0.0f, 1.0f, 0.0f)) < 0.1f); // up
     EXPECT_TRUE(glm::length(hitPoint - glm::vec3(1.1f, 1.0f, 1.1f)) < 0.1f);
+
+    // 2: hit wall 1
+    origin = glm::vec3(2.0f, 2.1f, 2.1f);
+    destination = glm::vec3(-2.0f, -1.9f, -1.9f);
+    distance = glm::length(origin - destination);
+    reached = room->isWallReached(origin, destination,radius,hitPoint, normal, distance, face);
+    console->info("Check wall distance {}", distance);
+    console->info("Check wall normal {}", vec3_to_string(normal));
+    console->info("Check wall hitPoint {}", vec3_to_string(hitPoint));
+    EXPECT_TRUE(reached);
+    EXPECT_EQ(distance, 1.7320509f);
+    EXPECT_TRUE(glm::length(normal - glm::vec3(1.0f, 0.0f, 0.0f)) < 0.1f); // up
+    EXPECT_TRUE(glm::length(hitPoint - glm::vec3(1.0f, 1.1f, 1.1f)) < 0.1f);
+
+    // 3: hit wall 2
+    origin = glm::vec3(2.1f, 2.1f, 2.0f);
+    destination = glm::vec3(-1.9f, -1.9f, -2.0f);
+    distance = glm::length(origin - destination);
+    reached = room->isWallReached(origin, destination,radius,hitPoint, normal, distance, face);
+    console->info("Check wall distance {}", distance);
+    console->info("Check wall normal {}", vec3_to_string(normal));
+    console->info("Check wall hitPoint {}", vec3_to_string(hitPoint));
+    EXPECT_TRUE(reached);
+    EXPECT_EQ(distance, 1.7320509f);
+    EXPECT_TRUE(glm::length(normal - glm::vec3(0.0f, 0.0f, 1.0f)) < 0.1f); // up
+    EXPECT_TRUE(glm::length(hitPoint - glm::vec3(1.1f, 1.1f, 1.0f)) < 0.1f);
+}
+
+
+TEST(Room, isWallReached_3_sub_object) {
+
+    // check a cross with an object that has a non-ID matrix
+    InSequence s;
+    GLMock mock;
+
+    auto room = loadRoom("/2_rooms_1_gate/room1/room.gltf");
+
+    float radius = 1.0f;
+    glm::vec3 hitPoint;
+    glm::vec3 normal;
+    float distance;
+    FaceHard *face;
+    bool reached;
+
+    // will cross a door wall
+    glm::vec3 origin(6.5f, 2.0f, 2.0f);
+    glm::vec3 destination(6.5f, 2.0f, -2.0f);
+    distance = glm::length(origin - destination);
+    reached = room->isWallReached(origin, destination,radius,hitPoint, normal, distance, face);
+    console->info("Check wall distance {}", distance);
+    console->info("Check wall normal {}", vec3_to_string(normal));
+    console->info("Check wall hitPoint {}", vec3_to_string(hitPoint));
+    EXPECT_TRUE(reached);
+    ASSERT_FLOAT_EQ(distance, 0.8f);
+    EXPECT_TRUE(glm::length(normal - glm::vec3(0.0f , 0.0f , -1.0f)) < 0.1f); // up
+    EXPECT_TRUE(glm::length(hitPoint - glm::vec3(6.5f, 2.0f, 1.2)) < 0.1f);
+
 }
