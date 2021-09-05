@@ -17,18 +17,27 @@ using namespace std;
 
 static auto console = spdlog::stdout_color_mt("ut_room");
 
+
+std::unique_ptr<Room> loadRoom(std::string roomPath)
+{
+    auto materialLibrary = GltfMaterialLibraryIface::getMaterialLibray();
+    auto fl = FileLibrary();
+    fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../game/test/sample/"));
+    fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../data/"));
+    auto roomPathRef = fl.getRoot().getSubPath(roomPath);
+    auto room = make_unique<Room>("room1", materialLibrary, roomPathRef);
+    auto room_ptr = room.get();
+    EXPECT_NE( room_ptr, nullptr );
+    return room;
+}
+
 TEST(Room, LoadLevel2Rooms1Gate_Room1) {
 
     InSequence s;
     GLMock mock;
 
-    auto materialLibrary = GltfMaterialLibraryIface::getMaterialLibray();
-    auto fl = FileLibrary();
-    fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../game/test/sample/"));
-    fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../data/"));
-    auto roomPath = fl.getRoot().getSubPath("/2_rooms_1_gate/room1/room.gltf");
-    auto room = make_unique<Room>("test", materialLibrary, roomPath);
-    EXPECT_TRUE( room.get() != nullptr );
+    auto room = loadRoom("/2_rooms_1_gate/room1/room.gltf");
+
 
     EXPECT_EQ(room.get()->nodeTable.size(), 4);
     auto & table = room.get()->nodeTable;
@@ -58,16 +67,9 @@ TEST(Room, GateLoading__LoadLevel3Rooms3Gate_Room1) {
     InSequence s;
     GLMock mock;
 
-    auto materialLibrary = GltfMaterialLibraryIface::getMaterialLibray();
-    auto fl = FileLibrary();
-    fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../game/test/sample/"));
-    fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../data/"));
-    auto roomPath = fl.getRoot().getSubPath("/3_rooms_3_gates/room1/room.gltf");
-    auto room = make_unique<Room>("room1", materialLibrary, roomPath);
-    auto room_ptr = room.get();
-    EXPECT_NE( room_ptr, nullptr );
+    auto room = loadRoom("/3_rooms_3_gates/room1/room.gltf");
 
-    auto portal_list = room_ptr->getGateNameList();
+    auto portal_list = room->getGateNameList();
 
     for (auto e: portal_list)
         console->info("{} {}", e.from, e.gate);
@@ -77,9 +79,7 @@ TEST(Room, GateLoading__LoadLevel3Rooms3Gate_Room1) {
         GateIdentifier{"r1r2",true},
         GateIdentifier{"r3r1",false}}) );
 
-    auto [room_node, instance] = room_ptr->getGateNode(GateIdentifier{"r2r1",false});
+    auto [room_node, instance] = room->getGateNode(GateIdentifier{"r2r1",false});
     EXPECT_EQ( room_node->name, "r2r1_impl" );
     //EXPECT_EQ( instance->, "" ); // don't know how to check this
-
 }
-
