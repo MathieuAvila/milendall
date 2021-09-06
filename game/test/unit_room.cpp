@@ -231,7 +231,7 @@ TEST(Room, isWallReached_3_sub_object) {
     console->info("Check wall hitPoint {}", vec3_to_string(hitPoint));
     EXPECT_TRUE(reached);
     ASSERT_FLOAT_EQ(distance, 0.8f);
-    EXPECT_TRUE(glm::length(normal - glm::vec3(0.0f , 0.0f , -1.0f)) < 0.1f); // up
+    EXPECT_TRUE(glm::length(normal - glm::vec3(0.0f , 0.0f , 1.0f)) < 0.1f); // it must be in global space
     EXPECT_TRUE(glm::length(hitPoint - glm::vec3(6.5f, 2.0f, 1.2)) < 0.1f);
 
 }

@@ -121,7 +121,8 @@ bool Room::getDestinationPov(
             const PointOfView& destination,
             glm::vec3& changePoint,
             float& distance,
-            PointOfView& newPov,
+            PointOfView& newPovChangePoint,
+            PointOfView& newPovDestination,
             GateIdentifier& newGate
             )
 {
@@ -135,18 +136,25 @@ bool Room::getDestinationPov(
 
         GateIdentifier gate;
         string target_room;
-        glm::vec3 changePoint;
+        glm::vec3 changePointLocal;
         float distance;
-        bool crossed = roomNode->checkPortalCrossing(localOrigin.position, localDestination.position, target_room, gate, changePoint, distance);
+        bool crossed = roomNode->checkPortalCrossing(localOrigin.position, localDestination.position, target_room, gate, changePointLocal, distance);
         if (crossed) {
-            changePoint = roomNodeInstance->getInvertedNodeMatrix() * positionToVec4(changePoint);
-            console->info("Crossed portal at: {}, distance={}, portal={}/{}==>{}",
-                vec3_to_string(changePoint), distance, gate.gate, gate.from, target_room);
+            changePoint = roomNodeInstance->getInvertedNodeMatrix() * positionToVec4(changePointLocal);
+            console->info("Crossed portal at change point local:\n{}\ndistance={}\nportal={}/{}==>{}\nwas from local:{}\nwas going to local:\n",
+                vec3_to_string(changePointLocal), distance, gate.gate, gate.from, target_room,
+                vec3_to_string(localOrigin.position), vec3_to_string(localDestination.position)
+                );
 
             // compute target position
             auto new_room = room_resolver->getRoom(target_room);
             auto [new_node, new_instance] = new_room->getGateNode(gate);
-            newPov = localDestination.changeCoordinateSystem(
+            newPovDestination = localDestination.changeCoordinateSystem(
+                target_room,
+                new_instance->getNodeMatrix());
+            auto localChangePointDestination(localDestination);
+            localChangePointDestination.position = changePointLocal;
+            newPovChangePoint = localChangePointDestination.changeCoordinateSystem(
                 target_room,
                 new_instance->getNodeMatrix());
             result = true;
@@ -182,7 +190,7 @@ bool Room::isWallReached(
         FaceHard* hitFace;
         bool crossed = roomNode->isWallReached(localOrigin, localDestination, radius, wallChangePoint, wallNormal, distanceWall, hitFace);
         if (crossed && distanceWall < distance) {
-            normal = wallNormal;
+            normal = roomNodeInstance->getNodeMatrix() * vectorToVec4(wallNormal);
             distance = distanceWall;
             changePoint = roomNodeInstance->getNodeMatrix() * positionToVec4(wallChangePoint);
             face = hitFace;

@@ -78,7 +78,8 @@ class Room : public GltfModel
          * @param destination is the end of trajectory, all other parameters are kept
          * @param changePoint is filled with the point where the portal is reached, if a portal is reached
          * @param distance is filled with the distance, if a portal is reached
-         * @param newPov is filled with the POV where the portal is reached, if portal is reached
+         * @param newPovChangePoint is filled with the position of where portal is reached, in NEW POV, if portal is reached
+         * @param newPovDestination is filled with the position of destination, in NEW POV, if portal is reached
          * @param gate is the ID of the portal that was reached
          * @return True if a portal was reached
           */
@@ -87,7 +88,8 @@ class Room : public GltfModel
             const PointOfView& destination,
             glm::vec3& changePoint,
             float& distance,
-            PointOfView& newPov,
+            PointOfView& newPovChangePoint,
+            PointOfView& newPovDestination,
             GateIdentifier& gate
             );
 

@@ -171,3 +171,205 @@ TEST(Level, getDestinationPov_room2_r1r2_cross___reversed) {
                     0.000000, 0.000000, 0.000000, 1.000000),
         "room1"}));
 }
+
+TEST(Level, isWallReached_0_no_hit) {
+    InSequence s; GLMock mock;
+    auto level = loadLevel("2_rooms_1_gate");
+
+    PointOfView origin{
+        glm::vec3(5.0, 2.0, 3.0),
+        glm::vec3(1.0, 0.0, 0.0),
+        glm::vec3(1.0, 0.0, 0.0),
+        glm::mat4(1.0f),
+        "room1"
+    };
+    glm::vec3 destination(5.0, 2.0, 2.0);
+    float radius = 1.0f;
+    PointOfView endPoint;
+    glm::vec3 normal;
+    float distance;
+    FaceHard* face;
+
+    bool hit = level->isWallReached(
+            origin,
+            destination,
+            radius,
+            endPoint,
+            normal,
+            distance,
+            face
+            );
+    ASSERT_FALSE(hit);
+    ASSERT_EQ(endPoint, (PointOfView{
+        glm::vec3(5.0, 2.0, 2.0),
+        glm::vec3(1.0, 0.0, 0.0),
+        glm::vec3(1.0, 0.0, 0.0),
+        glm::mat4(1.0f),
+        "room1"
+    }));
+}
+
+TEST(Level, isWallReached_1_hit_ground_no_matrix_change) {
+    InSequence s; GLMock mock;
+    auto level = loadLevel("2_rooms_1_gate");
+
+    PointOfView origin{
+        glm::vec3(5.0, 2.0, 3.0),
+        glm::vec3(1.0, 0.0, 0.0),
+        glm::vec3(1.0, 0.0, 0.0),
+        glm::mat4(1.0f),
+        "room1"
+    };
+    glm::vec3 destination(5.0, -1.0, 3.0);
+    float radius = 1.0f;
+    PointOfView endPoint;
+    glm::vec3 normal;
+    float distance;
+    FaceHard* face;
+
+    bool hit = level->isWallReached(
+            origin,
+            destination,
+            radius,
+            endPoint,
+            normal,
+            distance,
+            face
+            );
+    ASSERT_TRUE(hit);
+    ASSERT_EQ(endPoint, (PointOfView{
+        glm::vec3(5.0, 1.0, 3.0),
+        glm::vec3(1.0, 0.0, 0.0),
+        glm::vec3(1.0, 0.0, 0.0),
+        glm::mat4(1.0f),
+        "room1"
+    }));
+    console->debug("endPoint = {}", to_string(endPoint));
+    ASSERT_EQ(normal, glm::vec3(.0, 1.0, .0));
+    ASSERT_FLOAT_EQ(distance, 1.0f);
+    ASSERT_NE(face, nullptr);
+
+}
+
+TEST(Level, isWallReached_2_hit_wall_matrix_change) {
+
+    // hit a wall on a subobject
+
+    InSequence s; GLMock mock;
+    auto level = loadLevel("2_rooms_1_gate");
+
+    PointOfView origin{
+        glm::vec3(6.5f, 2.0, 3.0),
+        glm::vec3(1.0, 0.0, 0.0),
+        glm::vec3(1.0, 0.0, 0.0),
+        glm::mat4(1.0f),
+        "room1"
+    };
+    glm::vec3 destination(6.5f, 2.0f, -2.0f);
+    float radius = 1.0f;
+    PointOfView endPoint;
+    glm::vec3 normal;
+    float distance;
+    FaceHard* face;
+
+    bool hit = level->isWallReached(
+            origin,
+            destination,
+            radius,
+            endPoint,
+            normal,
+            distance,
+            face
+            );
+    ASSERT_TRUE(hit);
+    ASSERT_EQ(endPoint, (PointOfView{
+        glm::vec3(6.5f, 2.0f, 1.2f),
+        glm::vec3(1.0, 0.0, 0.0),
+        glm::vec3(1.0, 0.0, 0.0),
+        glm::mat4(1.0f),
+        "room1"
+    }));
+    console->info("Check wall normal {}", vec3_to_string(normal));
+    console->debug("endPoint = {}", to_string(endPoint));
+    ASSERT_TRUE(glm::length(normal - glm::vec3(.0f, .0f, 1.0f)) < 0.01f);
+    ASSERT_FLOAT_EQ(distance, 1.8f);
+    ASSERT_NE(face, nullptr);
+}
+
+TEST(Level, isWallReached_3_no_hit_cross_portal) {
+    InSequence s; GLMock mock;
+    auto level = loadLevel("2_rooms_1_gate");
+
+    PointOfView origin{
+        glm::vec3(5.25, 1.0, 3.0),
+        glm::vec3(1.0, 0.0, 0.0),
+        glm::vec3(1.0, 0.0, 0.0),
+        glm::mat4(1.0f),
+        "room1"
+    };
+    glm::vec3 destination(5.25, 1.0, -0.5);
+    float radius = 0.2f;
+    PointOfView endPoint;
+    glm::vec3 normal;
+    float distance;
+    FaceHard* face;
+
+    bool hit = level->isWallReached(
+            origin,
+            destination,
+            radius,
+            endPoint,
+            normal,
+            distance,
+            face
+            );
+    ASSERT_FALSE(hit);
+    ASSERT_EQ(endPoint.position, glm::vec3(3.5, 1.0, 5.25));
+    ASSERT_EQ(endPoint.room, "room2");
+}
+
+TEST(Level, isWallReached_4_hit_cross_portal_wall_no_matrix_change) {
+
+    // will hit the wall on the other side of portal
+    InSequence s; GLMock mock;
+    auto level = loadLevel("2_rooms_1_gate");
+
+    PointOfView origin{
+        glm::vec3(5.25, 1.0, 3.0),
+        glm::vec3(1.0, 0.0, 0.0),
+        glm::vec3(1.0, 0.0, 0.0),
+        glm::mat4(1.0f),
+        "room1"
+    };
+    glm::vec3 destination(5.25, 1.0, -5.0f); // hit the wall
+    float radius = 0.2f;
+    PointOfView endPoint;
+    glm::vec3 normal;
+    float distance;
+    FaceHard* face;
+
+    bool hit = level->isWallReached(
+            origin,
+            destination,
+            radius,
+            endPoint,
+            normal,
+            distance,
+            face
+            );
+    console->info("Check wall normal {}", vec3_to_string(normal));
+    console->debug("endPoint = {}", to_string(endPoint));
+    ASSERT_TRUE(hit);
+    ASSERT_TRUE(glm::length(endPoint.position - glm::vec3(0.2f, 1.0f, 5.25f)) < 0.01f);
+    ASSERT_FLOAT_EQ(distance, 3.8f);
+    ASSERT_EQ(endPoint.room, "room2");
+    ASSERT_TRUE(glm::length(normal - glm::vec3(1.0f, .0, .0)) < 0.01f);
+}
+
+TEST(Level, isWallReached_5_hit_cross_portal_wall_matrix_change) {
+    InSequence s; GLMock mock;
+    auto level = loadLevel("2_rooms_1_gate");
+
+    // pwa, grosse flemme.
+}
+

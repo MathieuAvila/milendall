@@ -39,23 +39,26 @@ class Level
         PointOfView getDestinationPov(const PointOfView& origin, const glm::vec3& destination);
 
         /** @brief Check if a wall is reached. It checks if it goes through a portal,
-         *         and makes the appropriate POV translation
+         *         and makes the appropriate POV translation. So that the POV is returned and
+         *         must always be considered as the "good" position
          * @param origin is the original position, ie. start of trajectory
          * @param destination is the end of trajectory
          * @param radius is the size of the object
          * @param endPoint is ALWAYS filled with the destination point, either where the wall is reached or the end portal.
          * @param normal is filled with the normal of the wall
          * @param distance is filled with the distance, if a wall is reached
-         * @return True if a wall was reached, but
+         * @param face face that was hit
+         * @return True if a wall was reached, if ever
         */
         bool isWallReached(
-            PointOfView& origin,
+            const PointOfView& origin,
             const glm::vec3& destination,
-            float radius,
+            const float radius,
             PointOfView& endPoint,
             glm::vec3& normal,
-            float& distance
-            );
+            float& distance,
+            FaceHard*& face
+            ) const;
 
     private:
 
