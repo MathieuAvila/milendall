@@ -24,7 +24,7 @@ find_package(GTest REQUIRED)
 find_package(GMock REQUIRED)
 include(GoogleTest)
 
-
+include_directories(game/src/ game/src/helpers/ game/src/objects/ game/src/gltf/)
 
 SET (CMAKE_C_COMPILER               "/usr/bin/clang-11")
 SET (CMAKE_CXX_COMPILER             "/usr/bin/clang++-11")
@@ -59,20 +59,20 @@ add_library(game_lib STATIC
   game/src/gltf/gltf_data_accessor.cxx
   game/src/gltf/gltf_exception.hxx
   game/src/gltf/gltf_exception.cxx
-  game/src/json_helper_accessor.hxx
-  game/src/json_helper_accessor.cxx
-  game/src/json_helper_math.hxx
-  game/src/json_helper_math.cxx
-  game/src/file_library.hxx
-  game/src/file_library.cxx
-  game/src/helper_math.hxx
-  game/src/helper_math.cxx
+  game/src/helpers/helper_math.hxx
+  game/src/helpers/helper_math.cxx
+  game/src/helpers/json_helper_accessor.hxx
+  game/src/helpers/json_helper_accessor.cxx
+  game/src/helpers/json_helper_math.hxx
+  game/src/helpers/json_helper_math.cxx
+  game/src/helpers/file_library.hxx
+  game/src/helpers/file_library.cxx
+  game/src/helpers/gl_init.hxx
   game/src/face_list.hxx
   game/src/face_list.cxx
   game/src/face_hard.hxx
   game/src/face_hard.cxx
   game/src/span.hxx
-  game/src/gl_init.hxx
   game/src/objects/movable_object.hxx
   game/src/objects/object_manager.cxx
   game/src/objects/object_manager.hxx
@@ -83,10 +83,8 @@ add_library(game_lib STATIC
   game/src/point_of_view.cxx
 )
 
-target_include_directories(game_lib PRIVATE game/src/ game/src/objects/ game/src/gltf/ )
-
 add_library(real_gl STATIC
-    game/src/gl_init.cxx
+    game/src/helpers/gl_init.cxx
 )
 
 set(core_lib
@@ -109,8 +107,6 @@ add_executable(preview_room
     game/src/main_preview_room.cxx
 )
 
-target_include_directories(preview_room PRIVATE game/src/ game/src/objects/ game/src/gltf/ )
-
 target_link_libraries(preview_room
     ${core_lib}
     ${gl_libs}
@@ -125,8 +121,6 @@ target_link_libraries(milendall
     ${core_lib}
     ${gl_libs}
 )
-
-target_include_directories(milendall PRIVATE game/src/ game/src/objects/ game/src/gltf/ )
 
 add_library(glmock SHARED game/test/glmock/glmock.cpp)
 
@@ -152,7 +146,7 @@ target_link_libraries(unit_test
     glmock
     gtest gtest_main gmock pthread
 )
+target_include_directories(unit_test PRIVATE game/test/glmock/ )
+
 include(GoogleTest)
 gtest_discover_tests(unit_test)
-
-target_include_directories(unit_test PRIVATE game/src/ game/src/objects/ game/src/gltf/ game/test/glmock/ )
