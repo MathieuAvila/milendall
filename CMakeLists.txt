@@ -14,6 +14,9 @@ find_package(FreeImage REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW 2.0 REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+find_package(Freetype REQUIRED)
 
 set(GLFW_INCLUDE_PATH "" CACHE PATH "The directory that contains GL/glfw.h" )
 set(GLFW_LIBRARY "" CACHE FILEPATH "libglfw.a or glfw.lib" )
@@ -24,6 +27,7 @@ find_package(GTest REQUIRED)
 find_package(GMock REQUIRED)
 include(GoogleTest)
 
+include_directories(${FREETYPE_INCLUDE_DIR_ft2build} ${FREETYPE_INCLUDE_DIR_freetype2})
 include_directories(game/src/ game/src/helpers/ game/src/objects/ game/src/gltf/)
 
 SET (CMAKE_C_COMPILER               "/usr/bin/clang-11")
@@ -68,6 +72,8 @@ add_library(game_lib STATIC
   game/src/helpers/file_library.hxx
   game/src/helpers/file_library.cxx
   game/src/helpers/gl_init.hxx
+  game/src/helpers/fonts.cxx
+  game/src/helpers/fonts.hxx
   game/src/face_list.hxx
   game/src/face_list.cxx
   game/src/face_hard.hxx
@@ -93,6 +99,7 @@ set(core_lib
     spdlog::spdlog
     glm::glm
     ${FREEIMAGEPLUS_LIBRARIES} ${FreeImage_LIBRARIES}
+    ${FREETYPE_LIBRARIES}
 )
 
 set(gl_libs

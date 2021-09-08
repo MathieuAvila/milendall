@@ -62,7 +62,9 @@ GLuint portalProgramID;
 GLuint MatrixIDportal;
 GLuint TextureIDportal;
 
-bool usingMainProgram = true;
+GLuint fontProgramID;
+
+enum { NONE, MAIN, PORTAL, FONT } usingProgram;
 
 void computeMatricesFromInputs(){
 
@@ -211,9 +213,9 @@ static glm::mat4 ModelMatrix = glm::mat4(1.0);
 static void updateTransformMatrix()
 {
     glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
-    if (usingMainProgram)
+    if (usingProgram == MAIN)
     	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-    else
+    else if (usingProgram == PORTAL)
         glUniformMatrix4fv(MatrixIDportal, 1, GL_FALSE, &MVP[0][0]);
 }
 
@@ -307,7 +309,7 @@ void activateDefaultDrawingProgram()
 	glUseProgram(defaultProgramID);
     glActiveTexture(GL_TEXTURE0);
 	glUniform1i(TextureID, 0);
-    usingMainProgram = true;
+    usingProgram = MAIN;
     updateTransformMatrix();
 }
 
@@ -316,8 +318,15 @@ void activatePortalDrawingProgram()
 	glUseProgram(portalProgramID);
     glActiveTexture(GL_TEXTURE0);
 	glUniform1i(TextureIDportal, 0);
-    usingMainProgram = false;
+    usingProgram = PORTAL;
     updateTransformMatrix();
+}
+
+unsigned int activateFontDrawingProgram()
+{
+	glUseProgram(fontProgramID);
+    usingProgram = FONT;
+    return fontProgramID;
 }
 
 int milendall_gl_init(FileLibrary& library)
@@ -381,6 +390,8 @@ int milendall_gl_init(FileLibrary& library)
     MatrixIDportal = glGetUniformLocation(portalProgramID, "MVP");
 	TextureIDportal  = glGetUniformLocation(defaultProgramID, "myTextureSampler");
 
+    fontProgramID = LoadShaders(library, "font.vertexshader", "font.fragmentshader" );
+
     initFbo();
 
     return 0;
@@ -390,6 +401,7 @@ void milendall_gl_close()
 {
 	glDeleteProgram(defaultProgramID);
 	glDeleteProgram(portalProgramID);
+	glDeleteProgram(fontProgramID);
 	glfwTerminate();
 }
 

@@ -48,6 +48,8 @@ void activateDefaultDrawingProgram();
 /** Activate portal program for drawing */
 void activatePortalDrawingProgram();
 
+/** Activate font program for drawing , returns program ID for use */
+unsigned int activateFontDrawingProgram();
 
 void computeMatricesFromInputs();
 
