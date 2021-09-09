@@ -112,8 +112,8 @@ int main(int argc, char* argv[])
             glm::mat4(1.0f),
             *current_room});
 
-        fontRenderTextBorder("1", vec3_to_string(position), 25.0f, 25.0f, 1.0f, 2, glm::vec3(0.5, 0.8f, 0.2f), glm::vec3(0.1, 0.1f, 0.1f));
-        fontRenderTextBorder("2", *current_room, 25.0f, 100.0f,  1.0f,  2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
+        fontRenderTextBorder("1", std::string("Position: ") + vec3_to_string(position), 25.0f, 25.0f, 1.0f, 2, glm::vec3(0.5, 0.8f, 0.2f), glm::vec3(0.1, 0.1f, 0.1f));
+        fontRenderTextBorder("2", std::string("Watching room: ") + *current_room, 25.0f, 100.0f,  1.0f,  2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
 
 		// Swap buffers
 		glfwSwapBuffers(window);
