@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
 
     milendall_gl_init(fl);
 
-    auto font = fl.getRoot().getSubPath("/home/avila/milendall/data/common/fonts/emilyscandy/EmilysCandy-Regular.ttf");
+    auto font = fl.getRoot().getSubPath("/home/avila/milendall/data/common/fonts/fredoka-one.one-regular.ttf");
     fontLoadFont(font);
 
     auto ref = fl.getRoot().getSubPath(modelPath);
@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
             glm::mat4(1.0f),
             *current_room});
 
-        fontRenderText("Test1", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+        fontRenderText("Test1", 25.0f, 25.0f, 2.0f, glm::vec3(0.2, 0.2f, 0.2f));
         fontRenderText("Test2", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
 
 		// Swap buffers

@@ -42,7 +42,7 @@ void fontLoadFont(FileLibrary::UriReference& font_name)
 
     FT_Face face;
     if (FT_New_Face(ft, font_name.getPath().c_str(), 0, &face))
-        throw FontException("ERROR::FREETYPE: Failed to load font" + font_name.getPath());
+        throw FontException("Failed to load font" + font_name.getPath());
 
     // set size to load glyphs as
     FT_Set_Pixel_Sizes(face, 0, 48);
@@ -56,24 +56,72 @@ void fontLoadFont(FileLibrary::UriReference& font_name)
        // Load character glyph
         if (FT_Load_Char(face, c, FT_LOAD_RENDER))
         {
-            console->warn("ERROR::FREETYTPE: Failed to load Glyph {}", c);
+            console->warn("Failed to load Glyph {}", c);
             continue;
         }
+
+        console->info("Glyph {} {} bitmap.width {}, bitmap.rows {} bitmap_left {}, bitmap_top {}, advance.x {}",
+            int(c), char(c), face->glyph->bitmap.width, face->glyph->bitmap.rows,
+            face->glyph->bitmap_left, face->glyph->bitmap_top, face->glyph->advance.x);
+
+        // compute full image
+        FT_Bitmap& bitmap = face->glyph->bitmap;
+
+        console->info("bitmap.width {}, bitmap.rows {}",
+            bitmap.width, bitmap.rows);
+
+        typedef uint8_t type_image[bitmap.width][bitmap.rows][3];
+        uint8_t* image_block = (uint8_t*)malloc(bitmap.width * bitmap.rows * 3);
+
+#define ACCESS( i , j , c ) (image_block[ 3*(bitmap.width * (j % bitmap.rows) + (i%bitmap.width)) + c ])
+
+        for (auto i = 0; i < bitmap.width; i++)
+            for (auto j = 0; j < bitmap.rows; j++) {
+                auto v = bitmap.buffer[i + j* bitmap.width];
+
+                auto total_border = 0;
+                for (int k = i-1; k < i+2; k++)
+                    for (int l = j-1; l < j+2; l++) {
+                        auto k2 = k;
+                        auto l2 = l;
+                        /*if (k2 < 0) k2 = bitmap.width -1;
+                        if (k2 >= bitmap.width) k2 = 0;
+                        if (l2 < 0) l2 = bitmap.rows -1;
+                        if (l2 >= bitmap.rows) l2 = 0;*/
+                        if (k2 < 0) continue;
+                        if (k2 >= bitmap.width) continue;
+                        if (l2 < 0) continue;
+                        if (l2 >= bitmap.rows) continue;
+
+                        if (bitmap.buffer[k2+ l2 * bitmap.width])
+                            total_border++;
+                    }
+                console->info("i {}, j {} border {}", i, j, total_border);
+                uint8_t border = ( v && (total_border > 0) && (total_border != 9)) ? 255:0;
+                uint8_t full = (!border && v && (total_border == 9)) ? 255:0;
+
+                ACCESS(i,j,0) = border;
+                ACCESS(i,j,1) = full;
+                ACCESS(i,j,2) = v;
+        }
+
         // generate texture
         unsigned int texture;
         glGenTextures(1, &texture);
         glBindTexture(GL_TEXTURE_2D, texture);
+
         glTexImage2D(
                 GL_TEXTURE_2D,
                 0,
-                GL_RED,
+                GL_RGB,
                 face->glyph->bitmap.width,
                 face->glyph->bitmap.rows,
                 0,
-                GL_RED,
+                GL_RGB,
                 GL_UNSIGNED_BYTE,
-                face->glyph->bitmap.buffer
+                image_block
         );
+        free(image_block);
         // set texture options
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);

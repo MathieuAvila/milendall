@@ -9,5 +9,18 @@ uniform vec3 textColor;
 void main()
 {
     vec4 sampled = vec4(1.0, 1.0, 1.0, texture(text, TexCoords).r);
-    color = vec4(textColor, 1.0) * sampled;
+    vec4 sampled2 = vec4(1.0, 1.0, 1.0, texture(text, TexCoords).g);
+
+    vec3 textColor2 = textColor / 2.0;
+
+    //color = vec4(textColor, 1.0) * texture(text, TexCoords).g + vec4(textColor2, 1.0) * texture(text, TexCoords).r;
+
+    //color = vec4(textColor, 1.0) * sampled2;
+
+    //color = vec4(textColor2, 1.0) * sampled2;
+
+    //color =  vec4(0.0,0.0,0.0, 1.0) * vec4(1.0, 1.0, 1.0, texture(text, TexCoords).b);
+
+    color = vec4(textColor, 1.0) * texture(text, TexCoords).b;
+
 }
