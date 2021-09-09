@@ -15,5 +15,6 @@ class FontException: public std::runtime_error
 };
 
 int fontInit();
-void fontLoadFont(FileLibrary::UriReference& font_name);
-void fontRenderText(std::string text, float x, float y, float scale, glm::vec3 color);
+void fontLoadFont(std::string id, FileLibrary::UriReference& font_name);
+void fontRenderText(std::string ID, std::string text, float x, float y, float scale, glm::vec3 color);
+void fontRenderTextBorder(std::string ID, std::string text, float x, float y, float scale, int border, glm::vec3 color, glm::vec3 borderColor);

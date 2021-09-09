@@ -32,7 +32,8 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "cwd": "${fileDirname}",
-            "env": {"PYTHONPATH": "${workspaceFolder}/generator/pygenerator:${env:PYTHONPATH}"}
+            "env": {"PYTHONPATH": "${workspaceFolder}/generator/pygenerator:${env:PYTHONPATH}"},
+            "miDebuggerPath": "/usr/bin/lldb-11"
         }
     ]
 }

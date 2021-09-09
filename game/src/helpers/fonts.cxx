@@ -4,6 +4,7 @@
 
 #include <map>
 #include <string>
+#include <memory>
 
 #include <glm/glm.hpp>
 #include <glm/vec3.hpp>
@@ -30,12 +31,17 @@ struct Character {
     unsigned int Advance;   // Horizontal offset to advance to next glyph
 };
 
-std::map<GLchar, Character> Characters;
-unsigned int VAO, VBO;
+struct FontData {
+    std::map<GLchar, Character> Characters;
+    unsigned int VAO, VBO;
+};
 
-void fontLoadFont(FileLibrary::UriReference& font_name)
+std::map<std::string, FontData> fontDataMap;
+
+void fontLoadFont(std::string id, FileLibrary::UriReference& font_name)
 {
     FT_Library ft;
+    FontData fontData;
 
     if (FT_Init_FreeType(&ft))
         throw FontException("Unable to init freetype");
@@ -86,10 +92,7 @@ void fontLoadFont(FileLibrary::UriReference& font_name)
             glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
             static_cast<unsigned int>(face->glyph->advance.x)
         };
-        console->info("Glyph {} {} texture {} bitmap.width {}, bitmap.rows {} bitmap_left {}, bitmap_top {}, advance.x {}",
-            int(c), char(c), texture, face->glyph->bitmap.width, face->glyph->bitmap.rows,
-            face->glyph->bitmap_left, face->glyph->bitmap_top, face->glyph->advance.x);
-        Characters.insert(std::pair<char, Character>(c, character));
+        fontData.Characters.insert(std::pair<char, Character>(c, character));
     }
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -97,48 +100,19 @@ void fontLoadFont(FileLibrary::UriReference& font_name)
     FT_Done_Face(face);
     FT_Done_FreeType(ft);
 
-    // configure VAO/VBO for texture quads
-    // -----------------------------------
-    //glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    //glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glGenBuffers(1, &fontData.VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, fontData.VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    //glBindVertexArray(0);
+
+    fontDataMap.insert(std::pair<std::string, FontData>(id, fontData));
 }
-/*
-    // render loop
-    // -----------
-    while (!glfwWindowShouldClose(window))
-    {
-        // input
-        // -----
-        processInput(window);
 
-        // render
-        // ------
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        RenderText(shader, "This is sample text", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-        RenderText(shader, "(C) LearnOpenGL.com", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
-
-        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
-
-    glfwTerminate();
-    return 0;
-}
-*/
-
-void fontRenderText(std::string text, float x, float y, float scale, glm::vec3 color)
+void fontRenderText(std::string ID, std::string text, float x, float y, float scale, glm::vec3 color)
 {
+    FontData& fd = fontDataMap[ID];
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -154,7 +128,7 @@ void fontRenderText(std::string text, float x, float y, float scale, glm::vec3 c
     //glBindVertexArray(VAO);
 
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, fd.VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
@@ -164,7 +138,7 @@ void fontRenderText(std::string text, float x, float y, float scale, glm::vec3 c
     std::string::const_iterator c;
     for (c = text.begin(); c != text.end(); c++)
     {
-        Character ch = Characters[*c];
+        Character ch = fd.Characters[*c];
 
         float xpos = x + ch.Bearing.x * scale;
         float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
@@ -184,7 +158,7 @@ void fontRenderText(std::string text, float x, float y, float scale, glm::vec3 c
         // render glyph texture over quad
         glBindTexture(GL_TEXTURE_2D, ch.TextureID);
         // update content of VBO memory
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBindBuffer(GL_ARRAY_BUFFER, fd.VBO);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // be sure to use glBufferSubData and not glBufferData
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -198,4 +172,12 @@ void fontRenderText(std::string text, float x, float y, float scale, glm::vec3 c
 
     glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
+}
+
+void fontRenderTextBorder(std::string ID, std::string text, float x, float y, float scale, int border, glm::vec3 color, glm::vec3 borderColor)
+{
+    for (auto i = -border; i <= border ; i++)
+            for (auto j = -border; j <= border ; j++) if (i != 0 && j != 0)
+                fontRenderText(ID, text, x + i,  y + j, scale, borderColor);
+    fontRenderText(ID, text, x, y, scale, color);
 }

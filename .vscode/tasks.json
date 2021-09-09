@@ -3,17 +3,8 @@
         {
             "type": "cppbuild",
             "label": "C/C++: clang++-11 build active file",
-            "command": "cmake",
+            "command": "/home/avila/milendall/build_remote.sh",
             "args": [
-                "--build",
-                "${workspaceFolder}/build",
-                "--config",
-                "Debug",
-                "--target",
-                "all",
-                "-j",
-                "6",
-                "--"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"

@@ -76,13 +76,14 @@ int main(int argc, char* argv[])
 
     milendall_gl_init(fl);
 
-    auto font = fl.getRoot().getSubPath("/home/avila/milendall/data/common/fonts/emilyscandy/EmilysCandy-Regular.ttf");
-    fontLoadFont(font);
+    auto font1 = fl.getRoot().getSubPath("/home/avila/milendall/data/common/fonts/fredoka-one.one-regular.ttf");
+    auto font2 = fl.getRoot().getSubPath("/home/avila/milendall/data/common/fonts/emilyscandy/EmilysCandy-Regular.ttf");
+    fontLoadFont("1", font1);
+    fontLoadFont("2", font2);
 
     auto ref = fl.getRoot().getSubPath(modelPath);
     GltfMaterialLibraryIfacePtr materialLibrary = GltfMaterialLibraryIface::getMaterialLibray();
-    //auto room = make_unique<Room>(materialLibrary, ref);
-    //room->applyTransform();
+
     auto level = make_unique<Level>(ref);
     auto room_ids = level.get()->getRoomNames();
     level.get()->update(0.0);
@@ -95,10 +96,7 @@ int main(int argc, char* argv[])
 	do{
         unlockAllFbo();
         setMeshMatrix(glm::mat4(1.0));
-/*
-        fontRenderText("This is sample text 2", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-        fontRenderText( "(C) LearnOpenGL.com", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
-*/
+
 		// Use our shader
 		activateDefaultDrawingProgram();
 
@@ -114,8 +112,8 @@ int main(int argc, char* argv[])
             glm::mat4(1.0f),
             *current_room});
 
-        fontRenderText("Test1", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-        fontRenderText("Test2", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
+        fontRenderTextBorder("1", vec3_to_string(position), 25.0f, 25.0f, 1.0f, 2, glm::vec3(0.5, 0.8f, 0.2f), glm::vec3(0.1, 0.1f, 0.1f));
+        fontRenderTextBorder("2", *current_room, 25.0f, 100.0f,  1.0f,  2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
 
 		// Swap buffers
 		glfwSwapBuffers(window);

@@ -118,7 +118,7 @@ GltfMesh::GltfMesh(
 
 void GltfMesh::GltfPrimitive::draw()
 {
-    console->info("Draw prim {}, {}, {}, {}", vertexbuffer, uvbuffer, elementbuffer, indicesCount);
+    //console->info("Draw prim {}, {}, {}, {}", vertexbuffer, uvbuffer, elementbuffer, indicesCount);
     material_accessor->loadId(material);
 
     // 1rst attribute buffer : vertices
