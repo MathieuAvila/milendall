@@ -47,7 +47,9 @@ void fontLoadFont(std::string id, FileLibrary::UriReference& font_name)
         throw FontException("Unable to init freetype");
 
     FT_Face face;
-    if (FT_New_Face(ft, font_name.getPath().c_str(), 0, &face))
+    FileContentPtr content = font_name.readContent();
+
+    if (FT_New_Memory_Face(ft, content.get()->data(), content.get()->size(), 0, &face))
         throw FontException("ERROR::FREETYPE: Failed to load font" + font_name.getPath());
 
     // set size to load glyphs as

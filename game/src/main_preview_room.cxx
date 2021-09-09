@@ -76,8 +76,8 @@ int main(int argc, char* argv[])
 
     milendall_gl_init(fl);
 
-    auto font1 = fl.getRoot().getSubPath("/home/avila/milendall/data/common/fonts/fredoka-one.one-regular.ttf");
-    auto font2 = fl.getRoot().getSubPath("/home/avila/milendall/data/common/fonts/emilyscandy/EmilysCandy-Regular.ttf");
+    auto font1 = fl.getRoot().getSubPath("/common/fonts/fredoka-one.one-regular.ttf");
+    auto font2 = fl.getRoot().getSubPath("/common/fonts/emilyscandy/EmilysCandy-Regular.ttf");
     fontLoadFont("1", font1);
     fontLoadFont("2", font2);
 
