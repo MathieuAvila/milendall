@@ -10,6 +10,7 @@
 #include "common.hxx"
 #include "level.hxx"
 #include "gl_init.hxx"
+#include "fonts.hxx"
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -78,8 +79,7 @@ int main(int argc, char* argv[])
 
     auto ref = fl.getRoot().getSubPath(modelPath);
     GltfMaterialLibraryIfacePtr materialLibrary = GltfMaterialLibraryIface::getMaterialLibray();
-    //auto room = make_unique<Room>(materialLibrary, ref);
-    //room->applyTransform();
+
     auto level = make_unique<Level>(ref);
     auto room_ids = level.get()->getRoomNames();
     level.get()->update(0.0);
@@ -90,6 +90,11 @@ int main(int argc, char* argv[])
             mat4(1.0f), //glm::rotate(mat4(1.0f), 1.0f, glm::vec3(1.0, 0.0, 0.0) ),
             *room_ids.begin()};
     console->info("Set current room to {}", currentPov.room);
+
+    auto fontRegular = fl.getRoot().getSubPath("/common/fonts/fredoka-one.one-regular.ttf");
+    auto fontCandy = fl.getRoot().getSubPath("/common/fonts/emilyscandy/EmilysCandy-Regular.ttf");
+    fontLoadFont("regular", fontRegular);
+    fontLoadFont("candy", fontCandy);
 
     auto player = make_shared<Player>();
     auto object_manager = make_unique<ObjectManager>(level->getRoomResolver());
@@ -137,6 +142,8 @@ int main(int argc, char* argv[])
             /(1000.0f*1000.0f);
         object_manager->update(elapsed);
         current_time = new_time;
+
+        fontRenderTextBorder("regular", currentPov.room, 25.0f, 720.0f,  1.0f,  2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
 
 		// Swap buffers
 		glfwSwapBuffers(window);
