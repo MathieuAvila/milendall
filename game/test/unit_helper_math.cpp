@@ -60,20 +60,20 @@ TEST(HelperMath, mat4x4_to_string) {
     21.0 , 22.0, 23.0, 24.0,
     31.0 , 32.0, 33.0, 34.0,
     41.0 , 42.0, 43.0, 44.0)),
-    "[\n[11.0, 12.0, 13.0, 14.0]\n"
-    "[21.0, 22.0, 23.0, 24.0]\n"
-    "[31.0, 32.0, 33.0, 34.0]\n"
-    "[41.0, 42.0, 43.0, 44.0]\n]");
+    "[\n[11.000000, 12.000000, 13.000000, 14.000000]\n"
+    "[21.000000, 22.000000, 23.000000, 24.000000]\n"
+    "[31.000000, 32.000000, 33.000000, 34.000000]\n"
+    "[41.000000, 42.000000, 43.000000, 44.000000]\n]");
 }
 
 TEST(HelperMath, vec3_to_string) {
 
-    ASSERT_EQ(vec3_to_string(v3A), "[ 1.0 , 2.0 , 3.0 ]");
+    ASSERT_EQ(vec3_to_string(v3A), "[ 1.000000 , 2.000000 , 3.000000 ]");
 }
 
 TEST(HelperMath, vec4_to_string) {
 
-    ASSERT_EQ(vec4_to_string(v4A), "[ 1.0 , 2.0 , 3.0 , 4.0 ]");
+    ASSERT_EQ(vec4_to_string(v4A), "[ 1.000000 , 2.000000 , 3.000000 , 4.000000 ]");
 
 }
 
@@ -281,7 +281,7 @@ TEST(HelperMath, getRotatedMatrix_1_rotate_horiz) {
 
     auto diff = mat4x4_abs_diff(matCheck, newMat);
     console->info("newMat {}", mat4x4_to_string(newMat));
-    ASSERT_TRUE(glm::epsilonEqual(diff, 0.0f, 0.2f));
+    ASSERT_TRUE(glm::epsilonEqual(diff, 0.0f, 0.1f));
 }
 
 TEST(HelperMath, getRotatedMatrix_2_rotate_vertical) {
