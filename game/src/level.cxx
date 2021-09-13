@@ -66,7 +66,7 @@ void Level::update(float elapsed_time)
         r.second->applyTransform();
 }
 
-PointOfView Level::getDestinationPov(const PointOfView& origin, const glm::vec3& destination)
+PointOfView Level::getDestinationPov(const PointOfView& origin, const glm::vec3& destination) const
 {
     auto room = room_resolver->getRoom(origin.room);
     PointOfView result(origin);
@@ -124,8 +124,6 @@ bool Level::isWallReached(
             current_origin.position, current_destination,
             radius, wall_changePoint, wall_normal, wall_distance, wall_face);
 
-        console->info("wall_reach {} portal_reach: {}", wall_reach, portal_reach);
-
         // if the 2 are hit, keep the shortest.
         if (wall_reach && portal_reach) {
             if (wall_distance < portal_distance)
@@ -133,8 +131,6 @@ bool Level::isWallReached(
             else
                 wall_reach = false;
         }
-
-        console->info("wall_reach {} portal_reach: {}", wall_reach, portal_reach);
 
         // handle the case where nothing is hit
         if (!wall_reach && !portal_reach) {

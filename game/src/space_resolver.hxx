@@ -4,32 +4,14 @@
 #include "gltf/gltf_material_accessor_library_iface.hxx"
 #include "room.hxx"
 #include "level_exception.hxx"
-#include "space_resolver.hxx"
 
-struct LevelRoomResolver;
-
-class Level : public SpaceResolver
+/** @brief Provide an interface definition for a class that allows to move objects and detect wall collision
+ * In real code this is the Level. In UT it can be subclassed to whatever impl.
+ * Goal is to avoid inclusion of Level by ObjectManager
+ */
+class SpaceResolver
 {
     public:
-
-        /** build the level from the path to the final level file.
-         * It's up to the called to have a naming scheme for levels */
-        Level(FileLibrary::UriReference ref);
-
-        /** To be able to preview a given room, give a list of them */
-        std::list<std::string> getRoomNames();
-
-        /** Rendering the level, from the position of a given room */
-        void draw(PointOfView pov);
-
-        /** Update, given an elapsed time */
-        void update(float elapsed_time);
-
-        /** mandatory for dtor of unique_ptr of fwd declaration LevelRoomResolver */
-        virtual ~Level();
-
-        /** get room resolver, for services that need access to particular rooms, like objet_manager */
-        RoomResolver* getRoomResolver();
 
         /** Get a POV if a portal is crossed. This is used to draw in the right POV, as draw POV is higher (head) than
          * the player's sphere radius.
@@ -37,7 +19,7 @@ class Level : public SpaceResolver
          * @param destination is the desintation position in the origin's POV space
          * @result the final POV. It may be different than the one passed as origin.
          */
-        virtual PointOfView getDestinationPov(const PointOfView& origin, const glm::vec3& destination) const override;
+        virtual PointOfView getDestinationPov(const PointOfView& origin, const glm::vec3& destination) const = 0;
 
         /** @brief Check if a wall is reached. It checks if it goes through a portal,
          *         and makes the appropriate POV translation. So that the POV is returned and
@@ -59,17 +41,8 @@ class Level : public SpaceResolver
             glm::vec3& normal,
             float& distance,
             FaceHard*& face
-            ) const override;
+            ) const = 0;
 
-    private:
-
-        /** Pass RoomResolver to rooms */
-        std::unique_ptr<LevelRoomResolver> room_resolver;
-
-        /** Identified by their IDs */
-        std::map<std::string, std::shared_ptr<Room>> rooms;
-
-        /** Kept for the duration of the level. This forces to keep texturing */
-        GltfMaterialLibraryIfacePtr materialLibrary;
+        virtual ~SpaceResolver() = default;
 };
 

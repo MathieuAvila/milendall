@@ -49,6 +49,7 @@ add_library(game_lib STATIC
   game/src/room_node.cxx
   game/src/room_resolver.hxx
   game/src/room_draw_context.hxx
+  game/src/space_resolver.hxx
   game/src/gltf/gltf_mesh.hxx
   game/src/gltf/gltf_mesh.cxx
   game/src/gltf/gltf_model.hxx
