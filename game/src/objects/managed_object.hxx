@@ -1,7 +1,7 @@
 #pragma once
 
 #include "movable_object.hxx"
-
+#include "glm/mat4x4.hpp"
 
 struct MovementWish {
     glm::vec3 impulse;
@@ -15,13 +15,17 @@ class ManagedObject
 
     public:
 
-        // get main parameters of the object and advance it
+        /** @brief get main parameters of the object and advance it */
         virtual MovableObjectDefinition& getObjectDefinition() = 0;
 
-        // get requested movement.
-        // direction and up are copied "as is"
-        // position and room are ignored
+        /** @brief get requested movement.
+        * direction and up are copied "as is"
+        * position and room are ignored */
         virtual MovementWish getRequestedMovement() = 0;
+
+        /** @brief Get the local transformation of the object inside its reference frame.
+         * The object is free to place itself how it wishes in his own context */
+        virtual glm::mat4x4 getOwnMatrix() = 0;
 
         // Check if it must be released.
         virtual bool checkEol() = 0;

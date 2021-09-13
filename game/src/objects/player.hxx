@@ -26,6 +26,7 @@ class Player : public ManagedObject
     virtual MovableObjectDefinition& getObjectDefinition() override;
     virtual MovementWish getRequestedMovement() override;
     virtual bool checkEol() override;
+    virtual glm::mat4x4 getOwnMatrix() override;
 
     void setActionSet(ActionSet actions);
 

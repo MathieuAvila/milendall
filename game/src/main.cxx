@@ -18,6 +18,9 @@
 #include "objects/player.hxx"
 #include "objects/object_manager.hxx"
 
+#include "helper_math.hxx"
+#include "fps_counter.hxx"
+
 using namespace std;
 
 static auto console = spdlog::stdout_color_mt("Milendall");
@@ -97,17 +100,14 @@ int main(int argc, char* argv[])
     fontLoadFont("candy", fontCandy);
 
     auto player = make_shared<Player>();
-    auto object_manager = make_unique<ObjectManager>(level->getRoomResolver());
+    auto object_manager = make_unique<ObjectManager>(level->getRoomResolver(), level.get());
     auto player_id = object_manager ->insertObject(player,
-        PointOfView{
-            glm::vec3( 2, 2, 2 ),
-            glm::vec3( 1.0, 0, 0),
-            glm::vec3( 1.0, 0, 0),
-            glm::mat3(1.0f),
-            *room_ids.begin()}
+        PointOfView(currentPov.position, verticalAngle, horizontalAngle, currentPov.local_reference, currentPov.room)
     );
 
     auto current_time = std::chrono::steady_clock::now();
+
+    FpsCounter fpsCounter;
 
 	do{
         unlockAllFbo();
@@ -115,27 +115,24 @@ int main(int argc, char* argv[])
 		// Use our shader
 		activateDefaultDrawingProgram();
 
-		PointOfView origin = PointOfView(currentPov.position, verticalAngle, horizontalAngle, currentPov.local_reference, currentPov.room);
-
-        auto previousPos = position;
         computeMatricesFromInputs();
-        auto diffPos = position - previousPos;
-        auto transformedDiffPos = currentPov.local_reference * diffPos;
-
-        currentPov = level.get()->getDestinationPov(origin, currentPov.position + transformedDiffPos);
-        if (currentPov.room != origin.room) {
-            position = currentPov.position;
-            console->info("pov={}", to_string(currentPov));
-            console->info("Entering={}", currentPov.room);
-        }
 
         PointOfView player_position;
+        Player::ActionSet actionSet;
+        actionSet.horizontalAngle = horizontalAngle;
+        actionSet.verticalAngle = verticalAngle;
+        actionSet.forward = glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS;
+        actionSet.backward = glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS;
+        actionSet.left = glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS;
+        actionSet.right = glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS;
+        player->setActionSet(actionSet);
+
         bool found = object_manager->getObjectPosition(player_id, player_position);
         if (found == false)
             throw system_error();
 
     	setMeshMatrix(glm::mat4(1.0));
-        level.get()->draw(currentPov);
+        level.get()->draw(player_position);
 
         auto new_time = std::chrono::steady_clock::now();
         auto elapsed = float(std::chrono::duration_cast<std::chrono::microseconds>(new_time - current_time).count())
@@ -143,7 +140,15 @@ int main(int argc, char* argv[])
         object_manager->update(elapsed);
         current_time = new_time;
 
+        fpsCounter.update();
+
         fontRenderTextBorder("regular", currentPov.room, 25.0f, 720.0f,  1.0f,  2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
+
+        fontRenderTextBorder("regular", vec3_to_string(currentPov.position), 25.0f, 100.0f,  0.5f,  2, glm::vec3(1.0, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
+        fontRenderTextBorder("regular", currentPov.room, 25.0f, 75.0f,  0.5f,  2, glm::vec3(1.0, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
+
+        fontRenderTextBorder("regular", vec3_to_string(player_position.position), 25.0f, 50.0f,  0.5f,  2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
+        fontRenderTextBorder("regular", player_position.room, 25.0f, 25.0f,  0.5f,  2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
 
 		// Swap buffers
 		glfwSwapBuffers(window);

@@ -1,5 +1,9 @@
 #include "object_manager.hxx"
 
+#include "space_resolver.hxx"
+
+struct FaceHard;
+
 class ManagedObjectInstance
 {
     public:
@@ -17,7 +21,8 @@ class ManagedObjectInstance
 
 };
 
-ObjectManager::ObjectManager(RoomResolver* _roomResolver) : roomResolver(_roomResolver)
+ObjectManager::ObjectManager(RoomResolver* _roomResolver, SpaceResolver* _spaceResolver) :
+    roomResolver(_roomResolver), spaceResolver(_spaceResolver)
 {
 
 }
@@ -35,7 +40,28 @@ void ObjectManager::update(float time_delta)
     for (auto& _obj: managed_objects) {
         auto p = _obj.second.get();
         // ATM, accept whatever the object requests
-        p->mainPosition.position += p->object.get()->getRequestedMovement().impulse;
+        auto impulse = p->object.get()->getRequestedMovement().impulse;
+        auto timed_impulse = impulse * time_delta;
+        auto newPos = p->mainPosition.position + p->mainPosition.local_reference * timed_impulse;
+
+        PointOfView endPoint;
+        glm::vec3 normal;
+        float distance;
+        FaceHard* face;
+
+        // Stop if wall is reached
+        bool hit = spaceResolver->isWallReached(
+            p->mainPosition,
+            newPos,
+            p->object.get()->getObjectDefinition().radius,
+            endPoint,
+            normal,
+            distance,
+            face);
+        p->mainPosition = endPoint;
+        if (hit) {
+            p->mainPosition.position += normal * 0.001f;
+        }
     }
 }
 
@@ -44,7 +70,7 @@ bool ObjectManager::getObjectPosition(int objectId, PointOfView& pos)
     if (managed_objects.count(objectId) != 1)
         return false;
     auto obj = (managed_objects.find(objectId)->second.get());
-    pos = obj->mainPosition;
+    pos = obj->mainPosition.prependCoordinateSystem(obj->object->getOwnMatrix());
     return true;
 }
 
