@@ -4,6 +4,7 @@
 #include "helper_math.hxx"
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/epsilon.hpp>
+#include "test_common.hpp"
 
 static auto console = spdlog::stdout_color_mt("unit_helper_math");
 
@@ -268,16 +269,6 @@ TEST(HelperMath, getRotatedMatrix_0_ID) {
     glm::mat3 ID = getRotatedMatrix(0.0f, 0.0f);
     ASSERT_EQ(ID, glm::mat3(1.0f));
 }
-
-float mat4x4_abs_diff(const glm::mat4x4& mat1, const glm::mat4x4& mat2)
-{
-	float result = 0.0f;
-	for(glm::length_t i = 0; i < 4; ++i)
-	    for(glm::length_t j = 0; j < 4; ++j)
-		result += abs(mat1[i][j] - mat2[i][j]);
-	return result;
-}
-
 
 TEST(HelperMath, getRotatedMatrix_1_rotate_horiz) {
 

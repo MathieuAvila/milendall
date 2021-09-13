@@ -133,6 +133,7 @@ add_library(glmock SHARED game/test/glmock/glmock.cpp)
 
 add_executable(unit_test
 game/test/unit_main.cpp
+game/test/test_common.hpp
 game/test/unit_file_library.cpp
 game/test/unit_level.cpp
 game/test/unit_room.cpp
