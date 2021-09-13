@@ -38,7 +38,7 @@ glm::vec3 direction;
 glm::vec3 up;
 
 // Initial horizontal angle : toward -Z
-float horizontalAngle = 3.14f;
+float horizontalAngle = 0.0f;
 // Initial vertical angle : none
 float verticalAngle = 0.0f;
 // Initial Field of View
