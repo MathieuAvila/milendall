@@ -2,6 +2,8 @@
 
 #include "common.hxx"
 #include "helper_math.hxx"
+#include <glm/gtc/constants.hpp>
+#include <glm/gtc/epsilon.hpp>
 
 static auto console = spdlog::stdout_color_mt("unit_helper_math");
 
@@ -57,20 +59,20 @@ TEST(HelperMath, mat4x4_to_string) {
     21.0 , 22.0, 23.0, 24.0,
     31.0 , 32.0, 33.0, 34.0,
     41.0 , 42.0, 43.0, 44.0)),
-    "[\n[11.000000, 12.000000, 13.000000, 14.000000]\n"
-    "[21.000000, 22.000000, 23.000000, 24.000000]\n"
-    "[31.000000, 32.000000, 33.000000, 34.000000]\n"
-    "[41.000000, 42.000000, 43.000000, 44.000000]\n]");
+    "[\n[11.0, 12.0, 13.0, 14.0]\n"
+    "[21.0, 22.0, 23.0, 24.0]\n"
+    "[31.0, 32.0, 33.0, 34.0]\n"
+    "[41.0, 42.0, 43.0, 44.0]\n]");
 }
 
 TEST(HelperMath, vec3_to_string) {
 
-    ASSERT_EQ(vec3_to_string(v3A), "[ 1.000000 , 2.000000 , 3.000000 ]");
+    ASSERT_EQ(vec3_to_string(v3A), "[ 1.0 , 2.0 , 3.0 ]");
 }
 
 TEST(HelperMath, vec4_to_string) {
 
-    ASSERT_EQ(vec4_to_string(v4A), "[ 1.000000 , 2.000000 , 3.000000 , 4.000000 ]");
+    ASSERT_EQ(vec4_to_string(v4A), "[ 1.0 , 2.0 , 3.0 , 4.0 ]");
 
 }
 
@@ -257,5 +259,64 @@ TEST(HelperMath, intersectSphereTrajectorySegment4_radius15_not_center) {
         intersect_center, distance, normal);
     ASSERT_TRUE(result);
     ASSERT_EQ(distance, 0.881966f);
-    ASSERT_TRUE(0.01 > glm::length(normal - glm::vec3(-0.745356 , 0.666667 , 0.000000))); // XXX should be computed
+    ASSERT_TRUE(0.01 > glm::length(normal - glm::vec3(-0.745356 , 0.666667 , 0.0))); // XXX should be computed
 };
+
+
+TEST(HelperMath, getRotatedMatrix_0_ID) {
+
+    glm::mat3 ID = getRotatedMatrix(0.0f, 0.0f);
+    ASSERT_EQ(ID, glm::mat3(1.0f));
+}
+
+float mat4x4_abs_diff(const glm::mat4x4& mat1, const glm::mat4x4& mat2)
+{
+	float result = 0.0f;
+	for(glm::length_t i = 0; i < 4; ++i)
+	    for(glm::length_t j = 0; j < 4; ++j)
+		result += abs(mat1[i][j] - mat2[i][j]);
+	return result;
+}
+
+
+TEST(HelperMath, getRotatedMatrix_1_rotate_horiz) {
+
+    glm::mat3 newMat = getRotatedMatrix(0.0f, glm::pi<float>() / 4.0);
+    glm::mat3 matCheck{
+        0.7, 0.0, -0.7,
+        0.0, 1.0, 0.0,
+        0.7, 0.0, 0.7
+    }; // rotation PI/4 on Y
+
+    auto diff = mat4x4_abs_diff(matCheck, newMat);
+    console->info("newMat {}", mat4x4_to_string(newMat));
+    ASSERT_TRUE(glm::epsilonEqual(diff, 0.0f, 0.2f));
+}
+
+TEST(HelperMath, getRotatedMatrix_2_rotate_vertical) {
+
+    glm::mat3 newMat = getRotatedMatrix(glm::pi<float>() / 4.0, 0.0f);
+    glm::mat3 matCheck{
+        1.0, 0.0, 0.0,
+        0.0, 0.7, 0.7,
+        0.0, -0.7, 0.7
+    }; // rotation PI/4 on X
+
+    auto diff = mat4x4_abs_diff(matCheck, newMat);
+    console->info("newMat {}", mat4x4_to_string(newMat));
+    ASSERT_TRUE(glm::epsilonEqual(diff, 0.0f, 0.1f));
+}
+
+TEST(HelperMath, getRotatedMatrix_3_rotate_vertical_horizontal) {
+
+    glm::mat3 newMat = getRotatedMatrix(glm::pi<float>() / 4.0, glm::pi<float>() / 4.0);
+    glm::mat3 matCheck{
+        0.7, 0.0, -0.7,
+        0.5, 0.7, 0.5,
+        0.5, -0.7, 0.5
+    }; // rotation PI/4 on X, rotation PI/4 on Y
+
+    auto diff = mat4x4_abs_diff(matCheck, newMat);
+    console->info("newMat {}", mat4x4_to_string(newMat));
+    ASSERT_TRUE(glm::epsilonEqual(diff, 0.0f, 0.1f));
+}

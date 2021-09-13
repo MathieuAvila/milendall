@@ -3,6 +3,7 @@
 #include "gltf_exception.hxx"
 
 #include <glm/gtx/intersect.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 static auto console = spdlog::stdout_color_mt("math");
 
@@ -182,4 +183,15 @@ bool intersectSphereTrajectorySegment(
     normal = glm::normalize(intersect_center - impact_point);
 
     return true;
+}
+
+glm::mat3 getRotatedMatrix(float verticalAngle, float horizontalAngle)
+{
+//    auto rotateVertical = glm::rotate(glm::mat4(1.0f), verticalAngle, glm::vec3(0.0, 0.0, 1.0));
+//    auto rotateHorizontal = glm::rotate(rotateVertical, horizontalAngle, glm::vec3(0.0, 1.0, 0.0));
+//    return rotateHorizontal;
+
+    auto rotateHorizontal = glm::rotate(glm::mat4(1.0f), horizontalAngle, glm::vec3(0.0, 1.0, 0.0));
+    auto rotateVertical = glm::rotate(glm::mat4(1.0f), verticalAngle, glm::vec3(1.0, 0.0, 0.0));
+    return rotateHorizontal * rotateVertical;
 }

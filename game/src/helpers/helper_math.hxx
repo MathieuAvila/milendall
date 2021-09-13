@@ -63,3 +63,5 @@ bool intersectSphereTrajectorySegment(
     glm::vec3 A, glm::vec3 B,
     glm::vec3& intersect_center, float& distance, glm::vec3& normal
     );
+
+glm::mat3 getRotatedMatrix(float verticalAngle, float horizontalAngle);
