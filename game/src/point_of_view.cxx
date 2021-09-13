@@ -16,6 +16,20 @@ PointOfView PointOfView::changeCoordinateSystem(std::string newRoom, const glm::
     );
 }
 
+PointOfView PointOfView::prependCoordinateSystem(const glm::mat3& newMatrix) const
+{
+    //glm::mat4x4 no_trans(newMatrix);
+    //no_trans[3] = glm::vec4(0, 0, 0, 1);
+    glm::mat3x3 no_trans(newMatrix);
+    return PointOfView(
+        position,
+        no_trans * direction,
+        no_trans * up,
+        local_reference * no_trans,
+        room
+    );
+}
+
 bool PointOfView::operator==(const PointOfView& p) const
 {
     return (position == p.position)
@@ -61,6 +75,22 @@ PointOfView::PointOfView(
     direction = local_reference*direction;
     up = local_reference*up;
 }
+
+glm::vec3 PointOfView::getDirection()
+{
+    return local_reference * glm::vec3(0.0, 0.0, 1.0);
+}
+
+glm::vec3 PointOfView::getUp()
+{
+    return local_reference * glm::vec3(0.0, 1.0, 0.0);
+}
+
+glm::vec3 PointOfView::getRight()
+{
+    return local_reference * glm::vec3(1.0, 0.0, 0.0);
+}
+
 
 PointOfView::PointOfView(
     const glm::vec3 _position,

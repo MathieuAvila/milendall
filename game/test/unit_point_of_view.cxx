@@ -6,7 +6,9 @@
 #include "common.hxx"
 #include <point_of_view.hxx>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/epsilon.hpp>
 #include "helper_math.hxx"
+#include "test_common.hpp"
 
 static auto console = spdlog::stdout_color_mt("ut_pov");
 
@@ -46,4 +48,90 @@ TEST(PointOfView, initAngles)
     EXPECT_TRUE(glm::distance(pov.up, glm::vec3(-0.54, 1.84, -0.54))< 0.05f);
     EXPECT_EQ(glm::mat3x3(2.0f), pov.local_reference);
     EXPECT_EQ(pov.room, "myRoom");
+}
+
+TEST(PointOfView, prependCoordinateSystem_0_ID )
+{
+    PointOfView pov{
+        glm::vec3(1.0, 2.0, 3.0),
+        0.0f,
+        0.0f,
+        getRotatedMatrix(0.0f, glm::pi<float>() / 4.0),
+        "myRoom"
+    };
+
+    auto pov2 = pov.prependCoordinateSystem(glm::mat4(1.0f));
+
+    console->info("{}", to_string(pov2));
+
+    glm::mat3 matCheck{
+        0.7, 0.0, -0.7,
+        0.0, 1.0, 0.0,
+        0.7, 0.0, 0.7
+    }; // rotation PI/4 on Y
+
+    auto diff = mat4x4_abs_diff(matCheck, pov2.local_reference);
+    ASSERT_TRUE(glm::epsilonEqual(diff, 0.0f, 0.1f));
+}
+
+TEST(PointOfView, prependCoordinateSystem_1_new_mat )
+{
+    PointOfView pov{
+        glm::vec3(1.0, 2.0, 3.0),
+        0.0f,
+        0.0f,
+        getRotatedMatrix(0.0f, glm::pi<float>() / 4.0),
+        "myRoom"
+    };
+    auto pov2 = pov.prependCoordinateSystem(getRotatedMatrix(glm::pi<float>() / 4.0, 0.0f));
+    console->info("{}", to_string(pov2));
+    glm::mat3 matCheck{
+        0.7, 0.0, -0.7,
+        0.5, 0.7, 0.5,
+        0.5, -0.7, 0.5
+    };
+    auto diff = mat4x4_abs_diff(matCheck, pov2.local_reference);
+    ASSERT_TRUE(glm::epsilonEqual(diff, 0.0f, 0.1f));
+}
+
+TEST(PointOfView, getDirection )
+{
+    PointOfView pov{
+        glm::vec3(1.0, 2.0, 3.0),
+        0.0f,
+        0.0f,
+        getRotatedMatrix(0.0f, glm::pi<float>() / 4.0),
+        "myRoom"
+    };
+    auto direction = pov.getDirection();
+    console->info("{}", vec3_to_string(direction));
+    ASSERT_TRUE(glm::distance(direction, glm::vec3(0.7, 0.0, 0.7))< 0.05f);
+}
+
+TEST(PointOfView, getUp )
+{
+    PointOfView pov{
+        glm::vec3(1.0, 2.0, 3.0),
+        0.0f,
+        0.0f,
+        getRotatedMatrix(glm::pi<float>() / 4.0, 0.0f),
+        "myRoom"
+    };
+    auto up = pov.getUp();
+    console->info("{}", vec3_to_string(up));
+    ASSERT_TRUE(glm::distance(up, glm::vec3(0.0, 0.7, 0.7))< 0.05f);
+}
+
+TEST(PointOfView, getRight )
+{
+    PointOfView pov{
+        glm::vec3(1.0, 2.0, 3.0),
+        0.0f,
+        0.0f,
+        getRotatedMatrix(0.0f, glm::pi<float>() / 4.0),
+        "myRoom"
+    };
+    auto right = pov.getRight();
+    console->info("{}", vec3_to_string(right));
+    ASSERT_TRUE(glm::distance(right, glm::vec3(0.7, 0.0, -0.7))< 0.05f);
 }

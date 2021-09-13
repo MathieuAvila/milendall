@@ -19,6 +19,15 @@ struct PointOfView
     /** @brief up vector */
     glm::vec3 up;
 
+    /** @brief get "forward" vector, computed from local_reference */
+    glm::vec3 getDirection();
+
+    /** @brief get "up" vector, computed from local_reference */
+    glm::vec3 getUp();
+
+    /** @brief get "right" vector, computed from local_reference */
+    glm::vec3 getRight();
+
     /** This is the local reference of the object. This is changed when crossing a portal in order
      * to let direction/up the same, while changing the local frame of reference for the PoV. */
     glm::mat3x3 local_reference;
@@ -37,7 +46,12 @@ struct PointOfView
 
     bool operator==(const PointOfView&) const;
 
+    /** @brief Build a new PoV when a change of room occurs */
     PointOfView changeCoordinateSystem(std::string newRoom, const glm::mat4& newMatrix) const;
+
+    /** @brief Build a new PoV where matrix is premultipled by another frame of reference */
+    PointOfView prependCoordinateSystem(const glm::mat3& newMatrix) const;
+
 };
 
 std::string to_string(const PointOfView&);
