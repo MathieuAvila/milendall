@@ -186,6 +186,7 @@ TEST(Level, isWallReached_0_no_hit) {
     glm::vec3 destination(5.0, 2.0, 2.0);
     float radius = 1.0f;
     PointOfView endPoint;
+    PointOfView destinationEndPoint;
     glm::vec3 normal;
     float distance;
     FaceHard* face;
@@ -194,7 +195,7 @@ TEST(Level, isWallReached_0_no_hit) {
             origin,
             destination,
             radius,
-            endPoint,
+            endPoint,destinationEndPoint,
             normal,
             distance,
             face
@@ -223,6 +224,7 @@ TEST(Level, isWallReached_1_hit_ground_no_matrix_change) {
     glm::vec3 destination(5.0, -1.0, 3.0);
     float radius = 1.0f;
     PointOfView endPoint;
+    PointOfView destinationEndPoint;
     glm::vec3 normal;
     float distance;
     FaceHard* face;
@@ -231,7 +233,7 @@ TEST(Level, isWallReached_1_hit_ground_no_matrix_change) {
             origin,
             destination,
             radius,
-            endPoint,
+            endPoint,destinationEndPoint,
             normal,
             distance,
             face
@@ -268,6 +270,7 @@ TEST(Level, isWallReached_2_hit_wall_matrix_change) {
     glm::vec3 destination(6.5f, 2.0f, -2.0f);
     float radius = 1.0f;
     PointOfView endPoint;
+    PointOfView destinationEndPoint;
     glm::vec3 normal;
     float distance;
     FaceHard* face;
@@ -276,7 +279,7 @@ TEST(Level, isWallReached_2_hit_wall_matrix_change) {
             origin,
             destination,
             radius,
-            endPoint,
+            endPoint,destinationEndPoint,
             normal,
             distance,
             face
@@ -310,6 +313,7 @@ TEST(Level, isWallReached_3_no_hit_cross_portal) {
     glm::vec3 destination(5.25, 1.0, -0.5);
     float radius = 0.2f;
     PointOfView endPoint;
+    PointOfView destinationEndPoint;
     glm::vec3 normal;
     float distance;
     FaceHard* face;
@@ -318,7 +322,7 @@ TEST(Level, isWallReached_3_no_hit_cross_portal) {
             origin,
             destination,
             radius,
-            endPoint,
+            endPoint,destinationEndPoint,
             normal,
             distance,
             face
@@ -344,6 +348,7 @@ TEST(Level, isWallReached_4_hit_cross_portal_wall_no_matrix_change) {
     glm::vec3 destination(5.25, 1.0, -5.0f); // hit the wall
     float radius = 0.2f;
     PointOfView endPoint;
+    PointOfView destinationEndPoint;
     glm::vec3 normal;
     float distance;
     FaceHard* face;
@@ -352,7 +357,7 @@ TEST(Level, isWallReached_4_hit_cross_portal_wall_no_matrix_change) {
             origin,
             destination,
             radius,
-            endPoint,
+            endPoint,destinationEndPoint,
             normal,
             distance,
             face

@@ -87,6 +87,7 @@ bool Level::isWallReached(
             const glm::vec3& destination,
             const float radius,
             PointOfView& endPoint,
+            PointOfView& destinationEndPoint,
             glm::vec3& normal,
             float& distance,
             FaceHard*& face
@@ -136,6 +137,7 @@ bool Level::isWallReached(
         if (!wall_reach && !portal_reach) {
             endPoint = current_origin;
             endPoint.position = current_destination;
+            destinationEndPoint = endPoint;
             distance = current_distance;
         }
 
@@ -143,6 +145,8 @@ bool Level::isWallReached(
         if (wall_reach) {
             endPoint = current_origin;
             endPoint.position = wall_changePoint;
+            destinationEndPoint = current_origin;
+            destinationEndPoint.position = current_destination;
             normal = wall_normal;
             distance = wall_distance;
             face = wall_face;

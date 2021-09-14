@@ -56,6 +56,7 @@ class Level : public SpaceResolver
             const glm::vec3& destination,
             const float radius,
             PointOfView& endPoint,
+            PointOfView& destinationEndPoint,
             glm::vec3& normal,
             float& distance,
             FaceHard*& face

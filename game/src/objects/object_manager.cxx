@@ -1,6 +1,9 @@
 #include "object_manager.hxx"
 
 #include "space_resolver.hxx"
+#include <glm/gtx/projection.hpp>
+
+#define GLM_ENABLE_EXPERIMENTAL 1
 
 struct FaceHard;
 
@@ -43,25 +46,34 @@ void ObjectManager::update(float time_delta)
         auto impulse = p->object.get()->getRequestedMovement().impulse;
         auto timed_impulse = impulse * time_delta;
         auto newPos = p->mainPosition.position + p->mainPosition.local_reference * timed_impulse;
+        bool wall_bounced;
 
-        PointOfView endPoint;
-        glm::vec3 normal;
-        float distance;
-        FaceHard* face;
+        do {
+            wall_bounced = false;
+            PointOfView endPoint;
+            PointOfView destinationEndPoint;
+            glm::vec3 normal;
+            float distance;
+            FaceHard* face;
 
-        // Stop if wall is reached
-        bool hit = spaceResolver->isWallReached(
-            p->mainPosition,
-            newPos,
-            p->object.get()->getObjectDefinition().radius,
-            endPoint,
-            normal,
-            distance,
-            face);
-        p->mainPosition = endPoint;
-        if (hit) {
-            p->mainPosition.position += normal * 0.001f;
-        }
+            // Stop if wall is reached
+            bool hit = spaceResolver->isWallReached(
+                p->mainPosition,
+                newPos,
+                p->object.get()->getObjectDefinition().radius,
+                endPoint,destinationEndPoint,
+                normal,
+                distance,
+                face);
+            p->mainPosition = endPoint;
+            if (hit) {
+                p->mainPosition.position += normal * 0.00001f;
+                auto diff = destinationEndPoint.position - endPoint.position;
+                auto proj = glm::proj(diff, normal);
+                newPos =  destinationEndPoint.position - proj + normal * 0.00001f;
+                wall_bounced = true;
+            }
+        } while (wall_bounced);
     }
 }
 
