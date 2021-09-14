@@ -142,10 +142,7 @@ int main(int argc, char* argv[])
 
         fpsCounter.update();
 
-        fontRenderTextBorder("regular", currentPov.room, 25.0f, 720.0f,  1.0f,  2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
-
-        fontRenderTextBorder("regular", vec3_to_string(currentPov.position), 25.0f, 100.0f,  0.5f,  2, glm::vec3(1.0, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
-        fontRenderTextBorder("regular", currentPov.room, 25.0f, 75.0f,  0.5f,  2, glm::vec3(1.0, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
+        fontRenderTextBorder("regular", player_position.room, 25.0f, 720.0f,  1.0f,  2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
 
         fontRenderTextBorder("regular", vec3_to_string(player_position.position), 25.0f, 50.0f,  0.5f,  2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
         fontRenderTextBorder("regular", player_position.room, 25.0f, 25.0f,  0.5f,  2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
