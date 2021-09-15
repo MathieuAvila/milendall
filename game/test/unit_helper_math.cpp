@@ -124,6 +124,29 @@ TEST(HelperMath, intersectSphereTrajectoryPlane_radius) {
     ASSERT_EQ(distance, 0.5);
 }
 
+TEST(HelperMath, intersectSphereTrajectoryPlane_radius_inside_sphere) {
+
+    // plane is X/Y, starting at pZ
+    // trajectory is from 0 to 5*pZ
+    // sphere radius = 4.0
+    // intersect DIRECTLY at start of trajectory.
+    glm::vec3 position1(pO);
+    glm::vec3 position2(pZ * 5.0f);
+    glm::vec4 plane = getPlaneEquation(pZ, -vZ);
+    glm::vec3 intersect_point;
+    float distance;
+    bool result = intersectSphereTrajectoryPlane(
+        position1, position2, 4.0,
+        plane,
+        intersect_point,
+        distance
+    );
+    console->info("result {}, intersect_point {}", result, vec3_to_string(intersect_point));
+    ASSERT_TRUE(result);
+    ASSERT_EQ(intersect_point, position1);
+    ASSERT_FLOAT_EQ(distance, 0.0f);
+}
+
 TEST(HelperMath, intersectSphereTrajectoryPlane_bad_direction) {
 
     // plane is X/Y, starting at pZ

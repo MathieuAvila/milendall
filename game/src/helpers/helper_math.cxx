@@ -58,21 +58,16 @@ bool intersectSphereTrajectoryPlane(
     glm::vec3 position1, glm::vec3 position2, float radius,
     glm::vec4 plane,
     glm::vec3& intersect_center,
-    float& distance,
+    float& _distance,
     bool reversed_face
     )
 {
+    auto distance = _distance;
+
     auto plane_v = glm::vec3(plane);
 
     // compute factor if reversed
     float factor = (reversed_face ? -1.0f : 1.0f);
-
-    console->debug("factor {}", factor);
-    console->debug("glm::dot(plane_v, position2 - position1) {}", glm::dot(plane_v, position2 - position1));
-    console->debug("plane_v {}", vec3_to_string(plane_v));
-    console->debug("plane {}", vec4_to_string(plane));
-    console->debug("position1 {}", vec3_to_string(position1));
-    console->debug("position2 {}", vec3_to_string(position2));
 
     // only if i'm going against the plane, otherwise let it flow through
     if (factor * glm::dot(plane_v, position2 - position1) > 0)
@@ -80,26 +75,41 @@ bool intersectSphereTrajectoryPlane(
 
     // OK, i *may* intersect
 
-    glm::vec3 plane_orig = glm::vec3(plane) * (radius -plane.w) ;
+    glm::vec3 plane_orig = glm::vec3(plane) * (-plane.w) ;
+    glm::vec3 plane_orig_sphere = glm::vec3(plane) * (radius-plane.w) ;
     glm::vec3 plane_vec = glm::vec3(plane);
 
     glm::vec3 vec_direction = glm::normalize( position2 - position1);
 
-    console->debug("plane_orig {}", vec3_to_string(plane_orig));
-    console->debug("plane_vec {}", vec3_to_string(plane_vec));
-    console->debug("vec_direction {}", vec3_to_string(vec_direction));
-
-    bool result = glm::intersectRayPlane(
+    float distance_origin; // will be thrashed.
+    bool result_origin = glm::intersectRayPlane(
         position1,
         vec_direction,
-        plane_orig, plane_vec, distance);
-    if (result) {
-        intersect_center = position1 + vec_direction * distance;
-        console->debug("intersect_center {}", vec3_to_string(intersect_center));
-    }
-    if ((distance <= 0.0f)||(distance > glm::length(position2 - position1)) )
+        plane_orig, plane_vec, distance_origin);
+    bool result_sphere = glm::intersectRayPlane(
+        position1,
+        vec_direction,
+        plane_orig_sphere, plane_vec, distance);
+
+    if (!result_origin)
         return false;
-    return result;
+
+    if (result_origin && !result_sphere) {
+        // we're on it.
+        console->debug("success, sphere is inside");
+        _distance = 0.0f;
+        intersect_center = position1;
+        return true;
+    }
+
+    if ((distance <= 0.0f)||(distance > radius + glm::length(position2 - position1)) )
+        return false;
+    console->debug("success distance = {}", distance);
+
+    intersect_center = position1 + vec_direction * distance;
+    _distance = distance;
+
+    return true;
 };
 
 #define square(a) (dot(a,a))
@@ -107,7 +117,7 @@ bool intersectSphereTrajectoryPlane(
 bool intersectSphereTrajectorySegment(
     glm::vec3 position1, glm::vec3 position2, float radius,
     glm::vec3 A, glm::vec3 B,
-    glm::vec3& intersect_center, float& distance, glm::vec3& normal)
+    glm::vec3& intersect_center, float& _distance, glm::vec3& normal)
 {
     glm::vec3& M = position1;
     glm::vec3& N = position2;
@@ -115,8 +125,9 @@ bool intersectSphereTrajectorySegment(
     glm::vec3 MN = N - M;
     glm::vec3 AM = M - A;
 
-    console->debug("AB={}", vec3_to_string(AB));
-    console->debug("MN={}", vec3_to_string(MN));
+    //console->info("distance={}", distance);
+    //console->info("AB={}", vec3_to_string(AB));
+    //console->info("MN={}", vec3_to_string(MN));
 
     float square_ab  = square(AB);
     float x1 = dot(AB, MN) / square_ab;
@@ -128,7 +139,7 @@ bool intersectSphereTrajectorySegment(
 
     float delta = b*b - 4.0f*a*c;
 
-    console->debug("a={}, b={}, c={}, delta={} -b/2a ={}", a,b,c,delta, -b/(2.0f*a) );
+    //console->debug("a={}, b={}, c={}, delta={} -b/2a ={}", a,b,c,delta, -b/(2.0f*a) );
 
     if (delta < 0)
         return false;
@@ -179,8 +190,9 @@ bool intersectSphereTrajectorySegment(
 
     // get best solution inside trajectory if it exists
 
-    distance = alpha * length;
+    _distance = alpha * length;
     normal = glm::normalize(intersect_center - impact_point);
+    console->info("segment contact, normal={} distance={}", vec3_to_string(normal), _distance);
 
     return true;
 }
