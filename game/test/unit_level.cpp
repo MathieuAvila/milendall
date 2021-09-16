@@ -378,3 +378,44 @@ TEST(Level, isWallReached_5_hit_cross_portal_wall_matrix_change) {
     // pwa, grosse flemme.
 }
 
+TEST(Level, isWallReached_6_border_hit) {
+
+    // special case where it's a hit on the border.
+
+
+    InSequence s; GLMock mock;
+    auto level = loadLevel("2_rooms_1_gate");
+
+    PointOfView origin(
+        glm::vec3(3.2, 3.5, 6.8f),
+        0.0f, 0.0f,
+        glm::mat4(1.0f),
+        "room2"
+    );
+    glm::vec3 destination(3.2, 2.5, 6.8f); // hit the wall of the gate, on the border
+    float radius = 0.7f;
+    PointOfView endPoint;
+    PointOfView destinationEndPoint;
+    glm::vec3 normal;
+    float distance;
+    FaceHard* face;
+
+    bool hit = level->isWallReached(
+            origin,
+            destination,
+            radius,
+            endPoint,destinationEndPoint,
+            normal,
+            distance,
+            face
+            );
+    console->info("Check wall normal {}", vec3_to_string(normal));
+    console->info("endPoint = {}", to_string(endPoint));
+    console->info("distance = {}", distance);
+    ASSERT_TRUE(hit);
+    ASSERT_TRUE(glm::length(endPoint.position - glm::vec3(3.2f, 3.4f, 6.8f)) < 0.01f);
+    ASSERT_TRUE(abs(distance - 0.1f) < 0.01f);
+    ASSERT_EQ(endPoint.room, "room2");
+    ASSERT_TRUE(glm::length(normal - glm::vec3(0.0f, 1.0f, .0f)) < 0.01f);
+}
+

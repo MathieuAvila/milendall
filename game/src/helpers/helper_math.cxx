@@ -102,7 +102,7 @@ bool intersectSphereTrajectoryPlane(
         return true;
     }
 
-    if ((distance <= 0.0f)||(distance > radius + glm::length(position2 - position1)) )
+    if ((distance <= 0.0f)||(distance > glm::length(position2 - position1)) )
         return false;
     console->debug("success distance = {}", distance);
 
@@ -113,6 +113,41 @@ bool intersectSphereTrajectoryPlane(
 };
 
 #define square(a) (dot(a,a))
+
+static bool solution_2nd_degree(float a, float b, float c, float& s1, float& s2)
+{
+    float delta = b*b - 4.0f*a*c;
+
+    if (a == 0) {
+        return false;
+    }
+
+    //console->info("a={}, b={}, c={}, delta={} -b/2a ={}", a,b,c,delta, -b/(2.0f*a) );
+
+    if (delta < 0)
+        return false;
+
+    auto sqrt_delta = sqrt(delta);
+
+    if (a > 0) {
+        s1 = (-b - sqrt_delta) / (2*a);
+        s2 = (-b + sqrt_delta) / (2*a);
+    } else {
+        s2 = (-b - sqrt_delta) / (2*a);
+        s1 = (-b + sqrt_delta) / (2*a);
+    }
+
+    return true;
+}
+
+static void replace_if_valid(bool valid, float& alpha, float &new_alpha)
+{
+        if ((new_alpha < 0.0f) || (new_alpha > 1.0f))
+            return;
+        if ((!valid) || (new_alpha < alpha))
+            alpha = new_alpha;
+        valid = true;
+}
 
 bool intersectSphereTrajectorySegment(
     glm::vec3 position1, glm::vec3 position2, float radius,
@@ -125,10 +160,6 @@ bool intersectSphereTrajectorySegment(
     glm::vec3 MN = N - M;
     glm::vec3 AM = M - A;
 
-    //console->info("distance={}", distance);
-    //console->info("AB={}", vec3_to_string(AB));
-    //console->info("MN={}", vec3_to_string(MN));
-
     float square_ab  = square(AB);
     float x1 = dot(AB, MN) / square_ab;
     float x2 = dot(AB, AM) / square_ab;
@@ -137,52 +168,80 @@ bool intersectSphereTrajectorySegment(
     float b = 2.0f *square_ab * x1 * x2 - 2.0f * dot(AM,MN);
     float c = radius*radius + x2*x2*square_ab - square(AM) ;
 
-    float delta = b*b - 4.0f*a*c;
-
-    //console->debug("a={}, b={}, c={}, delta={} -b/2a ={}", a,b,c,delta, -b/(2.0f*a) );
-
-    if (delta < 0)
-        return false;
-
-    auto sqrt_delta = sqrt(delta);
-    auto length = glm::length(MN);
-
     float alpha1, alpha2;
 
-    if (a > 0) {
-        alpha1 = (-b - sqrt_delta) / (2*a);
-        alpha2 = (-b + sqrt_delta) / (2*a);
-    } else {
-        alpha2 = (-b - sqrt_delta) / (2*a);
-        alpha1 = (-b + sqrt_delta) / (2*a);
-    }
+    if (!solution_2nd_degree(a, b, c, alpha1, alpha2))
+        return false;
 
     // if alpha1 is past trajectory, no way we can intersect
     if (alpha1 > 1.0) {
-        console->debug("alpha1 > 1.0 , no contact");
+        //console->debug("alpha1 > 1.0 , no contact");
         return false;
     }
 
     // if alpha2 is before trajectory, no way we can intersect
     if (alpha2 < 0.0) {
-        console->debug("alpha2 < 0.0 , no contact");
+        //console->debug("alpha2 < 0.0 , no contact");
         return false;
     }
 
-    // if we're in the center, it's clear we've already crossed the segment.
-    // Treat this as immediate contact
-    if ((alpha1 < 0.0)&& (alpha2 >= 0.0)) {
-        console->debug(" alpha1={} alpha2={} , already in contact at origin", alpha1, alpha2);
-        alpha1 = 0.0;
+    auto beta1 = alpha1 * x1 + x2;
+    //auto beta2 = alpha2 * x1 + x2;
+    //if (beta2 < beta1) std::swap(beta1, beta2)
+    //console->info("beta1={}, beta2={}", beta1, beta2);
+
+    float alpha; // good alpha, if retained.
+
+    if ((beta1 < 0.0f) || (beta1 > 1.0f)){
+        //console->debug("beta1 out-of-bound, check contact on A or B");
+
+        float alpha_a_1, alpha_a_2, alpha_b_1, alpha_b_2;
+
+        glm::vec3 BM = M-B;
+
+        bool has_valid_sol = false;
+
+        // check A
+        a = square(MN);
+        b = 2 * dot(MN, AM);
+        c = square(AM) - radius*radius;
+        bool sol_A = solution_2nd_degree(a, b, c, alpha_a_1, alpha_a_2);
+
+        // check B
+        b = 2 * dot(MN, BM);
+        c = square(BM) - radius*radius;
+        bool sol_B = solution_2nd_degree(a, b, c, alpha_b_1, alpha_b_2);
+
+        if (sol_A) {
+            replace_if_valid(has_valid_sol, alpha, alpha_a_1);
+            replace_if_valid(has_valid_sol, alpha, alpha_a_2);
+        }
+        if (sol_B) {
+            replace_if_valid(has_valid_sol, alpha, alpha_b_1);
+            replace_if_valid(has_valid_sol, alpha, alpha_b_2);
+        }
+        if (!has_valid_sol)
+            return false;
+        // alpha is set to nearest solution
+    }
+    else {
+        alpha = alpha1;
+
+        // if we're in the center, it's clear we've already crossed the segment.
+        // Treat this as immediate contact
+        if ((alpha1 < 0.0)&& (alpha2 >= 0.0)) {
+            //console->info(" alpha={}, already in contact at origin", alpha);
+            alpha = 0.0;
+        }
     }
 
-    float alpha = alpha1;
+
 
     intersect_center = M + alpha * MN;
     //auto S2 = M + alpha2 * MN;
 
     auto beta = alpha * x1 + x2;
-    // if beta is outside of segment, compute if there's a matching point further
+    // if beta is outside of segment, compute if there's a matching point closer
     // TODO
 
     // compute impact point on segment
@@ -190,9 +249,24 @@ bool intersectSphereTrajectorySegment(
 
     // get best solution inside trajectory if it exists
 
+    auto length = glm::length(MN);
     _distance = alpha * length;
     normal = glm::normalize(intersect_center - impact_point);
-    console->info("segment contact, normal={} distance={}", vec3_to_string(normal), _distance);
+
+    console->info("A={}", vec3_to_string(A));
+    console->info("B={}", vec3_to_string(B));
+    console->info("Position1={}", vec3_to_string(position1));
+    console->info("Position2={}", vec3_to_string(position2));
+    console->info("radius={}", radius);
+
+    console->info("impact_point={}", vec3_to_string(impact_point));
+    console->info("distance={}", _distance);
+    console->info("beta1={}", beta1);
+    console->info("alpha1={}", alpha1);
+    console->info("alpha2={}", alpha2);
+    console->info("AB={}", vec3_to_string(AB));
+    console->info("MN={}", vec3_to_string(MN));
+    console->info("normal={}", vec3_to_string(normal));
 
     return true;
 }

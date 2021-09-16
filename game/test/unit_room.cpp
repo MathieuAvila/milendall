@@ -96,9 +96,9 @@ TEST(Room, isWallReached_0_simple_NOT_reached) {
 
     auto room = loadRoom("/3_rooms_3_gates/room1/room.gltf");
 
-    glm::vec3 origin(3.0f, 3.0f, 3.0f);
-    glm::vec3 destination(3.0f, 2.0f, 3.0f);
-    float radius = 1.0f;
+    glm::vec3 origin(3.0f, 2.0f, 2.5f);
+    glm::vec3 destination(3.0f, 1.0f, 2.5f);
+    float radius = 0.5f;
 
     glm::vec3 hitPoint;
     glm::vec3 normal;
@@ -125,8 +125,8 @@ TEST(Room, isWallReached_1_simple_reached) {
 
     auto room = loadRoom("/3_rooms_3_gates/room1/room.gltf");
 
-    glm::vec3 origin(3.0f, 3.0f, 3.0f);
-    glm::vec3 destination(3.0f, -1.0f, 3.0f);
+    glm::vec3 origin(3.0f, 2.0f, 2.5f);
+    glm::vec3 destination(3.0f, -1.0f, 2.5f);
     float radius = 1.0f;
 
     glm::vec3 hitPoint;
@@ -143,9 +143,9 @@ TEST(Room, isWallReached_1_simple_reached) {
     console->info("Check wall hitPoint {}", vec3_to_string(hitPoint));
 
     EXPECT_TRUE(reached);
-    ASSERT_FLOAT_EQ(distance, 2.0f);
+    ASSERT_FLOAT_EQ(distance, 1.0f);
     EXPECT_EQ(normal, glm::vec3(0.0f, 1.0f, 0.0f)); // up
-    EXPECT_EQ(hitPoint, glm::vec3(3.0f, 1.0f, 3.0f));
+    EXPECT_EQ(hitPoint, glm::vec3(3.0f, 1.0f, 2.5f));
 }
 
 
@@ -176,7 +176,7 @@ TEST(Room, isWallReached_2_simple_CORNER_reached) {
     EXPECT_TRUE(reached);
     ASSERT_FLOAT_EQ(distance, 1.7320509f);
     EXPECT_TRUE(glm::length(normal - glm::vec3(0.0f, 1.0f, 0.0f)) < 0.1f); // up
-    EXPECT_TRUE(glm::length(hitPoint - glm::vec3(1.1f, 1.0f, 1.1f)) < 0.1f);
+    EXPECT_TRUE(glm::length(hitPoint - glm::vec3(1.1f , 1.0f , 1.1f)) < 0.1f);
 
     // 2: hit wall 1
     origin = glm::vec3(2.0f, 2.1f, 2.1f);
@@ -201,8 +201,8 @@ TEST(Room, isWallReached_2_simple_CORNER_reached) {
     console->info("Check wall hitPoint {}", vec3_to_string(hitPoint));
     EXPECT_TRUE(reached);
     ASSERT_FLOAT_EQ(distance, 1.7320509f);
-    EXPECT_TRUE(glm::length(normal - glm::vec3(0.0f, 0.0f, 1.0f)) < 0.1f); // up
-    EXPECT_TRUE(glm::length(hitPoint - glm::vec3(1.1f, 1.1f, 1.0f)) < 0.1f);
+    EXPECT_TRUE(glm::length(normal - glm::vec3(0.0 , 0.0 , 1.0f)) < 0.1f); // up
+    EXPECT_TRUE(glm::length(hitPoint - glm::vec3( 1.1f , 1.1f , 1.0f)) < 0.1f);
 }
 
 

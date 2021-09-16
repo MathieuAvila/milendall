@@ -141,10 +141,10 @@ bool Room::getDestinationPov(
         bool crossed = roomNode->checkPortalCrossing(localOrigin.position, localDestination.position, target_room, gate, changePointLocal, distance);
         if (crossed) {
             changePoint = roomNodeInstance->getInvertedNodeMatrix() * positionToVec4(changePointLocal);
-            console->info("Crossed portal at change point local:\n{}\ndistance={}\nportal={}/{}==>{}\nwas from local:{}\nwas going to local:\n",
+            /*console->info("Crossed portal at change point local:\n{}\ndistance={}\nportal={}/{}==>{}\nwas from local:{}\nwas going to local:\n",
                 vec3_to_string(changePointLocal), distance, gate.gate, gate.from, target_room,
                 vec3_to_string(localOrigin.position), vec3_to_string(localDestination.position)
-                );
+                );*/
 
             // compute target position
             auto new_room = room_resolver->getRoom(target_room);
@@ -170,10 +170,11 @@ bool Room::isWallReached(
             float radius,
             glm::vec3& changePoint,
             glm::vec3& normal,
-            float& distance,
+            float& _distance,
             FaceHard*& face
             )
 {
+    auto distance = _distance;
     auto origin = positionToVec4(_origin);
     auto destination = positionToVec4(_destination);
     bool result = false;
@@ -189,12 +190,14 @@ bool Room::isWallReached(
         float distanceWall = distance;
         FaceHard* hitFace;
         bool crossed = roomNode->isWallReached(localOrigin, localDestination, radius, wallChangePoint, wallNormal, distanceWall, hitFace);
+        //console->info("crossed {}, distance={}, _distance={}, distanceWall={}", crossed, distance, _distance, distanceWall);
+
         if (crossed && distanceWall < distance) {
             normal = roomNodeInstance->getNodeMatrix() * vectorToVec4(wallNormal);
-            distance = distanceWall;
+            _distance = distanceWall;
             changePoint = roomNodeInstance->getNodeMatrix() * positionToVec4(wallChangePoint);
             face = hitFace;
-            console->info("Hit wall at: {}, distance={}", vec3_to_string(changePoint), distance);
+            //console->info("Hit wall at: {}, distance={}", vec3_to_string(changePoint), distance);
             result = true;
         }
     }

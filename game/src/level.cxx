@@ -158,8 +158,8 @@ bool Level::isWallReached(
             current_origin = portal_newPovChangePoint;
             current_destination = portal_newPovDestination.position;
             // need to check in new space
-            console->info("Portal crossed.\nNew origin: {}\nNew destination: {}",
-                    to_string(current_origin), vec3_to_string(current_destination));
+            //console->info("Portal crossed.\nNew origin: {}\nNew destination: {}",
+            //        to_string(current_origin), vec3_to_string(current_destination));
             need_recompute = true;
         }
 

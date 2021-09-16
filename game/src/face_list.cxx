@@ -105,8 +105,10 @@ bool FaceList::Face::checkTrajectoryCross(glm::vec3 p0, glm::vec3 p1, glm::vec3&
     return checkSphereTrajectoryCross(p0, p1, 0.0f, impact,distance, impact_normal, reversed);
 }
 
-bool FaceList::Face::checkSphereTrajectoryCross(glm::vec3 p0, glm::vec3 p1, float radius, glm::vec3& impact, float& distance, glm::vec3& impact_normal, bool reversed) const
+bool FaceList::Face::checkSphereTrajectoryCross(glm::vec3 p0, glm::vec3 p1, float radius, glm::vec3& impact, float& _distance, glm::vec3& impact_normal, bool reversed) const
 {
+    _distance = glm::length(p1 - p0);
+    auto distance = _distance;
     if (!intersectSphereTrajectoryPlane(
         p0, p1, radius,
         plane,
@@ -117,32 +119,41 @@ bool FaceList::Face::checkSphereTrajectoryCross(glm::vec3 p0, glm::vec3 p1, floa
 
     if (checkInVolume(impact))
         {
-            console->info("radial contact\n distance={}\n impact={}\n plane={}",
+            /*console->info("radial contact\n distance={}\n impact={}\n plane={}",
                 distance,
                 vec3_to_string(impact),
                 vec4_to_string(plane)
-                );
+                );*/
 
             impact_normal = normal;
+            _distance = distance;
             return true;
         }
 
     // not radial contact, but may be side contact. Check ALL borders.
+    distance = _distance;
+    // console->info("Check side contact plane={} distance={}", vec4_to_string(plane), distance);
+
     bool found = false;
     glm::vec3 shortest_normal;
+    auto distanceOrg = _distance;
 
     for (auto i = 0 ; i<indices.size(); i++) {
         auto A = points.get()->getPoints()[indices[i].index];
         auto B = points.get()->getPoints()[indices[(i + 1) % indices.size()].index];
+        distance = distanceOrg;
         if (intersectSphereTrajectorySegment(
             p0, p1, radius,
             A,B,
             impact,
             distance,
             shortest_normal)) {
-                found = true;
-                p1 = impact;
-                impact_normal = shortest_normal;
+                if (distance < _distance) {
+                    found = true;
+                    p1 = impact;
+                    _distance = distance;
+                    impact_normal = shortest_normal;
+                }
             }
         }
     return found;

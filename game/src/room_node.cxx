@@ -205,7 +205,7 @@ bool RoomNode::checkPortalCrossing(
                     gate = GateIdentifier{portal.gate, !portal.in};
                     roomTarget = portal.in ? portal.connect[1] : portal.connect[0];
                     result = true;
-                    console->info("Portal {} was crossed, going to room {}", gate.gate, roomTarget);
+                    //console->info("Portal {} was crossed, going to room {}", gate.gate, roomTarget);
                 }
             }
         }
@@ -219,10 +219,11 @@ bool RoomNode::isWallReached(
             float radius,
             glm::vec3& hitPoint,
             glm::vec3& normal,
-            float& distance,
+            float& _distance,
             FaceHard*& face
             )
 {
+    auto distance = _distance;
     bool result = false;
 
     for (auto& wall: walls) {
@@ -232,15 +233,15 @@ bool RoomNode::isWallReached(
             glm::vec3 wallNormal;
             float distanceWall = distance;
             bool crossed = c_face.checkSphereTrajectoryCross(origin, destination, radius, wallHitPoint, distanceWall, wallNormal);
-            //console->info("Check wall org {}, dst {} distance {}",
-            //    vec3_to_string(origin), vec3_to_string(destination), distance);
-            if (crossed && distanceWall < distance) {
+            //console->info("Check wall crossed {} distance {} distanceWall {}",
+            //    crossed, distance, distanceWall);
+            if (crossed && distanceWall < _distance) {
                 normal = wallNormal;
-                distance = distanceWall;
+                _distance = distanceWall;
                 hitPoint = wallHitPoint;
                 face = &wall;
                 result = true;
-                console->info("Hit wall at: {}, distance={}", vec3_to_string(wallHitPoint), distance);
+                //console->info("Hit wall at: {}, distance={}", vec3_to_string(wallHitPoint), distance);
             }
         }
     }
