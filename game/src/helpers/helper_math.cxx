@@ -5,7 +5,7 @@
 #include <glm/gtx/intersect.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-static auto console = spdlog::stdout_color_mt("math");
+static auto console = getConsole("math");
 
 std::string mat4x4_to_string(glm::mat4x4 mat)
 {
@@ -253,20 +253,20 @@ bool intersectSphereTrajectorySegment(
     _distance = alpha * length;
     normal = glm::normalize(intersect_center - impact_point);
 
-    console->info("A={}", vec3_to_string(A));
-    console->info("B={}", vec3_to_string(B));
-    console->info("Position1={}", vec3_to_string(position1));
-    console->info("Position2={}", vec3_to_string(position2));
-    console->info("radius={}", radius);
+    console->debug("A={}", vec3_to_string(A));
+    console->debug("B={}", vec3_to_string(B));
+    console->debug("Position1={}", vec3_to_string(position1));
+    console->debug("Position2={}", vec3_to_string(position2));
+    console->debug("radius={}", radius);
 
-    console->info("impact_point={}", vec3_to_string(impact_point));
-    console->info("distance={}", _distance);
-    console->info("beta1={}", beta1);
-    console->info("alpha1={}", alpha1);
-    console->info("alpha2={}", alpha2);
-    console->info("AB={}", vec3_to_string(AB));
-    console->info("MN={}", vec3_to_string(MN));
-    console->info("normal={}", vec3_to_string(normal));
+    console->debug("impact_point={}", vec3_to_string(impact_point));
+    console->debug("distance={}", _distance);
+    console->debug("beta1={}", beta1);
+    console->debug("alpha1={}", alpha1);
+    console->debug("alpha2={}", alpha2);
+    console->debug("AB={}", vec3_to_string(AB));
+    console->debug("MN={}", vec3_to_string(MN));
+    console->debug("normal={}", vec3_to_string(normal));
 
     return true;
 }

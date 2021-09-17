@@ -40,6 +40,7 @@ SET (CMAKE_CXX_FLAGS_DEBUG          "-g")
 
 add_library(game_lib STATIC
   game/src/common.hxx
+  game/src/common.cxx
   game/src/level_exception.hxx
   game/src/level.hxx
   game/src/level.cxx
