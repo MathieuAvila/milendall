@@ -15,14 +15,21 @@
 
 using namespace std;
 
-static auto console = spdlog::stdout_color_mt("unit_face_list");
-
 static const auto index_points = 21;
 static const auto index_hard = 22;
 static const auto index_portal = 23;
 
 static const auto index_points_room_ground = 9;
 static const auto index_faces_room_ground = 10;
+
+static std::shared_ptr<spdlog::logger> console = getConsole("unit_face_list");
+
+class FaceListTest : public ::testing::Test {
+ protected:
+  void SetUp() override {
+     spdlog::get("math")->set_level(spdlog::level::debug);
+  }
+};
 
 std::unique_ptr<GltfDataAccessor> get_test_face_list_accessor()
 {
@@ -37,7 +44,15 @@ std::unique_ptr<GltfDataAccessor> get_test_face_list_accessor()
     return elem;
 }
 
-TEST(FaceList, PointsBlock_Load_points) {
+TEST_F(FaceListTest, PointsBlock_Load_points) {
+
+
+spdlog::set_level(spdlog::level::debug);
+
+    set_level(spdlog::level::debug);
+    //console->set_level(spdlog::level::debug);
+    console->debug("test debug");
+console->info("test info");
 
     auto data_accessor = get_test_face_list_accessor();
     auto data = data_accessor->accessId(index_points);
@@ -51,14 +66,14 @@ TEST(FaceList, PointsBlock_Load_points) {
 
 }
 
-TEST(FaceList, PointsBlock_Load_points_invalid_types) {
+TEST_F(FaceListTest, PointsBlock_Load_points_invalid_types) {
     auto data_accessor = get_test_face_list_accessor();
     auto data = data_accessor->accessId(index_portal);
     EXPECT_THROW(PointsBlock(std::move(data)), GltfException);
 }
 
 
-TEST(FaceList, FaceList_Load_1_faces) {
+TEST_F(FaceListTest, FaceList_Load_1_faces) {
     auto data_accessor = get_test_face_list_accessor();
 
     auto data_points = data_accessor->accessId(index_points);
@@ -77,7 +92,7 @@ TEST(FaceList, FaceList_Load_1_faces) {
     EXPECT_EQ(faces.front().indices[3].index, 19);
 }
 
-TEST(FaceList, FaceList_Load_faces_invalid_types) {
+TEST_F(FaceListTest, FaceList_Load_faces_invalid_types) {
 
     auto data_accessor = get_test_face_list_accessor();
 
@@ -89,7 +104,7 @@ TEST(FaceList, FaceList_Load_faces_invalid_types) {
 
 }
 
-TEST(FaceList, FaceList_Load_multi_faces) {
+TEST_F(FaceListTest, FaceList_Load_multi_faces) {
     auto data_accessor = get_test_face_list_accessor();
 
     auto data_points = data_accessor->accessId(index_points);
@@ -135,7 +150,7 @@ void check_normal_plane(
         EXPECT_EQ(f.plane, plane);
 }
 
-TEST(FaceList, FaceList_normals_planes) {
+TEST_F(FaceListTest, FaceList_normals_planes) {
 
     auto data_accessor = get_test_face_list_accessor();
     auto data_points = data_accessor->accessId(9);
@@ -168,7 +183,7 @@ std::list<FaceList::Face> getGroundFaces()
     return faceList.getFaces();
 }
 
-TEST(FaceList, FaceList_normals_planes_for_each_point) {
+TEST_F(FaceListTest, FaceList_normals_planes_for_each_point) {
 
     // will check normals computations for each point
 
@@ -182,7 +197,7 @@ TEST(FaceList, FaceList_normals_planes_for_each_point) {
     EXPECT_EQ(faces.front().indices[3].plane, glm::vec4(1,0,0,0));
 }
 
-TEST(FaceList, FaceList_check_point_inside_space) {
+TEST_F(FaceListTest, FaceList_check_point_inside_space) {
 
     // will check computing if a point is inside space defined by points normals
     // will check normals computations for each point
@@ -199,7 +214,7 @@ TEST(FaceList, FaceList_check_point_inside_space) {
     ASSERT_FALSE(face.checkInVolume(glm::vec3(0.0, 0.0, -1.0) )); // outside 4th border
 }
 
-TEST(FaceList, FaceList_trajectory_ok) {
+TEST_F(FaceListTest, FaceList_trajectory_ok) {
 
     // will check trajectory intersection is fine
     auto faces = getGroundFaces();
@@ -216,7 +231,7 @@ TEST(FaceList, FaceList_trajectory_ok) {
     ASSERT_EQ(normal, glm::vec3(0.0, 1.0, 0.0));
 }
 
-TEST(FaceList, FaceList_trajectory_bad_direction) {
+TEST_F(FaceListTest, FaceList_trajectory_bad_direction) {
 
     // will check trajectory crosses face in bad direction
 
@@ -231,7 +246,7 @@ TEST(FaceList, FaceList_trajectory_bad_direction) {
         impact, distance, normal));
 }
 
-TEST(FaceList, FaceList_trajectory_bad_direction_reversed) {
+TEST_F(FaceListTest, FaceList_trajectory_bad_direction_reversed) {
 
     // will check trajectory crosses face in bad direction, but in reversed mode that is OK
 
@@ -246,7 +261,7 @@ TEST(FaceList, FaceList_trajectory_bad_direction_reversed) {
         impact, distance, normal, true));
 }
 
-TEST(FaceList, FaceList_trajectory_doesnt_touch) {
+TEST_F(FaceListTest, FaceList_trajectory_doesnt_touch) {
 
     // will check trajectory doesn't reach surface
 
@@ -261,7 +276,7 @@ TEST(FaceList, FaceList_trajectory_doesnt_touch) {
         impact, distance, normal));
 }
 
-TEST(FaceList, FaceList_trajectory_borders) {
+TEST_F(FaceListTest, FaceList_trajectory_borders) {
 
     // will check trajectory doesn't reach surface
 
