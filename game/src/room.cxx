@@ -16,7 +16,7 @@
 #include "point_of_view.hxx"
 #include "room_draw_context.hxx"
 
-static auto console = spdlog::stdout_color_mt("room");
+static auto console = getConsole("room");
 
 bool GateIdentifier::operator< (const GateIdentifier& b) const
 {

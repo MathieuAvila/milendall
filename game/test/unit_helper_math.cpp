@@ -6,7 +6,7 @@
 #include <glm/gtc/epsilon.hpp>
 #include "test_common.hpp"
 
-static auto console = spdlog::stdout_color_mt("unit_helper_math");
+static auto console = getConsole("unit_helper_math");
 
 glm::vec3 pO(0,0,0);
 glm::vec3 pX(1,0,0);

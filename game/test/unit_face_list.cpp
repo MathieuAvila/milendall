@@ -22,7 +22,7 @@ static const auto index_portal = 23;
 static const auto index_points_room_ground = 9;
 static const auto index_faces_room_ground = 10;
 
-static std::shared_ptr<spdlog::logger> console = getConsole("unit_face_list");
+static auto console = getConsole("unit_face_list");
 
 class FaceListTest : public ::testing::Test {
  protected:

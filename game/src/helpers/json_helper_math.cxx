@@ -2,7 +2,7 @@
 #include "json_helper_math.hxx"
 #include "gltf_exception.hxx"
 
-static auto console = spdlog::stdout_color_mt("json_math");
+static auto console = getConsole("json_math");
 
 glm::mat4x4 jsonGetMatrix4x4(nlohmann::json& e)
 {

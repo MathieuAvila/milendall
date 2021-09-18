@@ -7,7 +7,7 @@
 
 #include "helper_math.hxx"
 
-static auto console = spdlog::stdout_color_mt("face_list");
+static auto console = getConsole("face_list");
 
 PointsBlock::PointsBlock(std::unique_ptr<GltfDataAccessorIFace::DataBlock> data)
 {

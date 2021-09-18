@@ -12,7 +12,7 @@
 
 #include "gltf_exception.hxx"
 
-static auto console = spdlog::stdout_color_mt("unit_json_math");
+static auto console = getConsole("unit_json_math");
 
 TEST(JSON_HELPER_MATH, matrix_read) {
     auto json_element = json::parse("{\"matrix\": [1,2,3,4,  5,6,7,8, 9,10,11,12, 13,14,15,16]}" );

@@ -18,10 +18,11 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 #include "gl_init.hxx"
+#include "common.hxx"
 
 using namespace glm;
 
-static auto console = spdlog::stdout_color_mt("font");
+static auto console = getConsole("font");
 
 /// Holds all state information relevant to a character as loaded using FreeType
 struct Character {

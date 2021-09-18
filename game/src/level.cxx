@@ -10,7 +10,7 @@
 #include "common.hxx"
 #include <helper_math.hxx>
 
-static auto console = spdlog::stdout_color_mt("level");
+static auto console = getConsole("level");
 
 struct LevelRoomResolver : public RoomResolver
 {

@@ -14,7 +14,7 @@ using SGltfMaterialLibraryImpl = std::shared_ptr<GltfMaterialLibraryImpl>;
 using WGltfMaterialLibraryImpl = std::weak_ptr<GltfMaterialLibraryImpl>;
 using PGltfMaterialLibraryImpl = GltfMaterialLibraryImpl*;
 
-static auto console = spdlog::stdout_color_mt("texture");
+static auto console = getConsole("texture");
 
 
 class GltfTextureReference {

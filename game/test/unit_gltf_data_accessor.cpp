@@ -11,7 +11,7 @@
 using namespace nlohmann;
 using namespace std;
 
-static auto console = spdlog::stdout_color_mt("unit_gltf_data_accessor");
+static auto console = getConsole("unit_gltf_data_accessor");
 
 std::unique_ptr<GltfDataAccessor> get_test_accessor()
 {

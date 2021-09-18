@@ -6,7 +6,7 @@
 #include "common.hxx"
 #include "file_library.hxx"
 
-static auto console = spdlog::stdout_color_mt("library");
+static auto console = getConsole("library");
 
 std::string FileLibrary::UriReference::getPath() const
 {

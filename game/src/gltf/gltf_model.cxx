@@ -11,7 +11,7 @@
 
 #include "gl_init.hxx"
 
-static auto console = spdlog::stdout_color_mt("gltf_model");
+static auto console = getConsole("gltf_model");
 
 static glm::mat4x4 identity = glm::mat4(1.0f);
 

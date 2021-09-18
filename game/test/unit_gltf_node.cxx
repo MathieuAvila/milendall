@@ -11,7 +11,7 @@
 #include <glm/vector_relational.hpp>
 #include <glm/ext/matrix_relational.hpp>
 
-static auto console = spdlog::stdout_color_mt("ut");
+static auto console = getConsole("ut");
 
 static glm::mat4x4 identity = glm::mat4(1.0f);
 

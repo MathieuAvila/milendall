@@ -16,7 +16,7 @@ using ::testing::_;
 using ::testing::InSequence;
 using namespace std;
 
-static auto console = spdlog::stdout_color_mt("ut_room");
+static auto console = getConsole("ut_room");
 
 
 std::unique_ptr<Room> loadRoom(std::string roomPath)

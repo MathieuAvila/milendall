@@ -23,7 +23,7 @@
 
 using namespace std;
 
-static auto console = spdlog::stdout_color_mt("Milendall");
+static auto console = getConsole("Milendall");
 
 // Include GLM
 #include <glm/glm.hpp>

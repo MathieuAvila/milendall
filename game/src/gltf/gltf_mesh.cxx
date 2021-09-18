@@ -8,7 +8,7 @@
 #include <glm/vec2.hpp>
 #include <GL/glew.h>
 
-static auto console = spdlog::stdout_color_mt("gltf_mesh");
+static auto console = getConsole("gltf_mesh");
 
 static void store_if_contains(int& storage, json& json, string name)
 {

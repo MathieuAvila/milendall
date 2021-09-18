@@ -22,7 +22,7 @@ GLFWwindow* window;
 using namespace glm;
 using namespace std;
 
-static auto console = spdlog::stdout_color_mt("gl_init");
+static auto console = getConsole("gl_init");
 
 
 glm::mat4 ViewMatrix;

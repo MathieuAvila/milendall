@@ -10,7 +10,7 @@
 #include "helper_math.hxx"
 #include "test_common.hpp"
 
-static auto console = spdlog::stdout_color_mt("ut_pov");
+static auto console = getConsole("ut_pov");
 
 TEST(PointOfView, changeCoordinateSystem)
 {

@@ -13,7 +13,7 @@
 using ::testing::_;
 using ::testing::InSequence;
 
-static auto console = spdlog::stdout_color_mt("ut_level");
+static auto console = getConsole("ut_level");
 
 TEST(Level, LoadLevelOneRoom) {
 

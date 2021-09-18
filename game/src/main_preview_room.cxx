@@ -19,7 +19,7 @@
 
 using namespace std;
 
-static auto console = spdlog::stdout_color_mt("room_preview");
+static auto console = getConsole("room_preview");
 
 // Include GLM
 #include <glm/glm.hpp>

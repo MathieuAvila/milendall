@@ -2,7 +2,7 @@
 #include "json_helper_accessor.hxx"
 #include "gltf_exception.hxx"
 
-static auto console = spdlog::stdout_color_mt("json");
+static auto console = getConsole("json");
 
 nlohmann::json& jsonGetElementByName(json& file, string element)
 {

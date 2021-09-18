@@ -16,7 +16,7 @@
 #include "point_of_view.hxx"
 #include "room_draw_context.hxx"
 
-static auto console = spdlog::stdout_color_mt("room_node");
+static auto console = getConsole("room_node");
 
 
 RoomNode::FacePortal::FacePortal(

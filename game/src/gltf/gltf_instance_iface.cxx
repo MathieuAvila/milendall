@@ -3,7 +3,7 @@
 #include "gltf_mesh.hxx"
 #include "gltf_instance_iface.hxx"
 
-static auto console = spdlog::stdout_color_mt("gltf_instance");
+static auto console = getConsole("gltf_instance");
 
 GltfInstance::GltfInstance(int node_count)
 {
