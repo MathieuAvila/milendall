@@ -28,7 +28,7 @@ find_package(GMock REQUIRED)
 include(GoogleTest)
 
 include_directories(${FREETYPE_INCLUDE_DIR_ft2build} ${FREETYPE_INCLUDE_DIR_freetype2})
-include_directories(game/src/ game/src/helpers/ game/src/objects/ game/src/gltf/)
+include_directories(game/src/ game/src/helpers/ game/src/objects/ game/src/gltf/ game/src/structure)
 
 SET (CMAKE_C_COMPILER               "/usr/bin/clang-11")
 SET (CMAKE_CXX_COMPILER             "/usr/bin/clang++-11")
@@ -41,16 +41,20 @@ SET (CMAKE_CXX_FLAGS_DEBUG          "-g")
 add_library(game_lib STATIC
   game/src/common.hxx
   game/src/common.cxx
-  game/src/level_exception.hxx
-  game/src/level.hxx
-  game/src/level.cxx
-  game/src/room.hxx
-  game/src/room.cxx
-  game/src/room_node.hxx
-  game/src/room_node.cxx
-  game/src/room_resolver.hxx
-  game/src/room_draw_context.hxx
-  game/src/space_resolver.hxx
+  game/src/structure/level_exception.hxx
+  game/src/structure/level.hxx
+  game/src/structure/level.cxx
+  game/src/structure/room.hxx
+  game/src/structure/room.cxx
+  game/src/structure/room_node.hxx
+  game/src/structure/room_node.cxx
+  game/src/structure/room_resolver.hxx
+  game/src/structure/room_draw_context.hxx
+  game/src/structure/space_resolver.hxx
+  game/src/structure/face_list.hxx
+  game/src/structure/face_list.cxx
+  game/src/structure/face_hard.hxx
+  game/src/structure/face_hard.cxx
   game/src/gltf/gltf_mesh.hxx
   game/src/gltf/gltf_mesh.cxx
   game/src/gltf/gltf_model.hxx
@@ -76,10 +80,6 @@ add_library(game_lib STATIC
   game/src/helpers/gl_init.hxx
   game/src/helpers/fonts.cxx
   game/src/helpers/fonts.hxx
-  game/src/face_list.hxx
-  game/src/face_list.cxx
-  game/src/face_hard.hxx
-  game/src/face_hard.cxx
   game/src/span.hxx
   game/src/objects/movable_object.hxx
   game/src/objects/object_manager.cxx
