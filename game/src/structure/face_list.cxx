@@ -92,8 +92,9 @@ const std::list<FaceList::Face>& FaceList::getFaces() const
 bool FaceList::Face::checkInVolume(glm::vec3 p) const
 {
     for (auto& i: indices) {
-        //console->info("valued {}", pointPlaneProjection(i.plane, p));
-        if (pointPlaneProjection(i.plane, p) < 0.0)
+        auto v = pointPlaneProjection(i.plane, p);
+        console->debug("valued {}", v);
+        if (v < 0.0)
             return false;
     }
     return true;
@@ -119,11 +120,11 @@ bool FaceList::Face::checkSphereTrajectoryCross(glm::vec3 p0, glm::vec3 p1, floa
 
     if (checkInVolume(impact))
         {
-            /*console->info("radial contact\n distance={}\n impact={}\n plane={}",
+            console->debug("radial contact\n distance={}\n impact={}\n plane={}",
                 distance,
                 vec3_to_string(impact),
                 vec4_to_string(plane)
-                );*/
+                );
 
             impact_normal = normal;
             _distance = distance;

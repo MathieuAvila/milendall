@@ -28,6 +28,7 @@ class FaceListTest : public ::testing::Test {
  protected:
   void SetUp() override {
      spdlog::get("math")->set_level(spdlog::level::debug);
+     spdlog::get("face_list")->set_level(spdlog::level::debug);
   }
 };
 
@@ -297,7 +298,7 @@ TEST_F(FaceListTest, FaceList_trajectory_borders) {
 
      // 3th border
     ASSERT_TRUE(face.checkSphereTrajectoryCross(
-        glm::vec3(-1.0, 1000.0, 14.0), glm::vec3(-1.0, -1000.0, 14.0), // should hit at 1.0
+        glm::vec3(-1.0, 1000.0, 13.0), glm::vec3(-1.0, -1000.0, 13.0), // should hit at 1.0
         2.0,
         impact, distance, normal));
     console->info("{}", glm::to_string(impact));
