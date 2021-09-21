@@ -192,7 +192,7 @@ bool Room::isWallReached(
         bool crossed = roomNode->isWallReached(localOrigin, localDestination, radius, wallChangePoint, wallNormal, distanceWall, hitFace);
         //console->info("crossed {}, distance={}, _distance={}, distanceWall={}", crossed, distance, _distance, distanceWall);
 
-        if (crossed && distanceWall < distance) {
+        if (crossed && distanceWall < _distance) {
             normal = roomNodeInstance->getNodeMatrix() * vectorToVec4(wallNormal);
             _distance = distanceWall;
             changePoint = roomNodeInstance->getNodeMatrix() * positionToVec4(wallChangePoint);
