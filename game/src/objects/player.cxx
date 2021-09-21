@@ -25,11 +25,14 @@ MovementWish Player::getRequestedMovement()
     glm::mat3 ownMatrix = getOwnMatrix();
     glm::vec3 left = ownMatrix * glm::vec3(2.0 , 0.0, 0.0); // I really don't know what I'm doing...
     glm::vec3 direction = ownMatrix * glm::vec3(0.0 , 0.0, 2.0);
+    glm::vec3 up = glm::vec3(0.0 , 10.0, 0.0);
 
-    wish.impulse += currentActions.forward ? direction : glm::vec3();
-    wish.impulse += currentActions.backward ? -direction : glm::vec3();
-    wish.impulse += currentActions.right ? -left : glm::vec3();
-    wish.impulse += currentActions.left ? left : glm::vec3();
+    wish.walk = glm::vec3(0.0f);
+    wish.walk += currentActions.forward ? direction : glm::vec3();
+    wish.walk += currentActions.backward ? -direction : glm::vec3();
+    wish.walk += currentActions.right ? -left : glm::vec3();
+    wish.walk += currentActions.left ? left : glm::vec3();
+    wish.walk += currentActions.jump ? up : glm::vec3();
 
     return wish;
 }

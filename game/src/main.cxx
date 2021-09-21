@@ -125,6 +125,7 @@ int main(int argc, char* argv[])
         actionSet.backward = glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS;
         actionSet.left = glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS;
         actionSet.right = glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS;
+        actionSet.jump = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
         player->setActionSet(actionSet);
 
         bool found = object_manager->getObjectPosition(player_id, player_position);

@@ -4,7 +4,9 @@
 #include "glm/mat4x4.hpp"
 
 struct MovementWish {
-    glm::vec3 impulse;
+
+    /** @brief a requested movement */
+    glm::vec3 walk;
 };
 
 /** @brief  interface object that represents an object that can be managed by ObjectManager.
