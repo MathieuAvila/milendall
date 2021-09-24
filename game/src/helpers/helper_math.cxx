@@ -4,6 +4,7 @@
 
 #include <glm/gtx/intersect.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/projection.hpp>
 
 static auto console = getConsole("math");
 
@@ -280,4 +281,12 @@ glm::mat3 getRotatedMatrix(float verticalAngle, float horizontalAngle)
     auto rotateHorizontal = glm::rotate(glm::mat4(1.0f), horizontalAngle, glm::vec3(0.0, 1.0, 0.0));
     auto rotateVertical = glm::rotate(glm::mat4(1.0f), verticalAngle, glm::vec3(1.0, 0.0, 0.0));
     return rotateHorizontal * rotateVertical;
+}
+
+glm::vec3 moveOnPlane(glm::vec3 start, glm::vec3 end, glm::vec3 normal, float coeff)
+{
+    start += normal * coeff;
+    auto diff = end - start;
+    auto proj = glm::proj(diff, normal);
+    return end - proj + normal * coeff;
 }

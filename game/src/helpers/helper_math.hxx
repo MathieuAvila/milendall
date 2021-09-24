@@ -64,4 +64,8 @@ bool intersectSphereTrajectorySegment(
     glm::vec3& intersect_center, float& distance, glm::vec3& normal
     );
 
+/** @brief get a matrix with an horizontal and vertical rotation */
 glm::mat3 getRotatedMatrix(float verticalAngle, float horizontalAngle);
+
+/** @brief Project a movement on a normal plane, and apply a coefficient to move from it */
+glm::vec3 moveOnPlane(glm::vec3 start, glm::vec3 end, glm::vec3 normal, float coeff);

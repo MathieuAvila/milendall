@@ -334,3 +334,14 @@ TEST(HelperMath, getRotatedMatrix_3_rotate_vertical_horizontal) {
     console->info("newMat {}", mat4x4_to_string(newMat));
     ASSERT_TRUE(glm::epsilonEqual(diff, 0.0f, 0.1f));
 }
+
+TEST(HelperMath, moveOnPlane) {
+
+    glm::vec3 start(10.0f,1.0f,0.0f);
+    glm::vec3 end(10.0f,0.0f,1.0f);
+    glm::vec3 normal(0.0,1.0f,0.0f);
+    float coeff = 0.1f;
+    glm::vec3 result = moveOnPlane(start, end, normal, coeff);
+    console->info("result {}", vec3_to_string(result));
+    ASSERT_TRUE(result == glm::vec3(10.0f, 1.2f, 1.0f));
+}
