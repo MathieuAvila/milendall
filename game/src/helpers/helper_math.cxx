@@ -290,3 +290,9 @@ glm::vec3 moveOnPlane(glm::vec3 start, glm::vec3 end, glm::vec3 normal, float co
     auto proj = glm::proj(diff, normal);
     return end - proj + normal * coeff;
 }
+
+bool checkAdherenceCone(glm::vec3 normal, glm::vec3 gravity, float adherence)
+{
+    auto wall_up = glm::dot(glm::normalize(gravity) , normal);
+    return (wall_up < -adherence);
+}

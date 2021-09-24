@@ -345,3 +345,11 @@ TEST(HelperMath, moveOnPlane) {
     console->info("result {}", vec3_to_string(result));
     ASSERT_TRUE(result == glm::vec3(10.0f, 1.2f, 1.0f));
 }
+
+TEST(HelperMath, checkAdherenceCone) {
+    ASSERT_TRUE(checkAdherenceCone(glm::vec3(0.0f, 1.0f ,0.0f), glm::vec3(0.0f, -1.0f ,0.0f), 0.5));
+    ASSERT_FALSE(checkAdherenceCone(glm::vec3(0.0f, 1.0f ,0.0f), glm::vec3(0.0f, 1.0f ,0.0f), 0.5));
+
+    ASSERT_TRUE(checkAdherenceCone(glm::vec3(0.0f, 1.0f ,0.0f), glm::vec3(0.0f, -5.0f , 5.0f), 0.5)); // check noramlize
+    ASSERT_FALSE(checkAdherenceCone(glm::vec3(0.0f, 1.0f ,0.0f), glm::vec3(0.0f, 5.0f , 5.0f), 0.5)); // check noramlize
+}

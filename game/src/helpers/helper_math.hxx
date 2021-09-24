@@ -69,3 +69,6 @@ glm::mat3 getRotatedMatrix(float verticalAngle, float horizontalAngle);
 
 /** @brief Project a movement on a normal plane, and apply a coefficient to move from it */
 glm::vec3 moveOnPlane(glm::vec3 start, glm::vec3 end, glm::vec3 normal, float coeff);
+
+/** @brief Compute whether a move on a wall reaches a given angle, or adherence. */
+bool checkAdherenceCone(glm::vec3 normal, glm::vec3 graivty, float adherence);
