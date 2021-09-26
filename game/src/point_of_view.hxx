@@ -13,12 +13,6 @@ struct PointOfView
     /** @brief current position, will be updated */
     glm::vec3 position;
 
-    /** @brief direction vector */
-    glm::vec3 direction;
-
-    /** @brief up vector */
-    glm::vec3 up;
-
     /** @brief get "forward" vector, computed from local_reference */
     glm::vec3 getDirection();
 
@@ -37,7 +31,7 @@ struct PointOfView
 
     PointOfView() = default;
     PointOfView(const PointOfView& obj);
-    PointOfView(const glm::vec3 _position, const glm::vec3 direction, const glm::vec3 up, glm::mat3x3 local_reference, const std::string _room);
+    PointOfView(const glm::vec3 _position, glm::mat3x3 local_reference, const std::string _room);
 
     /** @brief Build a PoV from a position, angles and a local frame.
      * Angles are used to build direction and up vectors.

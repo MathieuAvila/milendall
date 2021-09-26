@@ -107,8 +107,6 @@ int main(int argc, char* argv[])
 
         level.get()->draw(PointOfView{
             position,
-            direction,
-            up,
             glm::mat4(1.0f),
             *current_room});
 

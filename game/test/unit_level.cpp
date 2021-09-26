@@ -86,15 +86,11 @@ TEST_F(LevelTest, getDestinationPov_room1_r1r2_no_cross) {
 
     PointOfView origin{
         glm::vec3(0.0, 0.0, 0.0),
-        glm::vec3(1.0, 0.0, 0.0),
-        glm::vec3(1.0, 0.0, 0.0),
         glm::mat4(),
         "room1"
     };
     PointOfView destination{
         glm::vec3(100.0, 0.0, 0.0),
-        glm::vec3(1.0, 0.0, 0.0),
-        glm::vec3(1.0, 0.0, 0.0),
         glm::mat4(),
         "room1"
     };
@@ -113,15 +109,11 @@ TEST_F(LevelTest, getDestinationPov_room1_r1r2_cross) {
 
     PointOfView origin{
         glm::vec3(5.0, 2.0, 2.0),
-        glm::vec3(1.0, 0.0, 0.0),
-        glm::vec3(1.0, 0.0, 0.0),
         glm::mat4(1.0f),
         "room1"
     };
     PointOfView destination{
         glm::vec3(5.0, 2.0, -2.0),
-        glm::vec3(1.0, 0.0, 0.0),
-        glm::vec3(1.0, 0.0, 0.0),
         glm::mat4(1.0f),
         "room1"
     };
@@ -134,8 +126,6 @@ TEST_F(LevelTest, getDestinationPov_room1_r1r2_cross) {
 
     ASSERT_EQ(result, (PointOfView{
         glm::vec3(2.0, 2.0, 5.5),
-        glm::vec3(0.0, 0.0, -1.0),
-        glm::vec3(0.0, 0.0, -1.0),
         glm::mat4(  0.000000, 0.000000, -1.000000, 0.000000,
                     0.000000, 1.000000, 0.000000, 0.000000,
                     1.000000, 0.000000, 0.000000, 0.000000,
@@ -153,15 +143,11 @@ TEST_F(LevelTest, getDestinationPov_room2_r1r2_cross___reversed) {
 
     PointOfView origin{
         glm::vec3(0.0, 2.0, 5.0),
-        glm::vec3(1.0, 0.0, 0.0),
-        glm::vec3(1.0, 0.0, 0.0),
         glm::mat4(1.0f),
         "room2"
     };
     PointOfView destination{
         glm::vec3(5.0, 2.0, 5.0),
-        glm::vec3(1.0, 0.0, 0.0),
-        glm::vec3(1.0, 0.0, 0.0),
         glm::mat4(1.0f),
         "room2"
     };
@@ -174,8 +160,6 @@ TEST_F(LevelTest, getDestinationPov_room2_r1r2_cross___reversed) {
 
     ASSERT_EQ(result, (PointOfView{
         glm::vec3(5.5, 2.0, 1.0),
-        glm::vec3(0.0, 0.0, 1.0),
-        glm::vec3(0.0, 0.0, 1.0),
         glm::mat4(  0.000000, 0.000000, 1.000000, 0.000000,
                     0.000000, 1.000000, 0.000000, 0.000000,
                     -1.000000, 0.000000, 0.000000, 0.000000,
@@ -189,8 +173,6 @@ TEST_F(LevelTest, isWallReached_0_no_hit) {
 
     PointOfView origin{
         glm::vec3(5.0, 2.0, 3.0),
-        glm::vec3(1.0, 0.0, 0.0),
-        glm::vec3(1.0, 0.0, 0.0),
         glm::mat4(1.0f),
         "room1"
     };
@@ -214,8 +196,6 @@ TEST_F(LevelTest, isWallReached_0_no_hit) {
     ASSERT_FALSE(hit);
     ASSERT_EQ(endPoint, (PointOfView{
         glm::vec3(5.0, 2.0, 2.0),
-        glm::vec3(1.0, 0.0, 0.0),
-        glm::vec3(1.0, 0.0, 0.0),
         glm::mat4(1.0f),
         "room1"
     }));
@@ -227,8 +207,6 @@ TEST_F(LevelTest, isWallReached_1_hit_ground_no_matrix_change) {
 
     PointOfView origin{
         glm::vec3(5.0, 2.0, 3.0),
-        glm::vec3(1.0, 0.0, 0.0),
-        glm::vec3(1.0, 0.0, 0.0),
         glm::mat4(1.0f),
         "room1"
     };
@@ -252,8 +230,6 @@ TEST_F(LevelTest, isWallReached_1_hit_ground_no_matrix_change) {
     ASSERT_TRUE(hit);
     ASSERT_EQ(endPoint, (PointOfView{
         glm::vec3(5.0, 1.0, 3.0),
-        glm::vec3(1.0, 0.0, 0.0),
-        glm::vec3(1.0, 0.0, 0.0),
         glm::mat4(1.0f),
         "room1"
     }));
@@ -273,8 +249,6 @@ TEST_F(LevelTest, isWallReached_2_hit_wall_matrix_change) {
 
     PointOfView origin{
         glm::vec3(6.5f, 2.0, 3.0),
-        glm::vec3(1.0, 0.0, 0.0),
-        glm::vec3(1.0, 0.0, 0.0),
         glm::mat4(1.0f),
         "room1"
     };
@@ -298,8 +272,6 @@ TEST_F(LevelTest, isWallReached_2_hit_wall_matrix_change) {
     ASSERT_TRUE(hit);
     ASSERT_EQ(endPoint, (PointOfView{
         glm::vec3(6.5f, 2.0f, 1.2f),
-        glm::vec3(1.0, 0.0, 0.0),
-        glm::vec3(1.0, 0.0, 0.0),
         glm::mat4(1.0f),
         "room1"
     }));
@@ -316,8 +288,6 @@ TEST_F(LevelTest, isWallReached_3_no_hit_cross_portal) {
 
     PointOfView origin{
         glm::vec3(5.25, 1.0, 3.0),
-        glm::vec3(1.0, 0.0, 0.0),
-        glm::vec3(1.0, 0.0, 0.0),
         glm::mat4(1.0f),
         "room1"
     };
@@ -351,8 +321,6 @@ TEST_F(LevelTest, isWallReached_4_hit_cross_portal_wall_no_matrix_change) {
 
     PointOfView origin{
         glm::vec3(5.25, 1.0, 3.0),
-        glm::vec3(1.0, 0.0, 0.0),
-        glm::vec3(1.0, 0.0, 0.0),
         glm::mat4(1.0f),
         "room1"
     };
