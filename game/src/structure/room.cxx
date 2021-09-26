@@ -120,7 +120,7 @@ bool Room::getDestinationPov(
             const PointOfView& origin,
             const PointOfView& destination,
             glm::vec3& changePoint,
-            float& distance,
+            float& _distance,
             PointOfView& newPovChangePoint,
             PointOfView& newPovDestination,
             GateIdentifier& newGate
@@ -137,14 +137,15 @@ bool Room::getDestinationPov(
         GateIdentifier gate;
         string target_room;
         glm::vec3 changePointLocal;
-        float distance;
+        float distance = _distance;
         bool crossed = roomNode->checkPortalCrossing(localOrigin.position, localDestination.position, target_room, gate, changePointLocal, distance);
         if (crossed) {
             changePoint = roomNodeInstance->getInvertedNodeMatrix() * positionToVec4(changePointLocal);
-            /*console->info("Crossed portal at change point local:\n{}\ndistance={}\nportal={}/{}==>{}\nwas from local:{}\nwas going to local:\n",
+
+            console->debug("Crossed portal at change point local:\n{}\ndistance={}\nportal={}/{}==>{}\nwas from local:{}\nwas going to local:\n",
                 vec3_to_string(changePointLocal), distance, gate.gate, gate.from, target_room,
                 vec3_to_string(localOrigin.position), vec3_to_string(localDestination.position)
-                );*/
+                );
 
             // compute target position
             auto new_room = room_resolver->getRoom(target_room);
@@ -157,6 +158,7 @@ bool Room::getDestinationPov(
             newPovChangePoint = localChangePointDestination.changeCoordinateSystem(
                 target_room,
                 new_instance->getNodeMatrix());
+            _distance = distance;
             result = true;
         }
     }

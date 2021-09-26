@@ -87,7 +87,8 @@ bool Level::isWallReached(
             const glm::vec3& destination,
             const float radius,
             PointOfView& endPoint,
-            PointOfView& destinationEndPoint,
+            glm::vec3& vectorEndPoint,
+            glm::vec3& destinationEndPoint,
             glm::vec3& normal,
             float& distance,
             FaceHard*& face
@@ -97,6 +98,7 @@ bool Level::isWallReached(
     glm::vec3 current_destination(destination);
     bool need_recompute;
     bool wall_hit = false;
+    distance = 0.0f;
 
     do {
         need_recompute = false;
@@ -137,18 +139,19 @@ bool Level::isWallReached(
         if (!wall_reach && !portal_reach) {
             endPoint = current_origin;
             endPoint.position = current_destination;
-            destinationEndPoint = endPoint;
-            distance = current_distance;
+            destinationEndPoint = endPoint.position;
+            vectorEndPoint = glm::normalize(destinationEndPoint - current_origin.position);
+            distance += current_distance;
         }
 
         // handle the case where a wall is hit
         if (wall_reach) {
             endPoint = current_origin;
             endPoint.position = wall_changePoint;
-            destinationEndPoint = current_origin;
-            destinationEndPoint.position = current_destination;
+            destinationEndPoint = current_destination;
+            vectorEndPoint = glm::normalize(destinationEndPoint - current_origin.position);
             normal = wall_normal;
-            distance = wall_distance;
+            distance += wall_distance;
             face = wall_face;
             wall_hit = true;
         }
@@ -157,9 +160,11 @@ bool Level::isWallReached(
         if (portal_reach) {
             current_origin = portal_newPovChangePoint;
             current_destination = portal_newPovDestination.position;
+            vectorEndPoint = glm::normalize(portal_newPovDestination.position - portal_newPovChangePoint.position);
             // need to check in new space
             //console->info("Portal crossed.\nNew origin: {}\nNew destination: {}",
             //        to_string(current_origin), vec3_to_string(current_destination));
+            distance += portal_distance;
             need_recompute = true;
         }
 

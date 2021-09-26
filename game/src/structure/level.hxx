@@ -46,6 +46,8 @@ class Level : public SpaceResolver
          * @param destination is the end of trajectory
          * @param radius is the size of the object
          * @param endPoint is ALWAYS filled with the destination point, either where the wall is reached or the end portal.
+         * @param vectorEndPoint is ALWAYS filled with the move vector in the final POV.
+         * @param destinationEndPoint is ALWAYS filled with the destination point in the final POV.
          * @param normal is filled with the normal of the wall
          * @param distance is filled with the distance, if a wall is reached
          * @param face face that was hit
@@ -56,7 +58,8 @@ class Level : public SpaceResolver
             const glm::vec3& destination,
             const float radius,
             PointOfView& endPoint,
-            PointOfView& destinationEndPoint,
+            glm::vec3& vectorEndPoint,
+            glm::vec3& destinationEndPoint,
             glm::vec3& normal,
             float& distance,
             FaceHard*& face

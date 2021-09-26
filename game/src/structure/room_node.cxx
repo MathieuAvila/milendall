@@ -192,11 +192,11 @@ bool RoomNode::checkPortalCrossing(
             glm::vec3 impact;
             float portalDistance;
             glm::vec3 normal;
-            //console->info("Check portal {} from {} to {}",
-            //    gate.gate,
-            //    vec3_to_string(origin),
-            //    vec3_to_string(destination)
-            //    );
+            console->debug("Check portal {} from {} to {}",
+                gate.gate,
+                vec3_to_string(origin),
+                vec3_to_string(destination)
+                );
             bool crossed = facePortal.checkTrajectoryCross(origin, destination, impact, portalDistance, normal, !portal.in);
             if (crossed) {
                 if ((result == false)||(portalDistance < distance)) {
