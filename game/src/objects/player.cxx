@@ -3,7 +3,7 @@
 
 #include "helper_math.hxx"
 
-Player::Player() : movable_definition(MovableObjectDefinition(0.7f, 30.0f, 1.0f))
+Player::Player() : movable_definition(MovableObjectDefinition(0.7f, 1.0f, 1.0f))
 {
 
 }
@@ -33,7 +33,7 @@ MovementWish Player::getRequestedMovement()
     wish.walk += currentActions.right ? -left : glm::vec3();
     wish.walk += currentActions.left ? left : glm::vec3();
     if (currentActions.jump) {
-        wish.walk = wish.walk * 5.0f + up;
+        wish.walk = wish.walk * 2.0f + up;
     }
 
     return wish;

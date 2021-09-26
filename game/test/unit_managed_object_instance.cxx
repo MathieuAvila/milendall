@@ -19,7 +19,7 @@ class ManagedObjectInstanceTest : public ::testing::Test {
   }
 };
 
-TEST_F(ManagedObjectInstanceTest, advance_0_) {
+TEST_F(ManagedObjectInstanceTest, advance_0_dont_move) {
 
 
 }

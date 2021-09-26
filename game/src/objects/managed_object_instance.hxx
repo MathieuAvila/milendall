@@ -40,6 +40,9 @@ class ManagedObjectInstance
         /** @brief move object based on computed postion */
         void move(glm::vec3 computed_position, float time_delta);
 
+        /** @brief Update gravity vector if necessary.*/
+        void updateGravity(float time_delta);
+
     public:
 
         ManagedObjectInstance(std::shared_ptr<ManagedObject> _object, PointOfView _mainPosition, SpaceResolver* _spaceResolver);

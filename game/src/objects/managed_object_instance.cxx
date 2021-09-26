@@ -22,8 +22,14 @@ PointOfView ManagedObjectInstance::getObjectPosition()
 
 void ManagedObjectInstance::computeNextPosition(float time_delta)
 {
+    updateGravity(time_delta);
     auto newPos = getComputeNextPosition(time_delta);
     move(newPos, time_delta);
+}
+
+void ManagedObjectInstance::updateGravity(float time_delta)
+{
+    current_gravity = glm::vec3(0.0f, -0.1f * object.get()->getObjectDefinition().weight, 0.0f);
 }
 
 glm::vec3 ManagedObjectInstance::getComputeNextPosition(float time_delta) const
