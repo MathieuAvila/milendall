@@ -15,7 +15,18 @@ using ::testing::InSequence;
 
 static auto console = getConsole("ut_level");
 
-TEST(Level, LoadLevelOneRoom) {
+class LevelTest : public ::testing::Test {
+ protected:
+  void SetUp() override {
+     spdlog::get("math")->set_level(spdlog::level::debug);
+     spdlog::get("face_list")->set_level(spdlog::level::debug);
+     spdlog::get("room_node")->set_level(spdlog::level::debug);
+     spdlog::get("room")->set_level(spdlog::level::debug);
+     spdlog::get("level")->set_level(spdlog::level::debug);
+  }
+};
+
+TEST_F(LevelTest, LoadLevelOneRoom) {
 
     InSequence s;
     GLMock mock;
@@ -26,7 +37,7 @@ TEST(Level, LoadLevelOneRoom) {
     EXPECT_TRUE( level != nullptr );
 }
 
-TEST(Level, LoadLevel2Rooms1Gate) {
+TEST_F(LevelTest, LoadLevel2Rooms1Gate) {
 
     InSequence s;
     GLMock mock;
@@ -38,7 +49,7 @@ TEST(Level, LoadLevel2Rooms1Gate) {
     EXPECT_TRUE( level != nullptr );
 }
 
-TEST(Level, CheckRoomList) {
+TEST_F(LevelTest, CheckRoomList) {
 
     InSequence s;
     GLMock mock;
@@ -65,7 +76,7 @@ std::unique_ptr<Level> loadLevel(std::string level)
     return l;
 }
 
-TEST(Level, getDestinationPov_room1_r1r2_no_cross) {
+TEST_F(LevelTest, getDestinationPov_room1_r1r2_no_cross) {
     InSequence s; GLMock mock;
 
     // Check crossing of a IN portal
@@ -92,7 +103,7 @@ TEST(Level, getDestinationPov_room1_r1r2_no_cross) {
     ASSERT_EQ(destination, result);
 }
 
-TEST(Level, getDestinationPov_room1_r1r2_cross) {
+TEST_F(LevelTest, getDestinationPov_room1_r1r2_cross) {
     InSequence s; GLMock mock;
 
     // Check crossing of a IN portal
@@ -132,7 +143,7 @@ TEST(Level, getDestinationPov_room1_r1r2_cross) {
         "room2"}));
 }
 
-TEST(Level, getDestinationPov_room2_r1r2_cross___reversed) {
+TEST_F(LevelTest, getDestinationPov_room2_r1r2_cross___reversed) {
     InSequence s; GLMock mock;
 
     // Check crossing of a IN portal
@@ -172,7 +183,7 @@ TEST(Level, getDestinationPov_room2_r1r2_cross___reversed) {
         "room1"}));
 }
 
-TEST(Level, isWallReached_0_no_hit) {
+TEST_F(LevelTest, isWallReached_0_no_hit) {
     InSequence s; GLMock mock;
     auto level = loadLevel("2_rooms_1_gate");
 
@@ -210,7 +221,7 @@ TEST(Level, isWallReached_0_no_hit) {
     }));
 }
 
-TEST(Level, isWallReached_1_hit_ground_no_matrix_change) {
+TEST_F(LevelTest, isWallReached_1_hit_ground_no_matrix_change) {
     InSequence s; GLMock mock;
     auto level = loadLevel("2_rooms_1_gate");
 
@@ -253,7 +264,7 @@ TEST(Level, isWallReached_1_hit_ground_no_matrix_change) {
 
 }
 
-TEST(Level, isWallReached_2_hit_wall_matrix_change) {
+TEST_F(LevelTest, isWallReached_2_hit_wall_matrix_change) {
 
     // hit a wall on a subobject
 
@@ -299,7 +310,7 @@ TEST(Level, isWallReached_2_hit_wall_matrix_change) {
     ASSERT_NE(face, nullptr);
 }
 
-TEST(Level, isWallReached_3_no_hit_cross_portal) {
+TEST_F(LevelTest, isWallReached_3_no_hit_cross_portal) {
     InSequence s; GLMock mock;
     auto level = loadLevel("2_rooms_1_gate");
 
@@ -332,7 +343,7 @@ TEST(Level, isWallReached_3_no_hit_cross_portal) {
     ASSERT_EQ(endPoint.room, "room2");
 }
 
-TEST(Level, isWallReached_4_hit_cross_portal_wall_no_matrix_change) {
+TEST_F(LevelTest, isWallReached_4_hit_cross_portal_wall_no_matrix_change) {
 
     // will hit the wall on the other side of portal
     InSequence s; GLMock mock;
@@ -363,7 +374,9 @@ TEST(Level, isWallReached_4_hit_cross_portal_wall_no_matrix_change) {
             face
             );
     console->info("Check wall normal {}", vec3_to_string(normal));
-    console->debug("endPoint = {}", to_string(endPoint));
+    console->info("endPoint = {}", to_string(endPoint));
+    console->info("destinationEndPoint = {}", to_string(destinationEndPoint));
+    console->info("distance = {}", to_string(distance));
     ASSERT_TRUE(hit);
     ASSERT_TRUE(glm::length(endPoint.position - glm::vec3(0.2f, 1.0f, 5.25f)) < 0.01f);
     ASSERT_FLOAT_EQ(distance, 3.8f);
@@ -371,14 +384,14 @@ TEST(Level, isWallReached_4_hit_cross_portal_wall_no_matrix_change) {
     ASSERT_TRUE(glm::length(normal - glm::vec3(1.0f, .0, .0)) < 0.01f);
 }
 
-TEST(Level, isWallReached_5_hit_cross_portal_wall_matrix_change) {
+TEST_F(LevelTest, isWallReached_5_hit_cross_portal_wall_matrix_change) {
     InSequence s; GLMock mock;
     auto level = loadLevel("2_rooms_1_gate");
 
     // pwa, grosse flemme.
 }
 
-TEST(Level, isWallReached_6_border_hit) {
+TEST_F(LevelTest, isWallReached_6_border_hit) {
 
     // special case where it's a hit on the border.
 
