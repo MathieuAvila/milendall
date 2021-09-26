@@ -4,7 +4,7 @@
 #include <map>
 #include "managed_object.hxx"
 
-#include "../point_of_view.hxx"
+#include "point_of_view.hxx"
 
 struct RoomResolver;
 class SpaceResolver;

@@ -85,6 +85,8 @@ add_library(game_lib STATIC
   game/src/objects/object_manager.cxx
   game/src/objects/object_manager.hxx
   game/src/objects/managed_object.hxx
+  game/src/objects/managed_object_instance.hxx
+  game/src/objects/managed_object_instance.cxx
   game/src/objects/player.hxx
   game/src/objects/player.cxx
   game/src/point_of_view.hxx
@@ -150,6 +152,7 @@ game/test/unit_gltf_model.cxx
 game/test/unit_gltf_node.cxx
 game/test/unit_face_list.cpp
 game/test/unit_point_of_view.cxx
+game/test/unit_managed_object_instance.cxx
 )
 
 enable_testing()
