@@ -312,7 +312,7 @@ TEST_F(LevelTest, isWallReached_3_no_hit_cross_portal) {
     float radius = 0.2f;
     PointOfView endPoint;
     glm::vec3 vectorEndPoint, destinationEndPoint;
-    glm::vec3 normal;
+    glm::vec3 normal(0.0f);
     float distance;
     FaceHard* face;
 
@@ -335,7 +335,7 @@ TEST_F(LevelTest, isWallReached_3_no_hit_cross_portal) {
     ASSERT_EQ(endPoint.position, glm::vec3(3.5f, 1.0f, 5.25f));
     ASSERT_EQ(vectorEndPoint, glm::vec3(-1.0f, 0.0f, 0.0f));
     ASSERT_EQ(destinationEndPoint, glm::vec3(3.5, 1.0, 5.25));
-    ASSERT_EQ(normal, glm::vec3(0.0, 0.0, 1.0f));
+    ASSERT_EQ(normal, glm::vec3(0.0f, 0.0f, 0.0f));
     ASSERT_EQ(endPoint.room, "room2");
 }
 
