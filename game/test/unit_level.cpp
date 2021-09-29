@@ -38,6 +38,24 @@ TEST_F(LevelTest, LoadLevelOneRoom) {
     EXPECT_TRUE( level != nullptr );
 }
 
+TEST_F(LevelTest, GetDefinition) {
+
+    InSequence s;
+    GLMock mock;
+
+    auto fl = FileLibrary();
+    fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../game/test/sample/"));
+    fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../data/"));
+    Level* level = new Level(fl.getRoot().getSubPath("/2_rooms_1_gate/level.json"));
+    EXPECT_TRUE( level != nullptr );
+
+    auto def = level->getDefinition();
+    EXPECT_EQ(def.start_room, "room1");
+    EXPECT_EQ(def.end_room, "room2");
+    EXPECT_EQ(def.recommended_time, 10);
+    EXPECT_EQ(def.start_position, glm::vec3(1.0f, 2.0f, 3.0f));
+}
+
 TEST_F(LevelTest, LoadLevel2Rooms1Gate) {
 
     InSequence s;

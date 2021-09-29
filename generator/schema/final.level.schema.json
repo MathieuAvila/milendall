@@ -29,6 +29,15 @@
                             "type": "string",
                             "description": "Room where player is spawned"
                         },
+                        "entry_point_position" :  {
+                            "type": "array",
+                            "description": "Position where player is spawned",
+                            "items": {
+                                "type": "number",
+                                "maxItems": 3,
+                                "minItems": 3
+                            }
+                        },
                         "end_point_room" :  {
                             "type": "string",
                             "description": "Room where player has won"

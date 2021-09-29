@@ -12,9 +12,19 @@ class Level : public SpaceResolver
 {
     public:
 
+        struct GlobalDefinition {
+            std::string start_room;
+            glm::vec3 start_position;
+            std::string end_room;
+            unsigned recommended_time;
+        };
+
         /** build the level from the path to the final level file.
          * It's up to the called to have a naming scheme for levels */
         Level(FileLibrary::UriReference ref);
+
+        /** Get its global parameters */
+        GlobalDefinition getDefinition();
 
         /** To be able to preview a given room, give a list of them */
         std::list<std::string> getRoomNames();
@@ -75,5 +85,7 @@ class Level : public SpaceResolver
 
         /** Kept for the duration of the level. This forces to keep texturing */
         GltfMaterialLibraryIfacePtr materialLibrary;
+
+        GlobalDefinition definition;
 };
 

@@ -43,6 +43,21 @@ Level::Level(FileLibrary::UriReference ref)
             auto room = std::make_shared<Room>(room_id, materialLibrary, ref_room, room_resolver.get());
             rooms.insert({room_id, room});
     }
+    auto game_type = jsonGetElementByName(j_level, "game_type");
+    auto single_mode = jsonGetElementByName(game_type, "single_mode");
+    definition.start_room = jsonGetElementByName(single_mode, "entry_point_room").get<string>();
+    definition.end_room = jsonGetElementByName(single_mode, "end_point_room").get<string>();
+    definition.recommended_time = jsonGetElementByName(single_mode, "execution_time").get<float>();
+    definition.start_position = glm::vec3(
+        jsonGetElementByIndex(single_mode, "entry_point_position", 0),
+        jsonGetElementByIndex(single_mode, "entry_point_position", 1),
+        jsonGetElementByIndex(single_mode, "entry_point_position", 2)
+    );
+}
+
+Level::GlobalDefinition Level::getDefinition()
+{
+    return definition;
 }
 
 std::list<std::string> Level::getRoomNames()
