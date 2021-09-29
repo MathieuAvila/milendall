@@ -5,6 +5,7 @@
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/epsilon.hpp>
 #include "test_common.hpp"
+#include <glm/gtc/matrix_transform.hpp>
 
 static auto console = getConsole("unit_helper_math");
 
@@ -20,7 +21,15 @@ glm::vec3 vZ(0,0,1);
 glm::vec3 v3A(1.0, 2.0, 3.0);
 glm::vec4 v4A(1.0, 2.0, 3.0, 4.0);
 
-TEST(HelperMath, getPlaneEquation) {
+class HelperMathTest : public ::testing::Test {
+ protected:
+  void SetUp() override {
+     spdlog::get("unit_helper_math")->set_level(spdlog::level::debug);
+     spdlog::get("math")->set_level(spdlog::level::debug);
+  }
+};
+
+TEST_F(HelperMathTest, getPlaneEquation) {
     auto equation_0_Z = getPlaneEquation(pO, vZ);
     ASSERT_EQ(equation_0_Z , glm::vec4(0,0,1,0) );
 
@@ -34,13 +43,13 @@ TEST(HelperMath, getPlaneEquation) {
     ASSERT_EQ(equation_ZX_Z , glm::vec4(0,0,1,-1) );
 }
 
-TEST(HelperMath, getPlaneEquationNormalize) {
+TEST_F(HelperMathTest, getPlaneEquationNormalize) {
 
     auto equation_Z_Z = getPlaneEquation(pZ, vZ*2.0f);
     ASSERT_EQ(equation_Z_Z , glm::vec4(0,0,1,-1) );
 }
 
-TEST(HelperMath, pointPlaneProjection) {
+TEST_F(HelperMathTest, pointPlaneProjection) {
     auto equation_0_Z = getPlaneEquation(pO, vZ);
     ASSERT_EQ(pointPlaneProjection(equation_0_Z , pO), 0.0);
     ASSERT_EQ(pointPlaneProjection(equation_0_Z , pX), 0.0);
@@ -53,7 +62,7 @@ TEST(HelperMath, pointPlaneProjection) {
     ASSERT_EQ(pointPlaneProjection(equation_Z_Z , pX), -1.0);
 }
 
-TEST(HelperMath, mat4x4_to_string) {
+TEST_F(HelperMathTest, mat4x4_to_string) {
 
     ASSERT_EQ(mat4x4_to_string(glm::mat4(
     11.0 , 12.0, 13.0, 14.0,
@@ -66,18 +75,18 @@ TEST(HelperMath, mat4x4_to_string) {
     "[41.000000, 42.000000, 43.000000, 44.000000]\n]");
 }
 
-TEST(HelperMath, vec3_to_string) {
+TEST_F(HelperMathTest, vec3_to_string) {
 
     ASSERT_EQ(vec3_to_string(v3A), "[ 1.000000 , 2.000000 , 3.000000 ]");
 }
 
-TEST(HelperMath, vec4_to_string) {
+TEST_F(HelperMathTest, vec4_to_string) {
 
     ASSERT_EQ(vec4_to_string(v4A), "[ 1.000000 , 2.000000 , 3.000000 , 4.000000 ]");
 
 }
 
-TEST(HelperMath, intersectSphereTrajectoryPlane_no_radius) {
+TEST_F(HelperMathTest, intersectSphereTrajectoryPlane_no_radius) {
 
     // plane is X/Y, starting at pZ
     // trajectory is from 0 to 2*pZ
@@ -101,7 +110,7 @@ TEST(HelperMath, intersectSphereTrajectoryPlane_no_radius) {
     ASSERT_EQ(distance, 1);
 }
 
-TEST(HelperMath, intersectSphereTrajectoryPlane_radius) {
+TEST_F(HelperMathTest, intersectSphereTrajectoryPlane_radius) {
 
     // plane is X/Y, starting at pZ
     // trajectory is from 0 to 2*pZ
@@ -124,7 +133,7 @@ TEST(HelperMath, intersectSphereTrajectoryPlane_radius) {
     ASSERT_EQ(distance, 0.5);
 }
 
-TEST(HelperMath, intersectSphereTrajectoryPlane_radius_inside_sphere) {
+TEST_F(HelperMathTest, intersectSphereTrajectoryPlane_radius_inside_sphere) {
 
     // plane is X/Y, starting at pZ
     // trajectory is from 0 to 5*pZ
@@ -147,7 +156,7 @@ TEST(HelperMath, intersectSphereTrajectoryPlane_radius_inside_sphere) {
     ASSERT_FLOAT_EQ(distance, 0.0f);
 }
 
-TEST(HelperMath, intersectSphereTrajectoryPlane_bad_direction) {
+TEST_F(HelperMathTest, intersectSphereTrajectoryPlane_bad_direction) {
 
     // plane is X/Y, starting at pZ
     // trajectory is from 2*pZ to 0
@@ -168,7 +177,7 @@ TEST(HelperMath, intersectSphereTrajectoryPlane_bad_direction) {
     ASSERT_FALSE(result);
 }
 
-TEST(HelperMath, intersectSphereTrajectoryPlane_bad_direction_reversed) {
+TEST_F(HelperMathTest, intersectSphereTrajectoryPlane_bad_direction_reversed) {
 
     // plane is X/Y, starting at pZ
     // trajectory is from 2*pZ to 0
@@ -191,7 +200,7 @@ TEST(HelperMath, intersectSphereTrajectoryPlane_bad_direction_reversed) {
 }
 
 
-TEST(HelperMath, intersectSphereTrajectorySegment1_radius1) {
+TEST_F(HelperMathTest, intersectSphereTrajectorySegment1_radius1) {
     // Simple check with sphere radius 1
 
     // Segment : A = - 2*pZ, B = + 2*pZ ==> follows Z around Origin
@@ -215,7 +224,7 @@ TEST(HelperMath, intersectSphereTrajectorySegment1_radius1) {
 
 };
 
-TEST(HelperMath, intersectSphereTrajectorySegment2_radius15) {
+TEST_F(HelperMathTest, intersectSphereTrajectorySegment2_radius15) {
 
     // Simple check with sphere radius 1.5, 2 solutions, first solution
 
@@ -239,7 +248,7 @@ TEST(HelperMath, intersectSphereTrajectorySegment2_radius15) {
     ASSERT_EQ(normal, glm::vec3(-1.0, 0.0, 0.0));
 };
 
-TEST(HelperMath, intersectSphereTrajectorySegment3_radius15_at_origin) {
+TEST_F(HelperMathTest, intersectSphereTrajectorySegment3_radius15_at_origin) {
 
     // Simple check with sphere radius 1.5, 2 solutions with origin between the 2,
     // so that it is already in it.
@@ -265,7 +274,7 @@ TEST(HelperMath, intersectSphereTrajectorySegment3_radius15_at_origin) {
 };
 
 
-TEST(HelperMath, intersectSphereTrajectorySegment4_radius15_not_center) {
+TEST_F(HelperMathTest, intersectSphereTrajectorySegment4_radius15_not_center) {
 
     // Segment : A = - 2*pZ + pY, B = + 2*pZ + pY==> follows Z around Origin
     // trajectory is from -2 pX to 2 px
@@ -287,13 +296,13 @@ TEST(HelperMath, intersectSphereTrajectorySegment4_radius15_not_center) {
 };
 
 
-TEST(HelperMath, getRotatedMatrix_0_ID) {
+TEST_F(HelperMathTest, getRotatedMatrix_0_ID) {
 
     glm::mat3 ID = getRotatedMatrix(0.0f, 0.0f);
     ASSERT_EQ(ID, glm::mat3(1.0f));
 }
 
-TEST(HelperMath, getRotatedMatrix_1_rotate_horiz) {
+TEST_F(HelperMathTest, getRotatedMatrix_1_rotate_horiz) {
 
     glm::mat3 newMat = getRotatedMatrix(0.0f, glm::pi<float>() / 4.0);
     glm::mat3 matCheck{
@@ -307,7 +316,7 @@ TEST(HelperMath, getRotatedMatrix_1_rotate_horiz) {
     ASSERT_TRUE(glm::epsilonEqual(diff, 0.0f, 0.1f));
 }
 
-TEST(HelperMath, getRotatedMatrix_2_rotate_vertical) {
+TEST_F(HelperMathTest, getRotatedMatrix_2_rotate_vertical) {
 
     glm::mat3 newMat = getRotatedMatrix(glm::pi<float>() / 4.0, 0.0f);
     glm::mat3 matCheck{
@@ -321,7 +330,7 @@ TEST(HelperMath, getRotatedMatrix_2_rotate_vertical) {
     ASSERT_TRUE(glm::epsilonEqual(diff, 0.0f, 0.1f));
 }
 
-TEST(HelperMath, getRotatedMatrix_3_rotate_vertical_horizontal) {
+TEST_F(HelperMathTest, getRotatedMatrix_3_rotate_vertical_horizontal) {
 
     glm::mat3 newMat = getRotatedMatrix(glm::pi<float>() / 4.0, glm::pi<float>() / 4.0);
     glm::mat3 matCheck{
@@ -335,7 +344,7 @@ TEST(HelperMath, getRotatedMatrix_3_rotate_vertical_horizontal) {
     ASSERT_TRUE(glm::epsilonEqual(diff, 0.0f, 0.1f));
 }
 
-TEST(HelperMath, moveOnPlane) {
+TEST_F(HelperMathTest, moveOnPlane) {
 
     glm::vec3 start(10.0f,1.0f,0.0f);
     glm::vec3 end(10.0f,0.0f,1.0f);
@@ -346,10 +355,128 @@ TEST(HelperMath, moveOnPlane) {
     ASSERT_TRUE(result == glm::vec3(10.0f, 1.2f, 1.0f));
 }
 
-TEST(HelperMath, checkAdherenceCone) {
+TEST_F(HelperMathTest, checkAdherenceCone) {
     ASSERT_TRUE(checkAdherenceCone(glm::vec3(0.0f, 1.0f ,0.0f), glm::vec3(0.0f, -1.0f ,0.0f), 0.5));
     ASSERT_FALSE(checkAdherenceCone(glm::vec3(0.0f, 1.0f ,0.0f), glm::vec3(0.0f, 1.0f ,0.0f), 0.5));
 
     ASSERT_TRUE(checkAdherenceCone(glm::vec3(0.0f, 1.0f ,0.0f), glm::vec3(0.0f, -5.0f , 5.0f), 0.5)); // check noramlize
     ASSERT_FALSE(checkAdherenceCone(glm::vec3(0.0f, 1.0f ,0.0f), glm::vec3(0.0f, 5.0f , 5.0f), 0.5)); // check noramlize
+}
+
+TEST_F(HelperMathTest, computeRotatedMatrix_0_id_no_rotate) {
+
+    glm::vec3 z0(0.0f, -1.0f, 0.0f);
+    glm::mat3x3 result = computeRotatedMatrix(
+        glm::mat3x3(1.0f),
+        z0,
+        [](float originalAngle)
+        {
+            return 0.0f;
+        } );
+    console->debug("final {}", mat4x4_to_string(result));
+    ASSERT_EQ(result, glm::mat3x3(1.0f));
+}
+
+TEST_F(HelperMathTest, computeRotatedMatrix_1_NOT_id_no_rotate) {
+
+    glm::vec3 z0(0.0f, -1.0f, 0.0f);
+    glm::mat3x3 result = computeRotatedMatrix(
+        glm::mat3x3(2.0f),
+        z0,
+        [](float originalAngle)
+        {
+            return 0.0f;
+        } );
+    console->debug("final {}", mat4x4_to_string(result));
+    ASSERT_EQ(result, glm::mat3x3(2.0f));
+}
+
+TEST_F(HelperMathTest, computeRotatedMatrix_2_id_transform_Y_to_X) {
+
+    glm::mat3x3 original = glm::mat4x4(1.0f);
+    glm::mat3x3 result = computeRotatedMatrix(
+        original,
+        vX,
+        [](float originalAngle)
+        {
+            return originalAngle;
+        } );
+    console->debug("original {}", mat3x3_to_string(original));
+    console->debug("final {}", mat3x3_to_string(result));
+    console->debug("new_up {}", vec3_to_string(result * vY));
+    ASSERT_TRUE(glm::bvec3(true,true,true) == glm::epsilonEqual(result * vY, vX, 0.1f));
+}
+
+TEST_F(HelperMathTest, computeRotatedMatrix_3_NOT_id_transform_Y_to_X) {
+
+    glm::mat3x3 original = glm::rotate(
+        glm::rotate(glm::mat4x4(1.0f), glm::pi<float>()/4.0f, vZ)
+        , glm::pi<float>()/4.0f, vX); // rotate X and Y and Z
+    glm::mat3x3 result = computeRotatedMatrix(
+        original,
+        vX,
+        [](float originalAngle)
+        {
+            return originalAngle;
+        } );
+    console->debug("original {}", mat3x3_to_string(original));
+    console->debug("final {}", mat3x3_to_string(result));
+    console->debug("new_up {}", vec3_to_string(result * vY));
+    ASSERT_TRUE(glm::bvec3(true,true,true) == glm::epsilonEqual(result * vY, vX, 0.1f));
+}
+
+TEST_F(HelperMathTest, computeRotatedMatrix_3_NOT_id_rotate_x_to_pi2) {
+
+    glm::mat3x3 original = glm::rotate(glm::mat4x4(1.0f), glm::pi<float>()/4.0f, vX);
+    glm::mat3x3 result = computeRotatedMatrix(
+        original,
+        vZ,
+        [](float originalAngle)
+        {
+            return glm::pi<float>()/4.0f;
+        } );
+    glm::mat3x3 expected = glm::rotate(glm::mat4x4(1.0f), glm::pi<float>()/2.0f, vX);
+
+    console->debug("original {}", mat3x3_to_string(original));
+    console->debug("final {}", mat3x3_to_string(result));
+    console->debug("expected {}", mat3x3_to_string(expected));
+    console->debug("diff {}", mat3x3_to_string(result - expected));
+
+    ASSERT_TRUE(mat4x4_abs_diff(result, expected) <  0.01f );
+}
+
+TEST_F(HelperMathTest, computeRotatedMatrix_4_rotY_pi4___UP_aligned) {
+
+    glm::mat3x3 original = glm::rotate(glm::mat4x4(1.0f), glm::pi<float>()/4.0f, vY);
+    glm::mat3x3 result = computeRotatedMatrix(
+        original,
+        vY,
+        [](float originalAngle)
+        {
+            return -originalAngle;
+        } );
+    glm::mat3x3 expected = original;
+
+    console->debug("original {}", mat3x3_to_string(original));
+    console->debug("final {}", mat3x3_to_string(result));
+
+    ASSERT_TRUE(mat4x4_abs_diff(result, expected) <  0.01f );
+}
+
+TEST_F(HelperMathTest, computeRotatedMatrix_5_rotZ_pi4___going_Y) {
+
+    glm::mat3x3 original = glm::rotate(glm::mat4x4(1.0f), glm::pi<float>()/2.0f, vZ);
+    glm::mat3x3 result = computeRotatedMatrix(
+        original,
+        vY,
+        [](float originalAngle)
+        {
+            return originalAngle;
+        } );
+    glm::mat3x3 expected = glm::mat4x4(1.0f);
+
+    console->debug("original {}", mat3x3_to_string(original));
+    console->debug("final {}", mat3x3_to_string(result));
+
+    ASSERT_TRUE(mat4x4_abs_diff(result, expected) <  0.01f );
 }

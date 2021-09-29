@@ -1,12 +1,14 @@
 #include "common.hxx"
 #include "helper_math.hxx"
-#include "gltf_exception.hxx"
 
 #include <glm/gtx/intersect.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/projection.hpp>
+#include <glm/gtx/vector_angle.hpp>
 
 static auto console = getConsole("math");
+
+using namespace glm;
 
 std::string mat4x4_to_string(glm::mat4x4 mat)
 {
@@ -14,6 +16,22 @@ std::string mat4x4_to_string(glm::mat4x4 mat)
     for (auto i: {0,1,2,3}) {
         result+="\n[";
         for (auto j: {0,1,2,3}) {
+            if (j!=0)
+                (result+=", ");
+            result+= to_string(mat[i][j]);
+        }
+        result+=']';
+    }
+    result+="\n]";
+    return result;
+}
+
+std::string mat3x3_to_string(glm::mat3x3 mat)
+{
+    string result("[");
+    for (auto i: {0,1,2}) {
+        result+="\n[";
+        for (auto j: {0,1,2}) {
             if (j!=0)
                 (result+=", ");
             result+= to_string(mat[i][j]);
@@ -295,4 +313,34 @@ bool checkAdherenceCone(glm::vec3 normal, glm::vec3 gravity, float adherence)
 {
     auto wall_up = glm::dot(glm::normalize(gravity) , normal);
     return (wall_up < -adherence);
+}
+
+glm::mat3x3 computeRotatedMatrix(glm::mat3x3 original, glm::vec3 second_vector, std::function<float(float)> angle_provider)
+{
+    vec3 const_up(0.0f, 1.0f, 0.0f);
+    vec3 current_up = original * const_up;
+    console->debug("current_up {}", vec3_to_string(current_up));
+    vec3 axis = glm::cross(current_up, second_vector);
+    console->debug("axis {}", vec3_to_string(axis));
+    if (axis == glm::vec3(0.0f,0.0f,0.0f)) {
+        const vec3 const_up_delta(0.1f, 1.0f, 0.0f);
+        current_up = original * const_up_delta;
+        console->debug("new current_up {}", vec3_to_string(current_up));
+        axis = glm::cross(current_up, second_vector);
+        console->debug("new axis {}", vec3_to_string(axis));
+    }
+    axis = glm::normalize(axis);
+    console->debug("normalized axis {}", vec3_to_string(axis));
+    float original_angle = orientedAngle(current_up, second_vector, axis);
+    console->debug("original_angle {}", original_angle);
+    float new_angle = angle_provider(original_angle);
+    console->debug("new_angle {}", new_angle);
+
+    auto trans_mat = glm::rotate(glm::mat4x4(1.0f), new_angle, axis);
+    auto new_mat = glm::mat4x4(original);
+    auto final_mat = trans_mat * new_mat;
+
+    console->debug("trans_mat UP {}", vec3_to_string(glm::mat3(trans_mat) * current_up));
+
+    return final_mat;
 }

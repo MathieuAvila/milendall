@@ -2,11 +2,13 @@
 
 #include <glm/mat4x4.hpp>
 #include <string>
+#include <functional>
 
-/**
- * @brief Helper function to print a matrix
- */
+/** @brief Helper function to print a matrix */
 std::string mat4x4_to_string(glm::mat4x4);
+
+/** @brief Helper function to print a matrix */
+std::string mat3x3_to_string(glm::mat3x3);
 
 /**
  * @brief Helper function to print a vec3
@@ -72,3 +74,16 @@ glm::vec3 moveOnPlane(glm::vec3 start, glm::vec3 end, glm::vec3 normal, float co
 
 /** @brief Compute whether a move on a wall reaches a given angle, or adherence. */
 bool checkAdherenceCone(glm::vec3 normal, glm::vec3 graivty, float adherence);
+
+/** @brief Produce a new matrix that includes a rotation to the old one, alongside
+ *         an axis given by 1 vector and (0,1,0) (aka "up"), and an angle provided
+ *         by a function passed in parameter
+ *         This function is taking 1 parameter: the original angle between the
+ *         2 vectors
+ *         If the angle cannot be computed, a small deviation is added so that
+ *         it becomes to compute one.
+ * @param original the original matrix
+ * @param second_vector The second vector for computation of the angle
+ * @param angle_provider The function that returns the angle to apply based on the original one
+ * */
+glm::mat3x3 computeRotatedMatrix(glm::mat3x3 original, glm::vec3 second_vector, std::function<float(float)> angle_provider );
