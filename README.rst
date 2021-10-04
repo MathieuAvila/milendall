@@ -259,13 +259,20 @@ Generation happens with these steps:
      - Output
    * - Level Strategy
      - Highest-level view which gives difficulty, ambiance, rythm
-     - JSON file
+     - JSON file of strategy
+   * - Level Steps
+     - Description of steps that happen: connection between steps,
+       what they contains. Those steps describes the main events happening in a game, like opening a door
+       and giving time points.
+     - JSON file of game play
+
+       Viz thru Plantuml
    * - Rooms descriptions
      - Descriptions of rooms & gates : how they connect, their configurations,
        their high-level content. May include hints on decoration, room type, etc...
 
        This is the global working of the maze.
-     - JSON file
+     - JSON file of level
 
        Viz thru Plantuml
    * - Rooms instantiation
@@ -318,6 +325,11 @@ Level strategy
 
 TBD
 
+Level steps
+-----------
+
+TBD
+
 Rooms Description
 -----------------
 
@@ -328,6 +340,8 @@ The designer has the ability to fix a few parameters in this stage.
 
 Rooms Instantiation
 -------------------
+
+
 
 Rooms Structure
 ---------------
