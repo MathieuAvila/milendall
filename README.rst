@@ -1,11 +1,19 @@
 Milendall
 ==========
 
-Milendall aims to be a FPS-like game in a maze with unusual geometry and gravity rules.
+Milendall aims to be a FPS-like game in a maze with non-euclidean geometry and gravity rules.
 It can be played in single- or multi-player modes.
 
-Mazes can be generated randomly, with control on the randomness aspects to make them interesting from
-a player's point-of-view. A set of pre-computed mazes (levels) are available.
+Mazes can be generated randomly, with control on the randomness aspects at various levels,
+to make them interesting from a player's point-of-view. A set of pre-computed mazes (levels)
+are available.
+
+Pitch
+-----
+
+Stéphanie, a 12 year old girl, is making a dream in which she is trapped in a maze, and she
+has a only a few minutes left to escape before she awakes. However, this is a wonderful dream
+with lots of wonder (unicorns and alikes), so that she isn't scared at all.
 
 Game Goal
 ---------
@@ -27,8 +35,8 @@ In both cases:
 - Mazes are bound (not open worlds), but can loop in bizarre ways
 - Gravity is dynamic and unusual
 - Objects can be rescaled when passing through some gates
-- FPS classics: Enemies get on the way. Can be fought with weapons & ammo
-- Objects can change in nature, contrary to most FPS (health bonuses become deathly mines, and so on...)
+- There are some objects left that gives time bonuses
+- Objects can change in nature, contrary to most FPS (time bonuses become time maluses, and so on...)
 
 Requirements
 ============
@@ -36,11 +44,13 @@ Requirements
 Maze description
 ----------------
 
-Mazes are made of rooms. Each room is connected to others through portals.
+Mazes are made of rooms. Each room is connected to others through gates. A gate consists in
+an architectural object with one face giving access to another room. This face is called
+a portal.
 Each room is euclidean by nature. Each room has its own gravity rules, those can be dynamic.
 
-Gates are "portals" between rooms. Objects that pass through them can be rescaled.
-They can connect two rooms from any space to any other space so can make the whole
+Objects that pass through gates can be rescaled.
+Gates can connect two rooms from any space to any other space so can make the whole
 world (maze) non-euclidean, although they seem to be directly connected. Examples:
 
 - can connect a room to a distant one (simple case)
@@ -52,12 +62,15 @@ world (maze) non-euclidean, although they seem to be directly connected. Example
 
 "Triggers" are elements of rooms that triggers changes in gates properties: traversable, visibility.
 
+This is a run against time. There is no ennemy as such, but the maze must be solved
+before the counter reaches zero. A given amount of time is given at the start of the game.
+
 Rooms
 .....
 
 Each room has gravity rules that can change dynamically. Ex: a room where each wall attracts,
-a room like a planet.
-Each room has a fixed list of portals.
+a room like a planet, a cylinder, a donut, and so on. Imagination is the only limit.
+Each room has a fixed list of gates.
 
 Rooms have both:
 
@@ -66,8 +79,9 @@ Rooms have both:
 
 Other properties:
 
-- gravity rules, based on objects location, velocity, weight (but does this value has any sense at all ?).
-- enclosed objects: bonuses, ennemies
+- gravity rules, based on objects types, location, velocity, weight
+  (but does this value has any sense at all ?).
+- enclosed objects: bonuses, maluses, help
 - triggers: activable by user to change gates properties
 
 Portals
@@ -109,28 +123,16 @@ Objects
 
 Rooms can be filled with objects:
 
-- standard FPS ones:
-
-  - enemies
-  - health
-  - armor
-  - ammo
-  - special effects (mega-health, ...)
-
-- unstandard ones:
-
+  - time bonus, malus
+  - special effects
   - gravity inverter option
-  - weapon effect inverter option
   - ...
   - objects with changes in nature through time: health bonuses to/from mines.
 
 Events
 ......
 
-Rooms configurations can change with triggers:
-
-- buttons placed in other rooms.
-- "keys" with a given color.
+Rooms configurations can change with triggers which appears as buttons placed anywhere.
 
 For the sake of the player (or not), it can be devised which effect they have.
 
@@ -146,7 +148,7 @@ Entry/Output
 A maze for single player mode have an entry room that marks the spawn point (middle of the room) and an output room
 that marks the end of the game.
 
-A maze for multi-player mode have many entry rooms and no output room.
+**TBD** A maze for multi-player mode have many entry rooms and no output room.
 
 Maze structural aspects
 -----------------------
