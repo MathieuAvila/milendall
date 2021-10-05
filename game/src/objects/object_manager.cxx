@@ -28,11 +28,11 @@ int ObjectManager::insertObject(std::shared_ptr<ManagedObject> object, PointOfVi
     return ID;
 }
 
-void ObjectManager::update(float time_delta)
+void ObjectManager::update(float total_time)
 {
     for (auto& _obj: managed_objects) {
         auto p = _obj.second.get();
-        p->computeNextPosition(time_delta);
+        p->computeNextPosition(total_time);
     }
 }
 

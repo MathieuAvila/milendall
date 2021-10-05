@@ -17,8 +17,9 @@ class GravityProvider
         struct GravityInformation {
             /** @brief direction and force of gravity */
             glm::vec3 gravity;
-            /** @brief direction and force of main force. This can be the same as gravity, or otherwise */
-            glm::vec3 force;
+            /** @brief direction in which the object points its head. This can be the same
+             * as gravity (most cases), or something else */
+            glm::vec3 up;
             /** @brief Duration of validity. 0 means it must always be recomputed, -1 means forever
              * (no recomputation needed) */
             float validity;

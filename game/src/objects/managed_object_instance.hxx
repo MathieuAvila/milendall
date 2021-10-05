@@ -29,14 +29,25 @@ class ManagedObjectInstance
         /** @brief current speed. Norm gives absolute speed */
         glm::vec3 current_speed;
 
-        /** @brief current gravity */
+        /** @brief current gravity. This gives the force in which the object is attracted.
+         * see current_up for direction.
+         */
         glm::vec3 current_gravity;
+
+        /** @brief current up direction. This may be different from gravity */
+        glm::vec3 current_up;
 
         /** @brief needed to move object in space */
         SpaceResolver* spaceResolver;
 
         /** @brief needed to recompute gravity*/
         GravityProvider* gravityProvider;
+
+        /** @brief Absolute time of validity of gravity and up */
+        float gravity_validity;
+
+        /** last update time */
+        float last_update;
 
         /** @brief get computed next position without walls detection collision */
         glm::vec3 getComputeNextPosition(float time_delta) const;
@@ -45,7 +56,7 @@ class ManagedObjectInstance
         void move(glm::vec3 computed_position, float time_delta);
 
         /** @brief Update gravity vector if necessary.*/
-        void updateGravity(float time_delta);
+        void updateGravity(float total_time, float time_delta);
 
     public:
 
@@ -60,7 +71,7 @@ class ManagedObjectInstance
         PointOfView getObjectPosition();
 
         /** @brief compute next position */
-        void computeNextPosition(float time_delta);
+        void computeNextPosition(float total_time);
 
     friend class ManagedObjectInstanceTest;
 };

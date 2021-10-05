@@ -35,9 +35,9 @@ class ObjectManager
         bool getObjectPosition(int objectId, PointOfView& pos);
 
         /** @brief update for the given time lapse. Also check EOL for objects
-         * NOTE: time_delta is passed so that it can be UT.
+         * NOTE: total_time gives time from start of game play
         */
-        void update(float time_delta);
+        void update(float total_time);
 
         /** manadatory due to fwd decslaration */
         virtual ~ObjectManager();

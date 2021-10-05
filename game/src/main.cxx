@@ -106,6 +106,7 @@ int main(int argc, char* argv[])
     );
 
     auto current_time = std::chrono::steady_clock::now();
+    auto total_time = 0.0f;
 
     FpsCounter fpsCounter;
 
@@ -138,7 +139,8 @@ int main(int argc, char* argv[])
         auto new_time = std::chrono::steady_clock::now();
         auto elapsed = float(std::chrono::duration_cast<std::chrono::microseconds>(new_time - current_time).count())
             /(1000.0f*1000.0f);
-        object_manager->update(elapsed);
+        total_time += elapsed;
+        object_manager->update(total_time);
         current_time = new_time;
 
         fpsCounter.update();

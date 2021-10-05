@@ -15,9 +15,12 @@ ManagedObjectInstance::ManagedObjectInstance(
         mainPosition(_mainPosition),
         wall_adherence(false),
         current_speed(0.0f),
+        current_gravity(0.0f, -0.3f, 0.0f),
+        current_up(0.0f, 1.0f, 0.0f),
         spaceResolver(_spaceResolver),
         gravityProvider(_gravityProvider),
-        current_gravity(0.0f, -0.3f, 0.0f)
+        gravity_validity(0.0f), // sets this to force recomputation
+        last_update(0.0f) // starts counting from there
 {
 };
 
@@ -26,35 +29,38 @@ PointOfView ManagedObjectInstance::getObjectPosition()
     return mainPosition.prependCoordinateSystem(object->getOwnMatrix());
 }
 
-void ManagedObjectInstance::computeNextPosition(float time_delta)
+void ManagedObjectInstance::computeNextPosition(float total_time)
 {
-    updateGravity(time_delta);
-    auto newPos = getComputeNextPosition(time_delta);
-    move(newPos, time_delta);
+    float delta_time = total_time - last_update;
+    updateGravity(total_time, delta_time);
+    auto newPos = getComputeNextPosition(delta_time);
+    move(newPos, delta_time);
+    last_update = total_time;
 }
 
-static float total_time = 0.0f;
-
-#include <glm/gtc/constants.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
-void ManagedObjectInstance::updateGravity(float time_delta)
+void ManagedObjectInstance::updateGravity(float total_time, float time_delta)
 {
-    total_time += time_delta;
-
-    float new_time = ceil(total_time / 4.0f);
-
-    auto vec_gravity = glm::mat3(glm::rotate(glm::mat4x4(1.0f), new_time * glm::pi<float>()/2.0f,
-                        glm::vec3(1.0f, 0.0f, 0.0f) ) ) * glm::vec3(0.0f, 1.0f, 0.0f);
-    current_gravity = vec_gravity * ( object.get()->getObjectDefinition().weight * 0.1f);
-
+    if ((gravity_validity != -1.0f) && (gravity_validity < total_time))
+    {
+        GravityProvider::GravityInformation gravity =
+            gravityProvider->getGravityInformation(
+                mainPosition,
+                glm::vec3(0.0f),
+                object.get()->getObjectDefinition().weight,
+                object.get()->getObjectDefinition().radius,
+                total_time);
+        current_gravity = gravity.gravity;
+        current_up = gravity.up;
+        if (gravity.validity != -1.0f)
+            gravity_validity = total_time + gravity.validity;
+        else
+            gravity_validity = -1.0f;
+    }
     mainPosition.local_reference = computeRotatedMatrix(
         mainPosition.local_reference,
-        -current_gravity,
+        current_up,
         std::function<float(float)>([time_delta](float originalAngle)
         {
-            console->info("originalAngle={}", originalAngle);
-
             if (originalAngle > 0.0f)
                 return min(originalAngle, 3.14f * time_delta);
             else
