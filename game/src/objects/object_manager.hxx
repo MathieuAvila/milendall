@@ -8,13 +8,18 @@
 
 struct RoomResolver;
 class SpaceResolver;
+class GravityProvider;
 class ManagedObjectInstance;
 
 class ObjectManager
 {
     public:
 
-        ObjectManager(RoomResolver* _roomResolver, SpaceResolver* _spaceResolver);
+        ObjectManager(
+            RoomResolver* _roomResolver,
+            SpaceResolver* _spaceResolver,
+            GravityProvider* _gravityProvider
+            );
 
         /** @brief Insert any object in the list of managed objects.
          * @param obj The bject to insert
@@ -41,6 +46,7 @@ class ObjectManager
 
         RoomResolver* roomResolver;
         SpaceResolver* spaceResolver;
+        GravityProvider* gravityProvider;
 
         /** mapping unique ID to objects */
         std::map<int, std::unique_ptr<ManagedObjectInstance>> managed_objects;

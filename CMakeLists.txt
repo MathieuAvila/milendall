@@ -59,6 +59,7 @@ add_library(game_lib STATIC
   game/src/structure/face_list.cxx
   game/src/structure/face_hard.hxx
   game/src/structure/face_hard.cxx
+  game/src/structure/gravity_provider.hxx
   game/src/gltf/gltf_mesh.hxx
   game/src/gltf/gltf_mesh.cxx
   game/src/gltf/gltf_model.hxx

@@ -5,10 +5,11 @@
 #include "room.hxx"
 #include "level_exception.hxx"
 #include "space_resolver.hxx"
+#include "gravity_provider.hxx"
 
 struct LevelRoomResolver;
 
-class Level : public SpaceResolver
+class Level : public SpaceResolver, public GravityProvider
 {
     public:
 
@@ -74,6 +75,15 @@ class Level : public SpaceResolver
             float& distance,
             FaceHard*& face
             ) const override;
+
+        /** @brief From GravityProvider
+         */
+        virtual GravityInformation getGravityInformation(
+            const PointOfView& position,
+            glm::vec3 speed,
+            float weight,
+            float radius,
+            float total_time) const override;
 
     private:
 

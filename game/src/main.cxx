@@ -100,7 +100,7 @@ int main(int argc, char* argv[])
     fontLoadFont("candy", fontCandy);
 
     auto player = make_shared<Player>();
-    auto object_manager = make_unique<ObjectManager>(level->getRoomResolver(), level.get());
+    auto object_manager = make_unique<ObjectManager>(level->getRoomResolver(), level.get(), level.get());
     auto player_id = object_manager ->insertObject(player,
         PointOfView(currentPov.position, verticalAngle, horizontalAngle, currentPov.local_reference, currentPov.room)
     );

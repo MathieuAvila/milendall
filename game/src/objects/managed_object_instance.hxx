@@ -9,6 +9,7 @@
 
 struct FaceHard;
 class SpaceResolver;
+class GravityProvider;
 
 class ManagedObjectInstance
 {
@@ -34,6 +35,9 @@ class ManagedObjectInstance
         /** @brief needed to move object in space */
         SpaceResolver* spaceResolver;
 
+        /** @brief needed to recompute gravity*/
+        GravityProvider* gravityProvider;
+
         /** @brief get computed next position without walls detection collision */
         glm::vec3 getComputeNextPosition(float time_delta) const;
 
@@ -45,7 +49,12 @@ class ManagedObjectInstance
 
     public:
 
-        ManagedObjectInstance(std::shared_ptr<ManagedObject> _object, PointOfView _mainPosition, SpaceResolver* _spaceResolver);
+        ManagedObjectInstance(
+            std::shared_ptr<ManagedObject> _object,
+            PointOfView _mainPosition,
+            SpaceResolver* _spaceResolver,
+            GravityProvider* _gravityProvider
+            );
 
         /** @brief Return the corrent POV */
         PointOfView getObjectPosition();

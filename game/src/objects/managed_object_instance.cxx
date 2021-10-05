@@ -1,16 +1,22 @@
 #include "../common.hxx"
 #include "managed_object_instance.hxx"
 #include "space_resolver.hxx"
+#include "gravity_provider.hxx"
 #include "helper_math.hxx"
 
 static auto console = getConsole("managed_object_instance");
 
-ManagedObjectInstance::ManagedObjectInstance(std::shared_ptr<ManagedObject> _object, PointOfView _mainPosition, SpaceResolver* _spaceResolver):
+ManagedObjectInstance::ManagedObjectInstance(
+    std::shared_ptr<ManagedObject> _object,
+    PointOfView _mainPosition,
+    SpaceResolver* _spaceResolver,
+    GravityProvider* _gravityProvider):
         object(_object),
         mainPosition(_mainPosition),
         wall_adherence(false),
         current_speed(0.0f),
         spaceResolver(_spaceResolver),
+        gravityProvider(_gravityProvider),
         current_gravity(0.0f, -0.3f, 0.0f)
 {
 };
@@ -27,9 +33,33 @@ void ManagedObjectInstance::computeNextPosition(float time_delta)
     move(newPos, time_delta);
 }
 
+static float total_time = 0.0f;
+
+#include <glm/gtc/constants.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 void ManagedObjectInstance::updateGravity(float time_delta)
 {
-    current_gravity = glm::vec3(0.0f, -0.1f * object.get()->getObjectDefinition().weight, 0.0f);
+    total_time += time_delta;
+
+    float new_time = ceil(total_time / 4.0f);
+
+    auto vec_gravity = glm::mat3(glm::rotate(glm::mat4x4(1.0f), new_time * glm::pi<float>()/2.0f,
+                        glm::vec3(1.0f, 0.0f, 0.0f) ) ) * glm::vec3(0.0f, 1.0f, 0.0f);
+    current_gravity = vec_gravity * ( object.get()->getObjectDefinition().weight * 0.1f);
+
+    mainPosition.local_reference = computeRotatedMatrix(
+        mainPosition.local_reference,
+        -current_gravity,
+        std::function<float(float)>([time_delta](float originalAngle)
+        {
+            console->info("originalAngle={}", originalAngle);
+
+            if (originalAngle > 0.0f)
+                return min(originalAngle, 3.14f * time_delta);
+            else
+                return max(originalAngle, -3.14f * time_delta);
+        } ));
 }
 
 glm::vec3 ManagedObjectInstance::getComputeNextPosition(float time_delta) const

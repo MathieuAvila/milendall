@@ -190,3 +190,16 @@ bool Level::isWallReached(
 Level::~Level()
 {
 }
+
+GravityProvider::GravityInformation Level::getGravityInformation(
+            const PointOfView& position,
+            glm::vec3 speed,
+            float weight,
+            float radius,
+            float total_time) const
+{
+    GravityProvider::GravityInformation result;
+
+
+    return result;
+}

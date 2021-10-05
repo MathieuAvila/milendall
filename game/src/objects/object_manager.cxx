@@ -11,8 +11,11 @@
 
 static auto console = getConsole("object_manager");
 
-ObjectManager::ObjectManager(RoomResolver* _roomResolver, SpaceResolver* _spaceResolver) :
-    roomResolver(_roomResolver), spaceResolver(_spaceResolver)
+ObjectManager::ObjectManager(
+    RoomResolver* _roomResolver,
+    SpaceResolver* _spaceResolver,
+    GravityProvider* _gravityProvider) :
+roomResolver(_roomResolver), spaceResolver(_spaceResolver), gravityProvider(_gravityProvider)
 {
 
 }
@@ -21,7 +24,7 @@ int ObjectManager::insertObject(std::shared_ptr<ManagedObject> object, PointOfVi
 {
     static int ID = 0;
     managed_objects.insert(std::pair<int, std::unique_ptr<ManagedObjectInstance>>(++ID,
-        std::make_unique<ManagedObjectInstance>(object, pos, spaceResolver)));
+        std::make_unique<ManagedObjectInstance>(object, pos, spaceResolver, gravityProvider)));
     return ID;
 }
 
