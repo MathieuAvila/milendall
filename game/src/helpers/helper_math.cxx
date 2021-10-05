@@ -325,18 +325,18 @@ glm::mat3x3 computeRotatedMatrix(glm::mat3x3 original, glm::vec3 second_vector, 
     if (axis == glm::vec3(0.0f,0.0f,0.0f)) {
         const vec3 const_up_delta(0.000001f, 1.0f, 0.0f);
         current_up = original * const_up_delta;
-        console->info("new current_up {}", vec3_to_string(current_up));
+        console->debug("new current_up {}", vec3_to_string(current_up));
         axis = glm::cross(current_up, second_vector);
-        console->info("new axis {}", vec3_to_string(axis));
+        console->debug("new axis {}", vec3_to_string(axis));
     }
     axis = glm::normalize(axis);
     current_up = normalize(current_up);
     second_vector = normalize(second_vector);
     console->debug("normalized axis {}", vec3_to_string(axis));
     float original_angle = orientedAngle(current_up, second_vector, axis);
-    console->info("original_angle {}", original_angle);
+    console->debug("original_angle {}", original_angle);
     float new_angle = angle_provider(original_angle);
-    console->info("new_angle {}", new_angle);
+    console->debug("new_angle {}", new_angle);
 
     auto trans_mat = glm::rotate(glm::mat4x4(1.0f), new_angle, axis);
     auto new_mat = glm::mat4x4(original);
