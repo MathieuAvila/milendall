@@ -18,6 +18,9 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 find_package(Freetype REQUIRED)
 
+#find_package(Lua 5.1 REQUIRED)
+find_package(Lua51 REQUIRED)
+
 set(GLFW_INCLUDE_PATH "" CACHE PATH "The directory that contains GL/glfw.h" )
 set(GLFW_LIBRARY "" CACHE FILEPATH "libglfw.a or glfw.lib" )
 set(GLEW_INCLUDE_PATH "" CACHE PATH "The directory that contains GL/glew.h" )
@@ -28,6 +31,7 @@ find_package(GMock REQUIRED)
 include(GoogleTest)
 
 include_directories(${FREETYPE_INCLUDE_DIR_ft2build} ${FREETYPE_INCLUDE_DIR_freetype2})
+include_directories(${LUA_INCLUDE_DIR})
 include_directories(game/src/ game/src/helpers/ game/src/objects/ game/src/gltf/ game/src/structure)
 
 SET (CMAKE_C_COMPILER               "/usr/bin/clang-11")
@@ -80,6 +84,8 @@ add_library(game_lib STATIC
   game/src/helpers/gl_init.hxx
   game/src/helpers/fonts.cxx
   game/src/helpers/fonts.hxx
+  game/src/helpers/script.hxx
+  game/src/helpers/script.cxx
   game/src/span.hxx
   game/src/objects/movable_object.hxx
   game/src/objects/object_manager.cxx
@@ -106,6 +112,7 @@ set(core_lib
     glm::glm
     ${FREEIMAGEPLUS_LIBRARIES} ${FreeImage_LIBRARIES}
     ${FREETYPE_LIBRARIES}
+    ${LUA_LIBRARIES}
 )
 
 set(gl_libs
@@ -153,6 +160,7 @@ game/test/unit_gltf_node.cxx
 game/test/unit_face_list.cpp
 game/test/unit_point_of_view.cxx
 game/test/unit_managed_object_instance.cxx
+game/test/unit_script.cxx
 )
 
 enable_testing()
