@@ -212,7 +212,5 @@ GravityProvider::GravityInformation Level::getGravityInformation(
     result.up = -glm::normalize(result.gravity);
     result.validity = 1.0f;
 
-    console->info("Computed gravity at : {}", total_time);
-
     return result;
 }
