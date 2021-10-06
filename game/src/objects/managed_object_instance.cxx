@@ -22,7 +22,7 @@ ManagedObjectInstance::ManagedObjectInstance(
         gravity_validity(0.0f), // sets this to force recomputation
         last_update(0.0f) // starts counting from there
 {
-};
+}
 
 PointOfView ManagedObjectInstance::getObjectPosition()
 {
@@ -40,8 +40,10 @@ void ManagedObjectInstance::computeNextPosition(float total_time)
 
 void ManagedObjectInstance::updateGravity(float total_time, float time_delta)
 {
-    if ((gravity_validity != -1.0f) && (gravity_validity < total_time))
+    console->debug("Update total_time {} time_delta {} gravity_validity {}",total_time, time_delta, gravity_validity);
+    if (gravity_validity < total_time)
     {
+        console->debug("Request new values");
         GravityProvider::GravityInformation gravity =
             gravityProvider->getGravityInformation(
                 mainPosition,
@@ -51,10 +53,8 @@ void ManagedObjectInstance::updateGravity(float total_time, float time_delta)
                 total_time);
         current_gravity = gravity.gravity;
         current_up = gravity.up;
-        if (gravity.validity != -1.0f)
-            gravity_validity = total_time + gravity.validity;
-        else
-            gravity_validity = -1.0f;
+        gravity_validity = total_time + gravity.validity;
+        console->debug("New validity {}", gravity_validity);
     }
     mainPosition.local_reference = computeRotatedMatrix(
         mainPosition.local_reference,

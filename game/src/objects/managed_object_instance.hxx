@@ -11,6 +11,7 @@ struct FaceHard;
 class SpaceResolver;
 class GravityProvider;
 
+
 class ManagedObjectInstance
 {
     protected:
@@ -73,5 +74,6 @@ class ManagedObjectInstance
         /** @brief compute next position */
         void computeNextPosition(float total_time);
 
-    friend class ManagedObjectInstanceTest;
+    FRIEND_TEST(ManagedObjectInstanceTest, update_gravity_check_validity);
+    FRIEND_TEST(ManagedObjectInstanceTest, update_gravity_check_rotation);
 };
