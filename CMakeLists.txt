@@ -87,6 +87,8 @@ add_library(game_lib STATIC
   game/src/helpers/fonts.hxx
   game/src/helpers/script.hxx
   game/src/helpers/script.cxx
+  game/src/helpers/min_max_box.hxx
+  game/src/helpers/min_max_box.cxx
   game/src/span.hxx
   game/src/objects/movable_object.hxx
   game/src/objects/object_manager.cxx
@@ -162,6 +164,7 @@ game/test/unit_face_list.cpp
 game/test/unit_point_of_view.cxx
 game/test/unit_managed_object_instance.cxx
 game/test/unit_script.cxx
+game/test/unit_min_max_box.cxx
 )
 
 enable_testing()
