@@ -93,22 +93,22 @@ struct RoomNode : public GltfNode
             );
 
     /** @brief Check if a wall is reached
-         * @param origin is the original position, ie. start of trajectory
-         * @param destination is the end of trajectory
-         * @param radius is the size of the object
-         * @param hitPoint is filled with the point where the wall is reached
-         * @param normal is filled with the normal of the wall
-         * @param distance is filled with the distance, if a wall is reached
-         * @param face definition of the wall that was reached.
-         * @return True if a wall was reached
-        */
-        bool isWallReached(
-            const glm::vec3& origin,
-            const glm::vec3& destination,
-            float radius,
-            glm::vec3& hitPoint,
-            glm::vec3& normal,
-            float& distance,
-            FaceHard*& face
-            );
+    * @param origin is the original position, ie. start of trajectory
+    * @param destination is the end of trajectory
+    * @param radius is the size of the object
+    * @param hitPoint is filled with the point where the wall is reached
+    * @param normal is filled with the normal of the wall
+    * @param distance is filled with the distance, if a wall is reached
+    * @param face definition of the wall that was reached.
+    * @return True if a wall was reached
+    */
+    bool isWallReached(
+        const glm::vec3& origin,
+        const glm::vec3& destination,
+        float radius,
+        glm::vec3& hitPoint,
+        glm::vec3& normal,
+        float& distance,
+        FaceHard*& face
+        );
 };
