@@ -15,6 +15,6 @@ class MinMaxBox {
         MinMaxBox();
         MinMaxBox(bool _full);
         MinMaxBox(glm::vec3 _minP, glm::vec3 _maxP);
-        bool isIn(glm::vec3 p);
-        std::string toString();
+        bool isIn(glm::vec3 p) const;
+        std::string toString() const;
 };

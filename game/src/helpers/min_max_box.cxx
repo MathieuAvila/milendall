@@ -5,7 +5,7 @@ MinMaxBox::MinMaxBox(glm::vec3 _minP, glm::vec3 _maxP): minP(_minP), maxP(_maxP)
     defined = true;
 }
 
-bool MinMaxBox::isIn(glm::vec3 p)
+bool MinMaxBox::isIn(glm::vec3 p) const
 {
     if (defined)
         return
