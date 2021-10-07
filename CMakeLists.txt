@@ -59,6 +59,8 @@ add_library(game_lib STATIC
   game/src/structure/face_list.cxx
   game/src/structure/face_hard.hxx
   game/src/structure/face_hard.cxx
+  game/src/structure/room_node_gravity.hxx
+  game/src/structure/room_node_gravity.cxx
   game/src/structure/gravity_provider.hxx
   game/src/gltf/gltf_mesh.hxx
   game/src/gltf/gltf_mesh.cxx
@@ -165,6 +167,7 @@ game/test/unit_point_of_view.cxx
 game/test/unit_managed_object_instance.cxx
 game/test/unit_script.cxx
 game/test/unit_min_max_box.cxx
+game/test/unit_room_node_gravity.cxx
 )
 
 enable_testing()

@@ -13,13 +13,13 @@ class Script
     class ScriptState;
     std::unique_ptr<ScriptState> state;
 
+    public:
+
     class ScriptException: public std::runtime_error
     {
     public:
         ScriptException(const std::string err): runtime_error(err) {};
     };
-
-    public:
 
     using ValueTable = std::map<std::string, float>;
 

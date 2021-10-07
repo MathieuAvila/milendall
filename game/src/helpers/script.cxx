@@ -49,7 +49,7 @@ Script::ValueTable Script::ScriptState::run(std::string functionName, Script::Va
     lua_newtable(L);
     for (auto  [k, v] : values) {
         const char* ks = k.c_str();
-        lua_pushlstring(L, ks, (sizeof(k.size())/sizeof(char))-1);
+        lua_pushstring(L, ks);
         lua_pushnumber(L, v);
         lua_settable(L, -3);
     }
