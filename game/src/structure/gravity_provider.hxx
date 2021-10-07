@@ -1,9 +1,9 @@
 #pragma once
 
+#include "glm/vec3.hpp"
+
 #include "file_library.hxx"
-#include "gltf/gltf_material_accessor_library_iface.hxx"
-#include "room.hxx"
-#include "level_exception.hxx"
+#include "point_of_view.hxx"
 
 /** @brief Provide an interface definition for a class that gives gravity information
  * In real code this is the Level. In UT it can be subclassed to whatever impl.
@@ -23,6 +23,8 @@ class GravityProvider
             /** @brief Duration of validity. 0 means it must always be recomputed, -1 means forever
              * (no recomputation needed) */
             float validity;
+            /** @brief space kind */
+            enum { GROUND, FLY, SWIM } space_kind;
         };
 
         /** @brief Return the forces that must be applied to the object
