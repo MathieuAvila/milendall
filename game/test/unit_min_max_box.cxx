@@ -28,3 +28,15 @@ TEST_F(MinMaxBoxTest, isIn) {
     ASSERT_FALSE(mmb.isIn(glm::vec3(0.0,        10.0      , 100.0 - 1.0 ))); // min - 1z
 }
 
+TEST_F(MinMaxBoxTest, defined_isIn) {
+    MinMaxBox mmb_false(false);
+    ASSERT_FALSE(mmb_false.isIn(glm::vec3()));
+
+    MinMaxBox mmb_true(true);
+    ASSERT_TRUE(mmb_true.isIn(glm::vec3()));
+}
+
+TEST_F(MinMaxBoxTest, default_ctor) {
+    MinMaxBox mmb_default;
+    ASSERT_FALSE(mmb_default.isIn(glm::vec3()));
+}
