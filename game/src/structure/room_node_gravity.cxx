@@ -32,6 +32,9 @@ bool RoomNodeGravity::getGravityInformation(
                 values.insert(pair<string, float>("x", position.x));
                 values.insert(pair<string, float>("y", position.y));
                 values.insert(pair<string, float>("z", position.z));
+                values.insert(pair<string, float>("vx", speed.x));
+                values.insert(pair<string, float>("vy", speed.y));
+                values.insert(pair<string, float>("vz", speed.z));
                 values.insert(pair<string, float>("w", weight));
                 values.insert(pair<string, float>("r", radius));
                 values.insert(pair<string, float>("t", total_time));

@@ -67,11 +67,11 @@ TEST_F(RoomNodeGravityTest, get_script_unboxed) {
     auto my_json = json::parse("{ }");
 
     gravity.readParameters(my_json);
-    ASSERT_TRUE(gravity.getGravityInformation(glm::vec3(1.0, 2.0, 3.0), glm::vec3(4.0, 5.0, 6.0), 7.0, 8.0, 9.0, result));
+    ASSERT_TRUE(gravity.getGravityInformation(glm::vec3(10.0, 100.0, 1000.0), glm::vec3(20.0, 200.0, 2000.0), 30.0, 300.0, 3000.0, result));
     console->debug("{}", vec3_to_string(result.gravity));
     console->debug("{}", vec3_to_string(result.up));
     console->debug("{}", result.validity);
-    ASSERT_EQ(result.gravity, glm::vec3(2.0, 12.0, 103.0));
-    ASSERT_EQ(result.up, glm::vec3(8.0, 18.0, 109.0));
-    ASSERT_EQ(result.validity, 100009.0);
+    ASSERT_EQ(result.gravity, glm::vec3(11.0, 101.0, 1001.0));
+    ASSERT_EQ(result.up, glm::vec3(21.0, 201.0, 2001.0));
+    ASSERT_EQ(result.validity, 3330.0);
 }
