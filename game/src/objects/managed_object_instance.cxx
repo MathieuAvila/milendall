@@ -44,7 +44,7 @@ void ManagedObjectInstance::updateGravity(float total_time, float time_delta)
     if (gravity_validity < total_time)
     {
         console->debug("Request new values");
-        GravityProvider::GravityInformation gravity =
+        GravityInformation gravity =
             gravityProvider->getGravityInformation(
                 mainPosition,
                 glm::vec3(0.0f),
