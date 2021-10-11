@@ -39,3 +39,8 @@ GravityInformation::GravityInformation(std::list<GravityInformation> sources)
         up = glm::vec3(0.0f, 1.0f, 0.0f);
     }
 }
+
+bool GravityInformation::operator==(const GravityInformation& g) const
+{
+    return (gravity == g.gravity) && (up == g.up) && (validity == g.validity) && (space_kind == g.space_kind);
+}

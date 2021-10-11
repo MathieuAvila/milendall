@@ -34,4 +34,7 @@ struct GravityInformation {
 
     /** constructor from a combined list of gravity information. ATM, mix them */
     GravityInformation(std::list<GravityInformation> sources);
+
+    /** operator== should be used for UT only  */
+    bool operator==(const GravityInformation&) const;
 };
