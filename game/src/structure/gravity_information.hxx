@@ -5,8 +5,13 @@
 #include "file_library.hxx"
 #include "point_of_view.hxx"
 
+#include <list>
+
 /** @brief Result of gravity computation */
 struct GravityInformation {
+
+    typedef enum { GROUND, FLY, SWIM } SpaceKind;
+
     /** @brief direction and force of gravity */
     glm::vec3 gravity;
     /** @brief direction in which the object points its head. This can be the same
@@ -16,5 +21,17 @@ struct GravityInformation {
      * (no recomputation needed) */
     float validity;
     /** @brief space kind */
-     enum { GROUND, FLY, SWIM } space_kind;
+    SpaceKind space_kind;
+
+    /** default constructor will build reasonable values, with none validity */
+    GravityInformation();
+
+    /** constructor with all values*/
+    GravityInformation(glm::vec3 _gravity, glm::vec3 _up, float _validity, SpaceKind _space_kind);
+
+    /** constructor with assumption of ground */
+    GravityInformation(glm::vec3 _gravity, glm::vec3 _up, float _validity);
+
+    /** constructor from a combined list of gravity information. ATM, mix them */
+    GravityInformation(std::list<GravityInformation> sources);
 };
