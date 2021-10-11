@@ -15,7 +15,7 @@ bool RoomNodeGravity::getGravityInformation(
             float weight,
             float radius,
             float total_time,
-            GravityProvider::GravityInformation& gravity) const
+            GravityInformation& gravity) const
 {
     if (gravity_box.isIn(position))
     {
@@ -47,7 +47,7 @@ bool RoomNodeGravity::getGravityInformation(
                     gravity.up.x = result["u_x"];
                     gravity.up.y = result["u_y"];
                     gravity.up.z = result["u_z"];
-                    gravity.space_kind = GravityProvider::GravityInformation::GROUND;
+                    gravity.space_kind = GravityInformation::GROUND;
                     gravity.validity = result["v"];
                 }
                 catch (Script::ScriptException e) {
@@ -88,14 +88,14 @@ void RoomNodeGravity::readParameters(nlohmann::json& json)
         auto j_default = json["default"];
         constValues.gravity = jsonGetVec3(jsonGetElementByName(j_default, "gravity"));
         constValues.up = jsonGetVec3(jsonGetElementByName(j_default, "up"));
-        constValues.space_kind = GravityProvider::GravityInformation::GROUND; // TODO
+        constValues.space_kind = GravityInformation::GROUND; // TODO
         constValues.validity = 100000.0f; // big enough to have no trouble
     }
 
     // quick check on script
     if (provider_type == SCRIPT)
     {
-        GravityProvider::GravityInformation result;
+        GravityInformation result;
         getGravityInformation(
             glm::vec3(),
             glm::vec3(),

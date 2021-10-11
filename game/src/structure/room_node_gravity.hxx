@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gravity_provider.hxx"
+#include "gravity_information.hxx"
 #include "min_max_box.hxx"
 
 #include <nlohmann/json.hpp>
@@ -19,7 +19,7 @@ class RoomNodeGravity
     Script* room_script;
     MinMaxBox gravity_box;
 
-    GravityProvider::GravityInformation constValues;
+    GravityInformation constValues;
     enum { NONE, CONST, SCRIPT} provider_type;
 
     public:
@@ -39,7 +39,7 @@ class RoomNodeGravity
             float weight,
             float radius,
             float total_time,
-            GravityProvider::GravityInformation& gravity) const;
+            GravityInformation& gravity) const;
 
         RoomNodeGravity(std::string _name, Script* _room_script); /* will default to true */
 

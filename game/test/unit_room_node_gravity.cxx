@@ -22,14 +22,14 @@ class RoomNodeGravityTest : public ::testing::Test {
 TEST_F(RoomNodeGravityTest, get_none) {
 
     RoomNodeGravity gravity("my_name", nullptr);
-    GravityProvider::GravityInformation result;
+    GravityInformation result;
     ASSERT_FALSE(gravity.getGravityInformation(glm::vec3(), glm::vec3(), 0.0, 0.0, 0.0, result));
 }
 
 TEST_F(RoomNodeGravityTest, get_default_unboxed) {
 
     RoomNodeGravity gravity("my_name", nullptr);
-    GravityProvider::GravityInformation result;
+    GravityInformation result;
     auto my_json = json::parse("{ \"default\" : { \"gravity\": [ 1.0, 2.0, 3.0] ,  \"up\": [ 4.0, 5.0, 6.0]  } }");
 
     gravity.readParameters(my_json);
@@ -41,7 +41,7 @@ TEST_F(RoomNodeGravityTest, get_default_unboxed) {
 TEST_F(RoomNodeGravityTest, get_default_boxed) {
 
     RoomNodeGravity gravity("my_name", nullptr);
-    GravityProvider::GravityInformation result;
+    GravityInformation result;
     auto my_json = json::parse(
         "{"
             "\"default\" : { \"gravity\": [ 1.0, 2.0, 3.0] ,  \"up\": [ 4.0, 5.0, 6.0]  } , "
@@ -63,7 +63,7 @@ TEST_F(RoomNodeGravityTest, get_script_unboxed) {
     fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../game/test/gravity"));
     Script testScript(fl.getRoot().getSubPath("/simple.lua"));
     RoomNodeGravity gravity("my_name", &testScript);
-    GravityProvider::GravityInformation result;
+    GravityInformation result;
     auto my_json = json::parse("{ }");
 
     gravity.readParameters(my_json);

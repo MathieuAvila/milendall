@@ -33,7 +33,7 @@ TEST_F(ManagedObjectInstanceTest, advance_0_dont_move) {
 class MockGravityProvider : public GravityProvider {
  public:
 
-  MOCK_METHOD(GravityProvider::GravityInformation, getGravityInformation, (const PointOfView& position,
+  MOCK_METHOD(GravityInformation, getGravityInformation, (const PointOfView& position,
             glm::vec3 speed,
             float weight,
             float radius,
@@ -62,11 +62,11 @@ TEST_F(ManagedObjectInstanceTest, update_gravity_check_validity) {
 
     PointOfView mainPosition;
 
-    GravityProvider::GravityInformation gravity_1{
+    GravityInformation gravity_1{
         glm::vec3(0.0f, -2.0f, 0.0f),
         glm::vec3(0.0f, 1.0f, 0.0f),
         2.0f };
-    GravityProvider::GravityInformation gravity_2{
+    GravityInformation gravity_2{
         glm::vec3(0.0f, -3.0f, 0.0f),
         glm::vec3(0.0f, 2.0f, 0.0f),
         1.0f };
@@ -118,7 +118,7 @@ TEST_F(ManagedObjectInstanceTest, update_gravity_check_rotation) {
         "room1"
     };
 
-    GravityProvider::GravityInformation gravity_1{
+    GravityInformation gravity_1{
         glm::vec3(1.0f, 0.0f, 0.0f), // this is gravity
         glm::vec3(0.0f, 0.0f, 1.0f), // this is up
         10.0f };

@@ -4,6 +4,7 @@
 
 #include "file_library.hxx"
 #include "point_of_view.hxx"
+#include "gravity_information.hxx"
 
 /** @brief Provide an interface definition for a class that gives gravity information
  * In real code this is the Level. In UT it can be subclassed to whatever impl.
@@ -12,20 +13,6 @@
 class GravityProvider
 {
     public:
-
-        /** @brief Result of gravity computation */
-        struct GravityInformation {
-            /** @brief direction and force of gravity */
-            glm::vec3 gravity;
-            /** @brief direction in which the object points its head. This can be the same
-             * as gravity (most cases), or something else */
-            glm::vec3 up;
-            /** @brief Duration of validity. 0 means it must always be recomputed, -1 means forever
-             * (no recomputation needed) */
-            float validity;
-            /** @brief space kind */
-            enum { GROUND, FLY, SWIM } space_kind;
-        };
 
         /** @brief Return the forces that must be applied to the object
          * @param position where is the object. Only room and position is used.

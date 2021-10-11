@@ -62,6 +62,7 @@ add_library(game_lib STATIC
   game/src/structure/room_node_gravity.hxx
   game/src/structure/room_node_gravity.cxx
   game/src/structure/gravity_provider.hxx
+  game/src/structure/gravity_information.hxx
   game/src/gltf/gltf_mesh.hxx
   game/src/gltf/gltf_mesh.cxx
   game/src/gltf/gltf_model.hxx
