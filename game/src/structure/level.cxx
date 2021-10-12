@@ -194,23 +194,14 @@ Level::~Level()
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-GravityProvider::GravityInformation Level::getGravityInformation(
+GravityInformation Level::getGravityInformation(
             const PointOfView& position,
             glm::vec3 speed,
             float weight,
             float radius,
             float total_time) const
 {
-    GravityProvider::GravityInformation result;
-
-    float new_time = ceil(total_time / 4.0f);
-
-    auto vec_gravity = glm::mat3(glm::rotate(glm::mat4x4(1.0f), new_time * glm::pi<float>()/2.0f,
-                        glm::vec3(1.0f, 0.0f, 0.0f) ) ) * glm::vec3(0.0f, 1.0f, 0.0f);
-
-    result.gravity = vec_gravity * ( weight * 0.1f);
-    result.up = -glm::normalize(result.gravity);
-    result.validity = 1.0f;
-
+    auto room = room_resolver->getRoom(position.room);
+    GravityInformation result = room->getGravity(position.position, speed, weight, radius, total_time);
     return result;
 }

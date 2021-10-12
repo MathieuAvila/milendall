@@ -16,6 +16,8 @@
 #include "point_of_view.hxx"
 #include "room_draw_context.hxx"
 
+#include "script.hxx"
+
 static auto console = getConsole("room");
 
 bool GateIdentifier::operator< (const GateIdentifier& b) const
@@ -34,16 +36,34 @@ void Room::parseApplicationData(nlohmann::json& json) {
     console->info("Parse application data for room");
 }
 
+RoomScriptLoader::RoomScriptLoader(FileLibrary::UriReference& roomRef)
+{
+    loadedScript = nullptr;
+    auto ref = roomRef.getDirPath().getSubPath("script.lua");
+    if (ref.isFile())
+        loadedScript = make_unique<Script>(roomRef.getDirPath().getSubPath("script.lua"));
+    else
+        console->info("No script found for room");
+}
+
+Script* RoomScriptLoader::getScript()
+{
+    return loadedScript.get();
+}
+
+RoomScriptLoader::~RoomScriptLoader() {};
+
 Room::Room(
     std::string _room_name,
     GltfMaterialLibraryIfacePtr materialLibrary,
     FileLibrary::UriReference& ref,
     RoomResolver* _room_resolver)
     :
+    RoomScriptLoader(ref),
     GltfModel(materialLibrary, ref,
-            [_room_resolver, _room_name](nlohmann::json& json,
+            [_room_resolver, _room_name, this](nlohmann::json& json,
             GltfDataAccessorIFace* data_accessor) {
-                return make_shared<RoomNode>(json, data_accessor, _room_resolver, _room_name);
+                return make_shared<RoomNode>(json, data_accessor, _room_resolver, getScript(), _room_name);
             }),
     room_name(_room_name),
     room_resolver(_room_resolver)
@@ -204,4 +224,47 @@ bool Room::isWallReached(
         }
     }
     return result;
+}
+
+GravityInformation Room::getGravity(glm::vec3 position, glm::vec3 speed, float weight, float radius, float total_time)
+{
+    GravityInformation result;
+    std::list<GravityInformation> child_gravity_list;
+    for (auto root : root_nodes) {
+        GravityInformation root_gravity;
+        bool root_has_gravity = Room::_getGravity(root, position, speed, weight, radius, total_time, root_gravity);
+        if (root_has_gravity)
+            child_gravity_list.push_back(root_gravity);
+    }
+    return GravityInformation(child_gravity_list);
+}
+
+bool Room::_getGravity(unsigned int instance_index, glm::vec3 position, glm::vec3 speed, float weight, float radius, float total_time, GravityInformation& result)
+{
+    // compute for each child node and if set, bail out
+    RoomNode* roomNode = dynamic_cast<RoomNode*>(nodeTable[instance_index].get());
+    std::list<GravityInformation> child_gravity_list;
+    for (auto child_node: roomNode->children) {
+        GravityInformation child_gravity;
+        bool child_result = _getGravity(child_node, position, speed, weight, radius, total_time, child_gravity);
+        if (child_result) {
+            child_gravity_list.push_back(child_gravity);
+        }
+    }
+    if (child_gravity_list.size() != 0 ) { // at least one child defined gravity, this is enough.
+        result = GravityInformation(child_gravity_list);
+        return true;
+    }
+
+    // no child has gravity, compute for current node and return if set
+    auto instanceNode = instance->getNode(instance_index);
+    auto localPosition = instanceNode->getInvertedNodeMatrix() *  positionToVec4(position);
+    auto localSpeed = instanceNode->getInvertedNodeMatrix() * vectorToVec4(speed);
+    bool local_gravity = roomNode->getGravity(localPosition, localSpeed, weight, radius, total_time, result);
+    if (local_gravity) {
+        // back transform
+        result.gravity = instanceNode->getNodeMatrix() * vectorToVec4(result.gravity);
+        result.up = instanceNode->getNodeMatrix() * vectorToVec4(result.up);
+    }
+    return local_gravity;
 }

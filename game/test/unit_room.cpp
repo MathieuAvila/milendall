@@ -233,5 +233,135 @@ TEST(Room, isWallReached_3_sub_object) {
     ASSERT_FLOAT_EQ(distance, 0.8f);
     EXPECT_TRUE(glm::length(normal - glm::vec3(0.0f , 0.0f , 1.0f)) < 0.1f); // it must be in global space
     EXPECT_TRUE(glm::length(hitPoint - glm::vec3(6.5f, 2.0f, 1.2)) < 0.1f);
+}
+
+TEST(Room, gravity_0__default) {
+    // testing what happens when no node defines gravity
+    InSequence s;
+    GLMock mock;
+
+    auto room = loadRoom("/2_rooms_1_gate/room1/room.gltf");
+
+    GravityInformation gravity = room->getGravity(glm::vec3(0.0f), glm::vec3(0.0f), 1.0f, 1.0f, 1.0f);
+    GravityInformation default_gravity;
+
+    EXPECT_EQ(gravity, default_gravity);
+}
+
+TEST(Room, gravity_1__1_node) {
+    // testing what happens when 1 single root node defines gravity
+    InSequence s;
+    GLMock mock;
+    auto room = loadRoom("/room_gravity/1_node/room.gltf");
+
+    GravityInformation gravity = room->getGravity(glm::vec3(0.0f), glm::vec3(0.0f), 1.0f, 1.0f, 1.0f);
+    GravityInformation applied_gravity(glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0f), 1000.0f);
+
+    console->info("gravity {}", vec3_to_string(applied_gravity.gravity));
+    console->info("up {}", vec3_to_string(applied_gravity.up));
+    console->info("validity {}", applied_gravity.validity);
+
+    console->info("gravity {}", vec3_to_string(gravity.gravity));
+    console->info("up {}", vec3_to_string(gravity.up));
+    console->info("validity {}", gravity.validity);
+
+    EXPECT_EQ(gravity, applied_gravity);
+}
+
+TEST(Room, gravity_2__1_child_node_no_matrix) {
+    // testing what happens when 1 single child node defines gravity, without translation matrix
+    InSequence s;
+    GLMock mock;
+    auto room = loadRoom("/room_gravity/1_child_node_no_matrix/room.gltf");
+
+    GravityInformation gravity = room->getGravity(glm::vec3(0.0f), glm::vec3(0.0f), 1.0f, 1.0f, 1.0f);
+    GravityInformation applied_gravity(glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0f), 1000.0f);
+
+    console->info("gravity {}", vec3_to_string(applied_gravity.gravity));
+    console->info("up {}", vec3_to_string(applied_gravity.up));
+    console->info("validity {}", applied_gravity.validity);
+
+    console->info("gravity {}", vec3_to_string(gravity.gravity));
+    console->info("up {}", vec3_to_string(gravity.up));
+    console->info("validity {}", gravity.validity);
+
+    EXPECT_EQ(gravity, applied_gravity);
+}
+
+TEST(Room, gravity_3__1_child_node_matrix) {
+    // testing what happens when 1 single child node defines gravity, with a translation matrix
+    // matrix is an inversion on Z. Local gravity/up is UP on Z, so it becomes DOWN on Z
+    InSequence s;
+    GLMock mock;
+    auto room = loadRoom("/room_gravity/1_child_node_matrix/room.gltf");
+
+    GravityInformation gravity = room->getGravity(glm::vec3(0.0f), glm::vec3(0.0f), 1.0f, 1.0f, 1.0f);
+    GravityInformation applied_gravity(glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, 0.0, -1.0f), 1000.0f);
+
+    console->info("gravity {}", vec3_to_string(applied_gravity.gravity));
+    console->info("up {}", vec3_to_string(applied_gravity.up));
+    console->info("validity {}", applied_gravity.validity);
+
+    console->info("gravity {}", vec3_to_string(gravity.gravity));
+    console->info("up {}", vec3_to_string(gravity.up));
+    console->info("validity {}", gravity.validity);
+
+    EXPECT_EQ(gravity, applied_gravity);
+}
+
+TEST(Room, gravity_4__2_child_node) {
+    // testing what happens when 2 child nodes defines gravity, must be combined
+    InSequence s;
+    GLMock mock;
+    auto room = loadRoom("/room_gravity/2_child_node/room.gltf");
+
+    GravityInformation gravity = room->getGravity(glm::vec3(0.0f), glm::vec3(0.0f), 1.0f, 1.0f, 1.0f);
+    GravityInformation applied_gravity(glm::vec3(3.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0f), 1000.0f);
+
+    console->info("gravity {}", vec3_to_string(applied_gravity.gravity));
+    console->info("up {}", vec3_to_string(applied_gravity.up));
+    console->info("validity {}", applied_gravity.validity);
+
+    console->info("gravity {}", vec3_to_string(gravity.gravity));
+    console->info("up {}", vec3_to_string(gravity.up));
+    console->info("validity {}", gravity.validity);
+
+    EXPECT_EQ(gravity, applied_gravity);
+}
+
+TEST(Room, gravity_5__2_child_node_1_root) {
+    // testing what happens when 1 root node AND 2 child nodes defines gravity, must keep children
+    InSequence s;
+    GLMock mock;
+    auto room = loadRoom("/room_gravity/2_child_node_1_root/room.gltf");
+
+    GravityInformation gravity = room->getGravity(glm::vec3(0.0f), glm::vec3(0.0f), 1.0f, 1.0f, 1.0f);
+    GravityInformation applied_gravity(glm::vec3(3.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0f), 1000.0f);
+
+    console->info("gravity {}", vec3_to_string(applied_gravity.gravity));
+    console->info("up {}", vec3_to_string(applied_gravity.up));
+    console->info("validity {}", applied_gravity.validity);
+
+    console->info("gravity {}", vec3_to_string(gravity.gravity));
+    console->info("up {}", vec3_to_string(gravity.up));
+    console->info("validity {}", gravity.validity);
+
+    EXPECT_EQ(gravity, applied_gravity);
+}
+
+TEST(Room, gravity_6__load_script) {
+    // testing global script loading
+    InSequence s;
+    GLMock mock;
+    auto room = loadRoom("/room_gravity/load_script/room.gltf");
+    GravityInformation gravity = room->getGravity(glm::vec3(0.0f), glm::vec3(0.0f), 1.0f, 2.0f, 3.0f);
+    console->info("gravity {}", vec3_to_string(gravity.gravity));
+    console->info("up {}", vec3_to_string(gravity.up));
+    console->info("validity {}", gravity.validity);
+
+    // must apply function for r1r2
+    ASSERT_EQ(gravity.up, glm::vec3(1.0f, 0.0f, 0.0f));
+    ASSERT_EQ(gravity.validity, 2.0f);
 
 }
+

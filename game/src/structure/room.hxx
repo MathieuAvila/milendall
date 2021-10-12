@@ -8,15 +8,27 @@
 #include "face_list.hxx"
 #include "point_of_view.hxx"
 #include "room_node.hxx"
+#include "gravity_information.hxx"
 
 #include <gtest/gtest_prod.h>
 
-
 struct RoomResolver;
 struct DrawContext;
+class Script;
+
+
+/** @brief to be able to load script before the GltfModel
+ * so that RoomNodes children can get a reference to the script */
+class RoomScriptLoader {
+        std::unique_ptr<Script> loadedScript;
+    public:
+        RoomScriptLoader(FileLibrary::UriReference& roomRef);
+        Script* getScript();
+        virtual ~RoomScriptLoader();
+};
 
 /** @brief A room is both a Model (through inheritance) and an instance (through a class field) */
-class Room : public GltfModel
+class Room : private RoomScriptLoader, public GltfModel
 {
 
     protected:
@@ -49,6 +61,11 @@ class Room : public GltfModel
          * recurse_level is used to indicate depth of tree of gates. Clip to a given
          * limit as it may not be useful to go too deep.*/
         void draw(DrawContext& draw_context);
+
+        /** @brief local gravity computation for a given node, that manages recursion. see ::getGravity for
+         * the entry-point
+         */
+        bool _getGravity(unsigned int instance, glm::vec3 position, glm::vec3 speed, float weight, float radius, float total_time, GravityInformation& result);
 
     public:
 
@@ -112,6 +129,16 @@ class Room : public GltfModel
             float& distance,
             FaceHard*& face
             );
+
+        /** @brief compute gravity values
+         * @param position position in room
+         * @param speed current speed
+         * @param weight obvious
+         * @param radius obvious
+         * @param total_time
+         * @return gravity information
+        */
+        GravityInformation getGravity(glm::vec3 position, glm::vec3 speed, float weight, float radius, float total_time);
 
         virtual ~Room() = default;
 
