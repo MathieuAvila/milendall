@@ -23,7 +23,7 @@ class Dressing():
 
     def check_fit(self):
         """ Check dressing fits. """
-        return True
+        return 100
 
     def get_class(self):
         """ get my class for selector"""

@@ -24,7 +24,7 @@ class DoorGate(GateStructure):
     def check_fit(self):
         """ Pass the Gate, check it can be applied. """
         logging.info("checking if door fits: always ! door rules the world !")
-        return True
+        return 100
 
     def check_structure(self):
         """check everything is as expected.

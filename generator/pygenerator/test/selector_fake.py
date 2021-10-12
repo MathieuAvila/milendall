@@ -35,7 +35,7 @@ class GateStructureFake1(GateStructure):
     def check_fit(self):
         """same as main"""
         logging.debug("Check fit gate: %s", self.gate.values.gate_id)
-        return True
+        return 100
 
     def generate(self, concrete):
         """generate 1 structure triangle to be able to check validity"""
@@ -130,7 +130,7 @@ class RoomStructureFake1(RoomStructure):
     def check_fit(self):
         """same as main"""
         logging.debug("Check fit room: %s", self.room.values.room_id)
-        return True
+        return 100
 
     def generate(self, concrete):
         """generate 1 structure triangle to be able to check validity"""

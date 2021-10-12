@@ -38,7 +38,7 @@ class RectangularRoom(RoomStructure):
     def check_fit(self):
         """ Pass the Room, and list of gates, check it can be applied. """
         logging.info("checking if rectangular fits: always ! rectangular rules the world !")
-        return True
+        return 100
 
     def check_structure(self):
         """check everything is as expected.
