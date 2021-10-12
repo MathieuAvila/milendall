@@ -61,6 +61,20 @@ bool FileLibrary::UriReference::is_directory() const
    return true;
 }
 
+bool FileLibrary::UriReference::isFile() const
+{
+    console->debug("Tentatively open file", path);
+    for (auto dir_path: master->root_list) {
+        // Get first filename that matches requested name
+        auto final_path = dir_path + path;
+        console->debug("Check if file {} is a match", final_path);
+        if (std::filesystem::is_regular_file(final_path)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 FileContentPtr FileLibrary::UriReference::readContent() const
 {
    console->debug("Tentatively open file", path);

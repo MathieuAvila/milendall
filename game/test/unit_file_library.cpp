@@ -41,6 +41,22 @@ TEST(FILE_LIBRARY, Check_path_simplification) {
     EXPECT_TRUE( toto_tata.getPath() == "/toto" );
 }
 
+TEST(FILE_LIBRARY, isFile) {
+    auto fl = FileLibrary();
+    fl.addRootFilesystem("/tmp/test_file_library");
+    system(
+        "rm -rf /tmp/test_file_library ; "
+        "mkdir -p /tmp/test_file_library/toto ;"
+        "mkdir /tmp/test_file_library/toto/sbdir; "
+        "echo abcd > /tmp/test_file_library/toto/file.txt");
+    auto real_file = fl.getRoot().getSubPath("/toto/file.txt");
+    EXPECT_TRUE(real_file.isFile());
+    auto no_real_file = fl.getRoot().getSubPath("/toto/no_file.txt");
+    EXPECT_FALSE(no_real_file.isFile());
+    auto is_dir = fl.getRoot().getSubPath("/toto/sbdir");
+    EXPECT_FALSE(is_dir.isFile());
+}
+
 TEST(FILE_LIBRARY, List_directory) {
     // TODO
 }

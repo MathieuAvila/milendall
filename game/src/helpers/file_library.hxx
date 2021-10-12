@@ -39,7 +39,6 @@ class FileLibrary
         UriReference();
 
         std::vector<UriReference> listDirectory() const;
-        bool is_directory() const;
 
         /** read a binary content */
         FileContentPtr readContent() const;
@@ -56,6 +55,12 @@ class FileLibrary
          * basically: remove last path element
          */
         UriReference getDirPath() const;
+
+        /** Check there is a file present with this reference */
+        bool isFile() const;
+
+        /** Check there is a directory present with this reference */
+        bool is_directory() const;
 
         /** for UT and debug only */
         std::string getPath() const;
