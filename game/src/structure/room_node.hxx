@@ -13,7 +13,10 @@
 
 #include "gl_init.hxx"
 
+#include "room_node_gravity.hxx"
+
 struct DrawContext;
+class Script;
 
 struct GateIdentifier {
     std::string gate;
@@ -53,11 +56,13 @@ struct RoomNode : public GltfNode
     std::list<FacePortal> portals;
     std::list<FaceHard> walls;
     RoomResolver* room_resolver;
+    std::unique_ptr<RoomNodeGravity> gravity;
 
     RoomNode(
         nlohmann::json& json,
         GltfDataAccessorIFace* data_accessor,
         RoomResolver* _room_resolver,
+        Script* _roomScript,
         const std::string& room_name);
 
     /** internal method to check if a gate is drawable, and return new draw context.
@@ -111,4 +116,15 @@ struct RoomNode : public GltfNode
         float& distance,
         FaceHard*& face
         );
+
+    /** @brief compute gravity values
+     * @param position position in local reference frame
+     * @param speed speed vector in local reference frame
+     * @param weight obvious
+     * @param radius obvious
+     * @param total_time total elapsed time
+     * @param[out] gravity filled if returns true
+     * @return TRUE if gravity is changed, FALSE otherwise
+     */
+    bool getGravity(glm::vec3 position, glm::vec3 speed, float weight, float radius, float total_time, GravityInformation& gravity);
 };

@@ -56,9 +56,12 @@ RoomNode::RoomNode(
     nlohmann::json& json,
     GltfDataAccessorIFace* data_accessor,
     RoomResolver* _room_resolver,
+    Script* _roomScript,
     const std::string& room_name) :
         GltfNode(json), room_resolver(_room_resolver)
 {
+    gravity = make_unique<RoomNodeGravity>(name, _roomScript);
+
     if (json.contains("extras")) {
         auto extras = json["extras"];
         auto accessor_points = jsonGetElementByName(extras, "points").get<int>();
@@ -78,6 +81,10 @@ RoomNode::RoomNode(
             if (type == "hard") {
                 walls.push_back(FaceHard(points, move(faces_data), data));
             }
+        });
+
+        jsonExecuteIfElement(extras, "gravity", [this](nlohmann::json& json_gravity) {
+            gravity->readParameters(json_gravity);
         });
     }
 }
@@ -246,4 +253,9 @@ bool RoomNode::isWallReached(
         }
     }
     return result;
+}
+
+bool RoomNode::getGravity(glm::vec3 position, glm::vec3 speed, float weight, float radius, float total_time, GravityInformation& _gravity)
+{
+    return gravity->getGravityInformation(position, speed, weight, radius, total_time, _gravity);
 }
