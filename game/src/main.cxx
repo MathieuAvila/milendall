@@ -87,7 +87,7 @@ int main(int argc, char* argv[])
     auto room_ids = level.get()->getRoomNames();
     level.get()->update(0.0);
     PointOfView currentPov{
-            position,
+            level->getDefinition().start_position,
             verticalAngle,
             horizontalAngle,
             mat4(1.0f), //glm::rotate(mat4(1.0f), 1.0f, glm::vec3(1.0, 0.0, 0.0) ),
