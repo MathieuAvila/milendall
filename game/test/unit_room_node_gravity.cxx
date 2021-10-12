@@ -6,6 +6,8 @@
 #include <filesystem>
 #include "helper_math.hxx"
 
+#include "level_exception.hxx"
+
 static auto console = getConsole("unit_room_node_gravity");
 
 using namespace std;
@@ -74,4 +76,15 @@ TEST_F(RoomNodeGravityTest, get_script_unboxed) {
     ASSERT_EQ(result.gravity, glm::vec3(11.0, 101.0, 1001.0));
     ASSERT_EQ(result.up, glm::vec3(21.0, 201.0, 2001.0));
     ASSERT_EQ(result.validity, 3330.0);
+}
+
+TEST_F(RoomNodeGravityTest, missing_script) {
+
+    auto fl = FileLibrary();
+    fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../game/test/gravity"));
+    RoomNodeGravity gravity("my_name", nullptr);
+    GravityInformation result;
+    auto my_json = json::parse("{ }");
+
+    EXPECT_THROW(gravity.readParameters(my_json), LevelException);
 }

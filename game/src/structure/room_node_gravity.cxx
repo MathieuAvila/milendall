@@ -39,6 +39,9 @@ bool RoomNodeGravity::getGravityInformation(
                 values.insert(pair<string, float>("r", radius));
                 values.insert(pair<string, float>("t", total_time));
                 string script_name = "gravity_" + name;
+                if (!room_script) {
+                    throw LevelException("Missing script in room for: " + script_name);
+                }
                 try {
                     auto result = room_script->run(script_name, values);
                     gravity.gravity.x = result["g_x"];
