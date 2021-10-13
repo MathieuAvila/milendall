@@ -52,6 +52,17 @@ class Node:
         self.matrix = _matrix
         self.name = _name
         self.parent = _parent
+        self.gravity = None
+        self.gravity_script = None
+        self.gravity_mode = None
+
+    def set_gravity(self, gravity):
+        self.gravity = gravity
+
+    def set_gravity_script(self, gravity, mode):
+        self.gravity_script = gravity
+        self.gravity = {}
+        self.gravity_mode = mode
 
     def add_structure_points(self, points):
         """
@@ -89,6 +100,9 @@ class Node:
     PHYS_TYPE_HARD   = "hard"     # can be used for walls or ground
     PORTAL_CONNECT   = "connect"
     GATE_ID          = "gate"
+
+    # for gravity, method to expose
+    GRAVITY_SIMPLE   = "simple"
 
     def add_structure_faces(self, point_offset, faces, categories, hints, physics = None):
         """
@@ -178,12 +192,24 @@ class Node:
             new_face = [ new_point[p] for p in face ]
             faces_block.append(new_face)
 
+    def get_extras(self, gltf_node):
+        if not "extras" in gltf_node:
+            gltf_node["extras"] = {}
+        extra = gltf_node["extras"]
+        return extra
+
+    def gltf_generate_gravity(self, gltf_node, gravity_list):
+        if self.gravity is not None:
+            extra = self.get_extras(gltf_node)
+            extra["gravity"] = self.gravity
+            if self.gravity_script:
+                gravity_list.append({"name": self.name, "script": self.gravity_script, "mode": self.gravity_mode})
+
     def gltf_generate_physical_faces(self, gltf, gltf_node, data_file):
         list_physical_faces = self.get_physical_faces()
         if list_physical_faces != []:
             # generate only if there are real faces
-            gltf_node["extras"] = {}
-            extra = gltf_node["extras"]
+            extra = self.get_extras(gltf_node)
             extra["phys_faces"] = []
             extra_phys_faces = extra["phys_faces"]
             # add points accessor
@@ -351,6 +377,18 @@ class ConcreteRoom:
     def merge(self, other_room):
         self.objects.extend(other_room.objects)
 
+    def generate_gravity(self, gravity_list, directory):
+        """
+        dump the gravity information to a file
+        """
+        with open(directory + "/script.lua", "w") as write_file:
+            for gravity in gravity_list:
+                write_file.write("function gravity_" + gravity["name"] + "(tab_in)\n")
+                write_file.write("local tab_out = {}\n")
+                write_file.write(gravity["script"]+ "\n")
+                write_file.write("	return tab_out\n")
+                write_file.write("end\n\n")
+
     def generate_gltf(self, directory):
         """
         dump the scene to a file
@@ -395,6 +433,9 @@ class ConcreteRoom:
         data_file = open(directory + "/data.bin", "wb")
         if data_file is None:
             raise "Unable to open data file"
+
+        # gravity list and modes
+        gravity_list = []
 
         # determine children of each node
         for node in self.objects:
@@ -470,11 +511,19 @@ class ConcreteRoom:
             # generate list of physical faces
             node.gltf_generate_physical_faces(gltf, gltf_node, data_file)
 
+            # add gravity
+            node.gltf_generate_gravity(gltf_node, gravity_list)
+
         gltf["buffers"][0]["byteLength"] = data_file.tell()
+
+        # dump gltf file
         j = json.dumps(gltf, indent=1)
         with open(directory + "/room.gltf", "w") as write_file:
             write_file.write(j)
         data_file.close()
+
+        # dump scripts, if any
+        self.generate_gravity(gravity_list, directory)
 
 def preview(i_file, o_file, root_dir = os.path.realpath(os.getcwd() + "/../../../data/")):
     """Build a preview of the result gltf so that it can be viewed with a 3rd party"""

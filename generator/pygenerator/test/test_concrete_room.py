@@ -559,5 +559,60 @@ class TestConcreteRoomImpl(unittest.TestCase):
         print(parent_object)
         concrete_room.preview(path_gen + "/room.gltf", path_gen + "/room_preview.gltf")
 
+
+    def test_gravity_1_node(self):
+        """Test generating gravity for one node only"""
+        room = concrete_room.ConcreteRoom()
+        parent1 = room.add_child(None, "parent1")
+        parent2 = room.add_child(None, "parent2")
+        child2_1 = room.add_child("parent2", "child2_1")
+        child2_2 = room.add_child("parent2", "child2_2")
+        self.assertIsNotNone(parent1)
+        self.assertIsNotNone(parent2)
+        self.assertIsNotNone(child2_1)
+        self.assertIsNotNone(child2_2)
+
+        child2_1.set_gravity_script("BIDON", [ concrete_room.Node.GRAVITY_SIMPLE ])
+
+        PATH = "/tmp/gravity"
+        pathlib.Path(PATH).mkdir(parents=True, exist_ok=True)
+        room.generate_gltf(PATH)
+
+        with open(PATH + "/script.lua", "r") as script_file:
+            content = script_file.read()
+
+        self.assertTrue("BIDON" in content)
+        self.assertTrue("function gravity_child2_1(tab_in)" in content)
+
+
+    def test_gravity_2_node2(self):
+        """Test generating gravity for 2 nodes"""
+        room = concrete_room.ConcreteRoom()
+        parent1 = room.add_child(None, "parent1")
+        parent2 = room.add_child(None, "parent2")
+        child2_1 = room.add_child("parent2", "child2_1")
+        child2_2 = room.add_child("parent2", "child2_2")
+        self.assertIsNotNone(parent1)
+        self.assertIsNotNone(parent2)
+        self.assertIsNotNone(child2_1)
+        self.assertIsNotNone(child2_2)
+
+        child2_1.set_gravity_script("FOO", [ concrete_room.Node.GRAVITY_SIMPLE ])
+        child2_2.set_gravity_script("BAR", [ concrete_room.Node.GRAVITY_SIMPLE ])
+
+        PATH = "/tmp/gravity"
+        pathlib.Path(PATH).mkdir(parents=True, exist_ok=True)
+        room.generate_gltf(PATH)
+
+        with open(PATH + "/script.lua", "r") as script_file:
+            content = script_file.read()
+
+        self.assertTrue("FOO" in content)
+        self.assertTrue("BAR" in content)
+        self.assertTrue("function gravity_child2_1(tab_in)" in content)
+        self.assertTrue("function gravity_child2_2(tab_in)" in content)
+
+
+
 if __name__ == '__main__':
     unittest.main()
