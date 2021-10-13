@@ -1,0 +1,32 @@
+{
+    "$schema": "../../schema/generator.level.schema.json",
+
+    "name" : [  { "lang": "en", "value" : "Simple Level"} ],
+    "section": "samples",
+
+    "game_type" : {
+        "single_mode" : {
+            "execution_time" : 10.0,
+            "entry_point_room" : "room1",
+            "end_point_room" : "room1",
+            "entry_point_position": [ 22.0, 1.0, 0.0 ]
+        }
+    },
+    "rooms" : [
+        {
+            "room_id" : "room1",
+            "name" : [ { "lang": "en", "value" : "room1"}  ],
+            "structure_class" : "sphere",
+            "dressing_class" : "basic",
+            "structure_parameters": {
+                "setup": {
+                 "radius": 20,
+                 "longs": 60
+                }
+               }
+        }
+    ],
+    "gates" : [
+    ]
+}
+
