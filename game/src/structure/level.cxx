@@ -115,6 +115,8 @@ bool Level::isWallReached(
     bool wall_hit = false;
     distance = 0.0f;
 
+    int counter = 0;
+
     do {
         need_recompute = false;
         float current_distance = glm::length(current_destination - current_origin.position);
@@ -181,6 +183,10 @@ bool Level::isWallReached(
             //        to_string(current_origin), vec3_to_string(current_destination));
             distance += portal_distance;
             need_recompute = true;
+        }
+        if (counter++ == 100) {
+            console->warn("Reached max loop count. This is unusual and probably a bug.");
+            break;
         }
 
     } while (need_recompute);

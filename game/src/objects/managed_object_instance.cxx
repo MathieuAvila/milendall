@@ -105,6 +105,7 @@ void ManagedObjectInstance::move(glm::vec3 newPos, float time_delta)
     float total_distance = 0.0f;
     glm::vec3 move_vector(0.0f);
 
+    int counter = 0;
     do {
         PointOfView endPoint;
         glm::vec3 vectorEndPoint, destinationEndPoint;
@@ -138,6 +139,11 @@ void ManagedObjectInstance::move(glm::vec3 newPos, float time_delta)
                            "newPos       = {}",
                         vec3_to_string(mainPosition.position),
                         vec3_to_string(newPos));
+
+        if (counter++ == 20) {
+            console->warn("Reached max loop count. This is unusual and probably a bug.");
+            break;
+        }
 
     } while (wall_bounced);
 
