@@ -145,4 +145,10 @@ void ManagedObjectInstance::move(glm::vec3 newPos, float time_delta)
 
     // compute new speed
     current_speed = (move_vector * total_distance) / time_delta;
+
+    // if room changed, re-init gravity
+    if (previous_position.room != mainPosition.room) {
+        gravity_validity = 0.0f;
+        console->debug("room changed {} => {}, re-init gravity", previous_position.room, mainPosition.room);
+    }
 }
