@@ -8,6 +8,8 @@ from .register import register_gate_type
 import cgtypes.vec3
 import concrete_room
 
+from jsonmerge import merge
+
 class DoorGate(GateStructure):
 
     _name = "simple_door"
@@ -35,30 +37,33 @@ class DoorGate(GateStructure):
     def instantiate(self, selector):
         """ force set values:
         - set values to gate size"""
-        self.gate.values.structure_private={}
-        self.gate.values.structure_private["geometry"] =  {
-            "portal":[2.5 ,2.5],
+        structure_parameters = self._element.values.structure_parameters
+        my_default= {}
+        my_default["geometry"] =  {
+            "portal":[1.5 , 1.5],
             "margin":[ 1.0, 1.0],
             "floor":["x0"]}
-        self.gate.values.structure_private["shift"]= {
-                "x_floor_start_ext": -0.5,
-                "x_floor_start_int": 0.1,
-                "x_floor_end_int": 2.4,
-                "x_floor_end_ext": 3.0,
+        my_default["shift"]= {
+                "x_floor_start_ext": -0.3,
+                "x_floor_start_int": 0.0,
+                "x_floor_end_int": 1.5,
+                "x_floor_end_ext": 2.0,
 
                 "x_up_start_ext": -0.3,
-                "x_up_start_int": 0.2,
-                "x_up_end_int": 2.3,
-                "x_up_end_ext": 2.8,
+                "x_up_start_int": 0.0,
+                "x_up_end_int": 1.5,
+                "x_up_end_ext": 2.0,
 
-                "y_up_start_ext": 2.7,
-                "y_up_start_int": 2.5,
-                "y_up_end_ext": 2.7,
-                "y_up_end_int": 2.5,
+                "y_up_start_ext": 1.6,
+                "y_up_start_int": 1.5,
+                "y_up_end_ext": 1.6,
+                "y_up_end_int": 1.5,
 
-                "w_in" : 1.2,
+                "w_in" : 0.2,
                 "w_out" : -0.2
             }
+        self._element.values.structure_private = merge( my_default, structure_parameters)
+
 
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""
