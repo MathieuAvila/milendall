@@ -360,7 +360,7 @@ TEST(Room, gravity_6__load_script) {
     console->info("validity {}", gravity.validity);
 
     // must apply function for r1r2
-    ASSERT_EQ(gravity.up, glm::vec3(1.0f, 0.0f, 0.0f));
+    ASSERT_EQ(gravity.up, glm::vec3(-1.0f, 0.0f, 0.0f));
     ASSERT_EQ(gravity.validity, 2.0f);
 
 }
