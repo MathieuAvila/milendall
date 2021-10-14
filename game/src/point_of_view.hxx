@@ -33,11 +33,6 @@ struct PointOfView
     PointOfView(const PointOfView& obj);
     PointOfView(const glm::vec3 _position, glm::mat3x3 local_reference, const std::string _room);
 
-    /** @brief Build a PoV from a position, angles and a local frame.
-     * Angles are used to build direction and up vectors.
-     */
-    PointOfView(const glm::vec3 _position, const float vertical, const float horizontal, const glm::mat3x3 _local_reference, const std::string _room);
-
     bool operator==(const PointOfView&) const;
 
     /** @brief Build a new PoV when a change of room occurs */

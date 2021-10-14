@@ -88,9 +88,7 @@ int main(int argc, char* argv[])
     level.get()->update(0.0);
     PointOfView currentPov{
             level->getDefinition().start_position,
-            verticalAngle,
-            horizontalAngle,
-            mat4(1.0f), //glm::rotate(mat4(1.0f), 1.0f, glm::vec3(1.0, 0.0, 0.0) ),
+            mat4(1.0f),
             *room_ids.begin()};
     console->info("Set current room to {}", currentPov.room);
 
@@ -102,7 +100,7 @@ int main(int argc, char* argv[])
     auto player = make_shared<Player>();
     auto object_manager = make_unique<ObjectManager>(level->getRoomResolver(), level.get(), level.get());
     auto player_id = object_manager ->insertObject(player,
-        PointOfView(currentPov.position, verticalAngle, horizontalAngle, currentPov.local_reference, currentPov.room)
+        PointOfView(currentPov.position, currentPov.local_reference, currentPov.room)
     );
 
     auto current_time = std::chrono::steady_clock::now();

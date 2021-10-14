@@ -413,7 +413,6 @@ TEST_F(LevelTest, isWallReached_6_border_hit) {
 
     PointOfView origin(
         glm::vec3(3.2, 3.5, 6.8f),
-        0.0f, 0.0f,
         glm::mat4(1.0f),
         "room2"
     );

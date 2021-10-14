@@ -39,8 +39,6 @@ TEST(PointOfView, initAngles)
 {
     PointOfView pov{
         glm::vec3(1.0, 2.0, 3.0),
-        glm::pi<float>()/8.0f,
-        glm::pi<float>()/4.0f,
         glm::mat3x3(2.0f),
         "myRoom"
     };
@@ -58,8 +56,6 @@ TEST(PointOfView, prependCoordinateSystem_0_ID )
 {
     PointOfView pov{
         glm::vec3(1.0, 2.0, 3.0),
-        0.0f,
-        0.0f,
         getRotatedMatrix(0.0f, glm::pi<float>() / 4.0),
         "myRoom"
     };
@@ -82,8 +78,6 @@ TEST(PointOfView, prependCoordinateSystem_1_new_mat )
 {
     PointOfView pov{
         glm::vec3(1.0, 2.0, 3.0),
-        0.0f,
-        0.0f,
         getRotatedMatrix(0.0f, glm::pi<float>() / 4.0),
         "myRoom"
     };
@@ -102,8 +96,6 @@ TEST(PointOfView, getDirection )
 {
     PointOfView pov{
         glm::vec3(1.0, 2.0, 3.0),
-        0.0f,
-        0.0f,
         getRotatedMatrix(0.0f, glm::pi<float>() / 4.0),
         "myRoom"
     };
@@ -116,8 +108,6 @@ TEST(PointOfView, getUp )
 {
     PointOfView pov{
         glm::vec3(1.0, 2.0, 3.0),
-        0.0f,
-        0.0f,
         getRotatedMatrix(glm::pi<float>() / 4.0, 0.0f),
         "myRoom"
     };
@@ -130,8 +120,6 @@ TEST(PointOfView, getRight )
 {
     PointOfView pov{
         glm::vec3(1.0, 2.0, 3.0),
-        0.0f,
-        0.0f,
         getRotatedMatrix(0.0f, glm::pi<float>() / 4.0),
         "myRoom"
     };

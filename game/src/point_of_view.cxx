@@ -37,15 +37,6 @@ std::string to_string(const PointOfView& p)
     + "\nr: " + mat4x4_to_string(p.local_reference);
 }
 
-PointOfView::PointOfView(
-    const glm::vec3 _position,
-    const float vertical, const float horizontal,
-    const glm::mat3x3 _local_reference,
-    const std::string _room) :
-    position(_position), local_reference(_local_reference), room(_room)
-{
-}
-
 glm::vec3 PointOfView::getDirection()
 {
     return local_reference * glm::vec3(0.0, 0.0, 1.0);
