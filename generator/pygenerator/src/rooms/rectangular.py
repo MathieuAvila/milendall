@@ -10,6 +10,8 @@ import cgtypes.mat4
 
 from .register import register_room_type
 
+from jsonmerge import merge
+
 def append_wall(wall_list, width, start_height):
     """Helper: to add a wall to a wall list"""
     if len(wall_list) == 0:
@@ -50,52 +52,56 @@ class RectangularRoom(RoomStructure):
         """ force set values:
         - set values to room size
         - set values for gates"""
+        structure_parameters = self._element.values.structure_parameters
 
-        structure_private = self._element.values.structure_private
+        my_default= {}
 
         # instantiate gate acceptable pre and post range
-        if "gate_pre_post_range" not in structure_private:
+        if "gate_pre_post_range" not in my_default:
             # for each gate, min and max space before and after
             # [ [pre min, pre max] [post min, post_max] ]
-            structure_private["gate_pre_post_range"] = [ [ 1.0 , 1.0 ] , [ 4.0 , 4.0 ] ]
-        gate_pre_post_range = structure_private["gate_pre_post_range"]
+            my_default["gate_pre_post_range"] = [ [ 1.0 , 1.0 ] , [ 4.0 , 4.0 ] ]
+        gate_pre_post_range = my_default["gate_pre_post_range"]
 
         # instantiate ceiling height range over highest gate
         # min and max height to add to hignest gate
-        if "height_over_gate_range" not in structure_private:
-            structure_private["height_over_gate_range"] = [ 1.0 , 1.0 ]
+        if "height_over_gate_range" not in my_default:
+            my_default["height_over_gate_range"] = [ 1.0 , 1.0 ]
 
         # instantiate ceiling height over highest gate
         # this is the real one added to the highest gate
         # whatever the number and height of gates, a minimum of height of 2.0 will be taken
-        if "height_over_gate" not in structure_private:
-            height_range = structure_private["height_over_gate_range"]
-            structure_private["height_over_gate"] = selector.get_random_float(height_range[0], height_range[1])
+        if "height_over_gate" not in my_default:
+            height_range = my_default["height_over_gate_range"]
+            my_default["height_over_gate"] = selector.get_random_float(height_range[0], height_range[1])
 
         # instantiate range for walls pre-post
-        if "wall_pre_post_range" not in structure_private:
+        if "wall_pre_post_range" not in my_default:
             # for each wall, min and max space before and after. It adds to gates.
             # [ [pre min, pre max] [post min, post_max] ]
-            structure_private["wall_pre_post_range"] = [ [ 2.0 , 2.0 ] , [ 2.0 , 2.0 ] ]
-        wall_pre_post_range = structure_private["wall_pre_post_range"]
+            my_default["wall_pre_post_range"] = [ [ 2.0 , 2.0 ] , [ 2.0 , 2.0 ] ]
+        wall_pre_post_range = my_default["wall_pre_post_range"]
 
         # instantiate wall pre/post
-        if "wall_pre_post" not in structure_private:
-            structure_private["wall_pre_post"] = [
+        if "wall_pre_post" not in my_default:
+            my_default["wall_pre_post"] = [
                 [selector.get_random_float(wall_pre_post_range[0][0], wall_pre_post_range[0][1]),
                  selector.get_random_float(wall_pre_post_range[1][0], wall_pre_post_range[1][1])
                 ] for i in range(0,4)
             ]
 
         # instantiate gates position
-        if "setup" not in structure_private:
-            structure_private["setup"] = [ [],[],[],[],[] ] # x0, x1, y0, y1
-            setup = structure_private["setup"]
+        if "setup" not in my_default:
+            my_default["setup"] = [ [],[],[],[],[] ] # x0, x1, y0, y1
+            setup = my_default["setup"]
             for gate in self._element.gates:
                 pos = selector.get_random_int(0, 3)
                 pre = selector.get_random_float(gate_pre_post_range[0][0], gate_pre_post_range[0][1])
                 post =  selector.get_random_float(gate_pre_post_range[1][0], gate_pre_post_range[1][1])
                 setup[pos].append({"gate": gate.get_id(), "pre":pre, "post":post})
+
+        self._element.values.structure_private = merge( my_default, structure_parameters)
+        structure_private = self._element.values.structure_private
 
         logging.info("setup: %s", str(structure_private["setup"]))
         logging.info("height_over_gate_range: %s", str(structure_private["height_over_gate_range"]))
