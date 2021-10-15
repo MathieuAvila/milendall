@@ -43,6 +43,11 @@ def get_texture_definition(filename, axes=[ ["x"], [ "y"] ] , scale = 1.0, offse
     my_def["proj"] = transform
     return my_def
 
+def get_texture_definition_with_map(filename, map_method):
+    """ return a texture definition based on a map method to provide."""
+    my_def = { "texture": filename , "map_method": map_method }
+    return my_def
+
 class Node:
 
     def __init__(self, _name, _parent = None, _matrix = None):
@@ -168,7 +173,13 @@ class Node:
         new_points = []
         for index in used_points:
             old_point = points[index]
-            projected_uv = texture["proj"] * cgtypes.vec4(old_point.x, old_point.y, old_point.z, 1.0)
+            if "proj" in texture:
+                projected_uv = texture["proj"] * cgtypes.vec4(old_point.x, old_point.y, old_point.z, 1.0)
+            elif "map_method" in texture:
+                projected_uv = texture["map_method"](old_point)
+                #print(projected_uv)
+            else:
+                raise "No method to map texture"
             new_point = copy.deepcopy(old_point)
             new_point.u = projected_uv.x
             new_point.v = projected_uv.y
