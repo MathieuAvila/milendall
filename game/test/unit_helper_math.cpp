@@ -295,6 +295,30 @@ TEST_F(HelperMathTest, intersectSphereTrajectorySegment4_radius15_not_center) {
     ASSERT_TRUE(0.01 > glm::length(normal - glm::vec3(-0.745356 , 0.666667 , 0.0))); // XXX should be computed
 };
 
+TEST_F(HelperMathTest, intersectSphereTrajectorySegment5_bug0) {
+
+    auto p0=glm::vec3( 12.041606 , -1.668532 , 0.221220  );
+    auto p1=glm::vec3( 12.055737 , -1.705543 , 0.224254 );
+
+    auto A=glm::vec3(  8.763067 , 4.817537 , 0.000000 );
+    auto B=glm::vec3(  9.297765 , 3.681246 , 0.000000);
+
+    glm::vec3 intersect_center;
+    float distance = 0.03973279;
+    glm::vec3 normal;
+
+    bool result = intersectSphereTrajectorySegment(
+        p0, p1, 0.7f,
+        A, B,
+        intersect_center, distance, normal);
+
+    console->info("result {}", result);
+    console->info("intersect_point {}", vec3_to_string(intersect_center));
+    console->info("distance {}", distance);
+    console->info("normal {}", vec3_to_string(normal));
+
+    ASSERT_FALSE(result);
+}
 
 TEST_F(HelperMathTest, getRotatedMatrix_0_ID) {
 

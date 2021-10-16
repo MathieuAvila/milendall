@@ -207,12 +207,12 @@ bool intersectSphereTrajectorySegment(
     auto beta1 = alpha1 * x1 + x2;
     //auto beta2 = alpha2 * x1 + x2;
     //if (beta2 < beta1) std::swap(beta1, beta2)
-    //console->info("beta1={}, beta2={}", beta1, beta2);
+    console->debug("beta1={}", beta1);
 
     float alpha; // good alpha, if retained.
 
     if ((beta1 < 0.0f) || (beta1 > 1.0f)){
-        //console->debug("beta1 out-of-bound, check contact on A or B");
+        console->debug("beta1 out-of-bound, check contact on A or B");
 
         float alpha_a_1, alpha_a_2, alpha_b_1, alpha_b_2;
 
@@ -248,8 +248,13 @@ bool intersectSphereTrajectorySegment(
 
         // if we're in the center, it's clear we've already crossed the segment.
         // Treat this as immediate contact
-        if ((alpha1 < 0.0)&& (alpha2 >= 0.0)) {
-            //console->info(" alpha={}, already in contact at origin", alpha);
+        //if ((alpha1 < 0.0)&& (alpha2 >= 0.0)) {
+        if ((alpha1 < 0.0) && (alpha2 >= 1.0)) {
+            console->debug(" alpha={}, no contact", alpha);
+            return false;
+        }
+        if ((alpha1 < 0.0) && (alpha2 >= 0.0) && (alpha2 <= 1.0)) {
+            console->debug(" alpha={}, already in contact at origin", alpha);
             alpha = 0.0;
         }
     }
@@ -283,6 +288,7 @@ bool intersectSphereTrajectorySegment(
     console->debug("beta1={}", beta1);
     console->debug("alpha1={}", alpha1);
     console->debug("alpha2={}", alpha2);
+    console->debug("alpha={}", alpha);
     console->debug("AB={}", vec3_to_string(AB));
     console->debug("MN={}", vec3_to_string(MN));
     console->debug("normal={}", vec3_to_string(normal));
