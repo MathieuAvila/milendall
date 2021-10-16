@@ -240,7 +240,8 @@ bool RoomNode::isWallReached(
             glm::vec3 wallNormal;
             float distanceWall = distance;
             bool crossed = c_face.checkSphereTrajectoryCross(origin, destination, radius, wallHitPoint, distanceWall, wallNormal);
-            //console->info("Check wall crossed {} distance {} distanceWall {}",
+            //if (crossed)
+            //    console->info("Check wall crossed {} distance {} distanceWall {}",
             //    crossed, distance, distanceWall);
             if (crossed && distanceWall < _distance) {
                 normal = wallNormal;
@@ -249,6 +250,8 @@ bool RoomNode::isWallReached(
                 face = &wall;
                 result = true;
                 //console->info("Hit wall at: {}, distance={}", vec3_to_string(wallHitPoint), distance);
+                if (_distance == 0.0f)
+                    break;
             }
         }
     }
