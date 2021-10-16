@@ -46,6 +46,7 @@ class SphereRoom(RoomStructure):
         my_default = {
             "setup": {
                 "radius": 20,
+                "radius_sky": 200,
                 "lats" : 50,
                 "longs" : 50
             },
@@ -72,11 +73,14 @@ class SphereRoom(RoomStructure):
         self.lats = setup["lats"]
         self.longs = setup["longs"]
         R = setup["radius"]
+        R_sky = setup["radius_sky"]
 
         parent = concrete.add_child(None, "parent")
 
         points = []
         points_index = []
+        points_sky = []
+        points_index_sky = []
         index = 0
 
         for i in range(0, self.lats + 1):
@@ -85,6 +89,7 @@ class SphereRoom(RoomStructure):
             zr1 = cos(lat)
 
             line = []
+            line_sky = []
 
             for j in range(0, self.longs + 1 ):
                 lng = 2 * pi * float(float(j+1) / float(self.longs))
@@ -93,16 +98,22 @@ class SphereRoom(RoomStructure):
 
                 point = cgtypes.vec3(x * zr1 * R, y * zr1 * R , z1 * R)
                 points.append(point)
-
                 line.append(index)
+
+                point_sky = cgtypes.vec3(x * zr1 * R_sky, y * zr1 * R_sky , z1 * R_sky)
+                points_sky.append(point_sky)
+                line_sky.append(index)
 
                 index = index + 1
 
             points_index.append(line)
+            points_index_sky.append(line_sky)
 
         index_wall = parent.add_structure_points(points)
+        index_sky = parent.add_structure_points(points_sky)
 
         table = []
+        table_sky = []
         for i in range(1, self.lats - 1):
             for j in range(0, self.longs):
                 table.append([
@@ -111,16 +122,31 @@ class SphereRoom(RoomStructure):
                     points_index[i+1][j+1],
                     points_index[i+1][j]]
                 )
+                table_sky.append([
+                    points_index_sky[i+1][j],
+                    points_index_sky[i+1][j+1],
+                    points_index_sky[i][j+1],
+                    points_index_sky[i][j]]
+                )
         elem0 = []
         elemN = []
+        elem0_sky = []
+        elemN_sky = []
         for j in range(0, self.longs):
                 elem0.append(
                     points_index[self.lats -1][j])
                 elemN.append(
                     points_index[1][self.longs - j]
                 )
+                elem0_sky.append(
+                    points_index_sky[self.lats -1][self.longs - j])
+                elemN_sky.append(
+                    points_index_sky[1][j]
+                )
         table.append(elem0)
         table.append(elemN)
+        table_sky.append(elem0_sky)
+        table_sky.append(elemN_sky)
         parent.set_gravity({})
         parent.set_gravity_script(
             '   local grav_factor\n'
@@ -138,6 +164,12 @@ class SphereRoom(RoomStructure):
                     concrete_room.Node.CAT_PHYS_VIS,
                     [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
                     {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
+        parent.add_structure_faces(
+                    index_sky,
+                    table_sky,
+                    concrete_room.Node.CAT_VIS,
+                    [concrete_room.Node.HINT_CEILING],
+                    {} )
 
         for gate in self._element.gates:
             gate_id = gate.get_id()

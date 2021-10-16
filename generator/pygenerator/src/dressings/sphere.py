@@ -40,7 +40,7 @@ class DressingSphere(Dressing):
             "setup": [
                 [concrete_room.Node.HINT_GROUND, "/common/planets/earth.jpg" ],
                 [concrete_room.Node.HINT_WALL, "/common/planets/earth.jpg" ],
-                [concrete_room.Node.HINT_CEILING, "/common/planets/earth.jpg" ]
+                [concrete_room.Node.HINT_CEILING, "/common/planets/milky_way.jpg" ]
             ]
         }
         self.element.values.dressing_private = merge( my_default, dressing_parameters)

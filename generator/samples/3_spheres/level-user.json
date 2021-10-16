@@ -20,6 +20,7 @@
             "dressing_class" : "sphere",
             "structure_parameters": {
                 "setup": {
+                 "radius_sky": 70,
                  "radius": 10,
                  "lats": 50,
                  "longs": 50
@@ -37,7 +38,7 @@
                  ],
                  [
                   "ceiling",
-                  "/common/planets/earth.jpg"
+                  "/common/planets/milky_way.jpg"
                  ]
                 ]
                }
@@ -59,13 +60,14 @@
                  ],
                  [
                   "ceiling",
-                  "/common/planets/sun.jpg"
+                  "/common/planets/milky_way.jpg"
                  ]
                 ]
                },
             "structure_parameters": {
                 "setup": {
-                 "radius": 50,
+                    "radius_sky": 70,
+                    "radius": 50,
                  "lats": 50,
                  "longs": 50
                 }
@@ -88,15 +90,16 @@
                  ],
                  [
                   "ceiling",
-                  "/common/planets/mars.jpg"
+                  "/common/planets/milky_way.jpg"
                  ]
                 ]
                },
             "structure_parameters": {
                 "setup": {
-                 "radius": 8,
-                 "lats": 50,
-                 "longs": 50
+                    "radius_sky": 70,
+                    "radius": 8,
+                    "lats": 50,
+                    "longs": 50
                 }
             }
         }
