@@ -120,12 +120,11 @@ bool FaceList::Face::checkSphereTrajectoryCross(glm::vec3 p0, glm::vec3 p1, floa
 
     if (checkInVolume(impact))
         {
-            console->debug("radial contact\n distance={}\n impact={}\n plane={}",
+            /*console->debug("radial contact\n distance={}\n impact={}\n plane={}",
                 distance,
                 vec3_to_string(impact),
                 vec4_to_string(plane)
-                );
-
+                );*/
             impact_normal = normal;
             _distance = distance;
             return true;
@@ -151,9 +150,22 @@ bool FaceList::Face::checkSphereTrajectoryCross(glm::vec3 p0, glm::vec3 p1, floa
             shortest_normal)) {
                 if (distance < _distance) {
                     found = true;
-                    p1 = impact;
                     _distance = distance;
                     impact_normal = shortest_normal;
+                    /*
+                    console->debug("============ segment contact\np0={}\np1={}\nA={}\nB={}\ndistance={}\ndistanceOrg={}\nimpact={}\nplane={}",
+                        vec3_to_string(p0), vec3_to_string(p1), vec3_to_string(A), vec3_to_string(B),
+                        distance,
+                        distanceOrg,
+                        vec3_to_string(impact),
+                        vec4_to_string(plane)
+                    );
+                    for (auto dump = 0 ; dump<indices.size(); dump++) {
+                        auto dumpP = points.get()->getPoints()[indices[dump].index];
+                        console->debug("index={}, dump P={}", indices[dump].index, vec3_to_string(dumpP));
+                    }*/
+                    if (distance == 0.0f)
+                        break;
                 }
             }
         }
