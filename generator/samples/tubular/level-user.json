@@ -1,0 +1,61 @@
+{
+    "$schema": "../../schema/generator.level.schema.json",
+
+    "name" : [  { "lang": "en", "value" : "Simple Level"} ],
+    "section": "samples",
+
+    "game_type" : {
+        "single_mode" : {
+            "execution_time" : 10.0,
+            "entry_point_room" : "room1",
+            "end_point_room" : "room2",
+            "entry_point_position": [ 2.0, 1.0, 2.0 ]
+        }
+    },
+    "rooms" : [
+        {
+            "room_id" : "room1",
+            "name" : [ { "lang": "en", "value" : "room1"}  ],
+            "structure_class" : "rectangular",
+            "dressing_class" : "basic"
+        },
+        {
+            "room_id" : "room2",
+            "name" : [ { "lang": "en", "value" : "room2"}  ],
+            "structure_class" : "rectangular",
+            "dressing_class" : "basic"
+        },
+        {
+            "room_id" : "tube",
+            "name" : [ { "lang": "en", "value" : "tube"}  ],
+            "structure_class" : "tubular",
+            "structure_parameters": {
+                "setup": {
+                    "segments_nr": 5,
+                    "increment": 1.0,
+                    "f_step" : "[ [-0.1, i/5.0 ], [1.7, i/5.0 ], [1.7, 1.6+i/5.0 ], [-0.1, 1.6+i/5.0 ] ]",
+                    "script_up" : ["1.0", "0.0"],
+                    "script_gravity" : ["-1.0", "0.0"]
+                }
+            },
+            "dressing_class" : "basic"
+        }
+    ],
+    "gates" : [
+        {
+            "gate_id" : "r1_tube",
+            "connect" : [ "room1", "tube"],
+            "accessible" : "from-to",
+            "structure_class" : "simple_door",
+            "dressing_class" : "basic"
+        },
+        {
+            "gate_id" : "r2_tube",
+            "connect" : [ "tube", "room2"],
+            "accessible" : "from-to",
+            "structure_class" : "simple_door",
+            "dressing_class" : "basic"
+        }
+     ]
+}
+
