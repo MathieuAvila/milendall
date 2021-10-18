@@ -24,7 +24,10 @@ def decode_level(dct):
 class JSONEncoder(json.JSONEncoder):
 
     def default(self, o):
-        return o.values
+        if hasattr(o, "values"):
+            return o.values
+        else:
+            return {}
 
 class Level:
 
