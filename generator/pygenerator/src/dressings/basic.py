@@ -39,7 +39,7 @@ class DressingBasic(Dressing):
                 [concrete_room.Node.HINT_CEILING, "/common/basic/ceiling.jpg", [["x"], ["z"]] ]
                 ]:
                 list_faces = obj.get_visual_face([kind_texture])
-                logging.info("kind: %s, texture:%s , len:%i",
+                logging.debug("kind: %s, texture:%s , len:%i",
                             kind_texture, texture, len(list_faces))
                 if len(list_faces) != 0:
                     for faces in list_faces:
