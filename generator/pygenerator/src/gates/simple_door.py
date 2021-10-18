@@ -47,12 +47,12 @@ class DoorGate(GateStructure):
                 "x_floor_start_ext": -0.3,
                 "x_floor_start_int": 0.0,
                 "x_floor_end_int": 1.5,
-                "x_floor_end_ext": 2.0,
+                "x_floor_end_ext": 1.8,
 
                 "x_up_start_ext": -0.3,
                 "x_up_start_int": 0.0,
                 "x_up_end_int": 1.5,
-                "x_up_end_ext": 2.0,
+                "x_up_end_ext": 1.8,
 
                 "y_up_start_ext": 1.6,
                 "y_up_start_int": 1.5,
