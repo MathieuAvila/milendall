@@ -546,11 +546,7 @@ def preview(i_file, o_file, root_dir = os.path.realpath(os.getcwd() + "/../../..
         uri = src_dir + "/" + image["uri"]
         n_uri = os.path.basename(uri)
         dst = src_dir + "/" + n_uri
-
-        logging.info("Check: original:'%s' uri:'%s' with '%s' to '%s'",
-                        image["uri"], uri, n_uri, dst)
         if uri != n_uri:
-            logging.info("Copy")
             shutil.copyfile(root_dir + "/" + image["uri"], dst)
             image["uri"] = n_uri
     j = json.dumps(gltf, indent=1)
