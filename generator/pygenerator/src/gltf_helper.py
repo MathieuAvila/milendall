@@ -62,6 +62,14 @@ def create_accessor(data_file, gltf, elements):
             all2 = [elem[2] for elem in elements]
             lmin.append(min(all2))
             lmax.append(max(all2))
+        elif len(elements[0]) == 4:
+            elem_type = "VEC4"
+            all2 = [elem[2] for elem in elements]
+            all3 = [elem[3] for elem in elements]
+            lmin.append(min(all2))
+            lmax.append(max(all2))
+            lmin.append(min(all3))
+            lmax.append(max(all3))
         else:
             raise "unhandled list type"
     else:
@@ -98,8 +106,10 @@ def create_accessor(data_file, gltf, elements):
     gltf_buffer_views.append({
                     "buffer": 0,
                     "byteOffset": start_pos,
-                    "byteLength": end_pos - start_pos,
-                    "target": target})
+                    "byteLength": end_pos - start_pos #,
+                    #"target": target
+                    }
+                    )
     gltf_accessors.append(
                 {
                     "bufferView": len(gltf_buffer_views) - 1,
