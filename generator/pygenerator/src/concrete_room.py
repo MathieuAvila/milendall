@@ -20,33 +20,10 @@ import copy
 import cgtypes.vec3
 import cgtypes.mat4
 
+from gltf_helper import get_texture_definition, create_accessor
+
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
-
-def get_texture_definition(filename, axes=[ ["x"], [ "y"] ] , scale = 1.0, offset = cgtypes.vec3()):
-    """ return an easy to use texture definition based on 4 points (vec3)
-    and their textures offset (vec3) with 3rd component being 0."""
-    my_def = { "texture": filename }
-    transform = cgtypes.mat4(
-        0, 0, 0, offset.x,
-        0, 0, 0, offset.y,
-        0, 0, 0, offset.z,
-        1.0, 1.0, 1.0,     0)
-    for u_v in range(0,2):
-        for my_axe in axes[u_v]:
-            if my_axe == "x":
-                transform[u_v,0] = scale
-            if my_axe == "y":
-                transform[u_v,1] = scale
-            if my_axe == "z":
-                transform[u_v,2] = scale
-    my_def["proj"] = transform
-    return my_def
-
-def get_texture_definition_with_map(filename, map_method):
-    """ return a texture definition based on a map method to provide."""
-    my_def = { "texture": filename , "map_method": map_method }
-    return my_def
 
 class Node:
 
@@ -255,73 +232,6 @@ class JSONEncoder(json.JSONEncoder):
             pass
         return None
 
-def create_accessor(data_file, gltf, elements):
-    """Append an accessor for a given elements list data"""
-
-    if isinstance(elements[0], list):
-        component_type = 5126
-        target = 34962
-        all0 = [elem[0] for elem in elements]
-        all1 = [elem[1] for elem in elements]
-        lmin = []
-        lmin.append(min(all0))
-        lmin.append(min(all1))
-        lmax  = []
-        lmax.append(max(all0))
-        lmax.append(max(all1))
-        final_list = list(itertools.chain.from_iterable(elements))
-        if len(elements[0]) == 2:
-            elem_type = "VEC2"
-        elif len(elements[0]) == 3:
-            elem_type = "VEC3"
-            all2 = [elem[2] for elem in elements]
-            lmin.append(min(all2))
-            lmax.append(max(all2))
-        else:
-            raise "unhandled list type"
-    else:
-        elem_type = "SCALAR"
-        component_type = 5123
-        target = 34963
-        lmin = [ min(elements) ]
-        lmax = [ max(elements) ]
-        final_list = elements
-
-    start_pos = data_file.tell()
-    if component_type == 5126:
-        pad = start_pos % 8
-        for _ in range(pad):
-            data_file.write(struct.pack('c', b'a'))
-        start_pos = data_file.tell()
-        for value in final_list:
-            data_file.write(struct.pack('f', value))
-    if component_type == 5123:
-        pad = start_pos % 4
-        for _ in range(pad):
-            data_file.write(struct.pack('c', b'a'))
-        start_pos = data_file.tell()
-        for value in final_list:
-            data_file.write(struct.pack('H', value))
-    end_pos = data_file.tell()
-    gltf_buffer_views = gltf["bufferViews"]
-    gltf_accessors = gltf["accessors"]
-    gltf_buffer_views.append({
-                    "buffer": 0,
-                    "byteOffset": start_pos,
-                    "byteLength": end_pos - start_pos,
-                    "target": target})
-    gltf_accessors.append(
-                {
-                    "bufferView": len(gltf_buffer_views) - 1,
-                    "byteOffset": 0,
-                    "componentType": component_type,
-                    "count": len(elements),
-                    "type": elem_type,
-                    "min": lmin,
-                    "max": lmax
-                })
-    return len(gltf_accessors) - 1
-
 def get_texture_id(gltf, texture_list, texture):
     """Get a texture id if it was already created, of insert it otherwise """
     gltf_textures = gltf["textures"]
@@ -347,6 +257,7 @@ class ConcreteRoom:
     def __init__(self):
         self.objects = []
         self.gravity = None
+        self.animations = []
 
     def get_objects(self):
         """return direct references to the list of objects included in the room
@@ -372,6 +283,9 @@ class ConcreteRoom:
                 return obj
         return None
 
+    def add_animation(self, animation):
+        self.animations.append(animation)
+
     def setup_gravity_info(self, gravity):
         """
         Setup the gravity info of the room. This is a private section.
@@ -387,6 +301,7 @@ class ConcreteRoom:
 
     def merge(self, other_room):
         self.objects.extend(other_room.objects)
+        self.animations.extend(other_room.animations)
 
     def generate_gravity(self, gravity_list, directory):
         """
@@ -399,6 +314,12 @@ class ConcreteRoom:
                 write_file.write(gravity["script"]+ "\n")
                 write_file.write("	return tab_out\n")
                 write_file.write("end\n\n")
+
+    def get_node_rank(self, node_name):
+        """used by animation to get node id reference"""
+        for count, value in enumerate(self.objects):
+            if node_name == value.name:
+                return count + 1
 
     def generate_gltf(self, directory):
         """
@@ -438,6 +359,7 @@ class ConcreteRoom:
                     "wrapT": 10497
                 }
             ],
+            "animations": []
         }
 
         # data file
@@ -524,6 +446,10 @@ class ConcreteRoom:
 
             # add gravity
             node.gltf_generate_gravity(gltf_node, gravity_list)
+
+        # generate each animation associated to this room
+        for animation in self.animations:
+            animation.generate_gltf(gltf, data_file, self)
 
         gltf["buffers"][0]["byteLength"] = data_file.tell()
 
