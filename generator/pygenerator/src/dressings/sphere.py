@@ -27,6 +27,14 @@ class DressingSphere(Dressing):
         #super().__init__(element)
         self.element = element
 
+    def check_fit(self):
+        """ Check dressing fits. """
+
+        if self.element.values.structure_class == "sphere":
+            return 100
+        else:
+            return 0
+
     def get_instance(self, element:None):
         """ return a self instance of this dressing, operating on any object"""
         return DressingSphere(element)
