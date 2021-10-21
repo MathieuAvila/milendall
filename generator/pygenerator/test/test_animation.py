@@ -131,6 +131,63 @@ class TestAnimation(unittest.TestCase):
 
 
 
+    def test_insert_1_animation_2_keys(self):
+        """Test generation of 1 animation in GLTF file"""
+        cube = self.create_cube()
+        anim0 = animation.Animation("test_anim", 0.0, 1.0, "my_event")
+        anim0.append_action("parent", anim0.ACTION_TRANSLATION, [
+            { "time":1.0, "value": [0.0, 0.0 ,0.0] },
+            { "time":2.0, "value": [3.0, 0.0 ,0.0] },
+            ])
+        anim0.append_action("parent", anim0.ACTION_ROTATION, [
+            { "time":1.0, "value": [1.0, 0.0 ,0.0, 0.0] },
+            { "time":2.0, "value": [0.0, 1.0 ,0.0, 0.0] },            ])
+        cube.add_animation(anim0)
+
+        path_gen = "/tmp/test_animation/output"
+        pathlib.Path(path_gen).mkdir(parents=True, exist_ok=True)
+        #try:
+        cube.generate_gltf(path_gen)
+        concrete_room.preview(path_gen + "/room.gltf", path_gen + "/room_preview.gltf")
+        #except:
+        #    print("Unexpected error:", sys.exc_info())
+
+
+    def test_insert_2_animation_2_keys(self):
+        """Test generation of 1 animation in GLTF file"""
+        cube = self.create_cube()
+
+        anim0 = animation.Animation("test_anim0", 0.0, 1.0, "my_event")
+        anim0.append_action("parent", anim0.ACTION_TRANSLATION, [
+            { "time":1.0, "value": [0.0, 0.0 ,0.0] },
+            { "time":2.0, "value": [3.0, 0.0 ,0.0] },
+            ])
+        anim0.append_action("parent", anim0.ACTION_ROTATION, [
+            { "time":1.0, "value": [1.0, 0.0 ,0.0, 0.0] },
+            { "time":2.0, "value": [0.0, 1.0 ,0.0, 0.0] },            ])
+        cube.add_animation(anim0)
+
+        anim1 = animation.Animation("test_anim1", 1.0, 2.0, "my_event2")
+        anim1.append_action("parent", anim1.ACTION_TRANSLATION, [
+            { "time":0.0, "value": [0.0, 0.0 ,0.0] },
+            { "time":1.0, "value": [0.0, 0.0 ,3.0] },
+            ])
+        anim1.append_action("parent", anim0.ACTION_ROTATION, [
+            { "time":1.0, "value": [1.0, 0.0 ,0.0, 0.0] },
+            { "time":2.0, "value": [0.0, 1.0 ,0.0, 0.0] },            ])
+        cube.add_animation(anim1)
+
+
+        path_gen = "/tmp/test_animation/output"
+        pathlib.Path(path_gen).mkdir(parents=True, exist_ok=True)
+        #try:
+        cube.generate_gltf(path_gen)
+        concrete_room.preview(path_gen + "/room.gltf", path_gen + "/room_preview.gltf")
+        #except:
+        #    print("Unexpected error:", sys.exc_info())
+
+
+
 
 
 
