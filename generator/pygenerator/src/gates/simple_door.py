@@ -144,7 +144,7 @@ class DoorGate(GateStructure):
             }
         )
         door = structure_private["door"]
-        if door.event != "" and door.event is not None:
+        if "event" in door and door["event"] is not None and door["event"] != "":
             d = structure_private["door"]
             door_impl = self.gate.get_id() + "_door"
             child_door = concrete.add_child(block_impl, door_impl)
@@ -174,7 +174,7 @@ class DoorGate(GateStructure):
                 concrete_room.Node.CAT_PHYS_VIS,
                 [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
                 {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
-            anim_open = animation.Animation("open_" + self.gate.get_id(), 0.0, 1.0, d["event"])
+            anim_open = animation.Animation("open_" + self.gate.get_id(), 0.0, d["timing"], d["event"])
             if d["default_open"]:
                 y_start = -s["y_up_end_int"]
                 y_end = 0.0

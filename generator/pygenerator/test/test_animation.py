@@ -129,6 +129,11 @@ class TestAnimation(unittest.TestCase):
         except:
             print("Unexpected error:", sys.exc_info())
 
+        with open(path_gen + "/room.gltf", "r") as room_file:
+            obj = json.load(room_file)
+        animations = obj["extras"]["animations"]
+        self.assertEqual(len(animations), 1)
+        self.assertEqual(animations[0], {'name': 'test_anim', 'false': 0.0, 'true': 1.0, 'event': 'my_event'})
 
 
     def test_insert_1_animation_2_keys(self):

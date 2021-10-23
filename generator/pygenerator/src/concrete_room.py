@@ -330,6 +330,7 @@ class ConcreteRoom:
                 "generator": "MILENDALL-1.0",
                 "version": "2.0"
             },
+            "extras" : {},
             "scene": 0,
             "scenes": [
                 {

@@ -64,4 +64,16 @@ class Animation:
             animation["samplers"].append(sampler)
             animation["channels"].append(channel)
         gltf["animations"].append(animation)
+        gltf_extras = gltf["extras"]
+        if "animations" not in gltf_extras:
+            gltf_extras["animations"] = []
+        gltf_animations = gltf_extras["animations"]
+        gltf_animations.append({
+            "name" : self.name,
+            "false" : self.at_false,
+            "true" : self.at_true,
+            "event" : self.event
+            })
+
+        # add metadata information for room. What to animate, on which event ?
 
