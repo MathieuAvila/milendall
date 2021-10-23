@@ -7,6 +7,7 @@ from gate_structure import GateStructure
 from .register import register_gate_type
 import cgtypes.vec3
 import concrete_room
+import animation
 
 from jsonmerge import merge
 
@@ -60,10 +61,17 @@ class DoorGate(GateStructure):
                 "y_up_end_int": 1.5,
 
                 "w_in" : 0.2,
-                "w_out" : -0.2
-            }
-        self._element.values.structure_private = merge( my_default, structure_parameters)
+                "w_out" : -0.2,
 
+                "wd_in" : 0.1,
+                "wd_out" : -0.1
+            }
+        my_default["door"]= {
+            "event": "",               # which event it responds to
+            "default_open" : True,     # which default state it is when event is False
+            "timing" : 1.0             # delay to open or close
+        }
+        self._element.values.structure_private = merge( my_default, structure_parameters)
 
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""
@@ -71,7 +79,8 @@ class DoorGate(GateStructure):
         s = structure_private["shift"]
         logging.info("generate a door")
 
-        child_object = concrete.add_child(self.gate.get_id(), self.gate.get_id() + "_impl")
+        block_impl = self.gate.get_id() + "_impl"
+        child_object = concrete.add_child(self.gate.get_id(), block_impl)
 
         index_wall = child_object.add_structure_points(
                     [
@@ -134,5 +143,55 @@ class DoorGate(GateStructure):
                 concrete_room.Node.GATE_ID : self._element.values.gate_id
             }
         )
+        door = structure_private["door"]
+        if door.event != "" and door.event is not None:
+            d = structure_private["door"]
+            door_impl = self.gate.get_id() + "_door"
+            child_door = concrete.add_child(block_impl, door_impl)
+            index_door = child_door.add_structure_points(
+                    [
+                    cgtypes.vec4(s["x_floor_start_int"],   0,                       s["wd_in"], 0),
+                    cgtypes.vec4(s["x_up_start_int"],      s["y_up_start_int"],     s["wd_in"], 0),
+                    cgtypes.vec4(s["x_up_end_int"],        s["y_up_end_int"],       s["wd_in"], 0),
+                    cgtypes.vec4(s["x_floor_end_int"],     0,                       s["wd_in"], 0),
+
+                    cgtypes.vec4(s["x_floor_start_int"],   0,                       s["wd_out"], 0),
+                    cgtypes.vec4(s["x_up_start_int"],      s["y_up_start_int"],     s["wd_out"], 0),
+                    cgtypes.vec4(s["x_up_end_int"],        s["y_up_end_int"],       s["wd_out"], 0),
+                    cgtypes.vec4(s["x_floor_end_int"],     0,                       s["wd_out"], 0),
+
+                    cgtypes.vec4(s["x_floor_start_int"],   0,                       0, 0),
+                    cgtypes.vec4(s["x_up_start_int"],      s["y_up_start_int"],     0, 0),
+                    cgtypes.vec4(s["x_up_end_int"],        s["y_up_end_int"],       0, 0),
+                ])
+            child_door.add_structure_faces(
+                index_door,
+                [
+                    [ 3,2,1,0 ],
+                    [ 4,5,6,7 ],
+                    [ 1,2,6,5 ]
+                ],
+                concrete_room.Node.CAT_PHYS_VIS,
+                [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
+                {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
+            anim_open = animation.Animation("open_" + self.gate.get_id(), 0.0, 1.0, d["event"])
+            if d["default_open"]:
+                y_start = -s["y_up_end_int"]
+                y_end = 0.0
+            else:
+                y_start = 0.0
+                y_end = -s["y_up_end_int"]
+            anim_open.append_action(door_impl, anim_open.ACTION_TRANSLATION, [
+                { "time":0.0, "value": [0.0, y_start ,0.0] },
+                { "time":d["timing"], "value": [0.0, y_end ,0.0] }
+            ])
+            concrete.add_animation(anim_open)
+
+
+
+
+
+
+
 
 register_gate_type(DoorGate())
