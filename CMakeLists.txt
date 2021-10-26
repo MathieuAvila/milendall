@@ -78,6 +78,9 @@ add_library(game_lib STATIC
   game/src/gltf/gltf_data_accessor.cxx
   game/src/gltf/gltf_exception.hxx
   game/src/gltf/gltf_exception.cxx
+  game/src/gltf/gltf_animation.hxx
+  game/src/gltf/gltf_animation.cxx
+  game/src/gltf/gltf_animation_target_iface.hxx
   game/src/helpers/helper_math.hxx
   game/src/helpers/helper_math.cxx
   game/src/helpers/json_helper_accessor.hxx
@@ -160,6 +163,7 @@ game/test/unit_room.cpp
 game/test/unit_gltf_material_accessor.cpp
 game/test/unit_gltf_table_accessor.cpp
 game/test/unit_gltf_data_accessor.cpp
+game/test/unit_gltf_animation.cxx
 game/test/unit_json_helper_math.cpp
 game/test/unit_helper_math.cpp
 game/test/unit_gltf_model.cxx

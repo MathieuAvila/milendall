@@ -13,7 +13,7 @@ using namespace std;
 
 static auto console = getConsole("unit_gltf_data_accessor");
 
-std::unique_ptr<GltfDataAccessor> get_test_accessor()
+static std::unique_ptr<GltfDataAccessor> get_test_accessor()
 {
     auto fl = FileLibrary();
     std::string pwd = std::filesystem::current_path();
@@ -21,7 +21,6 @@ std::unique_ptr<GltfDataAccessor> get_test_accessor()
     auto ref = fl.getRoot().getSubPath("room_preview.gltf");
     auto raw_json = ref.readStringContent();
     auto json_element = json::parse(raw_json.c_str());
-    console->debug(to_string(json_element));
     auto elem = std::make_unique<GltfDataAccessor>(json_element, ref.getDirPath());
     return elem;
 }
