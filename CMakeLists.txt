@@ -64,6 +64,8 @@ add_library(game_lib STATIC
   game/src/structure/gravity_provider.hxx
   game/src/structure/gravity_information.hxx
   game/src/structure/gravity_information.cxx
+  game/src/structure/states_list.hxx
+  game/src/structure/states_list.cxx
   game/src/gltf/gltf_mesh.hxx
   game/src/gltf/gltf_mesh.cxx
   game/src/gltf/gltf_model.hxx
@@ -175,6 +177,7 @@ game/test/unit_script.cxx
 game/test/unit_min_max_box.cxx
 game/test/unit_room_node_gravity.cxx
 game/test/unit_gravity_information.cxx
+game/test/unit_states_list.cxx
 )
 
 enable_testing()
