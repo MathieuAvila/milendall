@@ -51,3 +51,9 @@ logs
 build_local.sh
 build_remote.sh
 
+generator/samples/*/level-instance.json
+generator/samples/*/level.json
+generator/samples/*/level-instance.json
+generator/samples/*/room*
+generator/samples/3_spheres/
+generator/samples/tubular/tube/
