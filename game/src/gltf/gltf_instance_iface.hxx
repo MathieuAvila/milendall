@@ -4,6 +4,8 @@
 #include <memory>
 #include <glm/mat4x4.hpp>
 
+#include "gltf_animation_target_iface.hxx"
+
 class GltfNodeInstanceIface
 {
     protected:
@@ -20,6 +22,7 @@ class GltfNodeInstanceIface
      */
     const glm::mat4x4& getNodeMatrix();
     void setNodeMatrix(const glm::mat4x4&);
+    void stackNodeMatrix(const glm::mat4x4&);
 
      /**
      * Accessor to inverted local matrix
@@ -35,7 +38,7 @@ class GltfNodeInstanceIface
 
 /** @brief A GLTF instance represents a particular instance of a GLTF object.
 */
-class GltfInstance
+class GltfInstance: public GltfAnimationTargetIface
 {
     protected:
 
@@ -54,6 +57,9 @@ class GltfInstance
 
     /** get a sub-node. This is the way the model traverses the nodes */
     GltfNodeInstanceIface* getNode(int);
+
+    /** requested to apply an animation */
+    virtual void applyChange(int index, glm::mat4x4 matrix);
 
     virtual ~GltfInstance() = default;
 };

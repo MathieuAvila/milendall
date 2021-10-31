@@ -2,6 +2,7 @@
 #include "gltf_model.hxx"
 #include "gltf_mesh.hxx"
 #include "gltf_instance_iface.hxx"
+#include "gltf_exception.hxx"
 
 static auto console = getConsole("gltf_instance");
 
@@ -18,19 +19,33 @@ std::unique_ptr<GltfNodeInstanceIface> GltfInstance::createNodeInstance()
 
 GltfNodeInstanceIface* GltfInstance::getNode(int index)
 {
+    if ((index >= nodeInstanceTable.size()) || (index < 0))
+        throw GltfException("Node" + to_string(index) + " does not exist in instance");
     return nodeInstanceTable[index].get();
+}
+
+void GltfInstance::applyChange(int index, glm::mat4x4 matrix)
+{
+    auto node = getNode(index);
+    node->stackNodeMatrix(matrix);
 }
 
 const glm::mat4x4& GltfNodeInstanceIface::getNodeMatrix()
 {
     return local_matrix;
-};
+}
 
 void GltfNodeInstanceIface::setNodeMatrix(const glm::mat4x4& value)
 {
      local_matrix = value;
      isInvertedMatrixValid = false;
-};
+}
+
+void GltfNodeInstanceIface::stackNodeMatrix(const glm::mat4x4& value)
+{
+     local_matrix = value * local_matrix;
+     isInvertedMatrixValid = false;
+}
 
 const glm::mat4x4& GltfNodeInstanceIface::getInvertedNodeMatrix()
 {
@@ -39,4 +54,4 @@ const glm::mat4x4& GltfNodeInstanceIface::getInvertedNodeMatrix()
         isInvertedMatrixValid = true;
     }
     return inverted_local_matrix;
-};
+}
