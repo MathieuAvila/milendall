@@ -76,3 +76,21 @@ TEST(GLTF_MODEL, multi_scene_multi_children_matrices) {
 TEST(GLTF_MODEL, draw_multi_scene_multi_children_matrices) {
 
 }
+
+TEST(GLTF_MODEL, animation) {
+
+    InSequence s;
+    GLMock mock;
+
+    auto fl = FileLibrary();
+    fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../game/test/sample"));
+    auto ref = fl.getRoot().getSubPath("/room_2_animations/room_preview.gltf");
+    GltfMaterialLibraryIfacePtr materialLibrary = GltfMaterialLibraryIface::getMaterialLibray();
+    GltfModelTest* model = new GltfModelTest(materialLibrary, ref);
+
+    auto instance = make_unique<GltfInstance>(model->getInstanceParameters());
+    model->applyAnimation(instance.get(), "open_door1", 0.1);
+    model->applyAnimation(instance.get(), "open_door2", 0.1);
+}
+
+

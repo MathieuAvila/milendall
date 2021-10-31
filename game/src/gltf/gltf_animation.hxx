@@ -32,6 +32,9 @@ class GltfAnimation
         GltfDataAccessorIFace* data_accessor
         );
 
+    /** @brief get its name */
+    std::string getName();
+
     /** @brief Apply the animation at a given time
      * @param time at which timeframe the animation must be applied
      * @param instance to which instance it must be applied

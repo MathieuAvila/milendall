@@ -121,6 +121,11 @@ void GltfAnimation::apply(float time, GltfAnimationTargetIface* instance)
     }
 }
 
+std::string GltfAnimation::getName()
+{
+    return name;
+}
+
 GltfAnimation::~GltfAnimation()
 {
 }

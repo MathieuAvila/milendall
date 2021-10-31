@@ -2,6 +2,7 @@
 
 #include <nlohmann/json.hpp>
 #include <glm/mat4x4.hpp>
+#include <map>
 
 #include "file_library.hxx"
 #include "gltf_mesh.hxx"
@@ -11,6 +12,7 @@
 
 class GltfDataAccessorIFace;
 class GltfInstance;
+class GltfAnimation;
 
 struct GltfNode
 {
@@ -46,6 +48,8 @@ class GltfModel
         /** @brief  To be derived in case there is private data */
         virtual void parseApplicationData(nlohmann::json& json);
 
+        std::map<std::string, std::shared_ptr<GltfAnimation>> animationMap;
+
         /**
          * @brief  Holds the table of meshes, in file order
          */
@@ -68,7 +72,7 @@ class GltfModel
 
     public:
 
-        GltfModel() = delete;
+        GltfModel() = default;
         GltfModel(const GltfModel&) = delete;
 
         GltfModel(GltfMaterialLibraryIfacePtr materialLibrary, const FileLibrary::UriReference ref,
@@ -84,5 +88,8 @@ class GltfModel
 
         /** Draw an instance, using matrices from it */
         void draw(GltfInstance* instance, void* context = nullptr);
+
+        /** Apply an animation given its name and an instance*/
+        virtual void applyAnimation(GltfInstance* instance, std::string name,float time);
 };
 

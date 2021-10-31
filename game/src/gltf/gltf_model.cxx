@@ -1,9 +1,14 @@
 #include "common.hxx"
+
 #include "gltf_model.hxx"
 #include "gltf_mesh.hxx"
+#include "gltf_animation.hxx"
 #include "gltf_data_accessor.hxx"
+#include "gltf_exception.hxx"
+
 #include "json_helper_accessor.hxx"
 #include "json_helper_math.hxx"
+
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
@@ -94,6 +99,13 @@ GltfModel::GltfModel(GltfMaterialLibraryIfacePtr materialLibrary, const FileLibr
         nodeTable.push_back(nodeProvider(child, data_accessor.get()));
     });
 
+    // Load all animations, it's up to the application to use them
+    jsonExecuteAllIfElement(file_json, "animations", [this, &data_accessor](nlohmann::json& child, int index) {
+        console->info("Load animation: {}", index);
+        auto animation = make_shared<GltfAnimation>(child, data_accessor.get());
+        animationMap.insert(std::pair<std::string, std::shared_ptr<GltfAnimation>>(animation->getName(), animation));
+    });
+
     auto my_scene = jsonGetElementByName(file_json, "scene").get<int>();
     auto j_scenes = jsonGetElementByName(file_json, "scenes");
     auto j_scenes_i = jsonGetElementByIndex(file_json, "scenes", my_scene);
@@ -157,4 +169,13 @@ void GltfModel::applyDefaultTransform(GltfInstance* instance, glm::mat4& positio
     for (auto i: root_nodes) {
         applyDefaultTransform(instance, i, position);
     }
+}
+
+void GltfModel::applyAnimation(GltfInstance* instance, std::string name, float time)
+{
+    if (!animationMap.count(name))
+        throw GltfException("Unknown animation");
+
+    auto anim = animationMap[name];
+    anim->apply(time, instance);
 }
