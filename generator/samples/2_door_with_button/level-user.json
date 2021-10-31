@@ -1,0 +1,60 @@
+{
+    "$schema": "../../schema/generator.level.schema.json",
+
+    "name" : [  { "lang": "en", "value" : "Simple Level"} ],
+    "section": "samples",
+
+    "game_type" : {
+        "single_mode" : {
+            "execution_time" : 10.0,
+            "entry_point_room" : "room1",
+            "end_point_room" : "room2",
+            "entry_point_position": [ 2.0, 1.0, 2.0 ]
+        }
+    },
+    "rooms" : [
+        {
+            "room_id" : "room1",
+            "name" : [ { "lang": "en", "value" : "room1"}  ],
+            "structure_class" : "rectangular",
+            "dressing_class" : "basic"
+        },
+        {
+            "room_id" : "room2",
+            "name" : [ { "lang": "en", "value" : "room2"}  ],
+            "structure_class" : "rectangular",
+            "dressing_class" : "basic"
+        }
+    ],
+    "gates" : [
+        {
+            "gate_id" : "door1",
+            "connect" : [ "room1", "room2"],
+            "accessible" : "from-to",
+            "structure_class" : "simple_door",
+            "dressing_class" : "basic",
+            "structure_parameters": {
+                "door": {
+                    "event" : "my_door_event_1",
+                    "default_open" : false,
+                    "timing" : 0.5                }
+            }
+
+        },
+        {
+            "gate_id" : "door2",
+            "connect" : [ "room1", "room2"],
+            "accessible" : "from-to",
+            "structure_class" : "simple_door",
+            "dressing_class" : "basic",
+            "structure_parameters": {
+                "door": {
+                    "event" : "my_door_event_2",
+                    "default_open" : false,
+                    "timing" : 1.0                }
+            }
+
+        }
+     ]
+}
+
