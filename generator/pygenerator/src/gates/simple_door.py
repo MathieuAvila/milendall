@@ -181,11 +181,11 @@ class DoorGate(GateStructure):
                 {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
             anim_open = animation.Animation("open_" + self.gate.get_id(), 0.0, d["timing"], d["event"])
             if d["default_open"]:
-                y_start = -s["y_up_end_int"]
+                y_start = -s["y_up_end_int"]-0.01
                 y_end = 0.0
             else:
                 y_start = 0.0
-                y_end = -s["y_up_end_int"]
+                y_end = -s["y_up_end_int"]-0.01
             anim_open.append_action(door_impl, anim_open.ACTION_TRANSLATION, [
                 { "time":0.0, "value": [0.0, y_start ,0.0] },
                 { "time":d["timing"], "value": [0.0, y_end ,0.0] }
