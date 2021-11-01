@@ -399,14 +399,27 @@ TEST_F(RoomTest, animations) {
     InSequence s;
     GLMock mock;
     PairRoomStates room_data = loadRoomWithStates("/room_2_animations/room.gltf");
-    room_data.states->setState("open_door1", true);
 
     auto& anim = room_data.room->room_animations;
-    const auto& first = anim.begin();
+    const auto& first = anim.begin()->get();
+    const auto& second = std::next(anim.begin(), 1)->get();
 
     ASSERT_EQ(anim.size(), 2);
-    ASSERT_EQ(first->get()->animation, "open_door1");
-    ASSERT_EQ(std::next(first,1)->get()->animation, "open_door2");
+    ASSERT_EQ(first->animation, "open_door1");
+    ASSERT_EQ(second->animation, "open_door2");
+
+    ASSERT_EQ(first->time_current, 0.0f);
+    ASSERT_EQ(second->time_current, 0.0f);
 
     room_data.room->updateRoom(0.1f);
+
+    ASSERT_EQ(first->time_current, 0.0f);
+    ASSERT_EQ(second->time_current, 0.0f);
+
+    room_data.states->setState("my_door_event_1", true);
+    room_data.room->updateRoom(0.1f);
+
+    ASSERT_EQ(first->time_current, 0.1f);
+    ASSERT_EQ(second->time_current, 0.0f);
+
 }
