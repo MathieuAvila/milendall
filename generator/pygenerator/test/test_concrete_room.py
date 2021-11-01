@@ -613,6 +613,63 @@ class TestConcreteRoomImpl(unittest.TestCase):
         self.assertTrue("function gravity_child2_2(tab_in)" in content)
 
 
+    def test_trigger_box(self):
+        """Test a trigger box"""
+        room = concrete_room.ConcreteRoom()
+        parent1 = room.add_child(None, "parent1")
+        parent2 = room.add_child(None, "parent2")
+        self.assertIsNotNone(parent1)
+        self.assertIsNotNone(parent2)
+
+        parent1.add_trigger_box(
+                    concrete_room.Node.TRIGGER_LEAVE_BOX,
+                    concrete_room.Node.TRIGGER_SET_FALSE,
+                    cgtypes.vec3(1.0,    2.0,   3.0),
+                    cgtypes.vec3(4.0,    5.0,   6.0),
+                    "my_event")
+        parent1.add_trigger_box(
+                    concrete_room.Node.TRIGGER_ENTER_BOX,
+                    concrete_room.Node.TRIGGER_SET_TRUE,
+                    cgtypes.vec3(7.0,    8.0,   9.0),
+                    cgtypes.vec3(10.0,  11.0,  12.0),
+                    "my_event_2")
+
+        PATH = "/tmp/triggers"
+        pathlib.Path(PATH).mkdir(parents=True, exist_ok=True)
+        room.generate_gltf(PATH)
+
+        with open("/tmp/triggers/room.gltf", "r") as room_file:
+            obj = json.load(room_file)
+        parent_1_object = obj["nodes"][1]
+        parent_2_object = obj["nodes"][2]
+
+        print(parent_1_object)
+        print(parent_2_object)
+
+        self.assertFalse("extras" in parent_2_object)
+        self.assertTrue("extras" in parent_1_object)
+
+        extras = parent_1_object["extras"]
+        self.assertTrue("triggers" in extras)
+        triggers = extras["triggers"]
+        print(triggers)
+        self.assertEquals(triggers,
+            [
+                {
+                    'box': [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]],
+                    'set_trigger': 'my_event',
+                    'is_box_mode_enter': False,
+                    'target_value': False
+                },
+                {
+                    'box': [[7.0, 8.0, 9.0], [10.0, 11.0, 12.0]],
+                    'set_trigger': 'my_event_2',
+                    'is_box_mode_enter': True,
+                    'target_value': True
+                }
+            ]
+)
+
 
 if __name__ == '__main__':
     unittest.main()

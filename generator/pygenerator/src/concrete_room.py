@@ -37,6 +37,7 @@ class Node:
         self.gravity = None
         self.gravity_script = None
         self.gravity_mode = None
+        self.triggers = []
 
     def set_gravity(self, gravity):
         self.gravity = gravity
@@ -85,6 +86,27 @@ class Node:
 
     # for gravity, method to expose
     GRAVITY_SIMPLE   = "simple"
+
+    # for triggers, definitions for API, not used in JSON
+    TRIGGER_ENTER_BOX = True
+    TRIGGER_LEAVE_BOX = False
+    TRIGGER_SET_TRUE  = True
+    TRIGGER_SET_FALSE = False
+
+    # for triggers, values used in JSON
+    TRIGGER_SET        = "set_trigger"         # will contain the name of the trigger
+    TRIGGER_BOX        = "box"                 # definition of box as a 2-dim table
+    TRIGGER_BOX_MODE   = "is_box_mode_enter"   # set to true if trigger is changed when entering, false if leaving
+    TRIGGER_BOX_TARGET = "target_value"        # set to value in which trigger must be set
+
+    def add_trigger_box(self, enter_or_leave, set_true_or_false, box_min, box_max, event_name):
+        self.triggers.append(
+            {
+                self.TRIGGER_BOX : [ [box_min.x,box_min.y,box_min.z], [box_max.x,box_max.y,box_max.z] ],
+                self.TRIGGER_SET : event_name,
+                self.TRIGGER_BOX_MODE : enter_or_leave,
+                self.TRIGGER_BOX_TARGET : set_true_or_false
+            })
 
     def add_structure_faces(self, point_offset, faces, categories, hints, physics = None):
         """
@@ -192,6 +214,11 @@ class Node:
             extra["gravity"] = self.gravity
             if self.gravity_script:
                 gravity_list.append({"name": self.name, "script": self.gravity_script, "mode": self.gravity_mode})
+
+    def gltf_generate_triggers(self, gltf_node):
+        if len(self.triggers) != 0:
+            extra = self.get_extras(gltf_node)
+            extra["triggers"] = copy.deepcopy(self.triggers)
 
     def gltf_generate_physical_faces(self, gltf, gltf_node, data_file):
         list_physical_faces = self.get_physical_faces()
@@ -447,6 +474,9 @@ class ConcreteRoom:
 
             # add gravity
             node.gltf_generate_gravity(gltf_node, gravity_list)
+
+            # add triggers
+            node.gltf_generate_triggers(gltf_node)
 
         # generate each animation associated to this room
         for animation in self.animations:
