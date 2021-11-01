@@ -69,9 +69,14 @@ class DoorGate(GateStructure):
         my_default["door"]= {
             "event": "",               # which event it responds to
             "default_open" : True,     # which default state it is when event is False
-            "timing" : 1.0             # delay to open or close
+            "timing" : 1.0,            # delay to open or close
+            "auto_open" : False         # add mechanism to automatically open when reaching the door
         }
         self._element.values.structure_private = merge( my_default, structure_parameters)
+        p = self._element.values.structure_private
+        # in case we're in auto-open mode, let's define the event
+        if  p["door"]["auto_open"] == True and p["door"]["event"] == "":
+            p["door"]["event"] = self.gate.get_id() + "_event"
 
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""
@@ -185,6 +190,22 @@ class DoorGate(GateStructure):
                 { "time":0.0, "value": [0.0, y_start ,0.0] },
                 { "time":d["timing"], "value": [0.0, y_end ,0.0] }
             ])
+
+            # check if we're auto-open mode, so define an enter/leave zone
+            if d["auto_open"]:
+                child_object.add_trigger_box(
+                    concrete_room.Node.TRIGGER_ENTER_BOX,
+                    concrete_room.Node.TRIGGER_SET_TRUE,
+                    cgtypes.vec3(s["x_floor_start_ext"] - 1.0, -0.1,               s["w_out"] - 1.0),
+                    cgtypes.vec3(s["x_floor_end_ext"] + 1.0  , s["y_up_end_ext"],  s["w_in"] + 1.0),
+                    d["event"])
+                child_object.add_trigger_box(
+                    concrete_room.Node.TRIGGER_LEAVE_BOX,
+                    concrete_room.Node.TRIGGER_SET_FALSE,
+                    cgtypes.vec3(s["x_floor_start_ext"] - 1.0, -0.1,               s["w_out"] - 1.0),
+                    cgtypes.vec3(s["x_floor_end_ext"] + 1.0  , s["y_up_end_ext"],  s["w_in"] + 1.0),
+                    d["event"])
+
             concrete.add_animation(anim_open)
 
 
