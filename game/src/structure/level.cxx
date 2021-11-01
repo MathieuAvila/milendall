@@ -1,14 +1,15 @@
-#include "level.hxx"
-#include "room.hxx"
-
 #include <string>
 #include <iostream>
 #include <nlohmann/json.hpp>
 
 #include "json_helper_accessor.hxx"
-
 #include "common.hxx"
-#include <helper_math.hxx>
+#include "helper_math.hxx"
+
+#include "level.hxx"
+#include "room.hxx"
+#include "states_list.hxx"
+
 
 static auto console = getConsole("level");
 
@@ -36,11 +37,12 @@ Level::Level(FileLibrary::UriReference ref)
     json j_level = json::parse(ref.readStringContent());
     room_resolver = make_unique<LevelRoomResolver>(rooms);
     GltfMaterialLibraryIfacePtr materialLibrary = GltfMaterialLibraryIface::getMaterialLibray();
+    states_list = make_unique<StatesList>();
     for(auto room_it : jsonGetElementByName(j_level, "rooms")) {
             auto room_id = jsonGetElementByName(room_it, "room_id").get<string>();
             console->info("Found room_id: {}", room_id);
             auto ref_room = ref.getDirPath().getSubPath(room_id+ "/room.gltf");
-            auto room = std::make_shared<Room>(room_id, materialLibrary, ref_room, room_resolver.get());
+            auto room = std::make_shared<Room>(room_id, materialLibrary, ref_room, room_resolver.get(), states_list.get());
             rooms.insert({room_id, room});
     }
     auto game_type = jsonGetElementByName(j_level, "game_type");
@@ -77,8 +79,9 @@ void Level::draw(PointOfView pov)
 
 void Level::update(float elapsed_time)
 {
-    for (const auto& r: rooms)
-        r.second->applyTransform();
+    for (const auto& r: rooms) {
+        r.second->updateRoom(elapsed_time);
+    }
 }
 
 PointOfView Level::getDestinationPov(const PointOfView& origin, const glm::vec3& destination) const

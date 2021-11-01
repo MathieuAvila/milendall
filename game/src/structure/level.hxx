@@ -1,5 +1,6 @@
 #pragma once
 
+#include "memory"
 #include "file_library.hxx"
 #include "gltf/gltf_material_accessor_library_iface.hxx"
 #include "room.hxx"
@@ -8,6 +9,7 @@
 #include "gravity_provider.hxx"
 
 struct LevelRoomResolver;
+class StatesList;
 
 class Level : public SpaceResolver, public GravityProvider
 {
@@ -96,6 +98,10 @@ class Level : public SpaceResolver, public GravityProvider
         /** Kept for the duration of the level. This forces to keep texturing */
         GltfMaterialLibraryIfacePtr materialLibrary;
 
+        /** All global values for the level: start an end room, time, ... */
         GlobalDefinition definition;
+
+        /** All level states */
+        std::unique_ptr<StatesList> states_list;
 };
 
