@@ -6,7 +6,6 @@
 
 #include "point_of_view.hxx"
 
-struct RoomResolver;
 class SpaceResolver;
 class GravityProvider;
 class ManagedObjectInstance;
@@ -16,7 +15,6 @@ class ObjectManager
     public:
 
         ObjectManager(
-            RoomResolver* _roomResolver,
             SpaceResolver* _spaceResolver,
             GravityProvider* _gravityProvider
             );
@@ -44,7 +42,6 @@ class ObjectManager
 
     private:
 
-        RoomResolver* roomResolver;
         SpaceResolver* spaceResolver;
         GravityProvider* gravityProvider;
 

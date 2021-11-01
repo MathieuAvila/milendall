@@ -98,7 +98,7 @@ int main(int argc, char* argv[])
     fontLoadFont("candy", fontCandy);
 
     auto player = make_shared<Player>();
-    auto object_manager = make_unique<ObjectManager>(level->getRoomResolver(), level.get(), level.get());
+    auto object_manager = make_unique<ObjectManager>(level.get(), level.get());
     auto player_id = object_manager ->insertObject(player,
         PointOfView(currentPov.position, currentPov.local_reference, currentPov.room)
     );
@@ -139,6 +139,7 @@ int main(int argc, char* argv[])
             /(1000.0f*1000.0f);
         total_time += elapsed;
         object_manager->update(total_time);
+        level->update(elapsed);
         current_time = new_time;
 
         fpsCounter.update();

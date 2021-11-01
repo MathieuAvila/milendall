@@ -12,10 +12,9 @@
 static auto console = getConsole("object_manager");
 
 ObjectManager::ObjectManager(
-    RoomResolver* _roomResolver,
     SpaceResolver* _spaceResolver,
     GravityProvider* _gravityProvider) :
-roomResolver(_roomResolver), spaceResolver(_spaceResolver), gravityProvider(_gravityProvider)
+spaceResolver(_spaceResolver), gravityProvider(_gravityProvider)
 {
 
 }
