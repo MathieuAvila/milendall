@@ -89,7 +89,7 @@ TEST_F(GltfAnimationTest, apply_translation_final) {
     // Expect no throw
 
     MockGltfAnimationTargetIface instance;
-    //translate half
+    //translate full
     glm::mat4x4 mat_translate = glm::translate(glm::mat4x4(1.0f), glm::vec3(0.0f, -1.5f, 0.0f));
 
     EXPECT_CALL(instance,
