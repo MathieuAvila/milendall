@@ -3,9 +3,12 @@
 #include <filesystem>
 #include <iostream>
 #include <memory>
+#include <map>
+#include <utility>
 
 #include "room.hxx"
 #include "gltf_material_accessor_library_iface.hxx"
+#include "states_list.hxx"
 
 #include "glmock.hpp"
 
@@ -18,22 +21,48 @@ using namespace std;
 
 static auto console = getConsole("ut_room");
 
+class RoomTest : public ::testing::Test {
+ protected:
+  void SetUp() override {
+     spdlog::get("unit_states_list")->set_level(spdlog::level::debug);
+     spdlog::get("states_list")->set_level(spdlog::level::debug);
+  }
+};
 
-std::unique_ptr<Room> loadRoom(std::string roomPath)
+struct PairRoomStates{
+    unique_ptr<Room> room;
+    unique_ptr<StatesList> states;
+    PairRoomStates(unique_ptr<Room>& _room, unique_ptr<StatesList>& _states)
+    {
+        room.swap(_room);
+        states.swap(_states);
+    };
+};
+
+PairRoomStates loadRoomWithStates(std::string roomPath)
 {
     auto materialLibrary = GltfMaterialLibraryIface::getMaterialLibray();
     auto fl = FileLibrary();
     fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../game/test/sample/"));
     fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../data/"));
     auto roomPathRef = fl.getRoot().getSubPath(roomPath);
-    auto room = make_unique<Room>("room1", materialLibrary, roomPathRef);
+    auto states_list = make_unique<StatesList>();
+    auto room = make_unique<Room>("room1", materialLibrary, roomPathRef, nullptr, states_list.get());
     auto room_ptr = room.get();
     EXPECT_NE( room_ptr, nullptr );
-    room->applyTransform();
-    return room;
+    room->updateRoom(0.0f);
+    return PairRoomStates(room, states_list);
 }
 
-TEST(Room, LoadLevel2Rooms1Gate_Room1) {
+std::unique_ptr<Room> loadRoom(std::string roomPath)
+{
+    PairRoomStates all = loadRoomWithStates(roomPath);
+    std::unique_ptr<Room> result;
+    result.swap(all.room);
+    return result;
+}
+
+TEST_F(RoomTest, LoadLevel2Rooms1Gate_Room1) {
 
     InSequence s;
     GLMock mock;
@@ -64,7 +93,7 @@ TEST(Room, LoadLevel2Rooms1Gate_Room1) {
 
 }
 
-TEST(Room, GateLoading__LoadLevel3Rooms3Gate_Room1) {
+TEST_F(RoomTest, GateLoading__LoadLevel3Rooms3Gate_Room1) {
 
     InSequence s;
     GLMock mock;
@@ -87,7 +116,7 @@ TEST(Room, GateLoading__LoadLevel3Rooms3Gate_Room1) {
 }
 
 
-TEST(Room, isWallReached_0_simple_NOT_reached) {
+TEST_F(RoomTest, isWallReached_0_simple_NOT_reached) {
 
     // don't touch anything
 
@@ -116,7 +145,7 @@ TEST(Room, isWallReached_0_simple_NOT_reached) {
     EXPECT_FALSE(reached);
 }
 
-TEST(Room, isWallReached_1_simple_reached) {
+TEST_F(RoomTest, isWallReached_1_simple_reached) {
 
     // just hit the floor on 1 point
 
@@ -149,7 +178,7 @@ TEST(Room, isWallReached_1_simple_reached) {
 }
 
 
-TEST(Room, isWallReached_2_simple_CORNER_reached) {
+TEST_F(RoomTest, isWallReached_2_simple_CORNER_reached) {
 
     // corner, there are 3 possible walls
 
@@ -206,7 +235,7 @@ TEST(Room, isWallReached_2_simple_CORNER_reached) {
 }
 
 
-TEST(Room, isWallReached_3_sub_object) {
+TEST_F(RoomTest, isWallReached_3_sub_object) {
 
     // check a cross with an object that has a non-ID matrix
     InSequence s;
@@ -235,7 +264,7 @@ TEST(Room, isWallReached_3_sub_object) {
     EXPECT_TRUE(glm::length(hitPoint - glm::vec3(6.5f, 2.0f, 1.2)) < 0.1f);
 }
 
-TEST(Room, gravity_0__default) {
+TEST_F(RoomTest, gravity_0__default) {
     // testing what happens when no node defines gravity
     InSequence s;
     GLMock mock;
@@ -248,7 +277,7 @@ TEST(Room, gravity_0__default) {
     EXPECT_EQ(gravity, default_gravity);
 }
 
-TEST(Room, gravity_1__1_node) {
+TEST_F(RoomTest, gravity_1__1_node) {
     // testing what happens when 1 single root node defines gravity
     InSequence s;
     GLMock mock;
@@ -268,7 +297,7 @@ TEST(Room, gravity_1__1_node) {
     EXPECT_EQ(gravity, applied_gravity);
 }
 
-TEST(Room, gravity_2__1_child_node_no_matrix) {
+TEST_F(RoomTest, gravity_2__1_child_node_no_matrix) {
     // testing what happens when 1 single child node defines gravity, without translation matrix
     InSequence s;
     GLMock mock;
@@ -288,7 +317,7 @@ TEST(Room, gravity_2__1_child_node_no_matrix) {
     EXPECT_EQ(gravity, applied_gravity);
 }
 
-TEST(Room, gravity_3__1_child_node_matrix) {
+TEST_F(RoomTest, gravity_3__1_child_node_matrix) {
     // testing what happens when 1 single child node defines gravity, with a translation matrix
     // matrix is an inversion on Z. Local gravity/up is UP on Z, so it becomes DOWN on Z
     InSequence s;
@@ -309,7 +338,7 @@ TEST(Room, gravity_3__1_child_node_matrix) {
     EXPECT_EQ(gravity, applied_gravity);
 }
 
-TEST(Room, gravity_4__2_child_node) {
+TEST_F(RoomTest, gravity_4__2_child_node) {
     // testing what happens when 2 child nodes defines gravity, must be combined
     InSequence s;
     GLMock mock;
@@ -329,7 +358,7 @@ TEST(Room, gravity_4__2_child_node) {
     EXPECT_EQ(gravity, applied_gravity);
 }
 
-TEST(Room, gravity_5__2_child_node_1_root) {
+TEST_F(RoomTest, gravity_5__2_child_node_1_root) {
     // testing what happens when 1 root node AND 2 child nodes defines gravity, must keep children
     InSequence s;
     GLMock mock;
@@ -349,7 +378,7 @@ TEST(Room, gravity_5__2_child_node_1_root) {
     EXPECT_EQ(gravity, applied_gravity);
 }
 
-TEST(Room, gravity_6__load_script) {
+TEST_F(RoomTest, gravity_6__load_script) {
     // testing global script loading
     InSequence s;
     GLMock mock;
@@ -365,3 +394,19 @@ TEST(Room, gravity_6__load_script) {
 
 }
 
+TEST_F(RoomTest, animations) {
+    // testing loading animations and applying
+    InSequence s;
+    GLMock mock;
+    PairRoomStates room_data = loadRoomWithStates("/room_2_animations/room.gltf");
+    room_data.states->setState("open_door1", true);
+
+    auto& anim = room_data.room->room_animations;
+    const auto& first = anim.begin();
+
+    ASSERT_EQ(anim.size(), 2);
+    ASSERT_EQ(first->get()->animation, "open_door1");
+    ASSERT_EQ(std::next(first,1)->get()->animation, "open_door2");
+
+    room_data.room->updateRoom(0.1f);
+}

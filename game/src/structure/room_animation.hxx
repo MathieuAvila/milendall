@@ -13,6 +13,7 @@ class GltfModel;
 
 class RoomAnimation
 {
+protected:
     std::string animation;
     std::string event;
     float time_false, time_true, time_current;
@@ -40,4 +41,6 @@ public:
      * @param delta_time delta between last call
      */
     void animationAdvance(float delta_time);
+
+    FRIEND_TEST(RoomTest, animations);
 };

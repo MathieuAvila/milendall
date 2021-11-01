@@ -9,6 +9,7 @@
 #include "json_helper_accessor.hxx"
 #include "gltf_exception.hxx"
 #include "level_exception.hxx"
+#include "room_animation.hxx"
 
 #include "helper_math.hxx"
 #include "gl_init.hxx"
@@ -57,7 +58,8 @@ Room::Room(
     std::string _room_name,
     GltfMaterialLibraryIfacePtr materialLibrary,
     FileLibrary::UriReference& ref,
-    RoomResolver* _room_resolver)
+    RoomResolver* _room_resolver,
+    StatesList* _states_list)
     :
     RoomScriptLoader(ref),
     GltfModel(materialLibrary, ref,
@@ -66,10 +68,11 @@ Room::Room(
                 return make_shared<RoomNode>(json, data_accessor, _room_resolver, getScript(), _room_name);
             }),
     room_name(_room_name),
-    room_resolver(_room_resolver)
+    room_resolver(_room_resolver),
+    states_list(_states_list)
 {
     instance = make_unique<GltfInstance>(getInstanceParameters());
-    /** collect portals list and associated index */
+    // collect portals list and associated index
     for (auto i =0; i < nodeTable.size(); i++) {
         auto portalList = dynamic_cast<RoomNode*>(nodeTable[i].get())->getPortalNameList();
         for (auto p : portalList) {
@@ -79,13 +82,27 @@ Room::Room(
                 p.gate, p.from, i, portalsIndices.size());
         }
     }
+    // Get specific data, if any. Needs to reload JSON
+    auto raw_json = ref.readStringContent();
+    auto file_json = json::parse(raw_json.c_str());
+    jsonExecuteIfElement(file_json, "extras", [this](nlohmann::json& extras) {
+        console->info("Found room extras");
+        jsonExecuteAllIfElement(extras, "animations", [this](nlohmann::json& child, int node_index) {
+            console->info("Load room animation: {}", node_index);
+            room_animations.push_back(make_unique<RoomAnimation>(child, this, instance.get(), states_list));
+        });
+    });
+
     console->info("Loaded room: {}", ref.getPath());
 }
 
-void Room::applyTransform()
+void Room::updateRoom(float delta_time)
 {
     glm::mat4 mat_id(1.0);
     applyDefaultTransform(instance.get(), mat_id);
+    for (auto& animation_room: room_animations) {
+        animation_room->animationAdvance(delta_time);
+    }
 }
 
 void Room::draw(DrawContext& draw_context)

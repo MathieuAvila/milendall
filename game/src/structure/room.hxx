@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <set>
+#include <list>
 
 #include "file_library.hxx"
 #include "gltf_model.hxx"
@@ -9,13 +10,14 @@
 #include "point_of_view.hxx"
 #include "room_node.hxx"
 #include "gravity_information.hxx"
+#include "room_animation.hxx"
 
 #include <gtest/gtest_prod.h>
 
 struct RoomResolver;
 struct DrawContext;
 class Script;
-
+class StatesList;
 
 /** @brief to be able to load script before the GltfModel
  * so that RoomNodes children can get a reference to the script */
@@ -33,22 +35,36 @@ class Room : private RoomScriptLoader, public GltfModel
 
     protected:
 
-        /** My name, as defined by Level */
+        /** @brief My name, as defined by Level */
         std::string room_name;
 
-        virtual void parseApplicationData(nlohmann::json& json) override;
-
-        /** my very own instance */
+        /** @brief my very own instance */
         std::unique_ptr<GltfInstance> instance;
 
         /**
-         * Provides rooms when drawing needs to go through a portal.
+         * @brief Provides rooms when drawing needs to go through a portal.
          * Level defines this.
          * No ownership, should be valid for the life duration of the object.
          */
         RoomResolver* room_resolver;
 
-        /** Overload recursive method to draw things, will draw portals */
+        /** @brief Holds the states list provided by Level.
+         * Level defines this.
+         * No ownership, should be valid for the life duration of the object.
+         */
+        StatesList* states_list;
+
+        /** @brief List of animation code specific to the room. It relies on
+         * the animations defined by the model and specific application data
+         * to manage it
+         * WARNING: not to be confused with animations from the model. This
+         * is a wrapper*/
+        std::list<std::unique_ptr<RoomAnimation>> room_animations;
+
+        /** @brief inherited from GltfModel to load specific data */
+        virtual void parseApplicationData(nlohmann::json& json) override;
+
+        /** @brief Overload recursive method to draw things, will draw portals */
         virtual void draw(GltfInstance*, int, void* context = nullptr) override;
 
         /** @brief Mapping a list of portals and in/out to indices */
@@ -65,7 +81,11 @@ class Room : private RoomScriptLoader, public GltfModel
         /** @brief local gravity computation for a given node, that manages recursion. see ::getGravity for
          * the entry-point
          */
-        bool _getGravity(unsigned int instance, glm::vec3 position, glm::vec3 speed, float weight, float radius, float total_time, GravityInformation& result);
+        bool _getGravity(
+            unsigned int instance,
+            glm::vec3 position, glm::vec3 speed, float weight, float radius,
+            float total_time,
+            GravityInformation& result);
 
     public:
 
@@ -74,7 +94,8 @@ class Room : private RoomScriptLoader, public GltfModel
             std::string _room_name,
             GltfMaterialLibraryIfacePtr materialLibrary,
             FileLibrary::UriReference& ref,
-            RoomResolver*  _room_resolver = nullptr);
+            RoomResolver*  _room_resolver = nullptr,
+            StatesList* _states_list = nullptr);
 
         /** @brief full draw entry point
         */
@@ -82,7 +103,7 @@ class Room : private RoomScriptLoader, public GltfModel
 
         /** @brief apply transformation to instance
         */
-        void applyTransform();
+        void updateRoom(float delta_time);
 
         /** get the list of handled portals */
         std::set<GateIdentifier> getGateNameList() const;
@@ -138,13 +159,16 @@ class Room : private RoomScriptLoader, public GltfModel
          * @param total_time
          * @return gravity information
         */
-        GravityInformation getGravity(glm::vec3 position, glm::vec3 speed, float weight, float radius, float total_time);
+        GravityInformation getGravity(
+            glm::vec3 position, glm::vec3 speed, float weight, float radius,
+            float total_time);
 
         virtual ~Room() = default;
 
         friend struct RoomNode;
 
-    FRIEND_TEST(Room, LoadLevel2Rooms1Gate_Room1);
+    FRIEND_TEST(RoomTest, LoadLevel2Rooms1Gate_Room1);
+    FRIEND_TEST(RoomTest, animations);
 };
 
 
