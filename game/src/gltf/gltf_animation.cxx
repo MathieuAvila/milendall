@@ -13,7 +13,7 @@ class GltfAnimation::GltfAnimationFrame {
     enum Kind { TRANSLATION, ROTATION } kind;
     unsigned int target_node;
     std::vector<float> input_data;
-    std::unique_ptr<GltfDataAccessorIFace::DataBlock> output_data;
+    std::vector<glm::vec3> translate_data;
 
 public:
 
@@ -42,7 +42,7 @@ void GltfAnimation::GltfAnimationFrame::apply(float time, GltfAnimationTargetIfa
     if (input_data[next_current] != input_data[index])
         ratio = (time - input_data[index]) / (input_data[next_current] - input_data[index]);
 
-    console->debug("Time {} key is between: {}={} and {}={}, with ratio={}",
+    console->info("Time {} key is between: {}={} and {}={}, with ratio={}",
         time,
         index, input_data[index],
         next_current, input_data[next_current],
@@ -51,10 +51,10 @@ void GltfAnimation::GltfAnimationFrame::apply(float time, GltfAnimationTargetIfa
     switch(kind) {
         case TRANSLATION:
         {
-            glm::vec3 vec_current = *(glm::vec3*)&output_data.get()->data[index * sizeof(glm::vec3)];
-            glm::vec3 vec_next = *(glm::vec3*)&output_data.get()->data[next_current * sizeof(glm::vec3)];
+            glm::vec3 vec_current = translate_data[index];
+            glm::vec3 vec_next = translate_data[next_current];
             glm::vec3 vec_value = vec_current + (vec_next - vec_current) * ratio;
-            console->debug("translation current={} next={} applied={}",
+            console->info("translation current={} next={} applied={}",
                 vec3_to_string(vec_current), vec3_to_string(vec_next), vec3_to_string(vec_value));
             glm::mat4x4 mat_translate = glm::translate(glm::mat4x4(1.0f), vec_value);
             instance->applyChange(target_node, mat_translate);
@@ -77,13 +77,6 @@ GltfAnimation::GltfAnimationFrame::GltfAnimationFrame(
 
     auto target = jsonGetElementByName(j_anim, "target");
     target_node = jsonGetElementByName(target, "node").get<int>();
-    auto path = jsonGetElementByName(target, "path").get<string>();
-    if (path == "translation")
-        kind = TRANSLATION;
-    else if (path == "rotation")
-        kind = ROTATION;
-    else
-        throw GltfException("Unhandled animation path type:" + path);
 
     auto sampler_id = jsonGetElementByName(j_anim, "sampler").get<int>();
     auto sampler = jsonGetIndex(j_samplers, sampler_id);
@@ -91,6 +84,8 @@ GltfAnimation::GltfAnimationFrame::GltfAnimationFrame(
     auto output = jsonGetElementByName(sampler, "output").get<int>();
     // NOTE: ignore interpolation ATM
     auto input_data_raw = data_accessor->accessId(input);
+    auto output_data = data_accessor->accessId(output);
+
     auto total_keys = input_data_raw.get()->count;
     console->debug("Total keys {} total data size {}", total_keys, input_data_raw.get()->count);
     for (int index = 0; index < total_keys; index++) {
@@ -98,7 +93,20 @@ GltfAnimation::GltfAnimationFrame::GltfAnimationFrame(
         console->debug("Insert time key {}", time);
         input_data.push_back(time);
     }
-    output_data = data_accessor->accessId(output);
+
+    auto path = jsonGetElementByName(target, "path").get<string>();
+    if (path == "translation") {
+        kind = TRANSLATION;
+        for (int index = 0; index < total_keys; index++) {
+            glm::vec3 val = *(glm::vec3*)&output_data.get()->data[index * sizeof(glm::vec3)];
+            console->debug("Insert translation value {}", vec3_to_string(val));
+            translate_data.push_back(val);
+        }
+    }
+    else if (path == "rotation")
+        kind = ROTATION;
+    else
+        throw GltfException("Unhandled animation path type:" + path);
 }
 
 GltfAnimation::GltfAnimation(
