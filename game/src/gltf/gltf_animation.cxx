@@ -42,7 +42,7 @@ void GltfAnimation::GltfAnimationFrame::apply(float time, GltfAnimationTargetIfa
     if (input_data[next_current] != input_data[index])
         ratio = (time - input_data[index]) / (input_data[next_current] - input_data[index]);
 
-    console->info("Time {} key is between: {}={} and {}={}, with ratio={}",
+    console->debug("Time {} key is between: {}={} and {}={}, with ratio={}",
         time,
         index, input_data[index],
         next_current, input_data[next_current],
@@ -54,7 +54,7 @@ void GltfAnimation::GltfAnimationFrame::apply(float time, GltfAnimationTargetIfa
             glm::vec3 vec_current = translate_data[index];
             glm::vec3 vec_next = translate_data[next_current];
             glm::vec3 vec_value = vec_current + (vec_next - vec_current) * ratio;
-            console->info("translation current={} next={} applied={}",
+            console->debug("translation current={} next={} applied={}",
                 vec3_to_string(vec_current), vec3_to_string(vec_next), vec3_to_string(vec_value));
             glm::mat4x4 mat_translate = glm::translate(glm::mat4x4(1.0f), vec_value);
             instance->applyChange(target_node, mat_translate);
