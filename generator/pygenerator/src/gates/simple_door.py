@@ -180,12 +180,12 @@ class DoorGate(GateStructure):
                 [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
                 {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
             anim_open = animation.Animation("open_" + self.gate.get_id(), 0.0, d["timing"], d["event"])
-            if d["default_open"]:
-                y_start = -s["y_up_end_int"]-0.01
+            if not d["default_open"]:
+                y_start = -s["y_up_end_int"]+0.01
                 y_end = 0.0
             else:
                 y_start = 0.0
-                y_end = -s["y_up_end_int"]-0.01
+                y_end = -s["y_up_end_int"]+0.01
             anim_open.append_action(door_impl, anim_open.ACTION_TRANSLATION, [
                 { "time":0.0, "value": [0.0, y_start ,0.0] },
                 { "time":d["timing"], "value": [0.0, y_end ,0.0] }
@@ -196,22 +196,17 @@ class DoorGate(GateStructure):
                 child_object.add_trigger_box(
                     concrete_room.Node.TRIGGER_ENTER_BOX,
                     concrete_room.Node.TRIGGER_SET_TRUE,
-                    cgtypes.vec3(s["x_floor_start_ext"] - 1.0, -0.1,               s["w_out"] - 1.0),
-                    cgtypes.vec3(s["x_floor_end_ext"] + 1.0  , s["y_up_end_ext"],  s["w_in"] + 1.0),
+                    cgtypes.vec3(s["x_floor_start_ext"] - 1.0, -0.1,               s["w_out"] - 2.0),
+                    cgtypes.vec3(s["x_floor_end_ext"] + 1.0  , s["y_up_end_ext"],  s["w_in"] + 2.0),
                     d["event"])
                 child_object.add_trigger_box(
                     concrete_room.Node.TRIGGER_LEAVE_BOX,
                     concrete_room.Node.TRIGGER_SET_FALSE,
-                    cgtypes.vec3(s["x_floor_start_ext"] - 1.0, -0.1,               s["w_out"] - 1.0),
-                    cgtypes.vec3(s["x_floor_end_ext"] + 1.0  , s["y_up_end_ext"],  s["w_in"] + 1.0),
+                    cgtypes.vec3(s["x_floor_start_ext"] - 1.0, -0.1,               s["w_out"] - 2.0),
+                    cgtypes.vec3(s["x_floor_end_ext"] + 1.0  , s["y_up_end_ext"],  s["w_in"] + 2.0),
                     d["event"])
 
             concrete.add_animation(anim_open)
-
-
-
-
-
 
 
 
