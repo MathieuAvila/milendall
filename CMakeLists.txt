@@ -70,6 +70,7 @@ add_library(game_lib STATIC
   game/src/structure/room_animation.cxx
   game/src/structure/trigger.hxx
   game/src/structure/trigger.cxx
+  game/src/structure/structure_object_type.hxx
   game/src/gltf/gltf_mesh.hxx
   game/src/gltf/gltf_mesh.cxx
   game/src/gltf/gltf_model.hxx
