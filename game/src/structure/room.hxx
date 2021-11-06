@@ -11,6 +11,7 @@
 #include "room_node.hxx"
 #include "gravity_information.hxx"
 #include "room_animation.hxx"
+#include "structure_object_type.hxx"
 
 #include <gtest/gtest_prod.h>
 
@@ -162,6 +163,13 @@ class Room : private RoomScriptLoader, public GltfModel
         GravityInformation getGravity(
             glm::vec3 position, glm::vec3 speed, float weight, float radius,
             float total_time);
+
+        /** @brief Apply trigger changes. See SpaceResolver and Level */
+        void applyTrigger(
+            const glm::vec3& previous_position,
+            const glm::vec3& next_position,
+            const STRUCTURE_OBJECT_TYPE object_type,
+            const bool activated) const;
 
         virtual ~Room() = default;
 

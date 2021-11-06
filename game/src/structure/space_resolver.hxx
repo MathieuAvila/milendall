@@ -1,9 +1,9 @@
 #pragma once
 
-#include "file_library.hxx"
-#include "gltf/gltf_material_accessor_library_iface.hxx"
-#include "room.hxx"
-#include "level_exception.hxx"
+#include "point_of_view.hxx"
+#include "structure_object_type.hxx"
+
+struct FaceHard;
 
 /** @brief Provide an interface definition for a class that allows to move objects and detect wall collision
  * In real code this is the Level. In UT it can be subclassed to whatever impl.
@@ -46,6 +46,19 @@ class SpaceResolver
             float& distance,
             FaceHard*& face
             ) const = 0;
+
+        /** @brief Manage actions when moving an object inside a given POV.
+         *         Don't bother managing when there is a change in space.
+         * @param previous_position where from
+         * @param next_position where to
+         * @param object_type What is moving.
+         * @param activated If object is pushing the push key.
+        */
+        virtual void applyTrigger(
+            const PointOfView& previous_position,
+            const glm::vec3& next_position,
+            const STRUCTURE_OBJECT_TYPE object_type,
+            const bool activated) const = 0;
 
         virtual ~SpaceResolver() = default;
 };

@@ -214,3 +214,17 @@ GravityInformation Level::getGravityInformation(
     GravityInformation result = room->getGravity(position.position, speed, weight, radius, total_time);
     return result;
 }
+
+void Level::applyTrigger(
+            const PointOfView& previous_position,
+            const glm::vec3& next_position,
+            const STRUCTURE_OBJECT_TYPE object_type,
+            const bool activated) const
+{
+    auto room = room_resolver->getRoom(previous_position.room);
+    room->applyTrigger(
+            previous_position.position,
+            next_position,
+            object_type,
+            activated);
+}

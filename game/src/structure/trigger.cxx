@@ -5,7 +5,7 @@
 #include "json_helper_math.hxx"
 
 /** @brief Stores the states of a Level, with an accessor.
- * Basically,, this is a a map<string,bool> accessor.
+ * Basically, this is a a map<string,bool> accessor.
  * By default statuses are false when they are not yet set
  */
 
@@ -30,7 +30,11 @@ Trigger::Trigger(nlohmann::json& json, StatesList* _events) : events(_events)
     event = jsonGetElementByName(json, "set_trigger").get<string>();
 }
 
-void Trigger::applyTrigger(glm::vec3 previous_position, glm::vec3 next_position, float delta_time, bool activated)
+void Trigger::applyTrigger(
+    const glm::vec3& previous_position,
+    const glm::vec3& next_position,
+    const float delta_time,
+    const bool activated) const
 {
     switch (KIND) {
         case BOX_MODE: {

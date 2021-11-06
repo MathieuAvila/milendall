@@ -8,6 +8,8 @@
 #include "face_list.hxx"
 #include "face_hard.hxx"
 #include "room_resolver.hxx"
+#include "structure_object_type.hxx"
+#include "trigger.hxx"
 
 #include <gtest/gtest_prod.h>
 
@@ -57,13 +59,15 @@ struct RoomNode : public GltfNode
     std::list<FaceHard> walls;
     RoomResolver* room_resolver;
     std::unique_ptr<RoomNodeGravity> gravity;
+    std::list<Trigger> triggers;
 
     RoomNode(
         nlohmann::json& json,
         GltfDataAccessorIFace* data_accessor,
         RoomResolver* _room_resolver,
         Script* _roomScript,
-        const std::string& room_name);
+        const std::string& room_name,
+        StatesList* _states_list = nullptr);
 
     /** internal method to check if a gate is drawable, and return new draw context.
      * exposed for testability
@@ -127,4 +131,11 @@ struct RoomNode : public GltfNode
      * @return TRUE if gravity is changed, FALSE otherwise
      */
     bool getGravity(glm::vec3 position, glm::vec3 speed, float weight, float radius, float total_time, GravityInformation& gravity);
+
+    /** @brief Apply trigger changes. See SpaceResolver and Level */
+    void applyTrigger(
+            const glm::vec3& previous_position,
+            const glm::vec3& next_position,
+            const STRUCTURE_OBJECT_TYPE object_type,
+            const bool activated) const;
 };

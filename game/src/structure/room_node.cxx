@@ -57,7 +57,8 @@ RoomNode::RoomNode(
     GltfDataAccessorIFace* data_accessor,
     RoomResolver* _room_resolver,
     Script* _roomScript,
-    const std::string& room_name) :
+    const std::string& room_name,
+    StatesList* _states_list) :
         GltfNode(json), room_resolver(_room_resolver)
 {
     gravity = make_unique<RoomNodeGravity>(name, _roomScript);
@@ -81,6 +82,11 @@ RoomNode::RoomNode(
             if (type == "hard") {
                 walls.push_back(FaceHard(points, move(faces_data), data));
             }
+        });
+
+        jsonExecuteAllIfElement(extras, "triggers", [this, _states_list](nlohmann::json& trigger, int node_index) {
+            console->info("found trigger :{}", node_index);
+            triggers.push_back(Trigger(trigger, _states_list));
         });
 
         jsonExecuteIfElement(extras, "gravity", [this](nlohmann::json& json_gravity) {
@@ -261,4 +267,15 @@ bool RoomNode::isWallReached(
 bool RoomNode::getGravity(glm::vec3 position, glm::vec3 speed, float weight, float radius, float total_time, GravityInformation& _gravity)
 {
     return gravity->getGravityInformation(position, speed, weight, radius, total_time, _gravity);
+}
+
+void RoomNode::applyTrigger(
+            const glm::vec3& previous_position,
+            const glm::vec3& next_position,
+            const STRUCTURE_OBJECT_TYPE object_type,
+            const bool activated) const
+{
+    for (auto& trigger: triggers) {
+        trigger.applyTrigger(previous_position, next_position, 0.0f, activated);
+    }
 }

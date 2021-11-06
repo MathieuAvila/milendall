@@ -87,6 +87,14 @@ class Level : public SpaceResolver, public GravityProvider
             float radius,
             float total_time) const override;
 
+        /** @brief From SpaceResolver
+         */
+        virtual void applyTrigger(
+            const PointOfView& previous_position,
+            const glm::vec3& next_position,
+            const STRUCTURE_OBJECT_TYPE object_type,
+            const bool activated) const override;
+
     private:
 
         /** Pass RoomResolver to rooms */

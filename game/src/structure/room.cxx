@@ -63,9 +63,9 @@ Room::Room(
     :
     RoomScriptLoader(ref),
     GltfModel(materialLibrary, ref,
-            [_room_resolver, _room_name, this](nlohmann::json& json,
+            [_room_resolver, _room_name, this, _states_list](nlohmann::json& json,
             GltfDataAccessorIFace* data_accessor) {
-                return make_shared<RoomNode>(json, data_accessor, _room_resolver, getScript(), _room_name);
+                return make_shared<RoomNode>(json, data_accessor, _room_resolver, getScript(), _room_name, _states_list);
             }),
     room_name(_room_name),
     room_resolver(_room_resolver),
@@ -284,4 +284,24 @@ bool Room::_getGravity(unsigned int instance_index, glm::vec3 position, glm::vec
         result.up = instanceNode->getNodeMatrix() * vectorToVec4(result.up);
     }
     return local_gravity;
+}
+
+void Room::applyTrigger(
+            const glm::vec3& previous_position,
+            const glm::vec3& next_position,
+            const STRUCTURE_OBJECT_TYPE object_type,
+            const bool activated) const
+{
+    // compute for each child node
+    auto vec4_previous = positionToVec4(previous_position);
+    auto vec4_next = positionToVec4(next_position);
+    for (auto i = 0; i < nodeTable.size(); i++) {
+        RoomNode* roomNode = dynamic_cast<RoomNode*>(nodeTable[i].get());
+        GltfNodeInstanceIface* roomNodeInstance = dynamic_cast<GltfNodeInstanceIface*>(instance->getNode(i));
+
+        auto local_previous = roomNodeInstance->getInvertedNodeMatrix() * vec4_previous;
+        auto local_next = roomNodeInstance->getInvertedNodeMatrix() * vec4_next;
+
+        roomNode->applyTrigger(local_previous, local_next, object_type, activated);
+    }
 }

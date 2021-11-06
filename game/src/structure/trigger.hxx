@@ -48,7 +48,11 @@ public:
      * @param delta_time Elapsed time
      * @param activated If the user has hit the activate key
      */
-    void applyTrigger(glm::vec3 previous_position, glm::vec3 next_position, float delta_time, bool activated);
+    void applyTrigger(
+        const glm::vec3 & previous_position,
+        const glm::vec3 & next_position,
+        const float delta_time,
+        const bool activated) const;
 
     FRIEND_TEST(TriggerTest, triggers);
 };
