@@ -68,6 +68,8 @@ add_library(game_lib STATIC
   game/src/structure/states_list.cxx
   game/src/structure/room_animation.hxx
   game/src/structure/room_animation.cxx
+  game/src/structure/trigger.hxx
+  game/src/structure/trigger.cxx
   game/src/gltf/gltf_mesh.hxx
   game/src/gltf/gltf_mesh.cxx
   game/src/gltf/gltf_model.hxx
@@ -181,6 +183,7 @@ game/test/unit_room_node_gravity.cxx
 game/test/unit_gravity_information.cxx
 game/test/unit_states_list.cxx
 game/test/unit_room_animation.cxx
+game/test/unit_trigger.cxx
 )
 
 enable_testing()
