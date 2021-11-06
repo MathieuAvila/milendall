@@ -36,6 +36,6 @@ void RoomAnimation::animationAdvance(float delta_time)
         }
     }
     // apply animation
-    console->info("Call animation {} at {}", animation, time_current);
+    console->debug("Call animation {} at {}", animation, time_current);
     model->applyAnimation(instance, animation, time_current);
 }
