@@ -334,6 +334,8 @@ class ConcreteRoom:
         """
         dump the gravity information to a file
         """
+        if len(gravity_list) == 0:
+            return
         with open(directory + "/script.lua", "w") as write_file:
             for gravity in gravity_list:
                 write_file.write("function gravity_" + gravity["name"] + "(tab_in)\n")
