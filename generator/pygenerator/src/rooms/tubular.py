@@ -49,7 +49,7 @@ class TubularRoom(RoomStructure):
 
         my_default = {
             "setup": {
-                "segments_nr": 5,                                 # 20 segments
+                "segments_nr": 5,                                 # 5 segments
                 "increment": 1.0,                                 # each segment has size 1
                 "f_step" : "[ [0.1, 0.0 ], [1.8, 0.0 ], [1.8, 0.0 ], [0.1, 1.6 ] ]", # give position of each segment on Y,Z
                 #"f_step" : "[ [0,0], [1.6,0], [1.6,1.8], [0,1.8] ]", # give position of each segment on Y,Z
