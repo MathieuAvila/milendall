@@ -149,7 +149,7 @@ class DoorGate(GateStructure):
             }
         )
         door = structure_private["door"]
-        if "event" in door and door["event"] is not None and door["event"] != "":
+        if ("event" in door) and (door["event"] is not None) and (door["event"] != ""):
             d = structure_private["door"]
             door_impl = self.gate.get_id() + "_door"
             child_door = concrete.add_child(block_impl, door_impl)
