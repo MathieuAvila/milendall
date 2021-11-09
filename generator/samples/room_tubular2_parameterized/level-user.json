@@ -1,0 +1,67 @@
+{
+    "$schema": "../../schema/generator.level.schema.json",
+
+    "name" : [  { "lang": "en", "value" : "Simple Level"} ],
+    "section": "samples",
+
+    "game_type" : {
+        "single_mode" : {
+            "execution_time" : 10.0,
+            "entry_point_room" : "room1",
+            "end_point_room" : "room2",
+            "entry_point_position": [ 2.0, 1.0, 2.0 ]
+        }
+    },
+    "rooms" : [
+        {
+            "room_id" : "room1",
+            "name" : [ { "lang": "en", "value" : "room1"}  ],
+            "structure_class" : "rectangular",
+            "dressing_class" : "basic"
+        },
+        {
+            "room_id" : "room2",
+            "name" : [ { "lang": "en", "value" : "room2"}  ],
+            "structure_class" : "rectangular",
+            "dressing_class" : "basic"
+        },
+        {
+            "room_id" : "tube2",
+            "name" : [ { "lang": "en", "value" : "tube"}  ],
+            "structure_class" : "tubular2",
+            "structure_parameters": {
+                "segments_nr": 11,
+                "func": [
+                    "c = math.cos(t*6.28/10.0)",
+                    "s = math.sin(t*6.28/10.0)",
+                    "values = [",
+                    "[0.0 + t/1.0, c*5.0,      s*5.0],",
+                    "[1.6 + t/1.0, c*5.0,      s*5.0],",
+                    "[1.6 + t/1.0, c*6.8,      s*6.8],",
+                    "[0.0 + t/1.0, c*6.8,      s*6.8],",
+                    "]"
+                ],
+                "mode_up_gravity" : "follow",
+                "gravity_factor" : 0.1
+            },
+            "dressing_class" : "basic"
+        }
+    ],
+    "gates" : [
+        {
+            "gate_id" : "r1_tube",
+            "connect" : [ "room1", "tube2"],
+            "accessible" : "from-to",
+            "structure_class" : "simple_door",
+            "dressing_class" : "basic"
+        },
+        {
+            "gate_id" : "r2_tube",
+            "connect" : [ "tube2", "room2"],
+            "accessible" : "from-to",
+            "structure_class" : "simple_door",
+            "dressing_class" : "basic"
+        }
+     ]
+}
+
