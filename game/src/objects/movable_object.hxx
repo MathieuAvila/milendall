@@ -26,6 +26,9 @@ struct MovableObjectDefinition
          */
         const float roughness;
 
-        MovableObjectDefinition(float _radius, float _weight, float _roughness):
-            radius(_radius), weight(_weight), roughness(_roughness) {};
+        /** @brief indicates how fast the object is rotating to follow the "UP" direction */
+        const float rotation_speed;
+
+        MovableObjectDefinition(float _radius, float _weight, float _roughness, float _rotation_speed):
+            radius(_radius), weight(_weight), roughness(_roughness), rotation_speed(_rotation_speed){};
 };

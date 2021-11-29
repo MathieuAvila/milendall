@@ -3,7 +3,7 @@
 
 #include "helper_math.hxx"
 
-Player::Player() : movable_definition(MovableObjectDefinition(0.7f, 1.0f, 1.0f))
+Player::Player() : movable_definition(MovableObjectDefinition(0.7f, 1.0f, 1.0f, 0.3f))
 {
 
 }

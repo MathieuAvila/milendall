@@ -41,6 +41,7 @@ void ManagedObjectInstance::computeNextPosition(float total_time)
 void ManagedObjectInstance::updateGravity(float total_time, float time_delta)
 {
     console->debug("Update total_time {} time_delta {} gravity_validity {}",total_time, time_delta, gravity_validity);
+    auto& def = object.get()->getObjectDefinition();
     if (gravity_validity < total_time)
     {
         console->debug("Request new values");
@@ -48,8 +49,8 @@ void ManagedObjectInstance::updateGravity(float total_time, float time_delta)
             gravityProvider->getGravityInformation(
                 mainPosition,
                 glm::vec3(0.0f),
-                object.get()->getObjectDefinition().weight,
-                object.get()->getObjectDefinition().radius,
+                def.weight,
+                def.radius,
                 total_time);
         current_gravity = gravity.gravity;
         current_up = gravity.up;
@@ -59,12 +60,12 @@ void ManagedObjectInstance::updateGravity(float total_time, float time_delta)
     mainPosition.local_reference = computeRotatedMatrix(
         mainPosition.local_reference,
         current_up,
-        std::function<float(float)>([time_delta](float originalAngle)
+        std::function<float(float)>([time_delta, def](float originalAngle)
         {
             if (originalAngle > 0.0f)
-                return min(originalAngle, 3.14f * time_delta);
+                return min(originalAngle, 3.14f * def.rotation_speed * time_delta);
             else
-                return max(originalAngle, -3.14f * time_delta);
+                return max(originalAngle, -3.14f * def.rotation_speed * time_delta);
         } ));
 }
 

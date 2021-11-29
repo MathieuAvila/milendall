@@ -50,7 +50,7 @@ class FakeObject: public ManagedObject
     virtual MovementWish getRequestedMovement() { return MovementWish(); };
     virtual glm::mat4x4 getOwnMatrix() { return glm::mat4x4(1.0f); };
     virtual bool checkEol() { return false; };
-    FakeObject(): def(MovableObjectDefinition(2.0f, 3.0f, 4.0f)) {};
+    FakeObject(): def(MovableObjectDefinition(2.0f, 3.0f, 4.0f, 0.5f)) {}; // updates only 0.5 times as fast as time
     virtual ~FakeObject() = default;
 };
 
@@ -86,21 +86,21 @@ TEST_F(ManagedObjectInstanceTest, update_gravity_check_validity) {
         nullptr,
         gravity.get());
 
-    object_instance->updateGravity(2.0f, 1.0f);
+    object_instance->updateGravity(2.0f, 1.0f * 2.0f);
 
     ASSERT_FLOAT_EQ(4.0f, object_instance->gravity_validity);
     ASSERT_EQ(gravity_1.up, object_instance->current_up);
     ASSERT_EQ(gravity_1.gravity, object_instance->current_gravity);
 
-    object_instance->updateGravity(3.0f, 1.0f);
+    object_instance->updateGravity(4.0f, 1.0f * 2.0f);
 
     ASSERT_FLOAT_EQ(4.0f, object_instance->gravity_validity);
     ASSERT_EQ(gravity_1.up, object_instance->current_up);
     ASSERT_EQ(gravity_1.gravity, object_instance->current_gravity);
 
-    object_instance->updateGravity(5.0f, 2.0f);
+    object_instance->updateGravity(6.0f, 2.0f * 2.0f);
 
-    ASSERT_FLOAT_EQ(6.0f, object_instance->gravity_validity);
+    ASSERT_FLOAT_EQ(7.0f, object_instance->gravity_validity);
     ASSERT_EQ(gravity_2.up, object_instance->current_up);
     ASSERT_EQ(gravity_2.gravity, object_instance->current_gravity);
 }
@@ -139,13 +139,13 @@ TEST_F(ManagedObjectInstanceTest, update_gravity_check_rotation) {
 
 
     // Check that main vector is half rotated
-    object_instance->updateGravity(2.0f, 0.25f); // rotate by PI/4
+    object_instance->updateGravity(2.0f, 0.25f * 2.0f); // rotate by PI/4
     auto new_up = object_instance->getObjectPosition().getUp();
     console->debug("new_up {}", to_string(new_up));
     ASSERT_TRUE( glm::length(new_up - glm::vec3(0.0, 0.707, 0.707)) < 0.01f );
 
     // Check that main vector is fully rotated
-    object_instance->updateGravity(2.25f, 0.25f);
+    object_instance->updateGravity(2.5f, 0.25f * 2.0f);
     new_up = object_instance->getObjectPosition().getUp();
     console->debug("new_up {}", to_string(new_up));
     ASSERT_TRUE( glm::length(new_up - glm::vec3(0.0 , 0.0 , 1.0 )) < 0.01f );
