@@ -36,7 +36,8 @@ class DressingBasic(Dressing):
             for kind_texture, texture, axes in [
                 [concrete_room.Node.HINT_GROUND, "/common/basic/ground.jpg", [["x"], ["z"]] ],
                 [concrete_room.Node.HINT_WALL, "/common/basic/wall.jpg",  [["x","z"], ["y"]] ],
-                [concrete_room.Node.HINT_CEILING, "/common/basic/ceiling.jpg", [["x"], ["z"]] ]
+                [concrete_room.Node.HINT_CEILING, "/common/basic/ceiling.jpg", [["x"], ["z"]] ],
+                [concrete_room.Node.HINT_DOOR, "/common/basic/door.jpg", [["x"], ["z"]] ]
                 ]:
                 list_faces = obj.get_visual_face([kind_texture])
                 logging.debug("kind: %s, texture:%s , len:%i",

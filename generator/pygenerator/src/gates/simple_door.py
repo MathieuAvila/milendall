@@ -132,7 +132,7 @@ class DoorGate(GateStructure):
                 [ 7,0,8,15 ][::-1],
             ],
             concrete_room.Node.CAT_PHYS_VIS,
-            [concrete_room.Node.HINT_GROUND, concrete_room.Node.HINT_BUILDING],
+            [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
             {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
 
         child_object.add_structure_faces(
@@ -177,7 +177,7 @@ class DoorGate(GateStructure):
                     [ 1,2,6,5 ]
                 ],
                 concrete_room.Node.CAT_PHYS_VIS,
-                [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
+                [concrete_room.Node.HINT_DOOR, concrete_room.Node.HINT_BUILDING],
                 {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
             anim_open = animation.Animation("open_" + self.gate.get_id(), 0.0, d["timing"], d["event"])
             if not d["default_open"]:

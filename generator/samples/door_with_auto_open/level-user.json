@@ -36,7 +36,8 @@
             "structure_parameters": {
                 "door": {
                     "timing" : 0.9,
-                    "auto_open" : true
+                    "auto_open" : true,
+                    "default_open": true
                 }
             }
 
