@@ -160,6 +160,29 @@ class Node:
         texture is metadata for textures and is mandatory. There is only one per call. Do
         multiple calls to have different textures.
         """
+        if "function" in texture:
+
+            if texture["texture"] not in self.dressing:
+                self.dressing[texture["texture"]] = { "points": [], "faces":[] } # points are x,y,z,u,v
+            texture_block = self.dressing[texture["texture"]]
+            points_block = texture_block["points"]
+            faces_block = texture_block["faces"]
+
+            for face in faces:
+                new_face = []
+                my_points = []
+                # build points
+                for p in face:
+                    new_point = copy.deepcopy(points[p])
+                    points_block.append(new_point)
+                    my_points.append(new_point)
+                    print("%i %i" % (len(my_points), len(points_block)))
+                    new_face.append(len(points_block)-1)
+                # request function to feed UV
+                texture["function"](points, face, texture["context"], my_points)
+                faces_block.append(new_face)
+            return
+
         if texture["texture"] not in self.dressing:
             self.dressing[texture["texture"]] = { "points": [], "faces":[] } # points are x,y,z,u,v
         texture_block = self.dressing[texture["texture"]]

@@ -40,6 +40,11 @@ def get_texture_definition_with_map(filename, map_method):
     my_def = { "texture": filename , "map_method": map_method }
     return my_def
 
+def get_texture_definition_with_function(filename, function, context):
+    """ return a texture definition based on a map method to provide."""
+    my_def = { "texture": filename , "function": function, "context": context }
+    return my_def
+
 def create_accessor(data_file, gltf, elements):
     """Append an accessor for a given elements list data"""
 

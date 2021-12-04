@@ -14,6 +14,15 @@ import cgtypes.mat4
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
 
+from gltf_helper import get_texture_definition_with_function
+
+def my_helper_mapper(points, face, context, my_points):
+    # need to fill my_points
+    print(my_points)
+    for p in my_points:
+        print(p)
+        p.u = p.x + 1.0
+        p.v = p.y + 1.0
 
 class TestConcreteRoomImpl(unittest.TestCase):
 
@@ -329,6 +338,57 @@ class TestConcreteRoomImpl(unittest.TestCase):
                     [0, 1, 2], [1, 2, 3], [2, 3, 0]
             ]}}
         )
+
+    def test_dressing_face_with_function(self):
+        """Test creating a simple impl with 1 node with multiple points and faces sets
+        for dressing. This tests both multi-textures and merging of faces with the same texture"""
+        room = concrete_room.ConcreteRoom()
+        self.assertIsNotNone(room)
+        parent = room.add_child(None, "parent")
+        self.assertIsNotNone(parent)
+        parent.add_dressing_faces(
+            [ cgtypes.vec3(0), cgtypes.vec3(1), cgtypes.vec3(2) , cgtypes.vec3(3) ],
+            [ [0,1,2], [1,2,3] ],
+            get_texture_definition_with_function("my_filename_toto", my_helper_mapper, 1))
+        parent.add_dressing_faces(
+            [  cgtypes.vec3(2) , cgtypes.vec3(3) , cgtypes.vec3(4) ],
+            [ [0,1,2] ],
+            get_texture_definition_with_function("my_filename_toto", my_helper_mapper, 1))
+        parent.add_dressing_faces(
+            [ cgtypes.vec3(0), cgtypes.vec3(1), cgtypes.vec3(2) , cgtypes.vec3(3) ],
+            [ [0,1,2], [1,2,3], [2,3,0]],
+            get_texture_definition_with_function("my_filename_toto2", my_helper_mapper, 1))
+        j = json.loads(room.dump_to_json())
+        faces = j["objects"][0]["dressing"]
+        print(json.dumps(faces, indent=4, sort_keys=True))
+        self.assertEqual(faces,
+            {
+                "my_filename_toto": {
+                 "faces": [ [ 0,1,2], [3,4,5], [6,7,8] ],
+                 'points': [
+                        {'x': 0.0, 'y': 0.0, 'z': 0.0, 'u': 1.0, 'v': 1.0},
+                        {'x': 1.0, 'y': 1.0, 'z': 1.0, 'u': 2.0, 'v': 2.0},
+                        {'x': 2.0, 'y': 2.0, 'z': 2.0, 'u': 3.0, 'v': 3.0},
+                        {'x': 1.0, 'y': 1.0, 'z': 1.0, 'u': 2.0, 'v': 2.0},
+                        {'x': 2.0, 'y': 2.0, 'z': 2.0, 'u': 3.0, 'v': 3.0},
+                        {'x': 3.0, 'y': 3.0, 'z': 3.0, 'u': 4.0, 'v': 4.0},
+                        {'x': 2.0, 'y': 2.0, 'z': 2.0, 'u': 3.0, 'v': 3.0},
+                        {'x': 3.0, 'y': 3.0, 'z': 3.0, 'u': 4.0, 'v': 4.0},
+                        {'x': 4.0, 'y': 4.0, 'z': 4.0, 'u': 5.0, 'v': 5.0}]
+            },
+                "my_filename_toto2": {
+                "faces": [ [ 0,1,2], [3,4,5], [6,7,8] ],
+                'points': [
+                        {'x': 0.0, 'y': 0.0, 'z': 0.0, 'u': 1.0, 'v': 1.0},
+                        {'x': 1.0, 'y': 1.0, 'z': 1.0, 'u': 2.0, 'v': 2.0},
+                        {'x': 2.0, 'y': 2.0, 'z': 2.0, 'u': 3.0, 'v': 3.0},
+                        {'x': 1.0, 'y': 1.0, 'z': 1.0, 'u': 2.0, 'v': 2.0},
+                        {'x': 2.0, 'y': 2.0, 'z': 2.0, 'u': 3.0, 'v': 3.0},
+                        {'x': 3.0, 'y': 3.0, 'z': 3.0, 'u': 4.0, 'v': 4.0},
+                        {'x': 2.0, 'y': 2.0, 'z': 2.0, 'u': 3.0, 'v': 3.0},
+                        {'x': 3.0, 'y': 3.0, 'z': 3.0, 'u': 4.0, 'v': 4.0},
+                        {'x': 0.0, 'y': 0.0, 'z': 0.0, 'u': 1.0, 'v': 1.0}],
+            }})
 
     def test_dump_objects(self):
         """ test dumping hierachy of nodes """
