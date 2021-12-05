@@ -7,6 +7,7 @@ import logging
 import concrete_room
 from dressing import Dressing
 from .register import register_dressing_type
+import gltf_helper
 
 class DressingBasic(Dressing):
 
@@ -47,6 +48,6 @@ class DressingBasic(Dressing):
                         obj.add_dressing_faces(
                             obj.structure_points,
                             faces["faces"],
-                            concrete_room.get_texture_definition(texture, axes=axes))
+                            gltf_helper.get_texture_definition_function_simple_mapper(texture))
 
 register_dressing_type(DressingBasic())

@@ -8,6 +8,8 @@ import concrete_room
 import cgtypes.vec3
 import cgtypes.mat4
 
+from gltf_helper import vec4_to_vec3
+
 from .register import register_room_type
 
 from jsonmerge import merge
@@ -238,10 +240,10 @@ class RectangularRoom(RoomStructure):
                 width = wall["width"]
                 index_wall = parent.add_structure_points(
                     [
-                    wall_mat*cgtypes.vec4(offset,         wall["start"],   0,1),
-                    wall_mat*cgtypes.vec4(offset,         height,          0,1),
-                    wall_mat*cgtypes.vec4(offset + width, wall["start"],   0,1),
-                    wall_mat*cgtypes.vec4(offset + width, height,          0,1),
+                    vec4_to_vec3(wall_mat*cgtypes.vec4(offset,         wall["start"],   0,1)),
+                    vec4_to_vec3(wall_mat*cgtypes.vec4(offset,         height,          0,1)),
+                    vec4_to_vec3(wall_mat*cgtypes.vec4(offset + width, wall["start"],   0,1)),
+                    vec4_to_vec3(wall_mat*cgtypes.vec4(offset + width, height,          0,1)),
                 ])
                 parent.add_structure_faces(
                     index_wall,

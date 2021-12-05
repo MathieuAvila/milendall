@@ -13,7 +13,6 @@ import copy
 import cgtypes.vec3
 import cgtypes.mat4
 logging.basicConfig()
-logging.getLogger().setLevel(logging.INFO)
 
 def get_texture_definition(filename, axes=[ ["x"], [ "y"] ] , scale = 1.0, offset = cgtypes.vec3()):
     """ return an easy to use texture definition based on 4 points (vec3)
@@ -44,6 +43,42 @@ def get_texture_definition_with_function(filename, function, context):
     """ return a texture definition based on a map method to provide."""
     my_def = { "texture": filename , "function": function, "context": context }
     return my_def
+
+def get_texture_definition_function_simple_mapper(filename, scale_x=1.0, scale_y=1.0):
+    """ return a simple function mapper."""
+
+    my_context = { "scale_x": scale_x, "scale_y": scale_y}
+
+    def mapper(points, face, context, my_points):
+
+        # checks
+        if len(my_points) < 3:
+            logging.info("Face has {} points, must have at least 3.", len(my_points))
+            return
+
+        print("===========")
+        print(len(my_points))
+        print(my_points[0])
+        print(my_points[1])
+        print(my_points[2])
+
+        # get points 0,1 to compute U
+        u = my_points[1] - my_points[0]
+        U = cgtypes.vec3(u.x, u.y, u.z)
+        U = U.normalize()
+        # get points 0,N-1 to compute V
+        new_vec_org = my_points[len(my_points)-1] - my_points[0]
+        new_vec = cgtypes.vec3(new_vec_org.x, new_vec_org.y, new_vec_org.z)
+        normal = new_vec.cross(U).normalize()
+        V = U.cross(normal)
+        print("U = %s, V= %s" % (U, V))
+
+        for p in my_points:
+            print(p)
+            p.u = (p * U) * scale_x
+            p.v = (p * V) * scale_y
+
+    return get_texture_definition_with_function(filename , mapper, my_context)
 
 def create_accessor(data_file, gltf, elements):
     """Append an accessor for a given elements list data"""
@@ -126,3 +161,6 @@ def create_accessor(data_file, gltf, elements):
                     "max": lmax
                 })
     return len(gltf_accessors) - 1
+
+def vec4_to_vec3(v):
+    return cgtypes.vec3(v.x, v.y, v.z)

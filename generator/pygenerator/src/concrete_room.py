@@ -174,6 +174,10 @@ class Node:
                 # build points
                 for p in face:
                     new_point = copy.deepcopy(points[p])
+
+                    print("p = %s, type %s" % (points[p], type(points[p])))
+                    print("p copy = %s" % (new_point))
+
                     points_block.append(new_point)
                     my_points.append(new_point)
                     print("%i %i" % (len(my_points), len(points_block)))

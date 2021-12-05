@@ -89,28 +89,28 @@ class DoorGate(GateStructure):
 
         index_wall = child_object.add_structure_points(
                     [
-                    cgtypes.vec4(s["x_floor_start_ext"],   0,                       s["w_in"], 0),
-                    cgtypes.vec4(s["x_floor_start_int"],   0,                       s["w_in"], 0),
-                    cgtypes.vec4(s["x_up_start_int"],      s["y_up_start_int"],     s["w_in"], 0),
-                    cgtypes.vec4(s["x_up_end_int"],        s["y_up_end_int"],       s["w_in"], 0),
-                    cgtypes.vec4(s["x_floor_end_int"],     0,                       s["w_in"], 0),
-                    cgtypes.vec4(s["x_floor_end_ext"],     0,                       s["w_in"], 0),
-                    cgtypes.vec4(s["x_up_end_ext"],        s["y_up_end_ext"],       s["w_in"], 0),
-                    cgtypes.vec4(s["x_up_start_ext"],      s["y_up_start_ext"],     s["w_in"], 0),
+                    cgtypes.vec3(s["x_floor_start_ext"],   0,                       s["w_in"]),
+                    cgtypes.vec3(s["x_floor_start_int"],   0,                       s["w_in"]),
+                    cgtypes.vec3(s["x_up_start_int"],      s["y_up_start_int"],     s["w_in"]),
+                    cgtypes.vec3(s["x_up_end_int"],        s["y_up_end_int"],       s["w_in"]),
+                    cgtypes.vec3(s["x_floor_end_int"],     0,                       s["w_in"]),
+                    cgtypes.vec3(s["x_floor_end_ext"],     0,                       s["w_in"]),
+                    cgtypes.vec3(s["x_up_end_ext"],        s["y_up_end_ext"],       s["w_in"]),
+                    cgtypes.vec3(s["x_up_start_ext"],      s["y_up_start_ext"],     s["w_in"]),
 
-                    cgtypes.vec4(s["x_floor_start_ext"],   0,                       s["w_out"], 0),
-                    cgtypes.vec4(s["x_floor_start_int"],   0,                       s["w_out"], 0),
-                    cgtypes.vec4(s["x_up_start_int"],      s["y_up_start_int"],     s["w_out"], 0),
-                    cgtypes.vec4(s["x_up_end_int"],        s["y_up_end_int"],       s["w_out"], 0),
-                    cgtypes.vec4(s["x_floor_end_int"],     0,                       s["w_out"], 0),
-                    cgtypes.vec4(s["x_floor_end_ext"],     0,                       s["w_out"], 0),
-                    cgtypes.vec4(s["x_up_end_ext"],        s["y_up_end_ext"],       s["w_out"], 0),
-                    cgtypes.vec4(s["x_up_start_ext"],      s["y_up_start_ext"],     s["w_out"], 0),
+                    cgtypes.vec3(s["x_floor_start_ext"],   0,                       s["w_out"]),
+                    cgtypes.vec3(s["x_floor_start_int"],   0,                       s["w_out"]),
+                    cgtypes.vec3(s["x_up_start_int"],      s["y_up_start_int"],     s["w_out"]),
+                    cgtypes.vec3(s["x_up_end_int"],        s["y_up_end_int"],       s["w_out"]),
+                    cgtypes.vec3(s["x_floor_end_int"],     0,                       s["w_out"]),
+                    cgtypes.vec3(s["x_floor_end_ext"],     0,                       s["w_out"]),
+                    cgtypes.vec3(s["x_up_end_ext"],        s["y_up_end_ext"],       s["w_out"]),
+                    cgtypes.vec3(s["x_up_start_ext"],      s["y_up_start_ext"],     s["w_out"]),
 
-                    cgtypes.vec4(s["x_floor_start_int"],   0,                       0, 0),
-                    cgtypes.vec4(s["x_up_start_int"],      s["y_up_start_int"],     0, 0),
-                    cgtypes.vec4(s["x_up_end_int"],        s["y_up_end_int"],       0, 0),
-                    cgtypes.vec4(s["x_floor_end_ext"],     0,                       0, 0),
+                    cgtypes.vec3(s["x_floor_start_int"],   0,                       ),
+                    cgtypes.vec3(s["x_up_start_int"],      s["y_up_start_int"],     ),
+                    cgtypes.vec3(s["x_up_end_int"],        s["y_up_end_int"],       ),
+                    cgtypes.vec3(s["x_floor_end_ext"],     0,                       ),
                 ])
         child_object.add_structure_faces(
             index_wall,
@@ -155,19 +155,19 @@ class DoorGate(GateStructure):
             child_door = concrete.add_child(block_impl, door_impl)
             index_door = child_door.add_structure_points(
                     [
-                    cgtypes.vec4(s["x_floor_start_int"],   0,                       s["wd_in"], 0),
-                    cgtypes.vec4(s["x_up_start_int"],      s["y_up_start_int"],     s["wd_in"], 0),
-                    cgtypes.vec4(s["x_up_end_int"],        s["y_up_end_int"],       s["wd_in"], 0),
-                    cgtypes.vec4(s["x_floor_end_int"],     0,                       s["wd_in"], 0),
+                    cgtypes.vec3(s["x_floor_start_int"],   0,                       s["wd_in"]),
+                    cgtypes.vec3(s["x_up_start_int"],      s["y_up_start_int"],     s["wd_in"]),
+                    cgtypes.vec3(s["x_up_end_int"],        s["y_up_end_int"],       s["wd_in"]),
+                    cgtypes.vec3(s["x_floor_end_int"],     0,                       s["wd_in"]),
 
-                    cgtypes.vec4(s["x_floor_start_int"],   0,                       s["wd_out"], 0),
-                    cgtypes.vec4(s["x_up_start_int"],      s["y_up_start_int"],     s["wd_out"], 0),
-                    cgtypes.vec4(s["x_up_end_int"],        s["y_up_end_int"],       s["wd_out"], 0),
-                    cgtypes.vec4(s["x_floor_end_int"],     0,                       s["wd_out"], 0),
+                    cgtypes.vec3(s["x_floor_start_int"],   0,                       s["wd_out"]),
+                    cgtypes.vec3(s["x_up_start_int"],      s["y_up_start_int"],     s["wd_out"]),
+                    cgtypes.vec3(s["x_up_end_int"],        s["y_up_end_int"],       s["wd_out"]),
+                    cgtypes.vec3(s["x_floor_end_int"],     0,                       s["wd_out"]),
 
-                    cgtypes.vec4(s["x_floor_start_int"],   0,                       0, 0),
-                    cgtypes.vec4(s["x_up_start_int"],      s["y_up_start_int"],     0, 0),
-                    cgtypes.vec4(s["x_up_end_int"],        s["y_up_end_int"],       0, 0),
+                    cgtypes.vec3(s["x_floor_start_int"],   0,                       0),
+                    cgtypes.vec3(s["x_up_start_int"],      s["y_up_start_int"],     0),
+                    cgtypes.vec3(s["x_up_end_int"],        s["y_up_end_int"],       0),
                 ])
             child_door.add_structure_faces(
                 index_door,
