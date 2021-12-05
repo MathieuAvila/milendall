@@ -50,18 +50,10 @@ def get_texture_definition_function_simple_mapper(filename, scale_x=1.0, scale_y
     my_context = { "scale_x": scale_x, "scale_y": scale_y}
 
     def mapper(points, face, context, my_points):
-
         # checks
         if len(my_points) < 3:
-            logging.info("Face has {} points, must have at least 3.", len(my_points))
+            logging.error("Face has {} points, must have at least 3.", len(my_points))
             return
-
-        print("===========")
-        print(len(my_points))
-        print(my_points[0])
-        print(my_points[1])
-        print(my_points[2])
-
         # get points 0,1 to compute U
         u = my_points[1] - my_points[0]
         U = cgtypes.vec3(u.x, u.y, u.z)
@@ -71,10 +63,7 @@ def get_texture_definition_function_simple_mapper(filename, scale_x=1.0, scale_y
         new_vec = cgtypes.vec3(new_vec_org.x, new_vec_org.y, new_vec_org.z)
         normal = new_vec.cross(U).normalize()
         V = U.cross(normal)
-        print("U = %s, V= %s" % (U, V))
-
         for p in my_points:
-            print(p)
             p.u = (p * U) * scale_x
             p.v = (p * V) * scale_y
 
