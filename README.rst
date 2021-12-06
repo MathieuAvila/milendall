@@ -1,19 +1,21 @@
 Milendall
 ==========
 
-Milendall aims to be a FPS-like game in a maze with non-euclidean geometry and gravity rules.
-It can be played in single- or multi-player modes.
+Milendall aims to be an escape first-person view game in a maze with
+non-euclidean geometry and gravity rules. It can be played in single or
+multi-player modes.
 
-Mazes can be generated randomly, with control on the randomness aspects at various levels,
-to make them interesting from a player's point-of-view. A set of pre-computed mazes (levels)
-are available.
+Mazes can be generated randomly, with control on the randomness aspects at
+various levels, to make them interesting from a player's point-of-view. A set of
+pre-computed mazes (levels) are available.
 
 Pitch
 -----
 
-Stéphanie, a 12 year old girl, is making a dream in which she is trapped in a maze, and she
-has a only a few minutes left to escape before she awakes. However, this is a wonderful dream
-with lots of wonder (unicorns and alikes), so that she isn't scared at all.
+Gwenaëlle, a 12 year old girl, is making a dream in which she is trapped in a
+maze, and she has a only a few minutes left to escape before she awakes.
+However, this is a wonderful dream with lots of wonder (unicorns and alikes), so
+that she isn't scared at all.
 
 Game Goal
 ---------
@@ -24,19 +26,21 @@ In single player mode:
 
 In multi-player mode:
 
-- Death match in a maze [to be re-thought]
+- TBD
 
 Particularity
 -------------
 
 In both cases:
 
-- Maze is globally non-euclidean at the maze scale, but euclidean at local scale (rooms)
+- Maze is globally non-euclidean at the maze scale, but euclidean at local scale
+ (called rooms)
 - Mazes are bound (not open worlds), but can loop in bizarre ways
 - Gravity is dynamic and unusual
 - Objects can be rescaled when passing through some gates
-- There are some objects left that gives time bonuses
-- Objects can change in nature, contrary to most FPS (time bonuses become time maluses, and so on...)
+- There are some objects left that gives time bonuses / maluses
+- Objects can change in nature, contrary to most FPS (time bonuses become time
+  maluses, and so on...)
 
 Requirements
 ============
@@ -44,33 +48,37 @@ Requirements
 Maze description
 ----------------
 
-Mazes are made of rooms. Each room is connected to others through gates. A gate consists in
-an architectural object with one face giving access to another room. This face is called
-a portal.
-Each room is euclidean by nature. Each room has its own gravity rules, those can be dynamic.
+Mazes are made of rooms. Each room is connected to others through gates. A gate
+consists in an architectural object with one face giving access to another room.
+This face is called a portal. Each room is euclidean by nature. Each room has
+its own gravity rules, those can be dynamic.
 
 Objects that pass through gates can be rescaled.
-Gates can connect two rooms from any space to any other space so can make the whole
-world (maze) non-euclidean, although they seem to be directly connected. Examples:
+Gates can connect two rooms from any space to any other space so can make the
+whole world (maze) non-euclidean, although they seem to be directly connected.
+Examples:
 
 - can connect a room to a distant one (simple case)
-- can shift axes in any way: go through a door that makes fall from the roof of another room
+- can shift axes in any way: go through a door that makes fall from the roof of
+  another room
 - can be symmetrical: you enter where you leave, like a mirror
 - can connect the same room to itself
 - can be visible on one side and invisible on the other
 - can be traversable on one side and not in the other direction
 
-"Triggers" are elements of rooms that triggers changes in gates properties: traversable, visibility.
+"Triggers" are elements of rooms that triggers changes in gates properties:
+traversable, visibility.
 
-This is a run against time. There is no ennemy as such, but the maze must be solved
-before the counter reaches zero. A given amount of time is given at the start of the game.
+This is a run against time. There is no ennemy as such, but the maze must be
+solved before the counter reaches zero. A given amount of time is given at the
+start of the game.
 
 Rooms
 .....
 
-Each room has gravity rules that can change dynamically. Ex: a room where each wall attracts,
-a room like a planet, a cylinder, a donut, and so on. Imagination is the only limit.
-Each room has a fixed list of gates.
+Each room has gravity rules that can change dynamically. Ex: a room where each
+wall attracts, a room like a planet, a cylinder, a donut, and so on. Imagination
+is the only limit. Each room has a fixed list of gates.
 
 Rooms have both:
 
@@ -87,17 +95,18 @@ Other properties:
 Portals
 .......
 
-Portals are polygons showing another space in another room. They are directional.
+Portals are polygons showing another space in another room. They are
+directional.
 They can be active or inactive. They can move inside the source space.
-When active, they show their destination and can be crossed. Destination is in the
-space of the target room. In terms of organisation, there is no link between
+When active, they show their destination and can be crossed. Destination is in
+the space of the target room. In terms of organisation, there is no link between
 original space and target space. For example, it is possible to have
-Tardis-like (bigger inside than the outside) or Mario-like (smaller worlds in bigger worlds)
-portals.
+Tardis-like (bigger inside than the outside) or Mario-like (smaller worlds in
+bigger worlds) portals.
 
-Portals can also change the scale of the objects they cross: bigger or smaller by a
-given static factor. Crossing in the opposite direction changes the scale in the
-opposite direction.
+Portals can also change the scale of the objects they cross: bigger or smaller
+by a given static factor. Crossing in the opposite direction changes the scale
+in the opposite direction.
 
 Gates
 .....
@@ -107,14 +116,15 @@ Gates are both:
 - decorations around portals
 - structural elements inside rooms.
 
-Gates are the concrete elements that links 2 rooms, and as such they force portal
-polygon geometry, orientation (where should gravity happen) and decorations inside rooms.
+Gates are the concrete elements that links 2 rooms, and as such they force
+portal polygon geometry, orientation (where should gravity happen) and
+decorations inside rooms.
 
 Gravity
 .......
 
-Gravity is defined on a per-room basis. Default will be the expected one: down on Y,
-value 1.0, constant in space and time.
+Gravity is defined on a per-room basis. Default will be the expected one: down
+on Y, value 1.0, constant in space and time.
 
 It can be variable in space and time. It is customizable.
 
@@ -132,7 +142,8 @@ Rooms can be filled with objects:
 Events
 ......
 
-Rooms configurations can change with triggers which appears as buttons placed anywhere.
+Rooms configurations can change with triggers which appears as buttons placed
+anywhere.
 
 For the sake of the player (or not), it can be devised which effect they have.
 
@@ -145,8 +156,8 @@ Events are customizable through scripts. However here are some possible changes:
 Entry/Output
 ............
 
-A maze for single player mode have an entry room that marks the spawn point (middle of the room) and an output room
-that marks the end of the game.
+A maze for single player mode have an entry room that marks the spawn point
+(middle of the room) and an output room that marks the end of the game.
 
 **TBD** A maze for multi-player mode have many entry rooms and no output room.
 
@@ -154,7 +165,8 @@ Maze structural aspects
 -----------------------
 
 This is done through "hints" provided to rooms generators.
-Hints come in various categories, whether or not they apply are up to the room class.
+Hints come in various categories, whether or not they apply are up to the room
+class.
 
 .. list-table::
    :header-rows: 1
@@ -174,7 +186,8 @@ Hints come in various categories, whether or not they apply are up to the room c
    * - room
      - ordered
      - ordered, disordered
-     - whether rooms must have a general ordered aspect, with gates aligned, and so on
+     - whether rooms must have a general ordered aspect, with gates aligned,
+       and so on
    * - room
      - elements
      - blocks, rocks, swimming-pool, ...
@@ -193,8 +206,8 @@ Hints come in various categories, whether or not they apply are up to the room c
    * - room
      - minsize, maxsize
      - a set of 3 float values (3D vector)
-     - The minimum or maximum size of a room in each direction. Although this may mean
-       that the room is a cube, it is just a hint.
+     - The minimum or maximum size of a room in each direction. Although this
+       may mean that the room is a cube, it is just a hint.
 
        A zero in one direction means there is not requirement.
 
@@ -202,8 +215,8 @@ Hints come in various categories, whether or not they apply are up to the room c
 
        Some room's types cannot be instantiated under a given size.
 
-       The 3D vector refers to [X,Y,Z], Z being the expected top-bottom direction, at least
-       for
+       The 3D vector refers to [X,Y,Z], Z being the expected top-bottom
+       direction, at least for
    * - gate
      - minsize, maxsize
      - a set of 2 float values (2D vector)
@@ -221,8 +234,8 @@ Hints come in various categories, whether or not they apply are up to the room c
 Maze visual aspects
 -------------------
 
-This is done through "hints" provided to rooms "dressing"s. Each dressing class can be modified by a
-list of parameters. Hints come in various categories:
+This is done through "hints" provided to rooms "dressing"s. Each dressing class
+can be modified by a list of parameters. Hints come in various categories:
 
 .. list-table::
    :header-rows: 1
@@ -243,8 +256,8 @@ list of parameters. Hints come in various categories:
 Maze generation
 ===============
 
-This section goes more in depth with maze generation. In this section, "designer" refers to
-a human who controls the creation process.
+This section goes more in depth with maze generation. In this section,
+"designer" refers to a human who controls the creation process.
 
 Overview
 --------
@@ -262,14 +275,15 @@ Generation happens with these steps:
      - JSON file of strategy
    * - Level Steps
      - Description of steps that happen: connection between steps,
-       what they contains. Those steps describes the main events happening in a game, like opening a door
-       and giving time points.
+       what they contains. Those steps describes the main events happening in a
+       game, like opening a door and giving time points.
      - JSON file of game play
 
        Viz thru Plantuml
    * - Rooms descriptions
      - Descriptions of rooms & gates : how they connect, their configurations,
-       their high-level content. May include hints on decoration, room type, etc...
+       their high-level content. May include hints on decoration, room type,
+       etc...
 
        This is the global working of the maze.
      - JSON file of level
@@ -280,9 +294,11 @@ Generation happens with these steps:
 
        Example: room type, size, colors...
 
-       Using this step to fine-tune content. All parameters not chosen by the designer is set here.
+       Using this step to fine-tune content. All parameters not chosen by the
+       designer is set here.
 
-       Normally once this step is done it must generate the exact same maze in the next steps.
+       Normally once this step is done it must generate the exact same maze in
+       the next steps.
      - JSON file
 
        Viz thru Plantuml
@@ -302,23 +318,26 @@ Generation happens with these steps:
        Walls come as a list of polygons that describe the main structure. Gates
        are computed as a "punch" in one of the wall.
 
-     - Set of rooms and gates with list of structural polygons and gates. This starts to be navigable,
-       although it's ugly and uniform. glTF format.
+     - Set of rooms and gates with list of structural polygons and gates. This
+       starts to be navigable, although it's ugly and uniform. glTF format.
    * - Rooms dressing
      - Generate all graphical elements of rooms
 
-       After this, it is possible to re-compute a graphical setup if it is not satisfying.
+       After this, it is possible to re-compute a graphical setup if it is not
+       satisfying.
 
        Otherwise, this is finalized.
 
-       Walls are cut into real final polygons, based on previous main structure. Main structure
-       can still used to check that you don't go through terrain, or this  can be done with
-       visual polygons. It's up to the specified dresser algorithm.
+       Walls are cut into real final polygons, based on previous main structure.
+       Main structure can still used to check that you don't go through terrain,
+       or this can be done with visual polygons. It's up to the specified
+       dresser algorithm.
 
      - Playable level. glTF format.
 
-Note that designer is given the ability to finely control every generation step through parameters.
-However, it is still possible to let the system handle all details with random generation.
+Note that designer is given the ability to finely control every generation step
+through parameters. However, it is still possible to let the system handle all
+details with random generation.
 
 Level strategy
 --------------
@@ -335,8 +354,9 @@ Rooms Description
 
 This is highest level of description of rooms.
 
-A list of rooms is given, along with the lists of portals that allows to go from one room to another.
-The designer has the ability to fix a few parameters in this stage.
+A list of rooms is given, along with the lists of portals that allows to go
+from one room to another. The designer has the ability to fix a few parameters
+in this stage.
 
 Rooms Instantiation
 -------------------

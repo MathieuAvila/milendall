@@ -74,12 +74,6 @@
                     "structure_private" : { "type": "object", "description": "general parameters at instantiation. Content depends on class" },
                     "dressing_parameters" : { "type": "object", "description": "general parameters at instantiation. Content depends on class" },
                     "dressing_private" :  { "type": "object", "description": "private parameters at instantiation. Content depends on class" },
-                    "connect" :  {
-                        "type": "array",
-                        "description": "List of rooms that are connected by this gates. Must be two !",
-                        "minimum": 2,
-                        "maximum": 2
-                    },
                     "accessible":  {
                         "type": "string",
                         "description": "Declares if objects can pass through initially. Defaults to both.",
@@ -135,8 +129,7 @@
                 },
                 "additionalProperties": false,
                 "required": [
-                    "gate_id",
-                    "connect"
+                    "gate_id"
                 ]
             }
         },
@@ -150,6 +143,64 @@
                         "description": "Section name to which it belongs"
                     },
                     "name": { "$ref": "#/definitions/name" },
+
+                    "containers" : {
+                        "description": "The list of containers for the given room",
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "description": "Define a container",
+                            "properties": {
+                                "c_id": {
+                                    "type": "string",
+                                    "description": "Name of the container name to which it belongs"
+                                },
+                                "gates" : {
+                                    "description": "The list of gates that the container contains",
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "description": "The gate ID as well as if it's IN or OUT",
+                                        "properties" : {
+                                            "target_id" : {
+                                                "description": "The ID of the gate",
+                                                "type": "string"
+                                            },
+                                            "is_in" : {
+                                                "description": "Whether this is a IN gate",
+                                                "type" : "boolean"
+                                            }
+                                        }
+                                    },
+                                    "required": [ "target_id", "is_in"]
+                                },
+                                "ss" : {
+                                    "type": "array"
+                                }
+                            },
+                            "required": ["c_id"]
+                        }
+                    },
+                    "connections" : {
+                        "description": "The list of connections between containers and how they interact",
+                        "type": "array",
+                        "items": {
+                            "description": "A connection between 2 containers and how they are linked",
+                            "type" : "object",
+                            "properties": {
+                                "linking": {
+                                    "type": "array",
+                                    "items" : {
+                                        "description": "The container ID",
+                                        "type" : "string"
+                                    }
+                                }
+                            },
+                            "required" : ["linking"]
+                        },
+                        "minItems": 2,
+                        "maxItems": 2
+                    },
                     "structure_class": {
                         "type": "string",
                         "description": "The general class name of the structure. Example 'rectangular'"
