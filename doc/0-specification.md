@@ -1,55 +1,68 @@
-Requirements
-============
+# Specifications
 
-Maze description
-----------------
+## Game (single player)
 
-Mazes are made of rooms. Each room is connected to others through gates. A gate
-consists in an architectural object with one face giving access to another room.
-This face is called a portal. Each room is euclidean by nature. Each room has
-its own gravity rules, those can be dynamic.
+The player is given the ability to move in a maze made of (seemingly) closed rooms and move from room to room through gates.
 
-Objects that pass through gates can be rescaled.
-Gates can connect two rooms from any space to any other space so can make the
-whole world (maze) non-euclidean, although they seem to be directly connected.
-Examples:
+A countdown is running to go to zero. The countdown starts at a given amount of time. Various events can add or remove time to the countdown.
 
-- can connect a room to a distant one (simple case)
-- can shift axes in any way: go through a door that makes fall from the roof of
-  another room
-- can be symmetrical: you enter where you leave, like a mirror
-- can connect the same room to itself
-- can be visible on one side and invisible on the other
-- can be traversable on one side and not in the other direction
+The game's goal is to reach a given room, starting from another room, before the countdown reaches zero.
+
+The player receives messages during the game to help him (...or deceive him):
+
+* When entering a new room, the room's name is given. This helps the user "map" the maze.
+* It is possible to have trigger send a message to the user.
+
+## Generation
+
+One major aspect of the project is to be able to easily generate new mazes so that the game is almost endless. This can be done at multiple levels. This is described in more detail in [1 Mazes generation process](1-generation.md).
+
+## Maze description
+
+Mazes are made of rooms. Each room is connected to others through gates. A gate consists in an architectural object with one face giving access to another room. This face is called a portal. Each room is euclidean by nature. The whole maze is not.
+
+### Rooms
+
+Each room has its own gravity rules, those can be dynamic and can contain sub-rules restricted to a given sub-space of the room.
+Rooms contains gates that are "oriented": each face has its property.
+Rooms contains objects, that can be bonuses or maluses. At the moment, only time bonuses/maluses are considered.
+Rooms contains triggers that can change "events"
+
+### Gates
+
+Gates can connect two rooms from any space to any other space so can make the whole world (maze) non-euclidean, although they seem to be directly connected. Examples:
+
+* can connect a room to a distant one (simple case)
+* can shift axes in any way: go through a door that makes fall from the roof of
+another room
+* can be visible on one side and invisible on the other
+* can be traversable on one side and not in the other direction
 
 "Triggers" are elements of rooms that triggers changes in gates properties:
 traversable, visibility.
 
-This is a run against time. There is no ennemy as such, but the maze must be
-solved before the counter reaches zero. A given amount of time is given at the
-start of the game.
+### Gravity
 
-Rooms
-.....
+Each room has gravity rules that can change dynamically.
 
-Each room has gravity rules that can change dynamically. Ex: a room where each
-wall attracts, a room like a planet, a cylinder, a donut, and so on. Imagination
-is the only limit. Each room has a fixed list of gates.
+Static examples:
 
-Rooms have both:
+* a rectangular room where each wall attracts
+* a room like a planet, a cylinder, a donut, and so on.
 
-- a structural aspect, as they give bounds to objects
-- a graphical aspect, as they provide a visual rendering
+Dynamic examples:
 
-Other properties:
+* A rectangular room where gravity flips at regular intervals
 
-- gravity rules, based on objects types, location, velocity, weight
-  (but does this value has any sense at all ?).
-- enclosed objects: bonuses, maluses, help
-- triggers: activable by user to change gates properties
+<br>
+Rooms are made of sub-spaces which have their own gravity rules. Examples:
 
-Portals
-.......
+* Rooms made of stairs in every direction which have their own gravity. Directly inspired from Escher's paintings. See: [Escher's Relativity](https://en.wikipedia.org/wiki/File:Escher%27s_Relativity.jpg) .
+* A rooms made of multiple planet-like spheres where the user can jump from one to another.
+
+Unlike real physics, gravity depends on the objects weight, velocity, size.
+
+### Portals
 
 Portals are polygons showing another space in another room. They are
 directional.
@@ -64,147 +77,138 @@ Portals can also change the scale of the objects they cross: bigger or smaller
 by a given static factor. Crossing in the opposite direction changes the scale
 in the opposite direction.
 
-Gates
-.....
-
-Gates are both:
-
-- decorations around portals
-- structural elements inside rooms.
-
-Gates are the concrete elements that links 2 rooms, and as such they force
-portal polygon geometry, orientation (where should gravity happen) and
-decorations inside rooms.
-
-Gravity
-.......
-
-Gravity is defined on a per-room basis. Default will be the expected one: down
-on Y, value 1.0, constant in space and time.
-
-It can be variable in space and time. It is customizable.
-
-Objects
-.......
+### Objects
 
 Rooms can be filled with objects:
 
-  - time bonus, malus
-  - special effects
-  - gravity inverter option
-  - ...
-  - objects with changes in nature through time: health bonuses to/from mines.
+* time bonus, malus
+* special effects
+* gravity inverter option
+* ...
+* objects with changes in nature through time: health bonuses to/from mines.
 
-Events
-......
+### Triggers / Events
 
-Rooms configurations can change with triggers which appears as buttons placed
-anywhere.
+Rooms configurations can change with triggers.
 
-For the sake of the player (or not), it can be devised which effect they have.
+Triggers can be:
 
-Events are customizable through scripts. However here are some possible changes:
+* Visible / invisible.
+* Voluntary / unvoluntary.
 
-- obviously, opening of closing gates
-- gravity change (see gravity)
-- appearance/disappearance of structural elements (see mesh animation)
+Examples:
 
-Entry/Output
-............
+* Switching a visible button is visible and voluntary, so-called "switch"
+* Switching an invisible button is invisible and voluntary, so-called "secret"
+* Crossing a visible line is visible and voluntary 
+* Crossing an invisible line is invisible and voluntary
+
+They set "events" to a given state which are binary.
+
+Then some maze elements can react to events: this can animate some object (door, elevator, ...) or change gravity.
+
+### Entry/Output
 
 A maze for single player mode have an entry room that marks the spawn point
 (middle of the room) and an output room that marks the end of the game.
 
-**TBD** A maze for multi-player mode have many entry rooms and no output room.
-
-Maze structural aspects
------------------------
+## Maze structural aspects
 
 This is done through "hints" provided to rooms generators.
 Hints come in various categories, whether or not they apply are up to the room
 class.
 
+| object type | name | values | description |
+| ----------- | ---- | ------ | ----------- |
+| room | class | room, corridor, stairs, ...,<br>planet, ocean, hamster wheel,<br>bubble, escher painting, etc. | the structural identity of the room |
+| room | ordered | ordered, disordered | whether rooms must have a general ordered aspect, with gates aligned, and so on |
+|  |  |  |  |
+|  |  |  |  |
+|  |  |  |  |
+|  |  |  |  |
+|  |  |  |  |
+|  |  |  |  |
+|  |  |  |  |
+
 .. list-table::
-   :header-rows: 1
+:header-rows: 1
 
-   * - object type
-     - name
-     - values
-     - description
-   * - room
-     - class
-     - room, corridor, stairs, ...,
+* 
+    * object type
+    * name
+    * values
+    * description
+* 
+    * room
+    * class
+    * room, corridor, stairs, ...,
+    planet, ocean, hamster wheel,
+    bubble, escher painting, etc.
+    * the structural identity of the room
+* 
+    * room
+    * ordered
+    * ordered, disordered
+    * whether rooms must have a general ordered aspect, with gates aligned,
+    and so on
+* 
+    * room
+    * elements
+    * blocks, rocks, swimming-pool, ...
+    * provides additional elements to append, both visual and structural
+* 
+    * gate
+    * class
+    * window, door, openspace, water, hole
+    * describes the type of gate
+        * openspace creates the biggest link, like the 2 rooms would be only one.
+        * water: a water surface
+        * window: point of view, not traversable
+        * door : something you would step in, with a given floor direction
+        * hole: usually something you "falls into"
+        * others are obvious
+* 
+    * room
+    * minsize, maxsize
+    * a set of 3 float values (3D vector)
+    * The minimum or maximum size of a room in each direction. Although this
+    may mean that the room is a cube, it is just a hint.
+    A zero in one direction means there is not requirement.
+    The unit is the meter. A player has a size of a 1.8m bubble (approx).
+    Some room's types cannot be instantiated under a given size.
+    The 3D vector refers to [X,Y,Z], Z being the expected top-bottom
+    direction, at least for
+* 
+    * gate
+    * minsize, maxsize
+    * a set of 2 float values (2D vector)
+    * The minimum or maximum size of a gate in each direction. Although this may mean
+    that the room is a cube, it is just a hint.
+    A zero in one direction means there is not requirement.
+    The unit is the meter. A player has a size of a 1.8m bubble (approx).
+    Some gate's types cannot be instantiated under a given size.
+    The 2D vector refers to [width, height]
 
-       planet, ocean, hamster wheel,
-
-       bubble, escher painting, etc.
-     - the structural identity of the room
-   * - room
-     - ordered
-     - ordered, disordered
-     - whether rooms must have a general ordered aspect, with gates aligned,
-       and so on
-   * - room
-     - elements
-     - blocks, rocks, swimming-pool, ...
-     - provides additional elements to append, both visual and structural
-   * - gate
-     - class
-     - window, door, openspace, water, hole
-     - describes the type of gate
-
-       - openspace creates the biggest link, like the 2 rooms would be only one.
-       - water: a water surface
-       - window: point of view, not traversable
-       - door : something you would step in, with a given floor direction
-       - hole: usually something you "falls into"
-       - others are obvious
-   * - room
-     - minsize, maxsize
-     - a set of 3 float values (3D vector)
-     - The minimum or maximum size of a room in each direction. Although this
-       may mean that the room is a cube, it is just a hint.
-
-       A zero in one direction means there is not requirement.
-
-       The unit is the meter. A player has a size of a 1.8m bubble (approx).
-
-       Some room's types cannot be instantiated under a given size.
-
-       The 3D vector refers to [X,Y,Z], Z being the expected top-bottom
-       direction, at least for
-   * - gate
-     - minsize, maxsize
-     - a set of 2 float values (2D vector)
-     - The minimum or maximum size of a gate in each direction. Although this may mean
-       that the room is a cube, it is just a hint.
-
-       A zero in one direction means there is not requirement.
-
-       The unit is the meter. A player has a size of a 1.8m bubble (approx).
-
-       Some gate's types cannot be instantiated under a given size.
-
-       The 2D vector refers to [width, height]
-
-Maze visual aspects
--------------------
+## Maze visual aspects
 
 This is done through "hints" provided to rooms "dressing"s. Each dressing class
 can be modified by a list of parameters. Hints come in various categories:
 
 .. list-table::
-   :header-rows: 1
+:header-rows: 1
 
-   * - object type
-     - name
-     - values
-     - description
-   * - gate, room
-     - class
-     - futuristic, mine, hangar...
-     - Global visual style. Choose with care to have a stylish view
-   * - gate, room
-     - texture
-     - futuristic, mine, ...
-     - Global visual texturing. Choose with care to have a stylish view
+* 
+    * object type
+    * name
+    * values
+    * description
+* 
+    * gate, room
+    * class
+    * futuristic, mine, hangar...
+    * Global visual style. Choose with care to have a stylish view
+* 
+    * gate, room
+    * texture
+    * futuristic, mine, ...
+    * Global visual texturing. Choose with care to have a stylish view
