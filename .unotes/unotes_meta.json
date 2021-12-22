@@ -1,0 +1,57 @@
+{
+  "name": "",
+  "isOrdered": true,
+  "folders": {
+    "build": {
+      "name": "build",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "cmake": {
+      "name": "cmake",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "data": {
+      "name": "data",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "doc": {
+      "name": "doc",
+      "isOrdered": true,
+      "folders": {},
+      "files": {
+        "1-generation": 1,
+        "0-specification": 0,
+        "2-writing_new_mazes": 2,
+        "3-writing_mazes_elements": 3,
+        "4-engine": 4
+      }
+    },
+    "game": {
+      "name": "game",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "generator": {
+      "name": "generator",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "logs": {
+      "name": "logs",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    }
+  },
+  "files": {
+    "README": 0
+  }
+}
