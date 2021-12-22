@@ -185,7 +185,7 @@ All those steps is the job of a dressing class. This step chooses dressing class
 <br>
 | Name | Definition |
 | ---- | ---------- |
-| Face | This is a plane object with limits, with 2 sets of characteristics about its usage:<br><ol><li>physical: is it rough ? with which properties ?</li><li>visual: what's its meaning ? a wall, a floor, a ceiling, a door ?</li></ol>Bricks generate lists of faces that the dressing must transform into final visual objects. |
+| Face | This is a convex polygon, with 2 sets of characteristics about its usage:<br><ol><li>physical: is it rough ? with which properties ?</li><li>visual: what's its meaning ? a wall, a floor, a ceiling, a door ?</li></ol>Bricks generate lists of faces that the dressing must transform into final visual objects. |
 | Dressing class | This is the real type of a dressing. Examples are:<br><ul><li class="">A simple texturing that applies a texture based on the face class</li><li class="">For opened containers: a rectangular space filled with boxes, a stair, a lift, ...</li></ul>The list of dressings can be augmented easily through new classes, this is explained in <span class="colour" style="color: rgb(212, 212, 212);">[</span><span class="colour" style="color: rgb(206, 145, 120);">3 Writing new mazes elements</span><span class="colour" style="color: rgb(212, 212, 212);">](<u>doc/3-writing\_maze\_elements.md</u>)</span> |
 | Public parameters section | This is a list of main parameters that define the dressing, augmented with parameters forced by the designer |
 | Private parameters section | This is the whole list of parameters that the dressing requires. Everything that is not in the public parameters is set randomly. This is defined in the next section. |
