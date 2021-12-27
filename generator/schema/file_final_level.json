@@ -1,0 +1,46 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://milendall.com/schemas/final-level.json",
+
+
+    "properties": {
+        "name": { "$ref": "#common.json/definitions/name" },
+        "$schema": {
+            "type": "string",
+            "description": "Link to this schema"
+        },
+        "version": {
+            "type": "string",
+            "description": "compatibility version number"
+        },
+        "declarations" : {"$ref": "#level_declaration"},
+        "rooms": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "room_id": {
+                        "type": "string",
+                        "description": "Unique ID of the room. It is mapped to a direcotry name"
+                    },
+                    "name": {
+                        "$ref": "#common.json/name"
+                    }
+                 },
+                "additionalProperties": false,
+                "required": [
+                    "room_id",
+                    "name"
+                ]
+            }
+        }
+    },
+    "required": [
+        "name",
+        "version",
+        "declarations",
+        "rooms"
+    ],
+    "additionalProperties": false
+}
+

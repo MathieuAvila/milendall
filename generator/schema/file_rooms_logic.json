@@ -1,0 +1,122 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://milendall.com/schemas/file_rooms_logic.json",
+    "description": "This is the output of the rooms-logic step. It represents the whole logic of a single level",
+    "properties": {
+        "declarations": {
+            "$ref": "#level_declaration.json"
+        },
+        "gates": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "gate_id": {
+                        "type": "string",
+                        "description": "ID of the gate"
+                    },
+                    "accessible": {
+                        "type": "string",
+                        "description": "Declares if objects can pass through initially. Defaults to both.",
+                        "enum": [
+                            "from-to",
+                            "to-from",
+                            "both"
+                        ]
+                    },
+                    "visible": {
+                        "type": "string",
+                        "description": "Declares if it is visually detectable. Defaults to both.",
+                        "enum": [
+                            "from-to",
+                            "to-from",
+                            "both"
+                        ]
+                    },
+                    "see_through": {
+                        "type": "string",
+                        "description": "Declares if is possible to see through it. Defaults to both.",
+                        "enum": [
+                            "from-to",
+                            "to-from",
+                            "both"
+                        ]
+                    },
+                    "scale": {
+                        "type": "number",
+                        "description": "Change of scale when going forward; Reverse in the opposite direction."
+                    },
+                    "events": {
+                        "type": "array",
+                        "description": "List of events that this gate reacts upon, and associated actions",
+                        "items": {
+                            "$ref": "#event.json"
+                        }
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "gate_id"
+                ]
+            }
+        },
+        "rooms": {
+            "type": "array",
+            "items": {
+                "description": "This is the definition of a room at the level level, not to mixed with the final room definition",
+                "type": "object",
+                "properties": {
+                    "room_id": {
+                        "type": "string",
+                        "description": "Section name to which it belongs"
+                    },
+                    "name": {
+                        "$ref": "#common.json/definitions"
+                    },
+                    "containers": {
+                        "description": "The list of containers for the given room",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#container.json"
+                        }
+                    },
+                    "connections": {
+                        "description": "The list of connections between containers and how they interact",
+                        "type": "array",
+                        "items": {
+                            "description": "A connection between 2 containers and how they are linked",
+                            "type": "object",
+                            "properties": {
+                                "linking": {
+                                    "type": "array",
+                                    "items": {
+                                        "description": "The container ID",
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "required": [
+                                "linking"
+                            ]
+                        },
+                        "minItems": 2,
+                        "maxItems": 2
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "room_id",
+                    "name"
+                ]
+            }
+        }
+    },
+    "required": [
+        "name",
+        "game_type",
+        "section",
+        "rooms",
+        "gates"
+    ],
+    "additionalProperties": false
+}

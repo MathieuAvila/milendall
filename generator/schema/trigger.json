@@ -1,0 +1,40 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://milendall.com/schemas/trigger.json",
+    "type": "object",
+    "description": "Trigger definition",
+    "properties": {
+        "t_id": {
+            "type": "string",
+            "description": "Unique ID"
+        },
+        "type": {
+            "type": "string",
+            "description": "trigger type. If undefined, brick is free to choose what best suits it.",
+            "enum": [
+                "walk-on",
+                "hidden-walk-on",
+                "button"
+            ]
+        },
+        "event_id": {
+            "type": "string",
+            "description": "Which event it changes"
+        },
+        "action": {
+            "type": "string",
+            "description": "How the event is changed",
+            "enum": [
+                "to_true",
+                "to_false"
+            ]
+        }
+    },
+    "additionalProperties": false,
+    "required": [
+        "t_id",
+        "action",
+        "event_id",
+        "type"
+    ]
+}

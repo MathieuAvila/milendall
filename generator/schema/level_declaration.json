@@ -1,18 +1,9 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "http://incoherent.com/schemas/final-level.json",
-
-
+    "$id": "http://milendall.com/schemas/level_declaration.json",
+    "type": "object",
+    "description": "Level declarations: which section it belongs, where it starts and where it ends, time, ... This is shared both by the rooms-logic step and the final level file",
     "properties": {
-        "name": { "$ref": "#/definitions/name" },
-        "$schema": {
-            "type": "string",
-            "description": "Link to this schema"
-        },
-        "version": {
-            "type": "string",
-            "description": "compatibility version number"
-        },
         "game_type": {
             "type" : "object",
             "description": "Allowed game types",
@@ -52,61 +43,18 @@
                 }
             }
         },
-
         "section": {
             "type": "string",
             "description": "Section ID to which it belongs"
         },
-        "rooms": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "room_id": {
-                        "type": "string",
-                        "description": "Section name to which it belongs"
-                    },
-                    "name": {
-                        "$ref": "#/definitions/name"
-                    }
-                 },
-                "additionalProperties": false,
-                "required": [
-                    "room_id",
-                    "name"
-                ]
-            }
+        "name": {
+            "$ref": "#common.json/name"
         }
     },
+    "additionalProperties": false,
     "required": [
         "name",
-        "versionn",
-        "game_type",
         "section",
-        "rooms",
-        "gates"
-    ],
-    "additionalProperties": false,
-
-    "definitions": {
-        "name": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "description": "A name in one language",
-                "properties": {
-                    "lang" : {
-                        "type": "string",
-                        "description": "The language. Must be unique."
-                    },
-                    "value" : {
-                        "type": "string",
-                        "description": "Name in that language"
-                    }
-                }
-            },
-            "description": "A name in multiple languages. Defaults to 'en'"
-        }
-    }
+        "game_type"
+    ]
 }
-

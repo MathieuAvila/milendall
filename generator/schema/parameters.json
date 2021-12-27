@@ -1,0 +1,33 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://milendall.com/schemas/brick.json",
+    "type": "object",
+    "description": "Holds classes and parameters",
+    "properties": {
+        "structure_class": {
+            "type": "string",
+            "description": "The general class name of the structure. Example 'rectangular'"
+        },
+        "dressing_class": {
+            "type": "string",
+            "description": "The general class name of the dressing. Example 'raw'"
+        },
+        "structure_parameters": {
+            "type": "object",
+            "description": "general parameters at instantiation. Content depends on class"
+        },
+        "structure_private": {
+            "type": "object",
+            "description": "general parameters at instantiation. Content depends on class"
+        },
+        "dressing_parameters": {
+            "type": "object",
+            "description": "general parameters at instantiation. Content depends on class"
+        },
+        "dressing_private": {
+            "type": "object",
+            "description": "private parameters at instantiation. Content depends on class"
+        }
+    },
+    "additionalProperties": false
+}

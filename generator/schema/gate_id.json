@@ -1,0 +1,21 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://milendall.com/schemas/brick.json",
+    "type": "object",
+    "description": "The gate ID as well as if it's IN or OUT",
+    "properties": {
+        "target_id": {
+            "description": "The ID of the gate",
+            "type": "string"
+        },
+        "is_in": {
+            "description": "Whether this is a IN gate",
+            "type": "boolean"
+        }
+    },
+    "required": [
+        "is_in",
+        "target_id"
+    ],
+    "additionalItems": false
+}

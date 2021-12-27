@@ -1,0 +1,36 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://milendall.com/schemas/trigger.json",
+    "description": "An event definition",
+    "type": "object",
+    "properties": {
+        "action": {
+            "type": "string",
+            "description": "On action amongst: open (can go through), close (cannot go through), visible (can see through), invisible (cannot see through), accessible, inaccessible"
+        },
+        "direction": {
+            "type": "string",
+            "description": "Which direction is changed. Defaults to both."
+        },
+        "on_trigger": {
+            "type": "string",
+            "description": "The trigger name that makes this action happen"
+        },
+        "on_property": {
+            "type": "string",
+            "description": "Which characteristic is changed: visible, accessible, see_throurgh"
+        },
+        "to_value": {
+            "type": "string",
+            "description": "To which value it is changed. Can be true,false,switch"
+        }
+    },
+    "required": [
+        "action",
+        "direction",
+        "on_trigger",
+        "on_property",
+        "to_value"
+    ],
+    "additionalProperties": false
+}

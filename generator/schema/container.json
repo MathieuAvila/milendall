@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://milendall.com/schemas/brick.json",
+
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "c_id": {
+            "type": "string",
+            "description": "Name of the container name to which it belongs"
+        },
+        "gates" : {
+            "description": "The list of gates that the container contains",
+            "type": "array",
+            "items": { "$ref": "#common.json/gate_id" }
+        },
+        "triggers" : {
+            "description": "The list of triggers the container holds",
+            "type": "array",
+            "items": { "$ref": "#trigger.json" }
+        }
+    },
+    "required": ["c_id"]
+}
