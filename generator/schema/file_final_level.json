@@ -21,7 +21,7 @@
                 "properties": {
                     "room_id": {
                         "type": "string",
-                        "description": "Unique ID of the room. It is mapped to a direcotry name"
+                        "description": "Unique ID of the room. It is mapped to a directory name"
                     },
                     "name": {
                         "$ref": "#common.json/name"
