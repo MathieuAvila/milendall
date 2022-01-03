@@ -3,7 +3,7 @@
 import unittest
 import selector_regular
 
-from rooms import register as room_register
+from bricks import register as room_register
 from gates import register as gate_register
 
 class TestSelectorRegular(unittest.TestCase):

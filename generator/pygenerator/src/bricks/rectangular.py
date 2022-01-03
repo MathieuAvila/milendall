@@ -3,7 +3,7 @@ structure definition for a simple rectangular room
 """
 
 import logging
-from room_structure import RoomStructure
+from brick_structure import BrickStructure
 import concrete_room
 import cgtypes.vec3
 import cgtypes.mat4
@@ -27,7 +27,7 @@ def get_sum_walls_width(wall_list):
     """Helper: Get the sum of all width of the walls"""
     return sum([ w["width"] for w in wall_list ])
 
-class RectangularRoom(RoomStructure):
+class RectangularRoom(BrickStructure):
 
     _name = "rectangular"
 

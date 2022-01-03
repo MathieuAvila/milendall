@@ -23,7 +23,7 @@
      "value": "nightmare"
     }
    ],
-   "structure_class": "room_structure_1",
+   "structure_class": "brick_structure_1",
    "dressing_class": "room_dressing_1",
    "triggers": [
     {
@@ -56,7 +56,7 @@
      "type": "walk-on"
     }
    ],
-   "structure_class": "room_structure_1",
+   "structure_class": "brick_structure_1",
    "structure_private": {
     "size": [
      10.0,
@@ -83,7 +83,7 @@
      "type": "walk-on"
     }
    ],
-   "structure_class": "room_structure_1",
+   "structure_class": "brick_structure_1",
    "structure_private": {
     "size": [
      10.0,

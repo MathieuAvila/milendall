@@ -5,7 +5,7 @@ test level
 import unittest
 import selector_regular
 import room
-from rooms import register
+from bricks import register
 
 class TestSelector(unittest.TestCase):
 

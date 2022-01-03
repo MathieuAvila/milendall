@@ -7,7 +7,7 @@ import sys
 import pathlib
 
 import unittest
-import rooms.rectangular as rectangular
+import bricks.rectangular as rectangular
 import gates.simple_door as simple_door
 import room
 import gate

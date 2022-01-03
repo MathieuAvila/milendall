@@ -6,7 +6,7 @@ import logging
 import random
 
 from selector import Selector
-from rooms import register as room_register
+from bricks import register as room_register
 from gates import register as gate_register
 from dressings import register as dressing_register
 

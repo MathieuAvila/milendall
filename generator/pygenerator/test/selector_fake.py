@@ -4,7 +4,7 @@ import logging
 import cgtypes
 
 from selector import Selector
-from room_structure import RoomStructure
+from brick_structure import BrickStructure
 from gate_structure import GateStructure
 from dressing import Dressing
 import concrete_room
@@ -101,9 +101,9 @@ class GateStructureFake2(GateStructureFake1):
         super().__init__(gate)
         self.gate = gate
 
-class RoomStructureFake1(RoomStructure):
+class BrickStructureFake1(BrickStructure):
 
-    _name = "room_structure_1"
+    _name = "brick_structure_1"
 
     def __init__(self, room=None):
         """ init room """
@@ -112,7 +112,7 @@ class RoomStructureFake1(RoomStructure):
 
     def get_instance(self, room:None):
         """ return instance"""
-        return RoomStructureFake1(room)
+        return BrickStructureFake1(room)
 
     def instantiate(self, selector):
         """ force set values:
@@ -141,8 +141,8 @@ class RoomStructureFake1(RoomStructure):
             [ [0,1,2], [3,4,5], [6,7,8] ],
             [concrete_room.Node.CATEGORY_PHYSICS], [concrete_room.Node.HINT_BUILDING], [ 0 ] )
 
-class RoomStructureFake2(RoomStructureFake1):
-    _name = "room_structure_2"
+class BrickStructureFake2(BrickStructureFake1):
+    _name = "brick_structure_2"
 
     def __init__(self, room=None):
         """ init room """
@@ -158,8 +158,8 @@ class SelectorFake(Selector):
             "dressing": { "room":{}, "gate":{} }
         }
 
-        self.classes["structure"]["room"][RoomStructureFake1().get_name()] = RoomStructureFake1()
-        self.classes["structure"]["room"][RoomStructureFake2().get_name()] = RoomStructureFake2()
+        self.classes["structure"]["room"][BrickStructureFake1().get_name()] = BrickStructureFake1()
+        self.classes["structure"]["room"][BrickStructureFake2().get_name()] = BrickStructureFake2()
         self.classes["structure"]["gate"][GateStructureFake1().get_name()] = GateStructureFake1()
         self.classes["structure"]["gate"][GateStructureFake2().get_name()] = GateStructureFake2()
 

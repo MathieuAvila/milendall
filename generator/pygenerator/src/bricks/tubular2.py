@@ -3,7 +3,7 @@ structure definition for a simple rectangular room
 """
 
 import logging
-from room_structure import RoomStructure
+from brick_structure import BrickStructure
 import concrete_room
 import cgtypes.vec3
 import cgtypes.mat4
@@ -15,7 +15,7 @@ from math import *
 
 from jsonmerge import merge
 
-class TubularRoom(RoomStructure):
+class TubularRoom(BrickStructure):
 
     _name = "tubular2"
 
