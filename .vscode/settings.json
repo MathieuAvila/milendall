@@ -15,14 +15,13 @@
     ],
     "cmake.generator" : "Ninja",
     "python.testing.unittestArgs": [
-        "discover",
         "-v",
         "-s",
-        "./generator/pygenerator/test/",
+        "${workspaceFolder}/generator/pygenerator/test",
         "-p",
         "*test*.py"
     ],
-    "python.analysis.extraPaths" : ["./generator/pygenerator/src"],
+    "python.analysis.extraPaths" : ["${workspaceFolder}/generator/pygenerator/src"],
     "python.testing.pytestEnabled": false,
     "python.testing.nosetestsEnabled": false,
     "python.testing.cwd": "./generator/pygenerator/src",
