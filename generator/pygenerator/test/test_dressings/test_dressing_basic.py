@@ -29,8 +29,10 @@ class TestDressingBasic(unittest.TestCase):
         concrete = concrete_room.ConcreteRoom()
         parent = concrete.add_child(None, "parent")
         points = [
-            cgtypes.vec3(0), cgtypes.vec3(1),
-            cgtypes.vec3(2), cgtypes.vec3(3) ]
+            cgtypes.vec3(0.0, 0.0, 0.0),
+            cgtypes.vec3(1.0, 0.0, 0.0),
+            cgtypes.vec3(0.0, 1.0, 0.0),
+            cgtypes.vec3(0.0, 0.0, 1.0) ]
         index0 = parent.add_structure_points(points)
         parent.add_structure_faces(
             index0,
