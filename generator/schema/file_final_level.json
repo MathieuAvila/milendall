@@ -4,7 +4,7 @@
 
 
     "properties": {
-        "name": { "$ref": "#common.json/definitions/name" },
+        "name": { "$ref": "common.json/definitions/name" },
         "$schema": {
             "type": "string",
             "description": "Link to this schema"
@@ -13,7 +13,7 @@
             "type": "string",
             "description": "compatibility version number"
         },
-        "declarations" : {"$ref": "#level_declaration"},
+        "declarations" : {"$ref": "level_declaration"},
         "rooms": {
             "type": "array",
             "items": {
@@ -24,7 +24,7 @@
                         "description": "Unique ID of the room. It is mapped to a directory name"
                     },
                     "name": {
-                        "$ref": "#common.json/name"
+                        "$ref": "common.json/name"
                     }
                  },
                 "additionalProperties": false,

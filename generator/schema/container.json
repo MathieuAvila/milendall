@@ -12,12 +12,12 @@
         "gates" : {
             "description": "The list of gates that the container contains",
             "type": "array",
-            "items": { "$ref": "#common.json/gate_id" }
+            "items": { "$ref": "common.json/gate_id" }
         },
         "triggers" : {
             "description": "The list of triggers the container holds",
             "type": "array",
-            "items": { "$ref": "#trigger.json" }
+            "items": { "$ref": "trigger.json" }
         }
     },
     "required": ["c_id"]

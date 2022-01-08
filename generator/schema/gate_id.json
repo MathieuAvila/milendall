@@ -8,13 +8,13 @@
             "description": "The ID of the gate",
             "type": "string"
         },
-        "is_in": {
-            "description": "Whether this is a IN gate",
+        "end": {
+            "description": "Which end of the gate",
             "type": "boolean"
         }
     },
     "required": [
-        "is_in",
+        "end",
         "target_id"
     ],
     "additionalItems": false

@@ -9,7 +9,7 @@
             "type": "string",
             "description": "Unique gate ID"
         },
-        "parameters" : { "$ref": "#parameters.json" }
+        "parameters" : { "$ref": "parameters.json" }
     },
     "required": [
         "g_id",

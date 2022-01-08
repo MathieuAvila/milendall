@@ -1,25 +1,23 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "http://milendall.com/schemas/room.json",
-
     "description": "This is the output of the brick-instantiation step. It represents a single room. There is as many files as there are rooms",
-
     "properties": {
-        "r_id" : {
-            "type": "string",
-            "description": "Unique room ID"
-        },
-        "bricks" : {
+        "bricks": {
             "description": "The list of bricks that makes the room",
             "type": "array",
-                "items": { "$ref": "#brick.json" }
-            },
-            "additionalProperties": false
+            "items": {
+                "$ref": "brick.json"
+            }
         },
+        "$schema": {
+            "type": "string"
+        },
+        "additionalProperties": false
+    },
     "required": [
         "bricks",
-        "r_id"
+        "$schema"
     ],
     "additionalProperties": false
 }
-

@@ -1,7 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "http://milendall.com/schemas/brick.json",
-
     "type": "object",
     "additionalProperties": false,
     "properties": {
@@ -9,50 +8,64 @@
             "description": "ID of the brick",
             "type": "string"
         },
-        "root_pad" : {
-            "type":"object",
+        "root_pad": {
+            "type": "object",
             "description": "Reference to a root pad that the brick is linked to. This defines its reference. If it's defined, it must exist, otherwise an error is raised. If it doesn't exist, it is assumed that it's at the root of the room",
             "properties": {
                 "ref_b_id": {
-                    "type":"string"
+                    "type": "string"
                 },
-                "ref_pad_id" : {
-                    "type":"string"
+                "ref_pad_id": {
+                    "type": "string"
                 }
             },
-            "required": [ "ref_b_id", "ref_pad_id"]
+            "required": [
+                "ref_b_id",
+                "ref_pad_id"
+            ]
         },
         "pads": {
             "description": "Which pads the brick must export, so that other objects can bind on them",
-            "type" : "array",
+            "type": "array",
             "items": {
                 "description": "The definition of the pad, with private parameters specific to the brick class",
-                "type" : "object",
+                "type": "object",
                 "properties": {
                     "pad_id": {
                         "description": "A unique ID at the brick level",
-                        "type":"string"
+                        "type": "string"
                     },
                     "definition": {
                         "description": "An object used to describe the pad, interpreted by the brick class",
-                        "type":"object"
+                        "type": "object"
                     }
                 },
                 "additionalProperties": false,
-                "required": ["pad_id", "definition"]
+                "required": [
+                    "pad_id",
+                    "definition"
+                ]
             }
         },
-        "gates" : {
+        "gates": {
             "description": "The list of gates that the container contains",
             "type": "array",
-            "items": { "$ref": "#gate_id.json" }
+            "items": {
+                "$ref": "gate_id.json"
+            }
         },
-        "triggers" : {
+        "triggers": {
             "description": "The list of triggers the brick holds",
             "type": "array",
-            "items": { "$ref": "#trigger.json" }
+            "items": {
+                "$ref": "trigger.json"
+            }
         },
-        "parameters" : { "$ref": "#parameters.json" }
+        "parameters": {
+            "$ref": "parameters.json"
+        }
     },
-    "required": ["b_id"]
+    "required": [
+        "b_id"
+    ]
 }

@@ -4,7 +4,7 @@
     "description": "This is the output of the rooms-logic step. It represents the whole logic of a single level",
     "properties": {
         "declarations": {
-            "$ref": "#level_declaration.json"
+            "$ref": "level_declaration.json"
         },
         "gates": {
             "type": "array",
@@ -42,15 +42,11 @@
                             "both"
                         ]
                     },
-                    "scale": {
-                        "type": "number",
-                        "description": "Change of scale when going forward; Reverse in the opposite direction."
-                    },
                     "events": {
                         "type": "array",
                         "description": "List of events that this gate reacts upon, and associated actions",
                         "items": {
-                            "$ref": "#event.json"
+                            "$ref": "event.json"
                         }
                     }
                 },
@@ -60,7 +56,7 @@
                 ]
             }
         },
-        "rooms": {
+        "rooms_spec": {
             "type": "array",
             "items": {
                 "description": "This is the definition of a room at the level level, not to mixed with the final room definition",
@@ -68,16 +64,16 @@
                 "properties": {
                     "room_id": {
                         "type": "string",
-                        "description": "Section name to which it belongs"
+                        "description": "Unique ID that ill be translated to a directory name"
                     },
                     "name": {
-                        "$ref": "#common.json/definitions"
+                        "$ref": "common.json#definitions"
                     },
                     "containers": {
                         "description": "The list of containers for the given room",
                         "type": "array",
                         "items": {
-                            "$ref": "#container.json"
+                            "$ref": "container.json"
                         }
                     },
                     "connections": {
@@ -109,14 +105,16 @@
                     "name"
                 ]
             }
+        },
+        "$schema": {
+            "type": "string"
         }
     },
     "required": [
-        "name",
-        "game_type",
-        "section",
-        "rooms",
-        "gates"
+        "declarations",
+        "rooms_spec",
+        "gates",
+        "$schema"
     ],
     "additionalProperties": false
 }
