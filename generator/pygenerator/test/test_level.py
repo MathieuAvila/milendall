@@ -18,7 +18,6 @@ class TestLevel(unittest.TestCase):
         """ test loading an invalid level"""
         selector = selector_fake.SelectorFake()
         has_error = False
-        self.assertEqual('foo'.upper(), 'FOO')
         try:
             level.Level("../test/test_samples/invalid/level-user.json", selector)
         except jsonschema.exceptions.ValidationError:
@@ -30,7 +29,14 @@ class TestLevel(unittest.TestCase):
         selector = selector_fake.SelectorFake()
         loaded_level = None
         self.assertEqual('foo'.upper(), 'FOO')
-        loaded_level = level.Level("../test/test_samples/simple/level-user.json", selector)
+        is_ok = True
+        try:
+            loaded_level = level.Level("../test/test_samples/simple/rooms-logic.json", selector)
+        except Exception as e:
+            print("EXCEPTION %s" % repr(e))
+            is_ok = False
+        self.assertTrue(is_ok)
+
         self.assertIsNotNone(loaded_level)
 
         self.assertIsNotNone(loaded_level.values.gates)
@@ -54,7 +60,7 @@ class TestLevel(unittest.TestCase):
     def test_instantiate(self):
         """Test the instantiation algo using a fake selector"""
         selector = selector_fake.SelectorFake()
-        loaded_level = level.Level("../test/test_samples/simple/level-user.json", selector)
+        loaded_level = level.Level("../test/test_samples/simple/rooms-logic.json", selector)
         self.assertIsNotNone(loaded_level)
         loaded_level.instantiation()
         loaded_level.save("../test/test_samples/simple/level-user-instantiated.json")
@@ -62,7 +68,7 @@ class TestLevel(unittest.TestCase):
     def test_dressing(self):
         """Test the instantiation algo using a fake selector"""
         selector = selector_fake.SelectorFake()
-        loaded_level = level.Level("../test/test_samples/simple/level-user.json", selector)
+        loaded_level = level.Level("../test/test_samples/simple/rooms-logic.json", selector)
         self.assertIsNotNone(loaded_level)
         loaded_level.instantiation()
         loaded_level.finalize("/tmp/test_dressing")
