@@ -29,18 +29,36 @@ class JSONEncoder(json.JSONEncoder):
         else:
             return {}
 
+SCHEMA_LOCATION = "../../schema/"
+
+def _handler(path):
+        if not path.startswith('http://'):
+            raise Exception('Not a http URL: {}'.format(path))
+        path_no_scheme = path[len('http://'):]
+        name = os.path.basename(path_no_scheme)
+        schema_path = SCHEMA_LOCATION + name
+        real_path = os.path.realpath(schema_path)
+        with open(real_path, "r") as f:
+            j = json.load(f)
+            return j
+
 class Level:
 
     def __init__(self, json_file, _selector):
 
         self.selector = _selector
 
-        with open("../../schema/generator.level.schema.json", "r") as read_schema_file:
+        schema_path = SCHEMA_LOCATION + "file_rooms_logic.json"
+        real_path = os.path.realpath(schema_path)
+        with open(real_path, "r") as read_schema_file:
             schema = json.load(read_schema_file)
+        schemaurl = "file://" + real_path
+        resolver = jsonschema.RefResolver(schemaurl, referrer=schema, handlers = { 'http': _handler , "file": _handler} )
+        #resolver = jsonschema.RefResolver.from_schema(schema)
 
         with open(json_file, "r") as read_file:
             obj = json.load(read_file)
-            jsonschema.validate(instance=obj, schema=schema)
+            jsonschema.validate(instance=obj, resolver=resolver, schema=schema)
 
         with open(json_file, "r") as read_file:
             obj = json.load(read_file, object_hook=decode_level)
@@ -94,11 +112,7 @@ class Level:
         for _gate in self.values.gates:
             logging.debug("Check gate: %s", _gate.values.gate_id)
 
-            # append gate to both rooms
-            room_from = self.get_room(_gate.values.connect[0])
-            room_to = self.get_room(_gate.values.connect[1])
-            room_from.gates.append(_gate)
-            room_to.gates.append(_gate)
+            # TODO check gates appear in exactly 2 rooms
 
             if _gate.values.structure_class is not None:
                 _gate.structure = self.selector.get_structure_from_name(
