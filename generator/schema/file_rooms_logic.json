@@ -56,7 +56,7 @@
                 ]
             }
         },
-        "rooms_spec": {
+        "rooms": {
             "type": "array",
             "items": {
                 "description": "This is the definition of a room at the level level, not to mixed with the final room definition",
@@ -64,10 +64,10 @@
                 "properties": {
                     "room_id": {
                         "type": "string",
-                        "description": "Unique ID that ill be translated to a directory name"
+                        "description": "Unique ID that will be translated to a directory name"
                     },
                     "name": {
-                        "$ref": "common.json#definitions"
+                        "$ref": "name.json"
                     },
                     "containers": {
                         "description": "The list of containers for the given room",
@@ -112,7 +112,7 @@
     },
     "required": [
         "declarations",
-        "rooms_spec",
+        "rooms",
         "gates",
         "$schema"
     ],

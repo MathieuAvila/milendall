@@ -4,7 +4,7 @@
 
 
     "properties": {
-        "name": { "$ref": "common.json/definitions/name" },
+        "name": { "$ref": "common.json#definitions/name" },
         "$schema": {
             "type": "string",
             "description": "Link to this schema"
@@ -24,7 +24,7 @@
                         "description": "Unique ID of the room. It is mapped to a directory name"
                     },
                     "name": {
-                        "$ref": "common.json/name"
+                        "$ref": "name.json"
                     }
                  },
                 "additionalProperties": false,

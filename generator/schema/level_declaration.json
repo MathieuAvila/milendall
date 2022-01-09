@@ -48,7 +48,7 @@
             "description": "Section ID to which it belongs"
         },
         "name": {
-            "$ref": "common.json/name"
+            "$ref": "name.json"
         }
     },
     "additionalProperties": false,
