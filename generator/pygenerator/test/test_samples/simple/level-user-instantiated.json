@@ -1,17 +1,19 @@
 {
- "$schema": "../../../../schema/generator.level.schema.json",
- "name": [
-  {
-   "lang": "en",
-   "value": "Simple Level"
-  }
- ],
- "section": "samples",
- "game_type": {
-  "single_mode": {
-   "execution_time": 10.0,
-   "entry_point_room": "room1",
-   "end_point_room": "room3"
+ "$schema": "../../../../schema/file_rooms_logic.json",
+ "declarations": {
+  "name": [
+   {
+    "lang": "en",
+    "value": "Simple Level"
+   }
+  ],
+  "section": "samples",
+  "game_type": {
+   "single_mode": {
+    "execution_time": 10.0,
+    "entry_point_room": "room1",
+    "end_point_room": "room3"
+   }
   }
  },
  "rooms": [
@@ -23,14 +25,20 @@
      "value": "nightmare"
     }
    ],
-   "structure_class": "brick_structure_1",
-   "dressing_class": "room_dressing_1",
-   "triggers": [
+   "containers": [
     {
-     "trigger_id": "open1",
-     "type": "button"
+     "c_id": "c1",
+     "triggers": [
+      {
+       "t_id": "open1",
+       "type": "button",
+       "action": "to_true",
+       "event_id": ""
+      }
+     ]
     }
    ],
+   "structure_class": "brick_structure_1",
    "structure_private": {
     "size": [
      10.0,
@@ -39,6 +47,7 @@
     ]
    },
    "structure_parameters": {},
+   "dressing_class": "room_dressing_1",
    "dressing_private": {},
    "dressing_parameters": {}
   },
@@ -50,10 +59,17 @@
      "value": "heaven"
     }
    ],
-   "triggers": [
+   "containers": [
     {
-     "trigger_id": "open2",
-     "type": "walk-on"
+     "c_id": "c1",
+     "triggers": [
+      {
+       "t_id": "open2",
+       "type": "walk-on",
+       "action": "to_true",
+       "event_id": "event0"
+      }
+     ]
     }
    ],
    "structure_class": "brick_structure_1",
@@ -77,10 +93,17 @@
      "value": "earth"
     }
    ],
-   "triggers": [
+   "containers": [
     {
-     "trigger_id": "close3",
-     "type": "walk-on"
+     "c_id": "c1",
+     "triggers": [
+      {
+       "t_id": "close3",
+       "type": "walk-on",
+       "action": "to_true",
+       "event_id": "event0"
+      }
+     ]
     }
    ],
    "structure_class": "brick_structure_1",
@@ -100,10 +123,6 @@
  "gates": [
   {
    "gate_id": "r3r2",
-   "connect": [
-    "room3",
-    "room2"
-   ],
    "accessible": "from-to",
    "structure_class": "gate_structure_1",
    "structure_private": {
@@ -116,28 +135,20 @@
   },
   {
    "gate_id": "r1r2",
-   "connect": [
-    "room1",
-    "room2"
-   ],
    "accessible": "from-to",
    "visible": "from-to",
    "see_through": "from-to",
    "structure_class": "gate_structure_1",
-   "dressing_class": "gate_dressing_1",
    "structure_private": {
     "private1": true
    },
    "structure_parameters": {},
+   "dressing_class": "gate_dressing_1",
    "dressing_private": {},
    "dressing_parameters": {}
   },
   {
    "gate_id": "r1r3",
-   "connect": [
-    "room1",
-    "room3"
-   ],
    "structure_class": "gate_structure_1",
    "structure_private": {
     "private1": true
@@ -149,11 +160,6 @@
   },
   {
    "gate_id": "r1r1",
-   "connect": [
-    "room1",
-    "room1"
-   ],
-   "scale": 0.5,
    "events": [
     {
      "action": "open",
@@ -173,13 +179,15 @@
      "action": "close",
      "on_trigger": "close3",
      "on_property": "accessible",
-     "to_value": "false"
+     "to_value": "false",
+     "direction": "from-to"
     },
     {
      "action": "invisible",
      "on_trigger": "close3",
      "on_property": "accessible",
-     "to_value": "false"
+     "to_value": "false",
+     "direction": "from-to"
     }
    ],
    "structure_class": "gate_structure_1",

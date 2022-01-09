@@ -1,17 +1,19 @@
 {
-    "$schema": "../../../../schema/generator.level.schema.json",
-    "name": [
-        {
-            "lang": "en",
-            "value": "Simple Level"
-        }
-    ],
-    "section": "samples",
-    "game_type": {
-        "single_mode": {
-            "execution_time": 10.0,
-            "entry_point_room": "room1",
-            "end_point_room": "room3"
+    "$schema": "../../../../schema/file_rooms_logic.json",
+    "declarations": {
+        "name": [
+            {
+                "lang": "en",
+                "value": "Simple Level"
+            }
+        ],
+        "section": "samples",
+        "game_type": {
+            "single_mode": {
+                "execution_time": 10.0,
+                "entry_point_room": "room1",
+                "end_point_room": "room3"
+            }
         }
     },
     "rooms": [
@@ -28,8 +30,10 @@
                     "c_id": "c1",
                     "triggers": [
                         {
-                            "trigger_id": "open1",
-                            "type": "button"
+                            "t_id": "open1",
+                            "type": "button",
+                            "action": "to_true",
+                            "event_id": ""
                         }
                     ]
                 }
@@ -48,8 +52,10 @@
                     "c_id": "c1",
                     "triggers": [
                         {
-                            "trigger_id": "open2",
-                        "type": "walk-on"
+                            "t_id": "open2",
+                            "type": "walk-on",
+                            "action": "to_true",
+                            "event_id": "event0"
                         }
                     ]
                 }
@@ -68,8 +74,10 @@
                     "c_id": "c1",
                     "triggers": [
                         {
-                            "trigger_id": "close3",
-                            "type": "walk-on"
+                            "t_id": "close3",
+                            "type": "walk-on",
+                            "action": "to_true",
+                            "event_id": "event0"
                         }
                     ]
                 }
@@ -92,7 +100,6 @@
         },
         {
             "gate_id": "r1r1",
-            "scale": 0.5,
             "events": [
                 {
                     "action": "open",
@@ -112,13 +119,15 @@
                     "action": "close",
                     "on_trigger": "close3",
                     "on_property": "accessible",
-                    "to_value": "false"
+                    "to_value": "false",
+                    "direction": "from-to"
                 },
                 {
                     "action": "invisible",
                     "on_trigger": "close3",
                     "on_property": "accessible",
-                    "to_value": "false"
+                    "to_value": "false",
+                    "direction": "from-to"
                 }
             ]
         }
