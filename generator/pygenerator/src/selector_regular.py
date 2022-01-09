@@ -19,10 +19,10 @@ class SelectorRegular(Selector):
         self.classes["dressing"]["room"] = dressing_register.dressingTypes
         self.classes["dressing"]["gate"] = dressing_register.dressingTypes
 
-        logging.info("Room structure list is: %s", " ".join(self.classes["structure"]["room"]) )
-        logging.info("Gate structure list is: %s", " ".join(self.classes["structure"]["gate"]) )
-        logging.info("Room dressing list is: %s", " ".join(self.classes["dressing"]["room"]) )
-        logging.info("Gate dressing list is: %s", " ".join(self.classes["dressing"]["gate"]) )
+        #logging.info("Room structure list is: %s", " ".join(self.classes["structure"]["room"]) )
+        #logging.info("Gate structure list is: %s", " ".join(self.classes["structure"]["gate"]) )
+        #logging.info("Room dressing list is: %s", " ".join(self.classes["dressing"]["room"]) )
+        #logging.info("Gate dressing list is: %s", " ".join(self.classes["dressing"]["gate"]) )
 
     def get_random_choice(self, l):
         return random.choice(l)
