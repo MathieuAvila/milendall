@@ -5,7 +5,7 @@ import pathlib
 import os
 
 import json
-import jsonschema
+import json_helper
 
 import room
 import gate
@@ -47,23 +47,9 @@ class Level:
     def __init__(self, json_file, _selector):
 
         self.selector = _selector
-
-        schema_path = SCHEMA_LOCATION + "file_rooms_logic.json"
-        real_path = os.path.realpath(schema_path)
-        with open(real_path, "r") as read_schema_file:
-            schema = json.load(read_schema_file)
-        schemaurl = "file://" + real_path
-        resolver = jsonschema.RefResolver(schemaurl, referrer=schema, handlers = { 'http': _handler , "file": _handler} )
-        #resolver = jsonschema.RefResolver.from_schema(schema)
-
-        with open(json_file, "r") as read_file:
-            obj = json.load(read_file)
-            jsonschema.validate(instance=obj, resolver=resolver, schema=schema)
-
-        with open(json_file, "r") as read_file:
-            obj = json.load(read_file, object_hook=decode_level)
-            self.values = DefaultMunch.fromDict(obj)
-            self.structure_check_coherency()
+        obj = json_helper.load_and_validate_json(json_file, "file_rooms_logic.json", decode_hook=decode_level)
+        self.values = DefaultMunch.fromDict(obj)
+        self.structure_check_coherency()
 
     def dump_json(self):
         """dump internal state for later use"""
