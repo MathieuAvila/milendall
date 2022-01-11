@@ -13,8 +13,8 @@ Each step has an input that is (obvsiouly) the output of the previous step, plus
 | Level Strategy | Highest-level view which gives difficulty, ambiance, rythm | JSON file of strategy |  |
 | Story | Description of steps that happen: connection between steps, what they contain.<br>Those steps describes the main events happening in a game, like opening a door and giving time points. This could be a "story" told by a human. | JSON file of game play<br>Viz thru Plantuml | Not implemented |
 | Rooms logic | Listing of rooms & gates playable definition:<br><ul><li>structure of a room from a playable aspect: break-down of rooms in containers</li><li>connections of containers between them&nbsp;</li><li>rooms content : gates, objects, triggers, events</li></ul> | JSON file of level with list of rooms with their containers<br>Viz thru Plantuml | Not implemented |
-| Brick instantiation | Break-down of containers into bricks from their containers<br>Contrary to containers, bricks are tree-ordered and are typed. At this step, only their required characteristics are provided. | JSON file for each room<br><br>This starts to be navigable if next step is done automatically, although it's ugly and uniform. | Yes |
-| Brick personalization | Each brick merges "public" parameters provided by higher-level and/or designer, with missing parameters, to generate "private" parameters.<br><br>Once this step is done it must generate the exact same maze in the next steps, from a logical perspective. | JSON file for each room<br><br>This is navigable, although missing last step.<br><br>glTF format. | Yes |
+| Element instantiation | Break-down of containers into bricks from their containers<br>Contrary to containers, bricks are tree-ordered and are typed. At this step, only their required characteristics are provided.<br>Same for gate, but simpler, as there is no tree-like structure (no containers) | JSON file for each room<br><br>This starts to be navigable if next step is done automatically, although it's ugly and uniform. | Yes |
+| Element personalization | Each brick and gate merges "public" parameters provided by higher-level and/or designer, with missing parameters, to generate "private" parameters.<br><br>Once this step is done it must generate the exact same maze in the next steps, from a logical perspective. | JSON file for each room<br><br>This is navigable, although missing last step.<br><br>glTF format. | Yes |
 | Dressing instantiation | Generate a general draft of "dressing" of rooms; dressings are the way the details appear, like texturing. It can also change the points and can break down the faces. This is done with adaptors to add a little final touch of randomness and personnality to each graphical elements. | Playable level. glTF format. | Yes |
 | Dressing personalization | Each dressing merges "public" parameters provided by higher-level and/or designer, with missing parameters, to generate "private" parameters.<br><br>Once this step is done it must generate the exact same visual rendering in the next steps. | Playable level. glTF format. | Yes |
 
@@ -96,7 +96,7 @@ The output is a level description with:
 
 It is possible to generate a graphical visualization of this output.
 
-## Brick Instantiation
+## Element Instantiation
 
 ### Rationale
 
@@ -131,7 +131,7 @@ The output is a new room description in its dedicated directory with:
 Each gate has its own definition, too, in a dedicated directory.
 It is possible to generate a graphical visualization of this output.
 
-## Brick Personalization
+## Element Personalization
 
 ### Rationale
 
