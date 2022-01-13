@@ -47,13 +47,6 @@
                 ]
             }
         },
-        "gates": {
-            "description": "The list of gates that the container contains",
-            "type": "array",
-            "items": {
-                "$ref": "gate_id.json"
-            }
-        },
         "triggers": {
             "description": "The list of triggers the brick holds",
             "type": "array",
