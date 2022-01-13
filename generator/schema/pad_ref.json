@@ -1,0 +1,21 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://milendall.com/schemas/brick.json",
+    "type": "object",
+    "additionalProperties": false,
+    "description": "Reference to a pad. This defines its reference. If it's defined, it must exist, otherwise an error is raised.",
+    "properties": {
+        "ref_b_id": {
+            "description": "The brick ID",
+            "type": "string"
+        },
+        "ref_pad_id": {
+            "description": "The PAD ID inside the brick",
+            "type": "string"
+        }
+    },
+    "required": [
+        "ref_b_id",
+        "ref_pad_id"
+    ]
+}

@@ -1,0 +1,27 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://milendall.com/schemas/brick.json",
+    "type": "object",
+    "description": "The gate ID as well as if it's IN or OUT",
+    "properties": {
+        "target_id": {
+            "description": "The ID of the gate",
+            "type": "string"
+        },
+        "end": {
+            "description": "Which end of the gate",
+            "type": "boolean"
+        },
+        "pad": {
+            "description": "Which pad it is on",
+            "type": "boolean",
+            "$ref" : "pad_ref.json"
+        }
+    },
+    "required": [
+        "end",
+        "target_id",
+        "pad"
+    ],
+    "additionalItems": false
+}
