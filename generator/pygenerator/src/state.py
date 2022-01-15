@@ -4,6 +4,8 @@ class LevelState(IntEnum):
     New = 0
     Instantiated = 1
     Personalized = 2
+    DressingInstantiated = 3
+    DressingFinal = 4
 
 class StateList():
 
@@ -20,3 +22,10 @@ class StateList():
         with open(filename, "w") as output_file:
             my_str = " ".join([ str(i)[len("LevelState."):] for i in self.current])
             output_file.write(my_str)
+
+    def has_state(self, state):
+        return state in self.current
+
+    def add_state(self, state):
+        if not self.has_state(state):
+            self.current.append(state)

@@ -16,8 +16,18 @@ class TestState(unittest.TestCase):
         my_state = state.StateList()
         self.assertEqual(my_state.current, [])
 
+    def test_append_check(self):
+        my_state = state.StateList()
+        self.assertFalse(my_state.has_state(state.LevelState.Instantiated))
+        my_state.add_state(state.LevelState.Instantiated)
+        self.assertTrue(my_state.has_state(state.LevelState.Instantiated))
+        self.assertFalse(my_state.has_state(state.LevelState.Personalized))
+        my_state.add_state(state.LevelState.Personalized)
+        self.assertTrue(my_state.has_state(state.LevelState.Instantiated))
+        self.assertTrue(my_state.has_state(state.LevelState.Personalized))
+
     def test_save_read_void(self):
-        """ test save"""
+        """ test save 0"""
         my_state = state.StateList()
         my_state.save("/tmp/state.txt")
         my_state = state.StateList("/tmp/state.txt")
@@ -25,7 +35,7 @@ class TestState(unittest.TestCase):
         self.assertEqual(my_state.current, [])
 
     def test_save_read_1(self):
-        """ test save"""
+        """ test save 1"""
         my_state = state.StateList()
         my_state.current.append(state.LevelState.Instantiated)
         my_state.save("/tmp/state.txt")
@@ -34,7 +44,7 @@ class TestState(unittest.TestCase):
         self.assertEqual(my_state.current, [state.LevelState.Instantiated])
 
     def test_save_read_2(self):
-        """ test save"""
+        """ test save 2"""
         my_state = state.StateList()
         my_state.current.append(state.LevelState.Instantiated)
         my_state.current.append(state.LevelState.New)
