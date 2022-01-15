@@ -38,3 +38,16 @@ def load_and_validate_json(json_path, schema_name, decode_hook=None):
     with open(json_path, "r") as read_file:
         obj = json.load(read_file, object_hook=decode_hook)
         return obj
+
+
+class JSONEncoder(json.JSONEncoder):
+
+    def default(self, o):
+        if hasattr(o, "values"):
+            return o.values
+        else:
+            return {}
+
+def dump_json(obj):
+    """dump internal state for later use"""
+    return json.dumps(obj, cls=JSONEncoder, indent=1)

@@ -27,7 +27,7 @@ def get_sum_walls_width(wall_list):
     """Helper: Get the sum of all width of the walls"""
     return sum([ w["width"] for w in wall_list ])
 
-class RectangularRoom(BrickStructure):
+class BrickRectangular(BrickStructure):
 
     _name = "rectangular"
 
@@ -37,7 +37,7 @@ class RectangularRoom(BrickStructure):
 
     def get_instance(self, room:None):
         """Return an instante"""
-        return RectangularRoom(room)
+        return BrickRectangular(room)
 
     def check_fit(self):
         """ Pass the Room, and list of gates, check it can be applied. """
@@ -283,4 +283,4 @@ class RectangularRoom(BrickStructure):
 
 
 
-register_room_type(RectangularRoom())
+register_room_type(BrickRectangular())

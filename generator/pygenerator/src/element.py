@@ -17,7 +17,7 @@ class Element():
     """
 
 
-    def instantiation(self, selector):
+    def personalization(self, selector):
         """ 1. Sort element types that matches constraints: list of gates with format of each.
             Note: it's up to the element type to check criterias
             2. Associate weights for each

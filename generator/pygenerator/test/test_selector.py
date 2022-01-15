@@ -13,7 +13,7 @@ class TestSelector(unittest.TestCase):
         """ test retrieving list of rooms"""
 
         _s = selector_regular.SelectorRegular()
-        _r = room.Room({})
+        _r = room.Room("/tmp", "name")
         #_s.get_from_name(name, _r)
         print(register.roomTypes)
         self.assertIsNotNone(register.roomTypes)

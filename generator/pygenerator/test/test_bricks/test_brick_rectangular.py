@@ -55,7 +55,7 @@ def_gate_3 = {
    "connect" : ["room0", "room4"]
 }
 
-class TestRoomRectangular(unittest.TestCase):
+class TestBrickRectangular(unittest.TestCase):
 
     selector = selector_regular.SelectorRegular()
 
@@ -64,9 +64,9 @@ class TestRoomRectangular(unittest.TestCase):
         stream_handler = logging.StreamHandler(sys.stdout)
         logger.addHandler(stream_handler)
         custom_room = room.Room(def_0)
-        custom_room.instantiation(self.selector)
+        custom_room.personalization(self.selector)
 
-        custom_room.structure = rectangular.RectangularRoom().get_instance(custom_room)
+        custom_room.structure = rectangular.BrickRectangular().get_instance(custom_room)
         custom_room.dressing = basic.DressingBasic().get_instance(custom_room)
 
         custom_room.finalize("/tmp/test_rectangular_basic_0_gate/output", preview=True)

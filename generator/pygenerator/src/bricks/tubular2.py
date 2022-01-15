@@ -15,7 +15,7 @@ from math import *
 
 from jsonmerge import merge
 
-class TubularRoom(BrickStructure):
+class BrickTubular2(BrickStructure):
 
     _name = "tubular2"
 
@@ -25,7 +25,7 @@ class TubularRoom(BrickStructure):
 
     def get_instance(self, room:None):
         """Return an instante"""
-        return TubularRoom(room)
+        return BrickTubular2(room)
 
     def check_fit(self):
         """ Pass the Room, and list of gates, check it can be applied. """
@@ -233,4 +233,4 @@ class TubularRoom(BrickStructure):
             is_first = False
 
 
-register_room_type(TubularRoom())
+register_room_type(BrickTubular2())

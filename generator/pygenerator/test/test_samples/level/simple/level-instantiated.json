@@ -1,5 +1,5 @@
 {
-    "$schema": "../../../../schema/file_rooms_logic.json",
+    "$schema": "../../../../../schema/file_rooms_logic.json",
     "declarations": {
         "name": [
             {

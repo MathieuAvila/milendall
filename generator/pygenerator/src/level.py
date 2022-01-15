@@ -3,63 +3,74 @@
 import logging
 import pathlib
 import os
+from enum import Enum
 
 import json
 import json_helper
 
-import room
+import room_spec
 import gate
 import concrete_room
+import state
 
 from munch import DefaultMunch
 
-def decode_level(dct):
+logger = logging.getLogger("level")
+logger.setLevel(logging.INFO)
+
+def decode_level(level_directory, state):
     """automatically set object type"""
-    if 'room_id' in dct:
-        return room.Room(dct)
-    if 'gate_id' in dct:
-        return gate.Gate(dct)
-    return dct
+    def _decode_level(dct):
 
-class JSONEncoder(json.JSONEncoder):
+        if 'room_id' in dct:
+            return room_spec.RoomSpec(dct, level_directory, state)
+        if 'gate_id' in dct:
+            return gate.Gate(dct)
+        return dct
 
-    def default(self, o):
-        if hasattr(o, "values"):
-            return o.values
-        else:
-            return {}
-
-SCHEMA_LOCATION = "../../schema/"
-
-def _handler(path):
-        if not path.startswith('http://'):
-            raise Exception('Not a http URL: {}'.format(path))
-        path_no_scheme = path[len('http://'):]
-        name = os.path.basename(path_no_scheme)
-        schema_path = SCHEMA_LOCATION + name
-        real_path = os.path.realpath(schema_path)
-        with open(real_path, "r") as f:
-            j = json.load(f)
-            return j
+    return _decode_level
 
 class Level:
 
-    def __init__(self, json_file, _selector):
+    FILENAME_INSTANTIATED = "level-instantiated.json"
+    FILENAME_PERSONALIZED = "level-personalized.json"
 
+    status_to_filename = {
+        state.LevelState.Personalized : FILENAME_PERSONALIZED,
+        state.LevelState.Instantiated : FILENAME_INSTANTIATED,
+    }
+
+    def __init__(self, _selector):
+
+        self.status = state.LevelState.New
         self.selector = _selector
-        obj = json_helper.load_and_validate_json(json_file, "file_rooms_logic.json", decode_hook=decode_level)
+        self.state = state.StateList()
+
+    def load(self, directory, load_state):
+        self.directory = directory
+        self.state = state.StateList(directory + "/state.txt")
+        if not self.state.has_state(load_state):
+            raise Exception("Level has no saved state %s" % load_state)
+        logger.info(load_state in self.status_to_filename.keys())
+        logger.info(self.status_to_filename[load_state])
+        obj = json_helper.load_and_validate_json(
+            directory + "/" + self.status_to_filename[load_state],
+            "file_rooms_logic.json",
+            decode_hook=decode_level(directory, self.status))
+        self.status = load_state
         self.values = DefaultMunch.fromDict(obj)
         self.structure_check_coherency()
 
-    def dump_json(self):
-        """dump internal state for later use"""
-        return json.dumps(self, cls=JSONEncoder, indent=1)
-
-    def save(self, filename):
+    def save(self, directory):
         """save to a file"""
-        _j = self.dump_json()
+        if self.status == state.LevelState.New:
+            raise Exception("Unable to save a new level.")
+        else:
+            filename = directory + "/" + self.status_to_filename[self.status]
         with open(filename, "w") as output_file:
+            _j = json_helper.dump_json(self)
             output_file.write(_j)
+        self.state.save(directory + "/state.txt")
 
     def dump_graph(self, filename):
         """ Dump a file in graphviz format that allows to graphically visualize
@@ -75,7 +86,7 @@ class Level:
 
     def _check_parameter_presence(self, element, structure_type, parameter_name):
         """Check a parameter is present"""
-        logging.info("Check %s: %s", structure_type, element.values.gate_id)
+        logger.info("Check %s: %s", structure_type, element.values.gate_id)
         if element.values[parameter_name] is None:
             raise Exception ("%s has no %s parameter." % (structure_type, parameter_name))
 
@@ -94,9 +105,9 @@ class Level:
             2. gather the gate lists with their format
             3. Check it is allowed by the room type
             4. Request room structure coherency"""
-        logging.debug("Structure check coherency")
+        logger.debug("Structure check coherency")
         for _gate in self.values.gates:
-            logging.debug("Check gate: %s", _gate.values.gate_id)
+            logger.debug("Check gate: %s", _gate.values.gate_id)
 
             # TODO check gates appear in exactly 2 rooms
 
@@ -107,7 +118,7 @@ class Level:
                 _gate.structure.check_structure()
 
         for _room in self.values.rooms:
-            logging.debug("Check room: %s", _room.values.room_id)
+            logger.debug("Check room: %s", _room.values.room_id)
             if _room.values.structure_class is not None:
                 _room.structure = self.selector.get_structure_from_name(
                     _room.values.structure_class,
@@ -117,9 +128,9 @@ class Level:
     def dressing_check_coherency(self):
         """ Sanity check that content is viable, at the structure level
             Thing can get insane if user has messed up with content in-between"""
-        logging.info("Dressing check coherency")
+        logger.info("Dressing check coherency")
         for _gate in self.values.gates:
-            logging.debug("Check gate: %s", _gate.values.gate_id)
+            logger.debug("Check gate: %s", _gate.values.gate_id)
 
             if _gate.values.dressing_class is not None:
                 _gate.dressing = self.selector.get_dressing_from_name(
@@ -127,27 +138,27 @@ class Level:
                     _gate)
 
         for _room in self.values.rooms:
-            logging.debug("Check room: %s", _room.values.room_id)
+            logger.debug("Check room: %s", _room.values.room_id)
             if _room.values.dressing_class is not None:
                 _room.dressing = self.selector.get_dressing_from_name(
                     _room.values.dressing_class,
                     _room)
 
-    def _element_instantiation(self, _element):
-        _element.instantiation(self.selector)
+    def _element_personalization(self, _element):
+        _element.personalization(self.selector)
 
-    def instantiation(self):
+    def personalization(self):
         """ 1. For each gate, choose gate format if not already done
             2. Instantiate each room if not already done"""
         assert self.selector is not None
 
         for _element in self.values.gates + self.values.rooms:
-            self._element_instantiation(_element)
+            self._element_personalization(_element)
 
-    def element_instantiation(self, _id):
+    def element_personalization(self, _id):
         """ wrapper to _element_instantiation, with ID name resolved"""
         element = None
-        self._element_instantiation(element)
+        self._element_personalization(element)
 
     def objects(self):
         """ Place objects in room acording to specs"""

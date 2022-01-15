@@ -36,7 +36,7 @@ class TestGate_SimpleDoor(unittest.TestCase):
         stream_handler = logging.StreamHandler(sys.stdout)
         logger.addHandler(stream_handler)
         custom_gate = gate.Gate(def_0)
-        custom_gate.instantiation(self.selector)
+        custom_gate.personalization(self.selector)
         custom_gate.concrete = concrete_room.ConcreteRoom()
         custom_gate.structure.generate(custom_gate.concrete)
         custom_gate.dressing.generate(custom_gate.concrete)

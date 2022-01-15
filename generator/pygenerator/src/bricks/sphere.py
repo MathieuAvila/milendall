@@ -14,7 +14,7 @@ from math import *
 
 from jsonmerge import merge
 
-class SphereRoom(BrickStructure):
+class BrickSphere(BrickStructure):
 
     _name = "sphere"
 
@@ -24,7 +24,7 @@ class SphereRoom(BrickStructure):
 
     def get_instance(self, room:None):
         """Return an instante"""
-        return SphereRoom(room)
+        return BrickSphere(room)
 
     def check_fit(self):
         """ Pass the Room, and list of gates, check it can be applied. """
@@ -198,4 +198,4 @@ class SphereRoom(BrickStructure):
 
 
 
-register_room_type(SphereRoom())
+register_room_type(BrickSphere())
