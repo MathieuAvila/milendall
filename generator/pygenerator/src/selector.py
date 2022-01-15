@@ -1,15 +1,18 @@
 """ define a super-class for finding structure definitions. Useful for tests """
 
-#import logging
+import logging
+logger = logging.getLogger("selector")
+logger.setLevel(logging.INFO)
 
 class Selector:
 
     """ finding and selecting your structure and dressing"""
 
-    classes = { "structure": { "room":{}, "gate":{} }, "dressing": { "room":{}, "gate":{} } }
+    classes = { "structure": { "brick":{}, "gate":{} }, "dressing": { "brick":{}, "gate":{} } }
 
     def _get_fit(self, sub_class, element):
         """ find a list of fits for a given subclass from the real ones """
+        logger.info("SUB_CLASS = %s", sub_class)
         element_list = sub_class[element.get_class()]
         list_fit = [element_list[name].get_instance(element)
                     for name in element_list

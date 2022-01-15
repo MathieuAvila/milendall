@@ -42,19 +42,41 @@ class TestRoom(unittest.TestCase):
 
         logger.info(reloaded_room.values)
 
-        self.assertIsNotNone(reloaded_room.values.gates)
-        self.assertEqual(len(reloaded_room.values.gates), 4)
+        self.assertIsNotNone(reloaded_room.values.bricks)
+        self.assertEqual(len(reloaded_room.values.bricks), 0)
 
-        self.assertIsNotNone(reloaded_room.values.rooms)
-        self.assertEqual(len(reloaded_room.values.rooms), 3)
-
-    def test_instantiate(self):
-        """Test the instantiation algo using a fake selector"""
+    def test_01_load_save_2b(self):
+        """ test loading and saving a void room"""
         selector = selector_fake.SelectorFake()
-        loaded_room = room.Room("../test/test_samples/simple_1r_instantiated/rooms-logic.json", selector)
+        loaded_room = room.Room("../test/test_samples/room/room_2b/", "room1")
         self.assertIsNotNone(loaded_room)
-        loaded_room.personalization()
-        loaded_room.save("/tmp/simple_1r_instantiated/room-user-instantiated.json")
+        loaded_room.load(state.LevelState.Instantiated)
+
+        self.assertIsNotNone(loaded_room.values.bricks)
+        self.assertEqual(len(loaded_room.values.bricks), 2)
+
+        # todo: check connections
+
+        output = "/tmp/test_01_load_save_2b"
+        self.remake_dest(output)
+        _dump = loaded_room.save(output)
+        reloaded_room = room.Room(output, "room1")
+        reloaded_room.load(state.LevelState.Instantiated)
+        self.assertIsNotNone(reloaded_room)
+
+        logger.info(reloaded_room.values)
+
+        self.assertIsNotNone(reloaded_room.values.bricks)
+        self.assertEqual(len(reloaded_room.values.bricks), 2)
+
+    def test_01_personalize(self):
+        """Test the personalization algo using a fake selector"""
+        selector = selector_fake.SelectorFake()
+        loaded_room = room.Room("../test/test_samples/room/room_2b/", "room1")
+        self.assertIsNotNone(loaded_room)
+        loaded_room.load(state.LevelState.Instantiated)
+        loaded_room.personalization(selector)
+        loaded_room.save("/tmp/test_01_personalize")
 
     def test_dressing(self):
         """Test the instantiation algo using a fake selector"""

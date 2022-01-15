@@ -1,0 +1,11 @@
+{
+    "$schema": "../../../../../../schema/file_room_bricks.json",
+    "bricks": [
+        {
+            "b_id": "b0"
+        },
+        {
+            "b_id": "b1"
+        }
+    ]
+}

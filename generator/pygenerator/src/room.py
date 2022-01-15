@@ -60,7 +60,7 @@ class Room(Element):
         '''Instantiate everything'''
         self.state = state.LevelState.Personalized
         for brick in self.values["bricks"]:
-            brick.instantiate(selector)
+            brick.personalization(selector)
 
     def save(self, level_directory=None):
         '''Save to file. File depends on instantiated or not'''
