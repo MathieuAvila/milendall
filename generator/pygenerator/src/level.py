@@ -18,12 +18,12 @@ from munch import DefaultMunch
 logger = logging.getLogger("level")
 logger.setLevel(logging.INFO)
 
-def decode_level(level_directory, state):
+def decode_level(level_directory, state, selector):
     """automatically set object type"""
     def _decode_level(dct):
 
         if 'room_id' in dct:
-            return room_spec.RoomSpec(dct, level_directory, state)
+            return room_spec.RoomSpec(dct, level_directory, state, selector)
         if 'gate_id' in dct:
             return gate.Gate(dct)
         return dct
@@ -56,7 +56,7 @@ class Level:
         obj = json_helper.load_and_validate_json(
             directory + "/" + self.status_to_filename[load_state],
             "file_rooms_logic.json",
-            decode_hook=decode_level(directory, self.status))
+            decode_hook=decode_level(directory, self.status, self.selector))
         self.status = load_state
         self.values = DefaultMunch.fromDict(obj)
         self.structure_check_coherency()
@@ -145,9 +145,9 @@ class Level:
                     _room)
 
     def _element_personalization(self, _element):
-        _element.personalization(self.selector)
+        _element.structure_personalization()
 
-    def personalization(self):
+    def structure_personalization(self):
         """ 1. For each gate, choose gate format if not already done
             2. Instantiate each room if not already done"""
         assert self.selector is not None

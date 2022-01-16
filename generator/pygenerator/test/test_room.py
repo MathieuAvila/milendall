@@ -25,7 +25,7 @@ class TestRoom(unittest.TestCase):
     def test_01_load_save_void(self):
         """ test loading and saving a void room"""
         selector = selector_fake.SelectorFake()
-        loaded_room = room.Room("../test/test_samples/room/room_0b/", "room1")
+        loaded_room = room.Room("../test/test_samples/room/room_0b/", "room1", selector)
         self.assertIsNotNone(loaded_room)
         loaded_room.load(state.LevelState.Instantiated)
 
@@ -37,7 +37,7 @@ class TestRoom(unittest.TestCase):
         output = "/tmp/test_01_load_save_void"
         self.remake_dest(output)
         _dump = loaded_room.save(output)
-        reloaded_room = room.Room(output, selector)
+        reloaded_room = room.Room(output, "room1", selector)
         self.assertIsNotNone(reloaded_room)
 
         logger.info(reloaded_room.values)
@@ -48,7 +48,7 @@ class TestRoom(unittest.TestCase):
     def test_01_load_save_2b(self):
         """ test loading and saving a void room"""
         selector = selector_fake.SelectorFake()
-        loaded_room = room.Room("../test/test_samples/room/room_2b/", "room1")
+        loaded_room = room.Room("../test/test_samples/room/room_2b/", "room1", selector)
         self.assertIsNotNone(loaded_room)
         loaded_room.load(state.LevelState.Instantiated)
 
@@ -60,7 +60,7 @@ class TestRoom(unittest.TestCase):
         output = "/tmp/test_01_load_save_2b"
         self.remake_dest(output)
         _dump = loaded_room.save(output)
-        reloaded_room = room.Room(output, "room1")
+        reloaded_room = room.Room(output, "room1", selector)
         reloaded_room.load(state.LevelState.Instantiated)
         self.assertIsNotNone(reloaded_room)
 
@@ -69,13 +69,13 @@ class TestRoom(unittest.TestCase):
         self.assertIsNotNone(reloaded_room.values.bricks)
         self.assertEqual(len(reloaded_room.values.bricks), 2)
 
-    def test_01_personalize(self):
+    def test_01_structure_personalization(self):
         """Test the personalization algo using a fake selector"""
         selector = selector_fake.SelectorFake()
-        loaded_room = room.Room("../test/test_samples/room/room_2b/", "room1")
+        loaded_room = room.Room("../test/test_samples/room/room_2b/", "room1", selector)
         self.assertIsNotNone(loaded_room)
         loaded_room.load(state.LevelState.Instantiated)
-        loaded_room.personalization(selector)
+        loaded_room.structure_personalization()
         loaded_room.save("/tmp/test_01_personalize")
 
     def test_01_finalize(self):

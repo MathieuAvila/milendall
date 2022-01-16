@@ -22,11 +22,12 @@ class Room(Element):
         state.LevelState.Personalized : "room-personalized.json",
     }
 
-    def __init__(self, level_directory, name):
+    def __init__(self, level_directory, name, selector):
         '''Initialize a Room to defaults'''
         self.name = name
         self.state = state.LevelState.New
         self.level_directory = level_directory
+        self.selector = selector
         values = {
                 "bricks":[]
             }
@@ -36,7 +37,7 @@ class Room(Element):
         """automatically set object type"""
         def _decode_room(dct):
             if 'b_id' in dct:
-                return brick.Brick(dct)
+                return brick.Brick(dct, self.selector)
             return dct
         return _decode_room
 
@@ -56,11 +57,23 @@ class Room(Element):
     def add_brick(self, brick):
         self.values["bricks"].append(brick)
 
-    def personalization(self, selector):
+    def structure_personalization(self):
         '''Instantiate everything'''
         self.state = state.LevelState.Personalized
         for brick in self.values["bricks"]:
-            brick.personalization(selector)
+            brick.structure_personalization()
+
+    def dressing_instantiation(self):
+        '''Instantiate everything'''
+        self.state = state.LevelState.DressingInstantiated
+        for brick in self.values["bricks"]:
+            brick.dressing_instantiation()
+
+    def dressing_personalization(self):
+        '''Instantiate everything'''
+        self.state = state.LevelState.DressingPersonalized
+        for brick in self.values["bricks"]:
+            brick.dressing_personalization()
 
     def save(self, level_directory=None):
         '''Save to file. File depends on instantiated or not'''

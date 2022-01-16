@@ -5,7 +5,7 @@ class LevelState(IntEnum):
     Instantiated = 1
     Personalized = 2
     DressingInstantiated = 3
-    DressingFinal = 4
+    DressingPersonalized = 4
 
 class StateList():
 

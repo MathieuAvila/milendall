@@ -66,13 +66,13 @@ class TestLevel(unittest.TestCase):
         loaded_level.load("../test/test_samples/level/simple_1r_instantiated", state.LevelState.Instantiated)
         self.assertIsNotNone(loaded_level)
 
-    def test_instantiate(self):
+    def test_01_structure_personalization(self):
         """Test the instantiation algo using a fake selector"""
         selector = selector_fake.SelectorFake()
         loaded_level = level.Level(selector)
         loaded_level.load("../test/test_samples/level/simple_1r_instantiated/", state.LevelState.Instantiated)
         self.assertIsNotNone(loaded_level)
-        loaded_level.personalization()
+        loaded_level.structure_personalization()
         output = "/tmp/simple_1r_instantiated"
         self.remake_dest(output)
         loaded_level.save(output)

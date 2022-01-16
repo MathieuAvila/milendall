@@ -8,8 +8,9 @@ from munch import DefaultMunch
 
 class Brick(Element):
 
-    def __init__(self, values):
+    def __init__(self, values, selector):
         self.values = DefaultMunch.fromDict(values)
+        self.selector = selector
 
     def get_class(self):
         """ get my class for selector"""

@@ -18,16 +18,10 @@ class Element():
     """
 
 
-    def personalization(self, selector):
-        """ 1. Sort element types that matches constraints: list of gates with format of each.
-            Note: it's up to the element type to check criterias
-            2. Associate weights for each
-            3. Random selection of one type"""
-
-        # start with structure
+    def structure_personalization(self):
 
         logger.info("No need to select class for element: %s", self.get_id())
-        self.structure = selector.get_structure_from_name(
+        self.structure = self.selector.get_structure_from_name(
                 self.values.parameters.structure_class,
                 self)
         if self.structure is None:
@@ -35,24 +29,33 @@ class Element():
             raise Exception ("Void fit list for element: " + self.get_id())
         self.structure.instantiate_defaults()
         logger.info("Run instantiation structure parameters for element: %s", self.get_id())
-        self.structure.instantiate(selector)
+        self.structure.instantiate(self.selector)
+
+    def dressing_instantiation(self):
+        """ 1. Sort element types that matches constraints: list of gates with format of each.
+            Note: it's up to the element type to check criterias
+            2. Associate weights for each
+            3. Random selection of one type"""
 
         # same for dressing
 
         if self.values.parameters.dressing_class is None:
             logger.info("Need to select dressing class for element: %s", self.get_id())
-            fit_list = selector.get_dressing_fit(self)
+            fit_list = self.selector.get_dressing_fit(self)
             logger.info("Fit list is: %s", str([a.get_name() for a in fit_list]))
             if fit_list == []:
                 logger.error("Fit list is void, cannot choose any dressing."
                               "This is unrecoverable.")
                 raise Exception ("Void fit list for element: " + self.get_id())
             # just random selection for the moment
-            choice = selector.get_random_choice(fit_list)
+            choice = self.selector.get_random_choice(fit_list)
             logger.info("Chosen dressing %s for element: %s", choice.get_name() ,self.get_id())
             self.values.parameters.dressing_class = choice.get_name()
         else:
             logger.info("No need to select dressing  class for element: %s", self.get_id())
+
+    def dressing_personalization(self, selector):
+
         self.dressing = selector.get_dressing_from_name(
                 self.values.parameters.dressing_class,
                 self)

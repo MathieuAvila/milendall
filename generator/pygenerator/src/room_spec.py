@@ -16,13 +16,14 @@ logger.setLevel(logging.INFO)
 
 class RoomSpec():
 
-    def __init__(self, values, level_directory, state):
+    def __init__(self, values, level_directory, state, selector):
         self.values = DefaultMunch.fromDict(values)
         self.level_directory = level_directory
         # this is the reference to the Room in its directory.
         # It is instantiated when needed.
         self.state = state
         self.room = None
+        self.selector = selector
         logger.info("New room_spec %s from %s" % (self.values.room_id, self.level_directory) )
 
     def dump_graph(self, output):
@@ -39,11 +40,11 @@ class RoomSpec():
             label += "<BR/><I>D: "+ self.values.dressing_class + "</I>"
         output.write('"' + self.values.room_id +'" ' + '[ label=< ' + label+ ' > ] ;\n')
 
-    def personalization(self, selector):
+    def structure_personalization(self):
         """Run the brick personalization process on the real room"""
         if self.room is None:
-            self.room = room.Room(self.level_directory, self.values.room_id)
+            self.room = room.Room(self.level_directory, self.values.room_id, self.selector)
             self.room.load(state.LevelState.Instantiated)
-        self.room.personalization(selector)
+        self.room.structure_personalization()
 
 
