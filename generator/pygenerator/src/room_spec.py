@@ -47,4 +47,18 @@ class RoomSpec():
             self.room.load(state.LevelState.Instantiated)
         self.room.structure_personalization()
 
+    def dressing_instantiation(self):
+        """Run the brick personalization process on the real room"""
+        if self.room is None:
+            self.room = room.Room(self.level_directory, self.values.room_id, self.selector)
+            self.room.load(state.LevelState.Personalized)
+        self.room.dressing_instantiation()
+
+    def dressing_personalization(self):
+        """Run the brick personalization process on the real room"""
+        if self.room is None:
+            self.room = room.Room(self.level_directory, self.values.room_id, self.selector)
+            self.room.load(state.LevelState.DressingInstantiated)
+        self.room.dressing_personalization()
+
 

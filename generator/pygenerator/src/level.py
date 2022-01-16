@@ -150,8 +150,6 @@ class Level:
     def structure_personalization(self):
         """ 1. For each gate, choose gate format if not already done
             2. Instantiate each room if not already done"""
-        assert self.selector is not None
-
         for _element in self.values.gates + self.values.rooms:
             self._element_personalization(_element)
 
@@ -165,6 +163,18 @@ class Level:
 
     def room_objects(self, room_id):
         """ Place objects in one room acording to specs"""
+
+    def dressing_instantiation(self):
+        """ 1. For each gate, choose gate format if not already done
+            2. Instantiate each room if not already done"""
+        for _element in self.values.gates + self.values.rooms:
+            _element.dressing_instantiation()
+
+    def dressing_personalization(self):
+        """ 1. For each gate, choose gate format if not already done
+            2. Instantiate each room if not already done"""
+        for _element in self.values.gates + self.values.rooms:
+            _element.dressing_personalization()
 
     def finalize(self, output_directory, preview=False):
         """ Finalize level, generate final output data"""
