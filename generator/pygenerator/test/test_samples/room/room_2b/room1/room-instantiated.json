@@ -2,10 +2,16 @@
     "$schema": "../../../../../../schema/file_room_bricks.json",
     "bricks": [
         {
-            "b_id": "b0"
+            "b_id": "b0",
+            "parameters": {
+                "structure_class": "brick_structure_1"
+            }
         },
         {
-            "b_id": "b1"
+            "b_id": "b1",
+            "parameters": {
+                "structure_class": "brick_structure_1"
+            }
         }
     ]
 }

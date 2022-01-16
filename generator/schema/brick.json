@@ -59,6 +59,6 @@
         }
     },
     "required": [
-        "b_id"
+        "b_id","parameters"
     ]
 }

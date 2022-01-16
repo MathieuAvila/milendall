@@ -29,5 +29,6 @@
             "description": "private parameters at instantiation. Content depends on class"
         }
     },
+    "required": ["structure_class"],
     "additionalProperties": false
 }
