@@ -15,9 +15,9 @@ class TestSelector(unittest.TestCase):
         _s = selector_regular.SelectorRegular()
         _r = room.Room("/tmp", "name", _s)
         #_s.get_from_name(name, _r)
-        print(register.roomTypes)
-        self.assertIsNotNone(register.roomTypes)
-        self.assertTrue("rectangular" in register.roomTypes)
+        print(register.brickTypes)
+        self.assertIsNotNone(register.brickTypes)
+        self.assertTrue("rectangular" in register.brickTypes)
 
 if __name__ == '__main__':
     unittest.main()

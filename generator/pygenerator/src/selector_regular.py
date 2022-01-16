@@ -13,7 +13,7 @@ from dressings import register as dressing_register
 class SelectorRegular(Selector):
 
     def __init__(self):
-        self.classes["structure"]["room"] = room_register.roomTypes
+        self.classes["structure"]["room"] = room_register.brickTypes
         self.classes["structure"]["gate"] = gate_register.gateTypes
         # todo: differentiate gates and rooms dressing
         self.classes["dressing"]["room"] = dressing_register.dressingTypes
