@@ -78,7 +78,7 @@ class TestRoom(unittest.TestCase):
         loaded_room.personalization(selector)
         loaded_room.save("/tmp/test_01_personalize")
 
-    def test_dressing(self):
+    def test_01_finalize(self):
         """Test the instantiation algo using a fake selector"""
         selector = selector_fake.SelectorFake()
         loaded_room = room.Room("../test/test_samples/simple_instantiated/rooms-logic.json", selector)

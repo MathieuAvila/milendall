@@ -25,7 +25,14 @@ class Selector:
 
     def get_structure_from_name(self, name, element):
         """ return the class from the loaded name"""
-        return self.classes["structure"][element.get_class()][name].get_instance(element)
+        struct_class = self.classes["structure"]
+        search_class = element.get_class()
+        if search_class not in struct_class.keys():
+            raise Exception("No %s in class, found: %s" % (search_class, struct_class.keys()))
+        my_class = self.classes["structure"][element.get_class()]
+        if name not in my_class.keys():
+            raise Exception("No %s in class list, found: %s" % (name, my_class.keys()))
+        return my_class[name].get_instance(element)
 
     def get_dressing_fit(self, element):
         """ find a list of fits for the dressing from the real ones """

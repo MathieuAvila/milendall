@@ -154,16 +154,16 @@ class SelectorFake(Selector):
     def __init__(self):
 
         self.classes = {
-            "structure": { "room":{}, "gate":{} },
-            "dressing": { "room":{}, "gate":{} }
+            "structure": { "brick":{}, "gate":{} },
+            "dressing": { "brick":{}, "gate":{} }
         }
 
-        self.classes["structure"]["room"][BrickStructureFake1().get_name()] = BrickStructureFake1()
-        self.classes["structure"]["room"][BrickStructureFake2().get_name()] = BrickStructureFake2()
+        self.classes["structure"]["brick"][BrickStructureFake1().get_name()] = BrickStructureFake1()
+        self.classes["structure"]["brick"][BrickStructureFake2().get_name()] = BrickStructureFake2()
         self.classes["structure"]["gate"][GateStructureFake1().get_name()] = GateStructureFake1()
         self.classes["structure"]["gate"][GateStructureFake2().get_name()] = GateStructureFake2()
 
-        self.classes["dressing"]["room"][RoomDressingFake1().get_name()] = RoomDressingFake1()
+        self.classes["dressing"]["brick"][RoomDressingFake1().get_name()] = RoomDressingFake1()
         self.classes["dressing"]["gate"][GateDressingFake1().get_name()] = GateDressingFake1()
 
         self.choice_selector = []
