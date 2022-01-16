@@ -20,6 +20,8 @@ class Room(Element):
     filename_map = {
         state.LevelState.Instantiated : "room-instantiated.json",
         state.LevelState.Personalized : "room-personalized.json",
+        state.LevelState.DressingInstantiated : "room-dressing-instantiated.json",
+        state.LevelState.DressingPersonalized : "room-dressing-personalized.json",
     }
 
     def __init__(self, level_directory, name, selector):

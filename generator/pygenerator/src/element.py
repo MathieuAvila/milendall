@@ -54,9 +54,9 @@ class Element():
         else:
             logger.info("No need to select dressing  class for element: %s", self.get_id())
 
-    def dressing_personalization(self, selector):
+    def dressing_personalization(self):
 
-        self.dressing = selector.get_dressing_from_name(
+        self.dressing = self.selector.get_dressing_from_name(
                 self.values.parameters.dressing_class,
                 self)
         if self.dressing is None:
@@ -72,4 +72,4 @@ class Element():
 
         self.values.dressing_private.update(self.values.dressing_parameters)
         logger.info("Run instantiation dressing parameters for element: %s", self.get_id())
-        self.dressing.instantiate(selector)
+        self.dressing.instantiate(self.selector)

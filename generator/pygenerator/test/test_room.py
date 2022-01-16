@@ -76,15 +76,29 @@ class TestRoom(unittest.TestCase):
         self.assertIsNotNone(loaded_room)
         loaded_room.load(state.LevelState.Instantiated)
         loaded_room.structure_personalization()
-        loaded_room.save("/tmp/test_01_personalize")
+        loaded_room.save("/tmp/test_01_structure_personalization")
 
-    def test_01_finalize(self):
-        """Test the instantiation algo using a fake selector"""
+    def test_01_dressing_instantiation(self):
+        """Test the dressing instantiation algo using a fake selector"""
         selector = selector_fake.SelectorFake()
-        loaded_room = room.Room("../test/test_samples/simple_instantiated/rooms-logic.json", selector)
+        loaded_room = room.Room("../test/test_samples/room/room_2b/", "room1", selector)
         self.assertIsNotNone(loaded_room)
-        loaded_room.instantiation()
-        loaded_room.finalize("/tmp/test_dressing")
+        loaded_room.load(state.LevelState.Instantiated)
+        loaded_room.structure_personalization()
+        loaded_room.dressing_instantiation()
+        loaded_room.save("/tmp/test_01_dressing_instantiation")
+
+    def test_01_dressing_finalization(self):
+        """Test the dressing personalization algo using a fake selector"""
+        selector = selector_fake.SelectorFake()
+        loaded_room = room.Room("../test/test_samples/room/room_2b/", "room1", selector)
+        self.assertIsNotNone(loaded_room)
+        loaded_room.load(state.LevelState.Instantiated)
+        loaded_room.structure_personalization()
+        loaded_room.dressing_instantiation()
+        loaded_room.dressing_personalization()
+        loaded_room.save("/tmp/test_01_dressing_finalization")
+
 
     def test_finalize(self):
         """Test the finalize"""
