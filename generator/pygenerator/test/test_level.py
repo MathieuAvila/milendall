@@ -78,7 +78,7 @@ class TestLevel(unittest.TestCase):
         loaded_level.save(output)
 
     def test_01_dressing_instantiation(self):
-        """Test the instantiation algo using a fake selector"""
+        """Test the dressing instantiation"""
         selector = selector_fake.SelectorFake()
         loaded_level = level.Level(selector)
         loaded_level.load("../test/test_samples/level/simple_1r_instantiated/", state.LevelState.Instantiated)
@@ -90,7 +90,7 @@ class TestLevel(unittest.TestCase):
         loaded_level.save(output)
 
     def test_01_dressing_personalization(self):
-        """Test the instantiation algo using a fake selector"""
+        """Test the dressng personalization algo"""
         selector = selector_fake.SelectorFake()
         loaded_level = level.Level(selector)
         loaded_level.load("../test/test_samples/level/simple_1r_instantiated/", state.LevelState.Instantiated)
@@ -101,6 +101,22 @@ class TestLevel(unittest.TestCase):
         output = "/tmp/simple_1r_instantiated"
         self.remake_dest(output)
         loaded_level.save(output)
+
+    def test_01_finalize(self):
+        """Test the finalize"""
+        selector = selector_fake.SelectorFake()
+        loaded_level = level.Level(selector)
+        loaded_level.load("../test/test_samples/level/simple_1r_instantiated/", state.LevelState.Instantiated)
+        self.assertIsNotNone(loaded_level)
+        loaded_level.structure_personalization()
+        loaded_level.dressing_instantiation()
+        loaded_level.dressing_personalization()
+        output = "/tmp/simple_1r_instantiated"
+        self.remake_dest(output)
+        loaded_level.save(output)
+        output = "/tmp/level-test_01_finalize"
+        loaded_level.finalize(output, True)
+
 
 
 if __name__ == '__main__':

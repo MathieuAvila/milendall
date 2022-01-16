@@ -61,4 +61,10 @@ class RoomSpec():
             self.room.load(state.LevelState.DressingInstantiated)
         self.room.dressing_personalization()
 
+    def finalize(self, output_directory, preview=False):
+        """Run the final process on the real room"""
+        if self.room is None:
+            self.room = room.Room(self.level_directory, self.values.room_id, self.selector)
+            self.room.load(state.LevelState.DressingPersonalized)
+        self.room.finalize(output_directory, preview)
 

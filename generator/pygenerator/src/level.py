@@ -192,7 +192,7 @@ class Level:
         level_content["game_type"] = self.values.game_type
         level_content["section"] = self.values.section
         for room in self.values.rooms:
-            level_content["rooms"].append({"room_id": room.get_id(), "name": room.values.name})
+            level_content["rooms"].append({"room_id": room.values.room_id, "name": room.values.name})
             room.finalize(output_directory, preview)
         level_json = json.dumps(level_content, indent=1)
         with open(level_file, "w") as output_file:
