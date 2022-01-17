@@ -11,6 +11,7 @@ import logging
 import selector_regular
 
 import level
+import state
 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
@@ -22,53 +23,26 @@ def my_help():
     print("generator.py : Integrated tool to build levels.")
     print("               It works at various layers of generation to help control the output")
     print()
-    print("generator.py strategy-create       -i level-directory")
-    print("   Create strategy file from general parameters")
+    print("Generation steps are: " + " ".join(state.LevelState.__members__.keys()))
     print()
-    print("generator.py strategy-level        -i level-directory")
-    print("   Create level skeleton based on strategy file")
-    print("   Input: strategy.json")
-    print("   Output: level-user.json")
+    print("generator.py level-directory [-h] [-o dir] [-f] [-s start_step] [-e end-step] [-r room] [-p] [-P] [-v]")
     print()
-    print("generator.py level-instantiation   -i level-directory")
-    print("   Complete level parameters based on level file")
-    print("   Input: level-user.json")
-    print("   Output: level-instance.json")
+    print("By default, it will generate all steps from the most advanced to")
+    print("the final one, and finish with generating the final content.")
     print()
-    print("generator.py room-instantiation    -i level-directory -r room-id")
-    print("   Instantiate a given room structure based on level file")
-    print("   Input: level-user.json      for room-id")
-    print("   Input: level-instance.json  for other rooms")
-    print("   Output: level-instance.json")
+    print("-h : This help text.")
+    print("-f : Force generation of the given steps, even if step is aleady generated.")
+    print("-o : Output directory.")
+    print("-s : Start at this step.")
+    print("-e : End at this step.")
+    print("-r : Only this room.")
+    print("-p : Generate intermediate previews for steps that provides them.")
+    print("-P : Only generate intermediate previews for steps that provides them.")
+    print("     Won't generate the steps themselves.")
+    print("-v : Increase verbosity")
     print()
-    print("generator.py level-graph           -i level-directory")
-    print("   Generate a graphviz representation of the level.")
-    print("   This will try to run 'dot -Tpng level.graph -olevel.png' to get a PNG image.")
-    print("   Input: level-user.json")
-    print("   Output: level.graph")
-    print("   Output: level.png")
-    print()
-    print("generator.py level-objects        -i level-directory")
-    print("   Fill objects for all rooms")
-    print("   Input: roomdress-$roomid.json")
-    print("   Output: roomfinal-$roomid.json (for each room)")
-    print()
-    print("generator.py room-objects        -i level-directory -r room-id")
-    print("   Fill objects for a given room")
-    print("   Input: roomdress-$roomid.json")
-    print("   Output: roomfinal-$roomid.json (for given room)")
-    print()
-    print("generator.py level-finalize     [-p,--preview]   -i level-directory")
-    print("   Generate final format. This generates gltf format files for rooms"
-          " with extra-metadata")
-    print("   If the dressing has not been done, work at the structure level (ugly)")
-    print("   Input: roomdress-$roomid.json")
-    print("   Output: roomfinal-$roomid.json (for each room)")
-    print()
-    print("generator.py room-finalize        -i level-directory -r room-id")
-    print("   Generate a visual representation of a given room at the dressing or structure level.")
-    print("   If the dressing phase has not been done, will generate visual based on structure.")
-    print("   This is helpful to check that structure is fine before choosing dressing.")
+
+
     sys.exit(0)
 
 def check_level(directory, filename):
@@ -90,56 +64,90 @@ def check_level_instance(directory):
     return check_level(directory,"level-instance.json")
 
 def main(argv):
-    """
-    when called from outside
-    """
-    directory = ""
-    room = ""
+
     preview = False
+    force = False
+    only_preview = False
+    start_step = None
+    end_step = None
+    output_dir = None
+
     try:
-        opts,args = getopt.getopt(argv,"hvi:r:p",["directory=","room="])
+        opts,args = getopt.getopt(argv,"ho:fs:e:r:pPv")
     except getopt.GetoptError:
-        help()
+        my_help()
     for opt, arg in opts:
         if opt == '-h':
             my_help()
-        elif opt in ("-i", "--directory"):
-            directory = arg
-        elif opt in ("-r", "--room"):
+        elif opt in ("-o"):
+            output_dir = arg
+            print("Option: Output set to: %s" % output_dir)
+        elif opt in ("-r"):
             room = arg
-        elif opt in ("-p", "--preview"):
+        elif opt in ("-s"):
+            start_step = arg
+        elif opt in ("-e"):
+            end_step = arg
+        elif opt in ("-f"):
+            force = True
+            print("Option: Force generation.")
+        elif opt in ("-p"):
             preview = True
-        elif opt in ("-v", "--verbose"):
+        elif opt in ("-P"):
+            only_preview = True
+        elif opt in ("-v"):
             logging.getLogger().setLevel(logging.DEBUG)
             logging.debug("Set verbose to debug")
 
-    #print('Input directory is "%s"' % directory)
-    #print('Selected room is "%s"' % room)
-
     if len(args) != 1:
-        print("Error, expected action. See --help for info.")
+        print("Error, expected level directory. See --help for info.")
         sys.exit(1)
-    action = args[0]
+    directory = args[0]
+    if output_dir is None:
+        output_dir = directory
 
-    if action == "level-graph":
-        loaded_level = check_level_user(directory)
-        graph_file = directory + "/level.graph"
-        png_file = directory + "/level.png"
-        loaded_level.dump_graph(graph_file)
-        os.system("dot -Tpng " + graph_file + " -o" + png_file)
-    elif action == "level-instantiation":
-        loaded_level = check_level_user(directory)
-        loaded_level.instantiation()
-        loaded_level.save(directory + "/level-instance.json")
-        #print(loaded_level.dump_json() + "\n")
-    elif action == "level-finalize":
-        loaded_level = check_level_instance(directory)
-        loaded_level.finalize(directory, preview)
-    else:
-        print("Error, action '" + action + "' unknown. See --help for info.")
+    selector = selector_regular.SelectorRegular()
+    my_level = level.Level(selector)
+    try:
+        states = my_level.read_state_list(directory)
+    except Exception as e:
+        print("Invalid directory or unreadable level state. ERROR=%s" % str(e))
+        sys.exit(1)
+    print("Level has states: %s" % states)
+
+    if start_step is None:
+        start_step = max(states.current)
+    if end_step is None:
+        end_step = state.LevelState.Finalize
+    print("Need to open at step:%s and generate up to:%s" % (start_step.name, end_step.name))
+
+    try:
+        my_level.load(directory, start_step)
+    except Exception as e:
+        print("Unable to load level at this step. ERROR=%s" % str(e))
         sys.exit(1)
 
-    #print(l.dump_json() + "\n")
+    for step in state.LevelState:
+        if step > start_step and step <= end_step:
+            print("Apply step: %s" % step.name)
+            if states.has_state(step) and not force:
+                print("Step is already generated, and force is not set. Will exit.")
+                sys.exit(1)
+            if step == state.LevelState.Instantiated:
+                print("Dunno how to generate this. Exit.")
+                sys.exit(1)
+            elif step == state.LevelState.Personalized:
+                my_level.structure_personalization()
+                my_level.save(output_dir)
+            elif step == state.LevelState.DressingInstantiated:
+                my_level.dressing_instantiation()
+                my_level.save(output_dir)
+            elif step == state.LevelState.DressingPersonalized:
+                my_level.dressing_personalization()
+                my_level.save(output_dir)
+            elif step == state.LevelState.Finalize:
+                my_level.finalize(output_dir, preview)
+                my_level.save(output_dir)
 
 
 

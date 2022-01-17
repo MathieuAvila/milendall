@@ -38,6 +38,8 @@ class Level:
     status_to_filename = {
         state.LevelState.Personalized : FILENAME_PERSONALIZED,
         state.LevelState.Instantiated : FILENAME_INSTANTIATED,
+        state.LevelState.DressingInstantiated : FILENAME_INSTANTIATED,
+        state.LevelState.DressingPersonalized : FILENAME_INSTANTIATED,
     }
 
     def __init__(self, _selector):
@@ -45,6 +47,9 @@ class Level:
         self.status = state.LevelState.New
         self.selector = _selector
         self.state = state.StateList()
+
+    def read_state_list(self, directory):
+        return state.StateList(directory + "/state.txt")
 
     def load(self, directory, load_state):
         self.directory = directory
@@ -67,9 +72,12 @@ class Level:
             raise Exception("Unable to save a new level.")
         else:
             filename = directory + "/" + self.status_to_filename[self.status]
+        pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
         with open(filename, "w") as output_file:
             _j = json_helper.dump_json(self)
             output_file.write(_j)
+        for _room in self.values.rooms:
+            _room.save(directory)
         self.state.save(directory + "/state.txt")
 
     def dump_graph(self, filename):
@@ -144,19 +152,13 @@ class Level:
                     _room.values.dressing_class,
                     _room)
 
-    def _element_personalization(self, _element):
-        _element.structure_personalization()
-
     def structure_personalization(self):
         """ 1. For each gate, choose gate format if not already done
             2. Instantiate each room if not already done"""
         for _element in self.values.gates + self.values.rooms:
-            self._element_personalization(_element)
-
-    def element_personalization(self, _id):
-        """ wrapper to _element_instantiation, with ID name resolved"""
-        element = None
-        self._element_personalization(element)
+            _element.structure_personalization()
+        self.state.add_state(state.LevelState.DressingPersonalized)
+        self.status = state.LevelState.DressingPersonalized
 
     def objects(self):
         """ Place objects in room acording to specs"""
@@ -169,12 +171,16 @@ class Level:
             2. Instantiate each room if not already done"""
         for _element in self.values.gates + self.values.rooms:
             _element.dressing_instantiation()
+        self.state.add_state(state.LevelState.DressingInstantiated)
+        self.status = state.LevelState.DressingInstantiated
 
     def dressing_personalization(self):
         """ 1. For each gate, choose gate format if not already done
             2. Instantiate each room if not already done"""
         for _element in self.values.gates + self.values.rooms:
             _element.dressing_personalization()
+        self.state.add_state(state.LevelState.DressingPersonalized)
+        self.status = state.LevelState.DressingPersonalized
 
     def finalize(self, output_directory, preview=False):
         """ Finalize level, generate final output data"""

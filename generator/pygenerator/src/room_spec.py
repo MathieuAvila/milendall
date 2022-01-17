@@ -46,6 +46,7 @@ class RoomSpec():
             self.room = room.Room(self.level_directory, self.values.room_id, self.selector)
             self.room.load(state.LevelState.Instantiated)
         self.room.structure_personalization()
+        self.state = state.LevelState.Personalized
 
     def dressing_instantiation(self):
         """Run the brick personalization process on the real room"""
@@ -53,6 +54,7 @@ class RoomSpec():
             self.room = room.Room(self.level_directory, self.values.room_id, self.selector)
             self.room.load(state.LevelState.Personalized)
         self.room.dressing_instantiation()
+        self.state = state.LevelState.DressingInstantiated
 
     def dressing_personalization(self):
         """Run the brick personalization process on the real room"""
@@ -60,6 +62,7 @@ class RoomSpec():
             self.room = room.Room(self.level_directory, self.values.room_id, self.selector)
             self.room.load(state.LevelState.DressingInstantiated)
         self.room.dressing_personalization()
+        self.state = state.LevelState.DressingPersonalized
 
     def finalize(self, output_directory, preview=False):
         """Run the final process on the real room"""
@@ -68,3 +71,6 @@ class RoomSpec():
             self.room.load(state.LevelState.DressingPersonalized)
         self.room.finalize(output_directory, preview)
 
+    def save(self, output_directory):
+        if self.room is not None:
+            self.room.save(output_directory)
