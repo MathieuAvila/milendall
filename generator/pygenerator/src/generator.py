@@ -93,7 +93,9 @@ def main(argv):
             print("Option: Force generation.")
         elif opt in ("-p"):
             preview = True
+            print("Option: Preview")
         elif opt in ("-P"):
+            print("Option: Only preview")
             only_preview = True
         elif opt in ("-v"):
             logging.getLogger().setLevel(logging.DEBUG)
@@ -133,21 +135,13 @@ def main(argv):
             if states.has_state(step) and not force:
                 print("Step is already generated, and force is not set. Will exit.")
                 sys.exit(1)
-            if step == state.LevelState.Instantiated:
-                print("Dunno how to generate this. Exit.")
-                sys.exit(1)
-            elif step == state.LevelState.Personalized:
-                my_level.structure_personalization()
+            if not only_preview:
+                my_level.run_step(step)
                 my_level.save(output_dir)
-            elif step == state.LevelState.DressingInstantiated:
-                my_level.dressing_instantiation()
-                my_level.save(output_dir)
-            elif step == state.LevelState.DressingPersonalized:
-                my_level.dressing_personalization()
-                my_level.save(output_dir)
-            elif step == state.LevelState.Finalize:
-                my_level.finalize(output_dir, preview)
-                my_level.save(output_dir)
+                if step == state.LevelState.Finalize:
+                    my_level.finalize(output_dir, preview)
+            if preview or only_preview:
+                my_level.preview(output_dir)
 
 
 

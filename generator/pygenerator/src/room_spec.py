@@ -28,7 +28,7 @@ class RoomSpec():
 
     def dump_graph(self, output):
         """
-        dump a graphviz repr of a room
+        dump a graphviz repr of a room, only spec part
         """
 
         label = self.values.room_id
@@ -39,6 +39,14 @@ class RoomSpec():
         if self.values.dressing_class is not None:
             label += "<BR/><I>D: "+ self.values.dressing_class + "</I>"
         output.write('"' + self.values.room_id +'" ' + '[ label=< ' + label+ ' > ] ;\n')
+
+    def dump_graph_rooms(self, output):
+        """
+        dump a graphviz repr of a room, only real rooms (bricks)
+        """
+        if self.room is None:
+            self.room = room.Room(self.level_directory, self.values.room_id, self.selector)
+            # TODO : dump
 
     def structure_personalization(self):
         """Run the brick personalization process on the real room"""

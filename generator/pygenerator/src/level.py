@@ -42,6 +42,16 @@ class Level:
         state.LevelState.DressingPersonalized : FILENAME_INSTANTIATED,
     }
 
+    DUMP_INSTANTIATED = "dump-instantiated.graph"
+    DUMP_PERSONALIZED = "dump-personalized.graph"
+
+    status_to_dump_graph = {
+        state.LevelState.Instantiated : DUMP_INSTANTIATED,
+        state.LevelState.Personalized : DUMP_PERSONALIZED,
+        state.LevelState.DressingInstantiated : DUMP_PERSONALIZED,
+        state.LevelState.DressingPersonalized : DUMP_PERSONALIZED,
+    }
+
     def __init__(self, _selector):
 
         self.status = state.LevelState.New
@@ -80,17 +90,19 @@ class Level:
             _room.save(directory)
         self.state.save(directory + "/state.txt")
 
-    def dump_graph(self, filename):
+    def dump_graph(self, output_dir):
         """ Dump a file in graphviz format that allows to graphically visualize
             level"""
-        with open(filename, "w") as output_file:
+        output_file = output_dir + "/" + self.status_to_dump_graph[self.status]
+        with open(output_file, "w") as output_file:
             output_file.write("digraph g {\n")
             output_file.write("node [shape=box];\n")
             for _r in self.values.rooms:
                 _r.dump_graph(output_file)
-            for _g in self.values.gates:
-                _g.dump_graph(output_file)
             output_file.write("}\n")
+        if self.status >= state.LevelState.Instantiated:
+            for _room in self.values.rooms:
+                _room.dump_graph_rooms(output_dir)
 
     def _check_parameter_presence(self, element, structure_type, parameter_name):
         """Check a parameter is present"""
@@ -158,7 +170,7 @@ class Level:
         for _element in self.values.gates + self.values.rooms:
             _element.structure_personalization()
         self.state.add_state(state.LevelState.DressingPersonalized)
-        self.status = state.LevelState.DressingPersonalized
+        self.status = state.LevelState.Personalized
 
     def objects(self):
         """ Place objects in room acording to specs"""
@@ -181,6 +193,26 @@ class Level:
             _element.dressing_personalization()
         self.state.add_state(state.LevelState.DressingPersonalized)
         self.status = state.LevelState.DressingPersonalized
+
+    def run_step(self, to_state):
+        if to_state != self.status + 1:
+            raise("Invalid state to run from %s" % self.status)
+        if to_state == state.LevelState.Personalized:
+            self.structure_personalization()
+        elif to_state == state.LevelState.DressingInstantiated:
+            self.dressing_instantiation()
+        elif to_state == state.LevelState.DressingPersonalized:
+            self.dressing_personalization()
+        elif to_state == state.LevelState.Finalize:
+            pass
+        else:
+            raise("Don't know how to reach state: %s" % to_state)
+
+    def preview(self, output_directory):
+        if self.status == state.LevelState.Finalize:
+            self.finalize(self, output_directory, True)
+        else:
+            self.dump_graph(output_directory)
 
     def finalize(self, output_directory, preview=False):
         """ Finalize level, generate final output data"""
