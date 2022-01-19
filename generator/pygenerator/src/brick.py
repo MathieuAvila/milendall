@@ -33,6 +33,3 @@ class Brick(Element):
         if self.values.dressing_class is not None:
             label += "<BR/><I>D: "+ self.values.dressing_class + "</I>"
         output.write('"' + self.values.b_id +'" ' + '[ label=< ' + label+ ' > ] ;\n')
-
-    def finalize(self, concrete, preview=False):
-        """ Perform final generate and dressing on one brick."""

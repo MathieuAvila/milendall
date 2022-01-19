@@ -50,10 +50,10 @@ class ElementalStructure():
 
     def instantiate_defaults(self):
         """Instantiate default values"""
-        if self._element.values.structure_private is None:
-            self._element.values.structure_private = {}
+        if self._element.values.parameters.structure_private is None:
+            self._element.values.parameters.structure_private = {}
             logger.info("Create private parameters for element: %s", self._element.get_id())
-        if self._element.values.structure_parameters is None:
-            self._element.values.structure_parameters = {}
+        if self._element.values.parameters.structure_parameters is None:
+            self._element.values.parameters.structure_parameters = {}
             logger.info("Create structure parameters for element: %s", self._element.get_id())
-        self._element.values.structure_private.update(self._element.values.structure_parameters)
+        self._element.values.parameters.structure_private.update(self._element.values.parameters.structure_parameters)

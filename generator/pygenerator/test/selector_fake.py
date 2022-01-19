@@ -9,6 +9,9 @@ from gate_structure import GateStructure
 from dressing import Dressing
 import concrete_room
 
+logger = logging.getLogger("fake")
+logger.setLevel(logging.INFO)
+
 class GateStructureFake1(GateStructure):
 
     _name = "gate_structure_1"
@@ -39,6 +42,7 @@ class GateStructureFake1(GateStructure):
 
     def generate(self, concrete):
         """generate 1 structure triangle to be able to check validity"""
+        logger.info("Called generate")
         parent = concrete.add_child(self.gate.values.gate_id, self.gate.values.gate_id + "_impl")
         index0 = parent.add_structure_points([ cgtypes.vec3(3), cgtypes.vec3(4), cgtypes.vec3(5) ])
         parent.add_structure_faces(
@@ -118,10 +122,8 @@ class BrickStructureFake1(BrickStructure):
         """ force set values:
         - set values to room size
         - set values for gates"""
-        self.room.values.structure_private={}
-        self.room.values.structure_private["size"] = [10.0,10.0,2.5]
-        #for gate in self.room.gates:
-        #    logging.info("My gate")
+        self.room.values.parameters.structure_private={}
+        self.room.values.parameters.structure_private["size"] = [10.0,10.0,2.5]
 
     def check_structure(self):
         """same as main"""

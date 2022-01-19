@@ -109,9 +109,8 @@ class Room(Element):
 
         concrete = concrete_room.ConcreteRoom()
 
-        #self.structure.generate(concrete)
-        #self.dressing.generate(concrete)
         for brick in self.values["bricks"]:
+            logger.info("in brick %s" % brick.values.b_id)
             brick.finalize(concrete)
 
         #for gate in self.gates:

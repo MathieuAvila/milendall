@@ -71,38 +71,55 @@ class TestRoom(unittest.TestCase):
 
     def test_01_structure_personalization(self):
         """Test the personalization algo using a fake selector"""
+        my_test_dir = "/tmp/test_01_structure_personalization"
+        self.remake_dest(my_test_dir)
         selector = selector_fake.SelectorFake()
         loaded_room = room.Room("../test/test_samples/room/room_2b/", "room1", selector)
         self.assertIsNotNone(loaded_room)
         loaded_room.load(state.LevelState.Instantiated)
         loaded_room.structure_personalization()
-        loaded_room.save("/tmp/test_01_structure_personalization")
+        loaded_room.save(my_test_dir)
 
     def test_01_dressing_instantiation(self):
         """Test the dressing instantiation algo using a fake selector"""
+        my_test_dir = "/tmp/test_01_dressing_instantiation"
+        self.remake_dest(my_test_dir)
         selector = selector_fake.SelectorFake()
         loaded_room = room.Room("../test/test_samples/room/room_2b/", "room1", selector)
         self.assertIsNotNone(loaded_room)
         loaded_room.load(state.LevelState.Instantiated)
         loaded_room.structure_personalization()
         loaded_room.dressing_instantiation()
-        loaded_room.save("/tmp/test_01_dressing_instantiation")
+        loaded_room.save(my_test_dir)
 
-    def test_01_dressing_finalization(self):
+    def test_01_dressing_personalization(self):
         """Test the dressing personalization algo using a fake selector"""
         selector = selector_fake.SelectorFake()
+        my_test_dir = "/tmp/test_01_dressing_personalization"
+        self.remake_dest(my_test_dir)
         loaded_room = room.Room("../test/test_samples/room/room_2b/", "room1", selector)
         self.assertIsNotNone(loaded_room)
         loaded_room.load(state.LevelState.Instantiated)
         loaded_room.structure_personalization()
         loaded_room.dressing_instantiation()
         loaded_room.dressing_personalization()
-        loaded_room.save("/tmp/test_01_dressing_finalization")
+        loaded_room.save(my_test_dir)
 
 
-    def test_finalize(self):
+    def test_01_finalize(self):
         """Test the finalize"""
-        # todo: for real
+        """Test the dressing personalization algo using a fake selector"""
+        selector = selector_fake.SelectorFake()
+        my_test_dir = "/tmp/test_01_finalize"
+        self.remake_dest(my_test_dir)
+        loaded_room = room.Room("../test/test_samples/room/room_2b/", "room1", selector)
+        self.assertIsNotNone(loaded_room)
+        loaded_room.load(state.LevelState.Instantiated)
+        loaded_room.structure_personalization()
+        loaded_room.dressing_instantiation()
+        loaded_room.dressing_personalization()
+        loaded_room.save(my_test_dir)
+        loaded_room.finalize(my_test_dir)
 
 
 if __name__ == '__main__':

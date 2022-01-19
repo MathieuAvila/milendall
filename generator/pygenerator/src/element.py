@@ -73,3 +73,18 @@ class Element():
         self.values.dressing_private.update(self.values.dressing_parameters)
         logger.info("Run instantiation dressing parameters for element: %s", self.get_id())
         self.dressing.instantiate(self.selector)
+
+
+    def finalize(self, concrete):
+        """ Perform final generate and dressing on one room. This is specific to a room
+        and builds all intermediate gates when needed."""
+
+        logger.info("Called generate for: %s", self.get_id())
+        self.structure = self.selector.get_structure_from_name(
+                self.values.parameters.structure_class,
+                self)
+        self.structure.generate(concrete)
+        self.dressing = self.selector.get_dressing_from_name(
+                self.values.parameters.dressing_class,
+                self)
+        self.dressing.generate(concrete)
