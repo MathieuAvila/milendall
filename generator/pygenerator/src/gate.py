@@ -1,13 +1,21 @@
 """ Definition of a gate"""
 
 from munch import DefaultMunch
+import logging
 
 from element import Element
 
+logger = logging.getLogger("gate")
+logger.setLevel(logging.INFO)
+
 class Gate(Element):
 
-    def __init__(self, values):
+    def __init__(self, values, level_directory, state, selector):
         self.values = DefaultMunch.fromDict(values)
+        self.state = state
+        self.selector = selector
+        self.level_directory = level_directory
+        logger.info("New gate %s from %s" % (self.values.gate_id, self.level_directory) )
 
     def get_class(self):
         """ get my class for selector"""

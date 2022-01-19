@@ -25,7 +25,7 @@ def decode_level(level_directory, state, selector):
         if 'room_id' in dct:
             return room_spec.RoomSpec(dct, level_directory, state, selector)
         if 'gate_id' in dct:
-            return gate.Gate(dct)
+            return gate.Gate(dct, level_directory, state, selector)
         return dct
 
     return _decode_level
