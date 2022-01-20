@@ -10,13 +10,6 @@
                 "$ref": "brick.json"
             }
         },
-        "gates": {
-            "description": "The list of gates that the room contains",
-            "type": "array",
-            "items": {
-                "$ref": "gate_id_room.json"
-            }
-        },
         "$schema": {
             "type": "string"
         },

@@ -63,14 +63,14 @@ class TestLevel(unittest.TestCase):
         """ test loading and saving a level with 1 room"""
         selector = selector_fake.SelectorFake()
         loaded_level = level.Level(selector)
-        loaded_level.load("../test/test_samples/level/simple_1r_instantiated", state.LevelState.Instantiated)
+        loaded_level.load("../test/test_samples/level/simple_1r_0b_instantiated", state.LevelState.Instantiated)
         self.assertIsNotNone(loaded_level)
 
     def test_01_structure_personalization(self):
         """Test the instantiation algo using a fake selector"""
         selector = selector_fake.SelectorFake()
         loaded_level = level.Level(selector)
-        loaded_level.load("../test/test_samples/level/simple_1r_instantiated/", state.LevelState.Instantiated)
+        loaded_level.load("../test/test_samples/level/simple_1r_0b_instantiated/", state.LevelState.Instantiated)
         self.assertIsNotNone(loaded_level)
         loaded_level.structure_personalization()
         output = "/tmp/simple_1r_instantiated"
@@ -81,7 +81,7 @@ class TestLevel(unittest.TestCase):
         """Test the dressing instantiation"""
         selector = selector_fake.SelectorFake()
         loaded_level = level.Level(selector)
-        loaded_level.load("../test/test_samples/level/simple_1r_instantiated/", state.LevelState.Instantiated)
+        loaded_level.load("../test/test_samples/level/simple_1r_0b_instantiated/", state.LevelState.Instantiated)
         self.assertIsNotNone(loaded_level)
         loaded_level.structure_personalization()
         loaded_level.dressing_instantiation()
@@ -93,7 +93,7 @@ class TestLevel(unittest.TestCase):
         """Test the dressng personalization algo"""
         selector = selector_fake.SelectorFake()
         loaded_level = level.Level(selector)
-        loaded_level.load("../test/test_samples/level/simple_1r_instantiated/", state.LevelState.Instantiated)
+        loaded_level.load("../test/test_samples/level/simple_1r_0b_instantiated/", state.LevelState.Instantiated)
         self.assertIsNotNone(loaded_level)
         loaded_level.structure_personalization()
         loaded_level.dressing_instantiation()
@@ -106,7 +106,7 @@ class TestLevel(unittest.TestCase):
         """Test the finalize"""
         selector = selector_fake.SelectorFake()
         loaded_level = level.Level(selector)
-        loaded_level.load("../test/test_samples/level/simple_1r_instantiated/", state.LevelState.Instantiated)
+        loaded_level.load("../test/test_samples/level/simple_1r_0b_instantiated/", state.LevelState.Instantiated)
         self.assertIsNotNone(loaded_level)
         loaded_level.structure_personalization()
         loaded_level.dressing_instantiation()
