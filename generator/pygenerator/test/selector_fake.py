@@ -137,6 +137,9 @@ class BrickStructureFake1(BrickStructure):
     def generate(self, concrete):
         """generate 1 structure triangle to be able to check validity"""
         parent = concrete.add_child(None, "parent")
+        if "pads" in self.room.values:
+            for pad in self.room.values.pads:
+                concrete.add_child("parent", pad.pad_id)
         index0 = parent.add_structure_points([ cgtypes.vec3(0), cgtypes.vec3(1), cgtypes.vec3(2) ])
         parent.add_structure_faces(
             index0,
