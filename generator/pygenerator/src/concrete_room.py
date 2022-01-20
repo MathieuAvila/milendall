@@ -9,6 +9,7 @@ should be sufficient to reconstruct a full one.
 However, it can be dumped to a file to ease debugging of rooms/gates/objects
 """
 
+from asyncio.log import logger
 import logging
 import json
 import itertools
@@ -356,6 +357,18 @@ class ConcreteRoom:
     def merge(self, other_room):
         self.objects.extend(other_room.objects)
         self.animations.extend(other_room.animations)
+
+    def append_prefix(self, prefix):
+        """For every object, set a prefix to its name"""
+        for o in self.objects:
+            o.name = "%s%s" % (prefix, o.name)
+
+    def set_root(self, root_id):
+        """For every object that has a void parent, set its parent to root_id"""
+        for o in self.objects:
+            logger.info("o parent: %s" , o.parent)
+            if o.parent is None:
+                o.parent = root_id
 
     def generate_gravity(self, gravity_list, directory):
         """

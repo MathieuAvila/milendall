@@ -770,8 +770,39 @@ class TestConcreteRoomImpl(unittest.TestCase):
                     'is_box_mode_enter': True,
                     'target_value': True
                 }
-            ]
-)
+            ])
+
+    def test_set_root_node(self):
+        """Test setting the root node for all children that don't have a parent"""
+        room = concrete_room.ConcreteRoom()
+        parent1 = room.add_child(None, "parent1")
+        child1_1 = room.add_child("parent1", "child1_1")
+        self.assertIsNotNone(parent1)
+        self.assertIsNotNone(child1_1)
+
+        room.set_root("my_parent")
+        self.assertEqual(room.objects[0].parent, "my_parent")
+        self.assertEqual(room.objects[1].parent, "parent1")
+
+    def test_append_prefix(self):
+        """Test setting a prefix to all nodes"""
+        room = concrete_room.ConcreteRoom()
+        parent1 = room.add_child(None, "parent1")
+        parent2 = room.add_child(None, "parent2")
+        child2_1 = room.add_child("parent2", "child2_1")
+        child2_2 = room.add_child("parent2", "child2_2")
+        self.assertIsNotNone(parent1)
+        self.assertIsNotNone(parent2)
+        self.assertIsNotNone(child2_1)
+        self.assertIsNotNone(child2_2)
+
+        room.append_prefix("prefix:")
+        self.assertEqual(room.objects[0].name, "prefix:parent1")
+        self.assertEqual(room.objects[1].name, "prefix:parent2")
+        self.assertEqual(room.objects[2].name, "prefix:child2_1")
+        self.assertEqual(room.objects[3].name, "prefix:child2_2")
+
+
 
 
 if __name__ == '__main__':
