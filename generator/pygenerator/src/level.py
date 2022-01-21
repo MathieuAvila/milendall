@@ -219,16 +219,24 @@ class Level:
         self.dressing_check_coherency()
         pathlib.Path(output_directory).mkdir(parents=True, exist_ok=True)
         level_file = output_directory + "/level.json"
-        schema = os.path.realpath(os.getcwd() + "/../../schema/final.level.schema.json")
+        schema = os.path.realpath(os.getcwd() + "/../../schema/file_final_level.json")
         level_content = {
-                "$schema" : schema,
-                "version": "1.0",
-                "rooms" : [],
-                "section" : "",
-                "game_type" : {}
+            "$schema" : schema,
+            "version": "1.0",
+            "rooms" : [],
+            "declarations": {
+                "section": "",
+                "game_type": {
+                    "single_mode": {
+                        "end_point_room": "room1",
+                        "entry_point_position": [],
+                        "entry_point_room": "room1",
+                        "execution_time": 0
+                    }
+                },
             }
-        level_content["game_type"] = self.values.game_type
-        level_content["section"] = self.values.section
+        }
+        level_content["declarations"] = self.values.declarations
         for room in self.values.rooms:
             level_content["rooms"].append({"room_id": room.values.room_id, "name": room.values.name})
             room.finalize(output_directory, preview)

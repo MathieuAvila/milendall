@@ -4,7 +4,6 @@
 
 
     "properties": {
-        "name": { "$ref": "common.json#definitions/name" },
         "$schema": {
             "type": "string",
             "description": "Link to this schema"
@@ -13,7 +12,7 @@
             "type": "string",
             "description": "compatibility version number"
         },
-        "declarations" : {"$ref": "level_declaration"},
+        "declarations" : {"$ref": "level_declaration.json"},
         "rooms": {
             "type": "array",
             "items": {
@@ -36,7 +35,6 @@
         }
     },
     "required": [
-        "name",
         "version",
         "declarations",
         "rooms"

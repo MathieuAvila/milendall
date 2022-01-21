@@ -11,6 +11,7 @@ import jsonschema
 import state
 import pathlib
 import shutil
+import json_helper
 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
@@ -111,11 +112,15 @@ class TestLevel(unittest.TestCase):
         loaded_level.structure_personalization()
         loaded_level.dressing_instantiation()
         loaded_level.dressing_personalization()
-        output = "/tmp/simple_1r_instantiated"
+        output = "/tmp/test_01_finalize"
         self.remake_dest(output)
         loaded_level.save(output)
-        output = "/tmp/level-test_01_finalize"
         loaded_level.finalize(output, True)
+        # now check validity of level file
+        obj = json_helper.load_and_validate_json(
+            output + "/level.json",
+            "file_final_level.json")
+
 
 
 
