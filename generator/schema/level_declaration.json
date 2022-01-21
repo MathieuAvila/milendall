@@ -37,7 +37,8 @@
                     "required": [
                         "execution_time",
                         "entry_point_room",
-                        "end_point_room"
+                        "end_point_room",
+                        "entry_point_position"
                     ],
                     "additionalProperties": false
                 }
