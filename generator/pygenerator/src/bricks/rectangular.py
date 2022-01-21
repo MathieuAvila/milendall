@@ -54,7 +54,7 @@ class BrickRectangular(BrickStructure):
         """ force set values:
         - set values to room size
         - set values for gates"""
-        structure_parameters = self._element.values.structure_parameters
+        structure_parameters = self._element.values.parameters.structure_parameters
 
         my_default= {}
 
@@ -96,14 +96,14 @@ class BrickRectangular(BrickStructure):
         if "setup" not in my_default:
             my_default["setup"] = [ [],[],[],[],[] ] # x0, x1, y0, y1
             setup = my_default["setup"]
-            for gate in self._element.gates:
-                pos = selector.get_random_int(0, 3)
-                pre = selector.get_random_float(gate_pre_post_range[0][0], gate_pre_post_range[0][1])
-                post =  selector.get_random_float(gate_pre_post_range[1][0], gate_pre_post_range[1][1])
-                setup[pos].append({"gate": gate.get_id(), "pre":pre, "post":post})
+            #for gate in self._element.gates:
+            #    pos = selector.get_random_int(0, 3)
+            #    pre = selector.get_random_float(gate_pre_post_range[0][0], gate_pre_post_range[0][1])
+            #    post =  selector.get_random_float(gate_pre_post_range[1][0], gate_pre_post_range[1][1])
+            #    setup[pos].append({"gate": gate.get_id(), "pre":pre, "post":post})
 
-        self._element.values.structure_private = merge( my_default, structure_parameters)
-        structure_private = self._element.values.structure_private
+        self._element.values.parameters.structure_private = merge( my_default, structure_parameters)
+        structure_private = self._element.values.parameters.structure_private
 
         logging.info("setup: %s", str(structure_private["setup"]))
         logging.info("height_over_gate_range: %s", str(structure_private["height_over_gate_range"]))
@@ -113,7 +113,7 @@ class BrickRectangular(BrickStructure):
 
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""
-        structure_private = self._element.values.structure_private
+        structure_private = self._element.values.parameters.structure_private
         wall_pre_post = structure_private["wall_pre_post"]
         setup = structure_private["setup"]
 
