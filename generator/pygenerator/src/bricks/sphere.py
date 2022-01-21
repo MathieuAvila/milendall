@@ -8,7 +8,7 @@ import concrete_room
 import cgtypes.vec3
 import cgtypes.mat4
 
-from .register import register_room_type
+from .register import register_brick_type
 
 from math import *
 
@@ -198,4 +198,4 @@ class BrickSphere(BrickStructure):
 
 
 
-register_room_type(BrickSphere())
+register_brick_type(BrickSphere())

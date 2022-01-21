@@ -10,7 +10,7 @@ import cgtypes.mat4
 
 from gltf_helper import vec4_to_vec3
 
-from .register import register_room_type
+from .register import register_brick_type
 
 from jsonmerge import merge
 
@@ -283,4 +283,4 @@ class BrickRectangular(BrickStructure):
 
 
 
-register_room_type(BrickRectangular())
+register_brick_type(BrickRectangular())

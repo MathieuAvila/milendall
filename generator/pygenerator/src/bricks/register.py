@@ -1,10 +1,10 @@
-"""automatically import all rooms"""
+"""automatically import all bricks"""
 
 import logging
 
 brickTypes = {}
 
-def register_room_type(obj):
-    """Registering a room"""
+def register_brick_type(obj):
+    """Registering a brick"""
     brickTypes[obj.get_name()] = obj
-    logging.debug("Registering room %s", obj.get_name())
+    logging.info("Registering brick %s", obj.get_name())

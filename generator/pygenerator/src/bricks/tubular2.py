@@ -9,7 +9,7 @@ import cgtypes.vec3
 import cgtypes.mat4
 import math
 
-from .register import register_room_type
+from .register import register_brick_type
 
 from math import *
 
@@ -233,4 +233,4 @@ class BrickTubular2(BrickStructure):
             is_first = False
 
 
-register_room_type(BrickTubular2())
+register_brick_type(BrickTubular2())

@@ -13,16 +13,16 @@ from dressings import register as dressing_register
 class SelectorRegular(Selector):
 
     def __init__(self):
-        self.classes["structure"]["room"] = room_register.brickTypes
+        self.classes["structure"]["brick"] = room_register.brickTypes
         self.classes["structure"]["gate"] = gate_register.gateTypes
         # todo: differentiate gates and rooms dressing
-        self.classes["dressing"]["room"] = dressing_register.dressingTypes
+        self.classes["dressing"]["brick"] = dressing_register.dressingTypes
         self.classes["dressing"]["gate"] = dressing_register.dressingTypes
 
-        #logging.info("Room structure list is: %s", " ".join(self.classes["structure"]["room"]) )
-        #logging.info("Gate structure list is: %s", " ".join(self.classes["structure"]["gate"]) )
-        #logging.info("Room dressing list is: %s", " ".join(self.classes["dressing"]["room"]) )
-        #logging.info("Gate dressing list is: %s", " ".join(self.classes["dressing"]["gate"]) )
+        logging.info("Room structure list is: %s", " ".join(self.classes["structure"]["brick"]) )
+        logging.info("Gate structure list is: %s", " ".join(self.classes["structure"]["gate"]) )
+        logging.info("Room dressing list is: %s", " ".join(self.classes["dressing"]["brick"]) )
+        logging.info("Gate dressing list is: %s", " ".join(self.classes["dressing"]["gate"]) )
 
     def get_random_choice(self, l):
         return random.choice(l)
