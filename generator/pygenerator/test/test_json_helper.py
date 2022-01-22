@@ -28,7 +28,7 @@ class TestJsonHelper(unittest.TestCase):
         has_error = False
         try:
             json_helper.load_and_validate_json("../test/test_samples/json/valid_simple.json", "event.json")
-        except jsonschema.exceptions.ValidationError:
+        except jsonschema.exceptions.ValidationError as e:
             print("EXCEPTION %s" % repr(e))
             has_error = True
         self.assertFalse(has_error)
