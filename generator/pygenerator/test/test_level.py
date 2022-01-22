@@ -23,7 +23,7 @@ class TestLevel(unittest.TestCase):
         shutil.rmtree(dir)
         pathlib.Path(dir).mkdir(parents=True, exist_ok=True)
 
-    def test_invalid_level(self):
+    def test_01_load_invalid_level(self):
         """ test loading an invalid level"""
         selector = selector_fake.SelectorFake()
         loaded_level = level.Level(selector)
@@ -47,7 +47,7 @@ class TestLevel(unittest.TestCase):
         self.assertIsNotNone(loaded_level.values.rooms)
         self.assertEqual(len(loaded_level.values.rooms), 3)
 
-        output = "/tmp/test_level_load"
+        output = "/tmp/test_01_load_save_simple"
         self.remake_dest(output)
         _dump = loaded_level.save(output)
         reloaded_level = level.Level(selector)
@@ -67,18 +67,18 @@ class TestLevel(unittest.TestCase):
         loaded_level.load("../test/test_samples/level/simple_1r_0b_instantiated", state.LevelState.Instantiated)
         self.assertIsNotNone(loaded_level)
 
-    def test_01_structure_personalization(self):
+    def test_03_structure_personalization(self):
         """Test the instantiation algo using a fake selector"""
         selector = selector_fake.SelectorFake()
         loaded_level = level.Level(selector)
         loaded_level.load("../test/test_samples/level/simple_1r_0b_instantiated/", state.LevelState.Instantiated)
         self.assertIsNotNone(loaded_level)
         loaded_level.structure_personalization()
-        output = "/tmp/simple_1r_instantiated"
+        output = "/tmp/test_03_structure_personalization"
         self.remake_dest(output)
         loaded_level.save(output)
 
-    def test_01_dressing_instantiation(self):
+    def test_04_dressing_instantiation(self):
         """Test the dressing instantiation"""
         selector = selector_fake.SelectorFake()
         loaded_level = level.Level(selector)
@@ -86,11 +86,11 @@ class TestLevel(unittest.TestCase):
         self.assertIsNotNone(loaded_level)
         loaded_level.structure_personalization()
         loaded_level.dressing_instantiation()
-        output = "/tmp/simple_1r_instantiated"
+        output = "/tmp/test_04_dressing_instantiation"
         self.remake_dest(output)
         loaded_level.save(output)
 
-    def test_01_dressing_personalization(self):
+    def test_05_dressing_personalization(self):
         """Test the dressng personalization algo"""
         selector = selector_fake.SelectorFake()
         loaded_level = level.Level(selector)
@@ -99,28 +99,33 @@ class TestLevel(unittest.TestCase):
         loaded_level.structure_personalization()
         loaded_level.dressing_instantiation()
         loaded_level.dressing_personalization()
-        output = "/tmp/simple_1r_instantiated"
+        output = "/tmp/test_05_dressing_personalization"
         self.remake_dest(output)
         loaded_level.save(output)
 
-    def test_01_finalize(self):
+    def test_06_finalize(self):
         """Test the finalize"""
         selector = selector_fake.SelectorFake()
         loaded_level = level.Level(selector)
-        loaded_level.load("../test/test_samples/level/simple_1r_0b_instantiated/", state.LevelState.Instantiated)
+        root_sample = "../test/test_samples/level/simple_1r_0b_instantiated/"
+        loaded_level.load(root_sample, state.LevelState.Instantiated)
         self.assertIsNotNone(loaded_level)
         loaded_level.structure_personalization()
         loaded_level.dressing_instantiation()
         loaded_level.dressing_personalization()
-        output = "/tmp/test_01_finalize"
+        output = "/tmp/test_06_finalize"
         self.remake_dest(output)
-        loaded_level.save(output)
         loaded_level.finalize(output, True)
         # now check validity of level file
         obj = json_helper.load_and_validate_json(
             output + "/level.json",
             "file_final_level.json")
-
+        obj_golden_sample = json_helper.load_and_validate_json(
+            root_sample + "/level.json",
+            "file_final_level.json")
+        self.assertIsNotNone(obj)
+        self.assertIsNotNone(obj_golden_sample)
+        self.assertEqual(obj, obj_golden_sample)
 
 
 
