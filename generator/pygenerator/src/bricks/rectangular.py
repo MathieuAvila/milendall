@@ -14,19 +14,6 @@ from .register import register_brick_type
 
 from jsonmerge import merge
 
-def append_wall(wall_list, width, start_height):
-    """Helper: to add a wall to a wall list"""
-    if len(wall_list) == 0:
-        wall_list.append({"width":width, "start":start_height})
-    elif wall_list[-1]["start"] != start_height:
-        wall_list.append({"width":width, "start":start_height})
-    else:
-        wall_list[-1]["width"] += width
-
-def get_sum_walls_width(wall_list):
-    """Helper: Get the sum of all width of the walls"""
-    return sum([ w["width"] for w in wall_list ])
-
 class BrickRectangular(BrickStructure):
 
     _name = "rectangular"
@@ -38,11 +25,6 @@ class BrickRectangular(BrickStructure):
     def get_instance(self, room:None):
         """Return an instante"""
         return BrickRectangular(room)
-
-    def check_fit(self):
-        """ Pass the Room, and list of gates, check it can be applied. """
-        logging.info("checking if rectangular fits: always ! rectangular rules the world !")
-        return 100
 
     def check_structure(self):
         """check everything is as expected.
@@ -56,114 +38,20 @@ class BrickRectangular(BrickStructure):
         - set values for gates"""
         structure_parameters = self._element.values.parameters.structure_parameters
 
-        my_default= {}
-
-        # instantiate gate acceptable pre and post range
-        if "gate_pre_post_range" not in my_default:
-            # for each gate, min and max space before and after
-            # [ [pre min, pre max] [post min, post_max] ]
-            my_default["gate_pre_post_range"] = [ [ 1.0 , 1.0 ] , [ 4.0 , 4.0 ] ]
-        gate_pre_post_range = my_default["gate_pre_post_range"]
-
-        # instantiate ceiling height range over highest gate
-        # min and max height to add to hignest gate
-        if "height_over_gate_range" not in my_default:
-            my_default["height_over_gate_range"] = [ 1.0 , 1.0 ]
-
-        # instantiate ceiling height over highest gate
-        # this is the real one added to the highest gate
-        # whatever the number and height of gates, a minimum of height of 2.0 will be taken
-        if "height_over_gate" not in my_default:
-            height_range = my_default["height_over_gate_range"]
-            my_default["height_over_gate"] = selector.get_random_float(height_range[0], height_range[1])
-
-        # instantiate range for walls pre-post
-        if "wall_pre_post_range" not in my_default:
-            # for each wall, min and max space before and after. It adds to gates.
-            # [ [pre min, pre max] [post min, post_max] ]
-            my_default["wall_pre_post_range"] = [ [ 2.0 , 2.0 ] , [ 2.0 , 2.0 ] ]
-        wall_pre_post_range = my_default["wall_pre_post_range"]
-
-        # instantiate wall pre/post
-        if "wall_pre_post" not in my_default:
-            my_default["wall_pre_post"] = [
-                [selector.get_random_float(wall_pre_post_range[0][0], wall_pre_post_range[0][1]),
-                 selector.get_random_float(wall_pre_post_range[1][0], wall_pre_post_range[1][1])
-                ] for i in range(0,4)
-            ]
-
-        # instantiate gates position
-        if "setup" not in my_default:
-            my_default["setup"] = [ [],[],[],[],[] ] # x0, x1, y0, y1
-            setup = my_default["setup"]
-            #for gate in self._element.gates:
-            #    pos = selector.get_random_int(0, 3)
-            #    pre = selector.get_random_float(gate_pre_post_range[0][0], gate_pre_post_range[0][1])
-            #    post =  selector.get_random_float(gate_pre_post_range[1][0], gate_pre_post_range[1][1])
-            #    setup[pos].append({"gate": gate.get_id(), "pre":pre, "post":post})
+        my_default= {
+            "size" : [ 5.0 , 2.5, 5.0 ]
+        }
 
         self._element.values.parameters.structure_private = merge( my_default, structure_parameters)
         structure_private = self._element.values.parameters.structure_private
 
-        logging.info("setup: %s", str(structure_private["setup"]))
-        logging.info("height_over_gate_range: %s", str(structure_private["height_over_gate_range"]))
-        logging.info("height_over_gate: %s", str(structure_private["height_over_gate"]))
-        logging.info("wall_pre_post_range: %s", str(structure_private["wall_pre_post_range"]))
-        logging.info("wall_pre_post: %s", str(structure_private["wall_pre_post"]))
+        logging.info("private: %s", str(structure_private))
 
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""
         structure_private = self._element.values.parameters.structure_private
-        wall_pre_post = structure_private["wall_pre_post"]
-        setup = structure_private["setup"]
-
-        wall_required_size = []
-        minimum_gate_height = 3.0
-
-        # for each wall, account required size, and build wall list
-        walls = [] # 1 for each direction, and a sublist of [width, height_start]
-        gates = [] # 1 for each direction, containing reference
-        for i in range(0,4):
-            walls.append([])
-            wall_list = walls[i]
-            gates.append([])
-            gates_list = gates[i]
-            append_wall(wall_list, wall_pre_post[i][0], 0)
-            for gate_def in setup[i]:
-                gate_id = gate_def["gate"]
-                logging.info("direction %i gate: %s", i, gate_id)
-                gate = [g for g in self._element.gates if g.get_id() == gate_id][0]
-                dims = gate.get_dimensions()
-                # take height into account
-                minimum_gate_height = max(minimum_gate_height, dims["portal"][1]+dims["margin"][1])
-
-                # adding pre_gate
-                # todo : 0 to be set correctly
-                append_wall(wall_list, gate_def["pre"] + dims["margin"][0], 0)
-                # at this point, add the gate reference
-                gates_list.append({"gate":gate, "gate_id": gate_id, "offset":get_sum_walls_width(wall_list)})
-                # adding gate itself
-                append_wall(wall_list, dims["portal"][0], dims["portal"][1])
-                # adding post-gate
-                append_wall(wall_list, gate_def["post"] + dims["margin"][0], 0)
-
-            append_wall(wall_list, wall_pre_post[i][1], 0)
-            wall_required_size.append(get_sum_walls_width(wall_list))
-            logging.info("direction %i walls: %s", i, wall_list)
-
-        # compute height
-        height_over_gate = structure_private["height_over_gate"]
-        height = minimum_gate_height + height_over_gate
-
-        # for each direction, account required size based on wall required size
-        direction_size = [
-            max(wall_required_size[0], wall_required_size[1]),
-            max(wall_required_size[2], wall_required_size[3])
-        ]
-
-        setup = structure_private["setup"]
-        logging.info("wall_required_size: %s" , str(wall_required_size))
-        logging.info("direction_size: %s" , str(direction_size))
+        direction_size = structure_private["size"]
+        height = direction_size[1]
 
         # create main object
         parent = concrete.add_child(None, "parent")
@@ -177,11 +65,11 @@ class BrickRectangular(BrickStructure):
                 cgtypes.vec3(direction_size[0],  0,        0),
                 cgtypes.vec3(direction_size[0],  height,   0),
 
-                cgtypes.vec3(direction_size[0],  0,        direction_size[1]),
-                cgtypes.vec3(direction_size[0],  height,   direction_size[1]),
+                cgtypes.vec3(direction_size[0],  0,        direction_size[2]),
+                cgtypes.vec3(direction_size[0],  height,   direction_size[2]),
 
-                cgtypes.vec3(0,                  0,       direction_size[1]),
-                cgtypes.vec3(0,                  height,  direction_size[1]),
+                cgtypes.vec3(0,                  0,       direction_size[2]),
+                cgtypes.vec3(0,                  height,  direction_size[2]),
             ])
         # add floor
         parent.add_structure_faces(
@@ -200,6 +88,12 @@ class BrickRectangular(BrickStructure):
             {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
 
         # add walls in every direction
+        parent.add_structure_faces(
+            index0,
+            [ [2,3,1,0], [4,5,3,2], [6,7,5,4], [0,1,7,6] ],
+            concrete_room.Node.CAT_PHYS_VIS,
+            [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
+            {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
 
         wall_matrices = [
             cgtypes.mat4(
@@ -210,12 +104,12 @@ class BrickRectangular(BrickStructure):
             cgtypes.mat4(
                 -1.0, 0.0, 0.0, direction_size[0],
                 0.0, 1.0, 0.0,  0.0,
-                0.0, 0.0, -1.0, direction_size[1],
+                0.0, 0.0, -1.0, direction_size[2],
                 1.0, 1.0, 1.0, 1.0),
             cgtypes.mat4(
                 0.0, 0.0, 1.0, 0,
                 0.0, 1.0, 0.0, 0.0,
-                -1.0, 0.0, 0.0, direction_size[1],
+                -1.0, 0.0, 0.0, direction_size[2],
                 1.0, 1.0, 1.0, 1.0),
             cgtypes.mat4(
                 0.0, 0.0, -1.0, direction_size[0],
@@ -223,63 +117,13 @@ class BrickRectangular(BrickStructure):
                 1.0, 0.0, 0.0, 0,
                 1.0, 1.0, 1.0, 1.0),
         ]
+        pads = self._element.values.pads
+
         for wall_dir in range(0,4):
-            cdir = int(wall_dir / 2)
-            logging.info("wall direction: %i", wall_dir)
-
-            # append pre/post if wall is shorter than direction
-            if wall_required_size[wall_dir] < direction_size[cdir]:
-                need = direction_size[cdir] - wall_required_size[wall_dir]
-                logging.info("shorter: %f %f", wall_required_size[wall_dir], direction_size[cdir])
-                append_wall(walls[wall_dir], need, 0)
-
+            # TODO
             wall_mat = wall_matrices[wall_dir]
-
-            offset = 0
-            for wall in walls[wall_dir]:
-                width = wall["width"]
-                index_wall = parent.add_structure_points(
-                    [
-                    vec4_to_vec3(wall_mat*cgtypes.vec4(offset,         wall["start"],   0,1)),
-                    vec4_to_vec3(wall_mat*cgtypes.vec4(offset,         height,          0,1)),
-                    vec4_to_vec3(wall_mat*cgtypes.vec4(offset + width, wall["start"],   0,1)),
-                    vec4_to_vec3(wall_mat*cgtypes.vec4(offset + width, height,          0,1)),
-                ])
-                parent.add_structure_faces(
-                    index_wall,
-                    [ [2,3,1,0] ],
-                    concrete_room.Node.CAT_PHYS_VIS,
-                    [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
-                    {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
-                offset += width
-
-            # append gates entry
-            gates_list = gates[wall_dir]
-            for gate_def in gates_list:
-                gate_id = gate_def["gate_id"]
-                gate = gate_def["gate"]
-                # compute rotation argument depending on room is gate in or out.
-                # This rotates locally gate sub object in order to present correct face.
-                is_in = 1
-                dims = gate.get_dimensions()
-                if gate.values.connect[0] == self._element.values.room_id:
-                    is_in = -1
-                logging.info("Adding gate child, direction %i gate %s, connect %s - is_in %s",
-                    wall_dir, gate.values.gate_id, gate.values.connect, is_in)
-                offset = gate_def["offset"]
-                # create gate object
-                gate_mat = wall_mat * cgtypes.mat4(
-                        1.0, 0.0, 0.0, offset - ( is_in - 1 ) / 2 * dims["portal"][0],
-                        0.0, 1.0, 0.0, 0.0,
-                        0.0, 0.0, 1.0, 0.0,
-                        0.0, 0.0, 0.0, 1.0
-                        ) * cgtypes.mat4(
-                        is_in, 0.0, 0.0, 0.0,
-                        0.0, 1.0, 0.0, 0.0,
-                        0.0, 0.0, is_in, 0.0,
-                        0.0, 0.0, 0.0, 1.0)
-
-                child_object = concrete.add_child("parent", gate_id, gate_mat)
+            # append pads entries
+            # TODO
 
 
 
