@@ -42,7 +42,7 @@ class BrickSphere(BrickStructure):
         - set values to room size
         - set values for gates"""
 
-        structure_parameters = self._element.values.structure_parameters
+        structure_parameters = self._element.values.parameters.structure_parameters
         my_default = {
             "setup": {
                 "radius": 20,
@@ -53,18 +53,18 @@ class BrickSphere(BrickStructure):
             "gates" : {}
         }
         counter = 0
-        for gate in self._element.gates:
-            v_angle = pi/4 * counter
-            h_angle = pi/4 * ( counter % 8 )
-            my_default["gates"][gate.get_id()]= { "v_angle":v_angle, "h_angle":h_angle}
-            counter = counter + 1
+        #for gate in self._element.gates:
+        #    v_angle = pi/4 * counter
+        #    h_angle = pi/4 * ( counter % 8 )
+        #    my_default["gates"][gate.get_id()]= { "v_angle":v_angle, "h_angle":h_angle}
+        #    counter = counter + 1
 
-        self._element.values.structure_private = merge( my_default, structure_parameters)
-        logging.info("setup: %s", str(self._element.values.structure_private["setup"]))
+        self._element.values.parameters.structure_private = merge( my_default, structure_parameters)
+        logging.info("setup: %s", str(self._element.values.parameters.structure_private["setup"]))
 
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""
-        structure_private = self._element.values.structure_private
+        structure_private = self._element.values.parameters.structure_private
 
 
         setup = structure_private["setup"]
@@ -171,29 +171,27 @@ class BrickSphere(BrickStructure):
                     [concrete_room.Node.HINT_CEILING],
                     {} )
 
-        for gate in self._element.gates:
-            gate_id = gate.get_id()
+        #for gate in self._element.gates:
+        #    gate_id = gate.get_id()
             # compute rotation argument depending on room is gate in or out.
             # This rotates locally gate sub object in order to present correct face.
-            is_in = 1
-            dims = gate.get_dimensions()
-            if gate.values.connect[0] == self._element.values.room_id:
-                is_in = -1
-            logging.info("Adding gate child, gate %s, connect %s - is_in %s",
-                gate.values.gate_id, gate.values.connect, is_in)
-            # create gate object
-            def_gate = structure_private["gates"][gate_id]
-            gate_mat = cgtypes.mat4.rotation(
-                def_gate["h_angle"], [0,0,1]) * cgtypes.mat4.rotation(
-                    def_gate["v_angle"], [1,0,0]) * cgtypes.mat4(
-                        1.0, 0.0, 0.0, -( dims["portal"][0]) / 2.0,
-                        0.0, 1.0, 0.0, R - 0.1,
-                        0.0, 0.0, 1.0, 0.0,
-                        0.0, 0.0, 0.0, 1.0
-                        )
-
-
-            child_object = concrete.add_child("parent", gate_id, gate_mat)
+        #    is_in = 1
+        #    dims = gate.get_dimensions()
+        #    if gate.values.connect[0] == self._element.values.room_id:
+        #        is_in = -1
+        #    logging.info("Adding gate child, gate %s, connect %s - is_in %s",
+        #        gate.values.gate_id, gate.values.connect, is_in)
+        #   # create gate object
+        #    def_gate = structure_private["gates"][gate_id]
+        #    gate_mat = cgtypes.mat4.rotation(
+        #        def_gate["h_angle"], [0,0,1]) * cgtypes.mat4.rotation(
+         #           def_gate["v_angle"], [1,0,0]) * cgtypes.mat4(
+        #                1.0, 0.0, 0.0, -( dims["portal"][0]) / 2.0,
+        #                0.0, 1.0, 0.0, R - 0.1,
+        #                0.0, 0.0, 1.0, 0.0,
+        #                0.0, 0.0, 0.0, 1.0
+        #                )
+        #    child_object = concrete.add_child("parent", gate_id, gate_mat)
 
 
 
