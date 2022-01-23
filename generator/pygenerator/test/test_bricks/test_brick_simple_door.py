@@ -30,7 +30,7 @@ def_0 = {
    }
   }
 
-class TestGate_SimpleDoor(unittest.TestCase):
+class TestBrick_SimpleDoor(unittest.TestCase):
 
     selector = selector_regular.SelectorRegular()
 
