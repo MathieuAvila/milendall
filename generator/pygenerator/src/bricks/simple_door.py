@@ -38,7 +38,7 @@ class SimpleDoorBrick(BrickStructure):
     def instantiate(self, selector):
         """ force set values:
         - set values to brick size"""
-        structure_parameters = self._element.values.structure_parameters
+        structure_parameters = self._element.values.parameters.structure_parameters
         my_default= {}
         my_default["geometry"] =  {
             "portal":[1.5 , 1.5],
@@ -72,20 +72,19 @@ class SimpleDoorBrick(BrickStructure):
             "timing" : 1.0,            # delay to open or close
             "auto_open" : False         # add mechanism to automatically open when reaching the door
         }
-        self._element.values.structure_private = merge( my_default, structure_parameters)
-        p = self._element.values.structure_private
+        self._element.values.parameters.structure_private = merge( my_default, structure_parameters)
+        p = self._element.values.parameters.structure_private
         # in case we're in auto-open mode, let's define the event
         if  p["door"]["auto_open"] == True and p["door"]["event"] == "":
             p["door"]["event"] = self.brick.get_id() + "_event"
 
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""
-        structure_private = self._element.values.structure_private
+        structure_private = self._element.values.parameters.structure_private
         s = structure_private["shift"]
         logging.info("generate a door")
 
-        block_impl = self.brick.get_id() + "_impl"
-        child_object = concrete.add_child(self.brick.get_id(), block_impl)
+        child_object = concrete.add_child(None, self.brick.get_id())
 
         index_wall = child_object.add_structure_points(
                     [
@@ -144,15 +143,15 @@ class SimpleDoorBrick(BrickStructure):
             [],
             {
                 concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_PORTAL,
-                concrete_room.Node.PORTAL_CONNECT : self._element.values.connect,
-                concrete_room.Node.brick_ID : self._element.values.brick_id
+                concrete_room.Node.PORTAL_CONNECT : self._element.values.parameters.connect,
+                concrete_room.Node.GATE_ID : self._element.values.parameters.gate_id
             }
         )
         door = structure_private["door"]
         if ("event" in door) and (door["event"] is not None) and (door["event"] != ""):
             d = structure_private["door"]
             door_impl = self.brick.get_id() + "_door"
-            child_door = concrete.add_child(block_impl, door_impl)
+            child_door = concrete.add_child(None, door_impl)
             index_door = child_door.add_structure_points(
                     [
                     cgtypes.vec3(s["x_floor_start_int"],   0,                       s["wd_in"]),
