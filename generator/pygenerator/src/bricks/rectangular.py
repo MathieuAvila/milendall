@@ -14,6 +14,9 @@ from .register import register_brick_type
 
 from jsonmerge import merge
 
+logger = logging.getLogger("rectangular")
+logger.setLevel(logging.INFO)
+
 class BrickRectangular(BrickStructure):
 
     _name = "rectangular"
@@ -29,7 +32,7 @@ class BrickRectangular(BrickStructure):
     def check_structure(self):
         """check everything is as expected.
         """
-        logging.info("checking if rectangular is ok: always ! rectangular rules the world !")
+        logger.info("checking if rectangular is ok: always ! rectangular rules the world !")
         return True
 
     def instantiate(self, selector):
@@ -45,7 +48,7 @@ class BrickRectangular(BrickStructure):
         self._element.values.parameters.structure_private = merge( my_default, structure_parameters)
         structure_private = self._element.values.parameters.structure_private
 
-        logging.info("private: %s", str(structure_private))
+        logger.info("private: %s", str(structure_private))
 
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""

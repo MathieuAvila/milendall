@@ -9,7 +9,6 @@ should be sufficient to reconstruct a full one.
 However, it can be dumped to a file to ease debugging of rooms/gates/objects
 """
 
-from asyncio.log import logger
 import logging
 import json
 import itertools
@@ -23,8 +22,8 @@ import cgtypes.mat4
 
 from gltf_helper import get_texture_definition, create_accessor
 
-logging.basicConfig()
-logging.getLogger().setLevel(logging.INFO)
+logger  = logging.getLogger("concrete_room")
+logger.setLevel(logging.INFO)
 
 class Node:
 
@@ -361,7 +360,6 @@ class ConcreteRoom:
     def set_root(self, root_id):
         """For every object that has a void parent, set its parent to root_id"""
         for o in self.objects:
-            logger.info("o parent: %s" , o.parent)
             if o.parent is None:
                 o.parent = root_id
 
@@ -531,7 +529,7 @@ class ConcreteRoom:
 
 def preview(i_file, o_file, root_dir = os.path.realpath(os.getcwd() + "/../../../data/")):
     """Build a preview of the result gltf so that it can be viewed with a 3rd party"""
-    logging.info("Generate to: %s, from %s, with root dir for data: %s", o_file, i_file, root_dir)
+    logger.info("Generate to: %s, from %s, with root dir for data: %s", o_file, i_file, root_dir)
     with open(i_file, "r") as gltf_file:
         gltf = json.load(gltf_file)
     src_dir = os.path.dirname(i_file)

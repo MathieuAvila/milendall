@@ -11,6 +11,9 @@ import animation
 
 from jsonmerge import merge
 
+logger = logging.getLogger("simple_door")
+logger.setLevel(logging.INFO)
+
 class SimpleDoorBrick(BrickStructure):
 
     _name = "simple_door"
@@ -26,13 +29,13 @@ class SimpleDoorBrick(BrickStructure):
 
     def check_fit(self):
         """ Pass the brick, check it can be applied. """
-        logging.info("checking if door fits: always ! door rules the world !")
+        logger.info("checking if door fits: always ! door rules the world !")
         return 100
 
     def check_structure(self):
         """check everything is as expected.
         """
-        logging.info("checking if door is ok: always ! door rules the world !")
+        logger.info("checking if door is ok: always ! door rules the world !")
         return True
 
     def instantiate(self, selector):
@@ -82,7 +85,7 @@ class SimpleDoorBrick(BrickStructure):
         """Perform instantiation on concrete_room"""
         structure_private = self._element.values.parameters.structure_private
         s = structure_private["shift"]
-        logging.info("generate a door")
+        logger.info("generate a door")
 
         child_object = concrete.add_child(None, self.brick.get_id())
 

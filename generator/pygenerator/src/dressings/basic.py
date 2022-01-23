@@ -1,5 +1,5 @@
 """
-structure definition for a simple rectangular room
+structure definition for a simple dressing
 """
 
 import logging
@@ -8,6 +8,9 @@ import concrete_room
 from dressing import Dressing
 from .register import register_dressing_type
 import gltf_helper
+
+logger = logging.getLogger("basic")
+logger.setLevel(logging.INFO)
 
 class DressingBasic(Dressing):
 
@@ -30,7 +33,7 @@ class DressingBasic(Dressing):
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""
         for obj in concrete.get_objects():
-            logging.info("treating object: %s", obj.name)
+            logger.info("treating object: %s", obj.name)
 
             # get each kind of walls and associate a texture.
 
@@ -41,7 +44,7 @@ class DressingBasic(Dressing):
                 [concrete_room.Node.HINT_DOOR, "/common/basic/door.jpg", [["x"], ["z"]] ]
                 ]:
                 list_faces = obj.get_visual_face([kind_texture])
-                logging.debug("kind: %s, texture:%s , len:%i",
+                logger.debug("kind: %s, texture:%s , len:%i",
                             kind_texture, texture, len(list_faces))
                 if len(list_faces) != 0:
                     for faces in list_faces:
