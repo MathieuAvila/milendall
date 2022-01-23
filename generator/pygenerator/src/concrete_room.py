@@ -177,7 +177,6 @@ class Node:
                     new_point = copy.deepcopy(points[p])
                     points_block.append(new_point)
                     my_points.append(new_point)
-                    print("%i %i" % (len(my_points), len(points_block)))
                     new_face.append(len(points_block)-1)
                 # request function to feed UV
                 texture["function"](points, face, texture["context"], my_points)
