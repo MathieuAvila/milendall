@@ -3,29 +3,29 @@ structure definition for a simple rectangular room
 """
 
 import logging
-from gate_structure import GateStructure
-from .register import register_gate_type
+from brick_structure import BrickStructure
+from .register import register_brick_type
 import cgtypes.vec3
 import concrete_room
 import animation
 
 from jsonmerge import merge
 
-class DoorGate(GateStructure):
+class SimpleDoorBrick(BrickStructure):
 
     _name = "simple_door"
 
-    def __init__(self, gate=None):
-        """ init gate """
-        super().__init__(gate)
-        self.gate = gate
+    def __init__(self, brick=None):
+        """ init simple door"""
+        super().__init__(brick)
+        self.brick = brick
 
-    def get_instance(self, gate:None):
-        """ return a self instance of this gate"""
-        return DoorGate(gate)
+    def get_instance(self, brick:None):
+        """ return a self instance of this brick"""
+        return SimpleDoorBrick(brick)
 
     def check_fit(self):
-        """ Pass the Gate, check it can be applied. """
+        """ Pass the brick, check it can be applied. """
         logging.info("checking if door fits: always ! door rules the world !")
         return 100
 
@@ -37,7 +37,7 @@ class DoorGate(GateStructure):
 
     def instantiate(self, selector):
         """ force set values:
-        - set values to gate size"""
+        - set values to brick size"""
         structure_parameters = self._element.values.structure_parameters
         my_default= {}
         my_default["geometry"] =  {
@@ -76,7 +76,7 @@ class DoorGate(GateStructure):
         p = self._element.values.structure_private
         # in case we're in auto-open mode, let's define the event
         if  p["door"]["auto_open"] == True and p["door"]["event"] == "":
-            p["door"]["event"] = self.gate.get_id() + "_event"
+            p["door"]["event"] = self.brick.get_id() + "_event"
 
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""
@@ -84,8 +84,8 @@ class DoorGate(GateStructure):
         s = structure_private["shift"]
         logging.info("generate a door")
 
-        block_impl = self.gate.get_id() + "_impl"
-        child_object = concrete.add_child(self.gate.get_id(), block_impl)
+        block_impl = self.brick.get_id() + "_impl"
+        child_object = concrete.add_child(self.brick.get_id(), block_impl)
 
         index_wall = child_object.add_structure_points(
                     [
@@ -145,13 +145,13 @@ class DoorGate(GateStructure):
             {
                 concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_PORTAL,
                 concrete_room.Node.PORTAL_CONNECT : self._element.values.connect,
-                concrete_room.Node.GATE_ID : self._element.values.gate_id
+                concrete_room.Node.brick_ID : self._element.values.brick_id
             }
         )
         door = structure_private["door"]
         if ("event" in door) and (door["event"] is not None) and (door["event"] != ""):
             d = structure_private["door"]
-            door_impl = self.gate.get_id() + "_door"
+            door_impl = self.brick.get_id() + "_door"
             child_door = concrete.add_child(block_impl, door_impl)
             index_door = child_door.add_structure_points(
                     [
@@ -179,7 +179,7 @@ class DoorGate(GateStructure):
                 concrete_room.Node.CAT_PHYS_VIS,
                 [concrete_room.Node.HINT_DOOR, concrete_room.Node.HINT_BUILDING],
                 {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
-            anim_open = animation.Animation("open_" + self.gate.get_id(), 0.0, d["timing"], d["event"])
+            anim_open = animation.Animation("open_" + self.brick.get_id(), 0.0, d["timing"], d["event"])
             if not d["default_open"]:
                 y_start = -s["y_up_end_int"]+0.01
                 y_end = 0.0
@@ -210,4 +210,4 @@ class DoorGate(GateStructure):
 
 
 
-register_gate_type(DoorGate())
+register_brick_type(SimpleDoorBrick())
