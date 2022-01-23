@@ -1,5 +1,5 @@
 """
-structure definition for a simple rectangular room
+structure definition for a simple rectangular brick
 """
 
 import logging
@@ -8,7 +8,7 @@ import concrete_room
 import cgtypes.vec3
 import cgtypes.mat4
 
-from gltf_helper import vec4_to_vec3
+#from gltf_helper import vec4_to_vec3
 
 from .register import register_brick_type
 
@@ -19,12 +19,12 @@ class BrickRectangular(BrickStructure):
     _name = "rectangular"
 
     def __init__(self, _element=None):
-        """ init room """
+        """ init brick """
         self._element = _element
 
-    def get_instance(self, room:None):
+    def get_instance(self, brick:None):
         """Return an instante"""
-        return BrickRectangular(room)
+        return BrickRectangular(brick)
 
     def check_structure(self):
         """check everything is as expected.
@@ -34,7 +34,7 @@ class BrickRectangular(BrickStructure):
 
     def instantiate(self, selector):
         """ force set values:
-        - set values to room size
+        - set values to brick size
         - set values for gates"""
         structure_parameters = self._element.values.parameters.structure_parameters
 

@@ -1,5 +1,5 @@
 """
-structure definition for a simple rectangular room
+structure definition for a simple sphere brick
 """
 
 import logging
@@ -19,15 +19,15 @@ class BrickSphere(BrickStructure):
     _name = "sphere"
 
     def __init__(self, _element=None):
-        """ init room """
+        """ init brick """
         self._element = _element
 
-    def get_instance(self, room:None):
+    def get_instance(self, brick:None):
         """Return an instante"""
-        return BrickSphere(room)
+        return BrickSphere(brick)
 
     def check_fit(self):
-        """ Pass the Room, and list of gates, check it can be applied. """
+        """ Pass the brick, and list of gates, check it can be applied. """
         logging.info("checking if sphere fits: always ! rectangular rules the world !")
         return 100
 
@@ -39,7 +39,7 @@ class BrickSphere(BrickStructure):
 
     def instantiate(self, selector):
         """ force set values:
-        - set values to room size
+        - set values to brick size
         - set values for gates"""
 
         structure_parameters = self._element.values.parameters.structure_parameters
@@ -173,11 +173,11 @@ class BrickSphere(BrickStructure):
 
         #for gate in self._element.gates:
         #    gate_id = gate.get_id()
-            # compute rotation argument depending on room is gate in or out.
+            # compute rotation argument depending on brick is gate in or out.
             # This rotates locally gate sub object in order to present correct face.
         #    is_in = 1
         #    dims = gate.get_dimensions()
-        #    if gate.values.connect[0] == self._element.values.room_id:
+        #    if gate.values.connect[0] == self._element.values.brick_id:
         #        is_in = -1
         #    logging.info("Adding gate child, gate %s, connect %s - is_in %s",
         #        gate.values.gate_id, gate.values.connect, is_in)
