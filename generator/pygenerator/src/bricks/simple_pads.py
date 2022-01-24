@@ -8,7 +8,7 @@ import concrete_room
 import cgtypes.vec3
 import cgtypes.mat4
 
-logger  =logging.getLogger()
+logger  =logging.getLogger("simple_pad_provider")
 logger.setLevel(logging.INFO)
 
 from .register import register_brick_type
@@ -46,14 +46,19 @@ class BrickSimplePadProvider(BrickStructure):
 
         pads = self._element.values.pads
         for pad in pads:
-            logger.info("Generate pad:%s", pad.pad_id)
-            pos = pad.definition.position
-            pad_mat = cgtypes.mat4(
+            pad_mat = cgtypes.mat4(1.0)
+            if pad.definition:
+                if pad.definition.translation:
+                    pos = pad.definition.translation
+                    pad_mat = pad_mat * cgtypes.mat4(
                         1.0, 0.0, 0.0, pos[0],
                         0.0, 1.0, 0.0, pos[1],
                         0.0, 0.0, 1.0, pos[2],
-                        0.0, 0.0, 0.0, 1.0
-                        )
+                        0.0, 0.0, 0.0, 1.0)
+                if pad.definition.rotation:
+                    r = pad.definition.rotation
+                    if r.angle and r.axis:
+                        pad_mat = pad_mat * cgtypes.mat4.rotation(r.angle, r.axis)
             concrete.add_child(None, pad.pad_id, pad_mat)
 
 

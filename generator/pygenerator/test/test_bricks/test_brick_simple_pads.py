@@ -14,29 +14,47 @@ import brick
 import concrete_room
 import selector_regular
 import dressings.basic as basic
+import math
 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.DEBUG)
 
-logger = logging.getLogger()
+logger = logging.getLogger("TestBrick_SimplePad")
 logger.level = logging.DEBUG
 
 def_0 = {
    "b_id": "b0",
    "pads": [
        {
-           "pad_id" : "p0",
-           "definition" : {
-               "position" : [ 1.0, 2.0, 3.0]
+            "pad_id" : "p0"
+       },
+       {
+            "pad_id" : "p1",
+            "definition" : {
+               "translation" : [ 1.0, 2.0, 3.0]
            }
        },
        {
-           "pad_id" : "p1",
-           "definition" : {
-               "position" : [ 4.0, 5.0, 6.0]
+            "pad_id" : "p2",
+            "definition" : {
+                "rotation" : {
+                   "axis" : [ 0.0, 1.0, 0.0],
+                   "angle" : math.pi
+                }
+           }
+       },
+       {
+            "pad_id" : "p3",
+            "definition" : {
+                "translation" : [ 4.0, 5.0, 6.0],
+                "rotation" : {
+                   "axis" : [ 0.0, 1.0, 0.0],
+                   "angle" : math.pi
+                }
+
            }
        }
-   ],
+    ],
    "parameters": {
        "structure_class": "simple_pad_provider"
    }
@@ -44,12 +62,7 @@ def_0 = {
 
 class TestBrick_SimplePad(unittest.TestCase):
 
-    selector = selector_regular.SelectorRegular()
-
-    def test_generate(self):
-        """generate one simple door with no parameter"""
-        stream_handler = logging.StreamHandler(sys.stdout)
-        logger.addHandler(stream_handler)
+    def generate(self):
         selector = selector_regular.SelectorRegular()
         custom_brick = brick.Brick(def_0, selector)
         custom_brick.structure_personalization()
@@ -57,22 +70,65 @@ class TestBrick_SimplePad(unittest.TestCase):
         custom_brick.dressing_personalization()
         concrete = concrete_room.ConcreteRoom()
         custom_brick.finalize(concrete)
+        return concrete
 
-        # check that it contains an object with expected parent
+    def test_has_4_pads(self):
+        stream_handler = logging.StreamHandler(sys.stdout)
+        logger.addHandler(stream_handler)
+        concrete = self.generate()
+
         objects = concrete.get_objects()
-        self.assertEquals(len(objects), 2)
+        self.assertEquals(len(objects), 4)
 
-        object = objects[0]
-        self.assertEquals(object.parent, None)
-        matrix = object.matrix
-        p0 = matrix * cgtypes.vec3(0.0)
-        self.assertEqual(p0, cgtypes.vec3(1.0,2.0,3.0))
+    def test_void_pad(self):
+        stream_handler = logging.StreamHandler(sys.stdout)
+        logger.addHandler(stream_handler)
+        concrete = self.generate()
 
-        object = objects[1]
-        self.assertEquals(object.parent, None)
-        matrix = object.matrix
-        p0 = matrix * cgtypes.vec3(0.0)
-        self.assertEqual(p0, cgtypes.vec3(4.0,5.0,6.0))
+        object = concrete.get_objects()[0]
+        p_org = cgtypes.vec3(10.0, 11.0, 12.0)
+        p0 = object.matrix * p_org
+        self.assertEqual(p0, p_org)
+
+    def test_void_translation(self):
+        stream_handler = logging.StreamHandler(sys.stdout)
+        logger.addHandler(stream_handler)
+        concrete = self.generate()
+
+        object = concrete.get_objects()[1]
+        p_org = cgtypes.vec3(10.0, 11.0, 12.0)
+        p0 = object.matrix * p_org
+        self.assertEqual(p0, (p_org + cgtypes.vec3(1.0, 2.0, 3.0)))
+
+    def test_void_rotation(self):
+        stream_handler = logging.StreamHandler(sys.stdout)
+        logger.addHandler(stream_handler)
+        concrete = self.generate()
+
+        object = concrete.get_objects()[2]
+        p_org = cgtypes.vec3(1.0, 0.0, 0.0)
+        p0 = object.matrix * p_org
+        length = (p0 - (cgtypes.vec3(-1.0, 0.0, 0.0))).length()
+        self.assertAlmostEqual(0.0, length, 2 )
+
+    def test_void_rotation_translation(self):
+        stream_handler = logging.StreamHandler(sys.stdout)
+        logger.addHandler(stream_handler)
+        concrete = self.generate()
+
+        object = concrete.get_objects()[3]
+
+        # first check translation
+        p_org = cgtypes.vec3(0.0, 0.0, 0.0)
+        p0 = object.matrix * p_org
+        logger.info(p0)
+        self.assertEqual(p0, (p_org + cgtypes.vec3(4.0, 5.0, 6.0)))
+
+        # then both
+        p_org = cgtypes.vec3(1.0, 0.0, 0.0)
+        p0 = object.matrix * p_org
+        logger.info(p0)
+        self.assertEqual(p0, cgtypes.vec3(3.0, 5.0, 6.0))
 
 if __name__ == '__main__':
     unittest.main()
