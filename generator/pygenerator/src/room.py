@@ -113,9 +113,9 @@ class Room(Element):
             logger.info("in brick %s" % brick.values.b_id)
             concrete_brick = concrete_room.ConcreteRoom()
             brick.finalize(concrete_brick)
-            concrete_brick.append_prefix(brick.values.b_id + ":")
+            concrete_brick.append_prefix(brick.values.b_id + "_")
             if "root_pad" in brick.values:
-                root_id = brick.values.root_pad.ref_b_id + ":" + brick.values.root_pad.ref_pad_id
+                root_id = brick.values.root_pad.ref_b_id + "_" + brick.values.root_pad.ref_pad_id
                 logger.info("set root pad to: %s", root_id)
                 concrete_brick.set_root(root_id)
             concrete.merge(concrete_brick)
