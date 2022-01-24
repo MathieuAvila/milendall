@@ -14,7 +14,8 @@ import level
 import state
 
 logging.basicConfig()
-logging.getLogger().setLevel(logging.INFO)
+logger = logging.getLogger("generator")
+logger.setLevel(logging.INFO)
 
 def my_help():
     """
@@ -98,8 +99,8 @@ def main(argv):
             print("Option: Only preview")
             only_preview = True
         elif opt in ("-v"):
-            logging.getLogger().setLevel(logging.DEBUG)
-            logging.debug("Set verbose to debug")
+            logger.getLogger().setLevel(logging.DEBUG)
+            logger.debug("Set verbose to debug")
 
     if len(args) != 1:
         print("Error, expected level directory. See --help for info.")

@@ -12,11 +12,9 @@ import selector_regular
 
 import dressings.basic as basic
 
-logging.basicConfig()
-logging.getLogger().setLevel(logging.DEBUG)
+logger = logging.getLogger("TestBrickRectangular")
+logger.setLevel(logging.INFO)
 
-logger = logging.getLogger()
-logger.level = logging.DEBUG
 
 brick_0_pad = {
             "b_id": "b1",

@@ -15,11 +15,8 @@ import selector_regular
 
 import dressings.basic as basic
 
-logging.basicConfig()
-logging.getLogger().setLevel(logging.DEBUG)
-
-logger = logging.getLogger()
-logger.level = logging.DEBUG
+logger = logging.getLogger("TestBrick_SimpleDoor")
+logger.setLevel(logging.INFO)
 
 def_0 = {
    "b_id": "b0",

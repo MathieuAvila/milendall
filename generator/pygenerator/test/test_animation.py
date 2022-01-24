@@ -13,8 +13,8 @@ import concrete_room
 import animation
 import cgtypes.mat4
 
-logging.basicConfig()
-logging.getLogger().setLevel(logging.INFO)
+logger = logging.getLogger("animation")
+logger.setLevel(logging.INFO)
 
 
 class TestAnimation(unittest.TestCase):

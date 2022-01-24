@@ -33,11 +33,11 @@ class GateStructureFake1(GateStructure):
 
     def check_structure(self):
         """same as main"""
-        logging.debug("Check structure gate: %s", self.gate.values.gate_id)
+        logger.debug("Check structure gate: %s", self.gate.values.gate_id)
 
     def check_fit(self):
         """same as main"""
-        logging.debug("Check fit gate: %s", self.gate.values.gate_id)
+        logger.debug("Check fit gate: %s", self.gate.values.gate_id)
         return 100
 
     def generate(self, concrete):
@@ -127,11 +127,11 @@ class BrickStructureFake1(BrickStructure):
 
     def check_structure(self):
         """same as main"""
-        logging.debug("Check structure room: %s", self.room.values.room_id)
+        logger.debug("Check structure room: %s", self.room.values.room_id)
 
     def check_fit(self):
         """same as main"""
-        logging.debug("Check fit room: %s", self.room.values.room_id)
+        logger.debug("Check fit room: %s", self.room.values.room_id)
         return 100
 
     def generate(self, concrete):

@@ -29,7 +29,7 @@ class BrickTubular2(BrickStructure):
 
     def check_fit(self):
         """ Pass the Room, and list of gates, check it can be applied. """
-        logging.info("checking if tubular fits: only if exactly 2 gates")
+        logger.info("checking if tubular fits: only if exactly 2 gates")
         if self._element.gates.len() == 2:
             return 200
         else:
@@ -38,7 +38,7 @@ class BrickTubular2(BrickStructure):
     def check_structure(self):
         """check everything is as expected.
         """
-        logging.info("checking if tubular is ok. Only if 2 gates")
+        logger.info("checking if tubular is ok. Only if 2 gates")
         return len(self._element.gates) == 2
 
     def instantiate(self, selector):
@@ -65,7 +65,7 @@ class BrickTubular2(BrickStructure):
             my_default["gates"].append(gate.get_id())
 
         self._element.values.structure_private = merge( my_default, structure_parameters)
-        logging.info("setup: %s", str(self._element.values.structure_private))
+        logger.info("setup: %s", str(self._element.values.structure_private))
 
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""
@@ -199,7 +199,7 @@ class BrickTubular2(BrickStructure):
             else:
                 is_in = - is_in
                 elem = setup["segments_nr"] - 1
-            logging.info("Adding gate child, gate %s, connect %s - is_in %s",
+            logger.info("Adding gate child, gate %s, connect %s - is_in %s",
                 gate_id, gate.values.connect, is_in)
             org = points[segments[elem][0]]
             org2 = points[segments[elem][1]]
@@ -211,7 +211,7 @@ class BrickTubular2(BrickStructure):
             print("Y %s" % Y)
 
 
-            #logging.info("IS_IN:%s, IS_FIRST:%s", str(is_in), str(is_first))
+            #logger.info("IS_IN:%s, IS_FIRST:%s", str(is_in), str(is_first))
 
             # create gate object
             gate_mat =  cgtypes.mat4(

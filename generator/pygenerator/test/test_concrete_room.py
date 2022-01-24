@@ -12,8 +12,8 @@ import concrete_room
 import gltf_helper
 import cgtypes.mat4
 
-logging.basicConfig()
-logging.getLogger().setLevel(logging.DEBUG)
+logger = logging.getLogger("TestConcreteRoomImpl")
+logger.setLevel(logging.INFO)
 
 from gltf_helper import get_texture_definition_with_function
 

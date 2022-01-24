@@ -14,6 +14,9 @@ from math import *
 
 from jsonmerge import merge
 
+logger = logging.getLogger("sphere")
+logger.setLevel(logging.INFO)
+
 class BrickSphere(BrickStructure):
 
     _name = "sphere"
@@ -28,13 +31,13 @@ class BrickSphere(BrickStructure):
 
     def check_fit(self):
         """ Pass the brick, and list of gates, check it can be applied. """
-        logging.info("checking if sphere fits: always ! rectangular rules the world !")
+        logger.info("checking if sphere fits: always ! rectangular rules the world !")
         return 100
 
     def check_structure(self):
         """check everything is as expected.
         """
-        logging.info("checking if sphere is ok: always ! sphere rules the world !")
+        logger.info("checking if sphere is ok: always ! sphere rules the world !")
         return True
 
     def instantiate(self, selector):
@@ -60,7 +63,7 @@ class BrickSphere(BrickStructure):
         #    counter = counter + 1
 
         self._element.values.parameters.structure_private = merge( my_default, structure_parameters)
-        logging.info("setup: %s", str(self._element.values.parameters.structure_private["setup"]))
+        logger.info("setup: %s", str(self._element.values.parameters.structure_private["setup"]))
 
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""
@@ -179,7 +182,7 @@ class BrickSphere(BrickStructure):
         #    dims = gate.get_dimensions()
         #    if gate.values.connect[0] == self._element.values.brick_id:
         #        is_in = -1
-        #    logging.info("Adding gate child, gate %s, connect %s - is_in %s",
+        #    logger.info("Adding gate child, gate %s, connect %s - is_in %s",
         #        gate.values.gate_id, gate.values.connect, is_in)
         #   # create gate object
         #    def_gate = structure_private["gates"][gate_id]

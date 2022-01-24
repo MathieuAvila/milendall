@@ -13,11 +13,8 @@ import selector_regular
 
 import dressings.basic as basic
 
-logging.basicConfig()
-logging.getLogger().setLevel(logging.DEBUG)
-
-logger = logging.getLogger()
-logger.level = logging.DEBUG
+logger = logging.getLogger("TestBrickSphere")
+logger.setLevel(logging.INFO)
 
 brick_0_pad = {
             "b_id": "b1",

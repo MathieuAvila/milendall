@@ -16,8 +16,8 @@ class SelectorRegular(Selector):
         # todo: differentiate gates and rooms dressing
         self.classes["dressing"]["brick"] = dressing_register.dressingTypes
 
-        #logging.info("Room structure list is: %s", " ".join(self.classes["structure"]["brick"]) )
-        #logging.info("Room dressing list is: %s", " ".join(self.classes["dressing"]["brick"]) )
+        #logger.info("Room structure list is: %s", " ".join(self.classes["structure"]["brick"]) )
+        #logger.info("Room dressing list is: %s", " ".join(self.classes["dressing"]["brick"]) )
 
     def get_random_choice(self, l):
         return random.choice(l)

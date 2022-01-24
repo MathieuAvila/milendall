@@ -8,7 +8,7 @@ import concrete_room
 import cgtypes.vec3
 import cgtypes.mat4
 
-logger  =logging.getLogger("simple_pad_provider")
+logger = logging.getLogger("simple_pad_provider")
 logger.setLevel(logging.INFO)
 
 from .register import register_brick_type
@@ -30,7 +30,7 @@ class BrickSimplePadProvider(BrickStructure):
     def check_structure(self):
         """check everything is as expected.
         """
-        logging.info("checking is ok")
+        logger.info("checking is ok")
         return True
 
     def instantiate(self, selector):
@@ -39,7 +39,7 @@ class BrickSimplePadProvider(BrickStructure):
         my_default= {}
         self._element.values.parameters.structure_private = merge( my_default, structure_parameters)
         structure_private = self._element.values.parameters.structure_private
-        logging.info("private: %s", str(structure_private))
+        logger.info("private: %s", str(structure_private))
 
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""

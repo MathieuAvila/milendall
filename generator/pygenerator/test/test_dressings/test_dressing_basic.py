@@ -13,11 +13,8 @@ import cgtypes.mat4
 import dressings.basic as basic
 import concrete_room
 
-logging.basicConfig()
-logging.getLogger().setLevel(logging.DEBUG)
-
-logger = logging.getLogger()
-logger.level = logging.DEBUG
+logger = logging.getLogger("TestDressingBasic")
+logger.setLevel(logging.INFO)
 
 class TestDressingBasic(unittest.TestCase):
 

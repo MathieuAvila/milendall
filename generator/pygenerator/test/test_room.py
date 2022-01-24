@@ -11,8 +11,7 @@ import state
 import pathlib
 import shutil
 
-logging.basicConfig()
-logger = logging.getLogger()
+logger = logging.getLogger("TestRoom")
 logger.setLevel(logging.INFO)
 
 class TestRoom(unittest.TestCase):

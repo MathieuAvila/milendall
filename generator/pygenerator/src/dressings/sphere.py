@@ -52,7 +52,7 @@ class DressingSphere(Dressing):
             ]
         }
         self.element.values.dressing_private = merge( my_default, dressing_parameters)
-        logging.info("setup: %s", str(self. element.values.dressing_private["setup"]))
+        logger.info("setup: %s", str(self. element.values.dressing_private["setup"]))
 
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""
@@ -60,13 +60,13 @@ class DressingSphere(Dressing):
         dressing_private = self.element.values.dressing_private
 
         for obj in concrete.get_objects():
-            logging.info("treating object: %s", obj.name)
+            logger.info("treating object: %s", obj.name)
 
             # get each kind of walls and associate a texture.
 
             for kind_texture, texture in dressing_private["setup"]:
                 list_faces = obj.get_visual_face([kind_texture])
-                logging.info("kind: %s, texture:%s , len:%i",
+                logger.info("kind: %s, texture:%s , len:%i",
                             kind_texture, texture, len(list_faces))
                 if len(list_faces) != 0:
                     for faces in list_faces:

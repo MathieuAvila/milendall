@@ -16,9 +16,6 @@ import selector_regular
 import dressings.basic as basic
 import math
 
-logging.basicConfig()
-logging.getLogger().setLevel(logging.DEBUG)
-
 logger = logging.getLogger("TestBrick_SimplePad")
 logger.level = logging.DEBUG
 

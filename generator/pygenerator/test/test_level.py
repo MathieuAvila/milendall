@@ -13,8 +13,8 @@ import pathlib
 import shutil
 import json_helper
 
-logging.basicConfig()
-logging.getLogger().setLevel(logging.INFO)
+logger = logging.getLogger("TestLevel")
+logger.level = logging.DEBUG
 
 class TestLevel(unittest.TestCase):
 
