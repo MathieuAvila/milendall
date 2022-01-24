@@ -12,7 +12,7 @@ class Selector:
 
     def _get_fit(self, sub_class, element):
         """ find a list of fits for a given subclass from the real ones """
-        logger.info("SUB_CLASS = %s", sub_class)
+        #logger.info("SUB_CLASS = %s", sub_class)
         element_list = sub_class[element.get_class()]
         list_fit = [element_list[name].get_instance(element)
                     for name in element_list
