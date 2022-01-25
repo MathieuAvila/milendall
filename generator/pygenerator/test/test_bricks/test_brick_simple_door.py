@@ -21,8 +21,10 @@ logger.setLevel(logging.INFO)
 def_0 = {
    "b_id": "b0",
    "parameters": {
-       "gate_id" : "gate0",
-       "connect" : "A",
+       "structure_parameters" : {
+           "gate_id" : "gate0",
+            "connect" : "A"
+        },
        "structure_class": "simple_door"
    }
   }

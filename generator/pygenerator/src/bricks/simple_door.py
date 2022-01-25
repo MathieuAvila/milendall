@@ -35,12 +35,19 @@ class SimpleDoorBrick(BrickStructure):
     def check_structure(self):
         """check everything is as expected.
         """
+        structure_parameters = self._element.values.parameters.structure_parameters
+        if "gate_id" not in structure_parameters:
+            raise Exception("simple_door '%s' needs a gate_id" % self._element.get_id())
+        if "connect" not in structure_parameters:
+            raise Exception("simple_door '%s' needs a connect field" % self._element.get_id())
+
         logger.info("checking if door is ok: always ! door rules the world !")
         return True
 
     def instantiate(self, selector):
         """ force set values:
         - set values to brick size"""
+        self.check_structure()
         structure_parameters = self._element.values.parameters.structure_parameters
         my_default= {}
         my_default["geometry"] =  {
@@ -85,7 +92,6 @@ class SimpleDoorBrick(BrickStructure):
         """Perform instantiation on concrete_room"""
         structure_private = self._element.values.parameters.structure_private
         s = structure_private["shift"]
-        logger.info("generate a door")
 
         child_object = concrete.add_child(None, self.brick.get_id())
 
@@ -146,8 +152,8 @@ class SimpleDoorBrick(BrickStructure):
             [],
             {
                 concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_PORTAL,
-                concrete_room.Node.PORTAL_CONNECT : self._element.values.parameters.connect,
-                concrete_room.Node.GATE_ID : self._element.values.parameters.gate_id
+                concrete_room.Node.PORTAL_CONNECT : structure_private["connect"],
+                concrete_room.Node.GATE_ID : structure_private["gate_id"]
             }
         )
         door = structure_private["door"]
