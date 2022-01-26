@@ -1,0 +1,22 @@
+{
+    "$schema": "../../../../../generator/schema/file_room_bricks.json",
+    "bricks": [
+
+        {
+            "b_id": "b1",
+            "parameters": {
+                "structure_class": "rectangular"
+            }
+        },
+        {
+            "b_id": "door0",
+            "parameters": {
+                "structure_class": "simple_door",
+                "structure_parameters": {
+                    "gate_id" : "my_door",
+                    "connect" : "B"
+                }
+            }
+        }
+    ]
+}

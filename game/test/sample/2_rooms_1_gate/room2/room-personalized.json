@@ -1,0 +1,70 @@
+{
+ "$schema": "../../../../../generator/schema/file_room_bricks.json",
+ "bricks": [
+  {
+   "b_id": "b1",
+   "parameters": {
+    "structure_class": "rectangular",
+    "structure_private": {
+     "size": [
+      5.0,
+      2.5,
+      5.0
+     ]
+    },
+    "structure_parameters": {}
+   }
+  },
+  {
+   "b_id": "door0",
+   "parameters": {
+    "structure_class": "simple_door",
+    "structure_parameters": {
+     "gate_id": "my_door",
+     "connect": "B"
+    },
+    "structure_private": {
+     "geometry": {
+      "portal": [
+       1.5,
+       1.5
+      ],
+      "margin": [
+       1.0,
+       1.0
+      ],
+      "floor": [
+       "x0"
+      ]
+     },
+     "shift": {
+      "x_floor_start_ext": -0.3,
+      "x_floor_start_int": 0.0,
+      "x_floor_end_int": 1.5,
+      "x_floor_end_ext": 1.8,
+      "x_up_start_ext": -0.3,
+      "x_up_start_int": 0.0,
+      "x_up_end_int": 1.5,
+      "x_up_end_ext": 1.8,
+      "y_up_start_ext": 1.6,
+      "y_up_start_int": 1.5,
+      "y_up_end_ext": 1.6,
+      "y_up_end_int": 1.5,
+      "w_in": 0.2,
+      "w_out": -0.2,
+      "wd_in": 0.1,
+      "wd_out": -0.1
+     },
+     "door": {
+      "event": "",
+      "default_open": true,
+      "timing": 1.0,
+      "auto_open": false
+     },
+     "gate_id": "my_door",
+     "connect": "B"
+    }
+   }
+  }
+ ]
+}
