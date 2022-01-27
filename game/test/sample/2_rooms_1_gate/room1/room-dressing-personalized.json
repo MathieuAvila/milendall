@@ -13,10 +13,10 @@
      ]
     },
     "structure_parameters": {},
-    "dressing_class": "basic"
-   },
-   "dressing_private": {},
-   "dressing_parameters": {}
+    "dressing_class": "basic",
+    "dressing_private": {},
+    "dressing_parameters": {}
+   }
   },
   {
    "b_id": "door0",
@@ -67,10 +67,10 @@
      "gate_id": "my_door",
      "connect": "A"
     },
-    "dressing_class": "basic"
-   },
-   "dressing_private": {},
-   "dressing_parameters": {}
+    "dressing_class": "basic",
+    "dressing_private": {},
+    "dressing_parameters": {}
+   }
   }
  ]
 }
