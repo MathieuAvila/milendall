@@ -63,14 +63,14 @@ class Element():
             logger.error("Unknown dressing class name: %s", self.values.parameters.dressing_class)
             raise Exception ("Void fit list for element: " + self.get_id())
 
-        if self.values.dressing_private is None:
-            self.values.dressing_private = {}
+        if self.values.parameters.dressing_private is None:
+            self.values.parameters.dressing_private = {}
             logger.info("Create private parameters for element: %s", self.get_id())
-        if self.values.dressing_parameters is None:
-            self.values.dressing_parameters = {}
+        if self.values.parameters.dressing_parameters is None:
+            self.values.parameters.dressing_parameters = {}
             logger.info("Create structure parameters for element: %s", self.get_id())
 
-        self.values.dressing_private.update(self.values.dressing_parameters)
+        self.values.parameters.dressing_private.update(self.values.parameters.dressing_parameters)
         logger.info("Run instantiation dressing parameters for element: %s", self.get_id())
         self.dressing.instantiate(self.selector)
 

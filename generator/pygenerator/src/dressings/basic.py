@@ -28,7 +28,7 @@ class DressingBasic(Dressing):
     def instantiate(self, selector):
         """ force set values:
         - set default values to dressing"""
-        self.element.values.dressing_private={}
+        self.element.values.parameters.dressing_private={}
 
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""

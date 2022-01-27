@@ -122,7 +122,7 @@ def main(argv):
         start_step = max(states.current)
     if end_step is None:
         end_step = state.LevelState.Finalize
-    print("Need to open at step:%s and generate up to:%s" % (start_step.name, end_step.name))
+    print("Need to open at step:%s and generate up to:%s" % (start_step, end_step))
 
     try:
         my_level.load(directory, start_step)

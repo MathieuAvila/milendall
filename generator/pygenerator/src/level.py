@@ -64,9 +64,9 @@ class Level:
     def load(self, directory, load_state):
         self.directory = directory
         self.state = state.StateList(directory + "/state.txt")
+        logger.info("Saved states are: %s" % self.state)
         if not self.state.has_state(load_state):
             raise Exception("Level has no saved state %s" % load_state)
-        logger.info(load_state in self.status_to_filename.keys())
         logger.info(self.status_to_filename[load_state])
         obj = json_helper.load_and_validate_json(
             directory + "/" + self.status_to_filename[load_state],
@@ -169,7 +169,7 @@ class Level:
             2. Instantiate each room if not already done"""
         for _element in self.values.gates + self.values.rooms:
             _element.structure_personalization()
-        self.state.add_state(state.LevelState.DressingPersonalized)
+        self.state.add_state(state.LevelState.Personalized)
         self.status = state.LevelState.Personalized
 
     def objects(self):
