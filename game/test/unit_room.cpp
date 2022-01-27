@@ -82,8 +82,8 @@ TEST_F(RoomTest, LoadLevel2Rooms1Gate_Room1) {
     GltfNode* node_portal = table[3].get();
     RoomNode* nodePortal = dynamic_cast<RoomNode*>(node_portal);
     EXPECT_EQ(nodePortal->portals.size(), 1);
-    EXPECT_EQ(nodePortal->portals.front().connect[0], "room1");
-    EXPECT_EQ(nodePortal->portals.front().connect[1], "room2");
+    EXPECT_EQ(nodePortal->portals.front().gate, "room1");
+    EXPECT_EQ(nodePortal->portals.front().connect, "A");
     EXPECT_EQ(nodePortal->portals.front().face->getFaces().size(), 1); // should contain 1 face
 
     // checking one that has no portals
@@ -103,14 +103,14 @@ TEST_F(RoomTest, GateLoading__LoadLevel3Rooms3Gate_Room1) {
     auto portal_list = room->getGateNameList();
 
     for (auto e: portal_list)
-        console->info("{} {}", e.from, e.gate);
+        console->info("{} {}", e.connect, e.gate);
 
     EXPECT_EQ( portal_list, (std::set<GateIdentifier>{
-        GateIdentifier{"r2r1",false},
-        GateIdentifier{"r1r2",true},
-        GateIdentifier{"r3r1",false}}) );
+        GateIdentifier{"r2r1","B"},
+        GateIdentifier{"r1r2","A"},
+        GateIdentifier{"r3r1","B"}}) );
 
-    auto [room_node, instance] = room->getGateNode(GateIdentifier{"r2r1",false});
+    auto [room_node, instance] = room->getGateNode(GateIdentifier{"r2r1","A"});
     EXPECT_EQ( room_node->name, "r2r1_impl" );
     //EXPECT_EQ( instance->, "" ); // don't know how to check this
 }

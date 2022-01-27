@@ -20,9 +20,16 @@
 struct DrawContext;
 class Script;
 
+/** Provide this to the RoomNode at instantiation. This is its interface to register its portals */
+struct RoomNodePortalRegister
+{
+    virtual void registerPortal(std::string gateId, std::string connectId) = 0;
+    virtual ~RoomNodePortalRegister() = default;
+};
+
 struct GateIdentifier {
     std::string gate;
-    bool from;
+    std::string connect;
     bool operator< (const GateIdentifier& b) const;
     bool operator== (const GateIdentifier& b) const;
 };
@@ -32,11 +39,8 @@ struct RoomNode : public GltfNode
 
     struct FacePortal
     {
-        /** @brief Which rooms does it connect. Order tells the direction of the normal */
-        std::string connect[2]; // in / out
-
-        /** If connect[0] == room_name, we're IN */
-        bool in;
+        /** @brief How does it connect: "A" or "B" */
+        std::string connect;
 
         /** @brief gate ID. Needed to differentiate gates, as 2 gates may connect the same rooms. */
         std::string gate;
@@ -65,6 +69,7 @@ struct RoomNode : public GltfNode
         nlohmann::json& json,
         GltfDataAccessorIFace* data_accessor,
         RoomResolver* _room_resolver,
+        RoomNodePortalRegister* _portal_register,
         Script* _roomScript,
         const std::string& room_name,
         StatesList* _states_list = nullptr);
@@ -96,7 +101,7 @@ struct RoomNode : public GltfNode
     bool checkPortalCrossing(
             const glm::vec3& origin,
             const glm::vec3& destination,
-            std::string& roomTarget, GateIdentifier& gate,
+            GateIdentifier& gate,
             glm::vec3& changePoint,
             float& distance
             );

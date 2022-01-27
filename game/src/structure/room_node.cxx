@@ -25,10 +25,8 @@ RoomNode::FacePortal::FacePortal(
     nlohmann::json& json,
     const std::string& room_name)
 {
-    connect[0] = jsonGetElementByIndex(json, "connect", 0).get<string>();
-    connect[1] = jsonGetElementByIndex(json, "connect", 1).get<string>();
     gate = jsonGetElementByName(json, "gate").get<string>();
-    in = (room_name == connect[0]);
+    connect = jsonGetElementByName(json, "connect").get<string>();
     face = make_unique<FaceList>(points, move(accessor));
     // compute list of triangles
     std::vector<unsigned short> triangles;
@@ -49,13 +47,14 @@ RoomNode::FacePortal::FacePortal(
         std::span<glm::vec3>(const_cast<glm::vec3*>(&p[0]), p.size()),
         std::span<unsigned short>(&triangles[0], triangles.size())
         );
-    console->info("Portal from {} connecting {} and {}, is IN={}", room_name, connect[0], connect[1], in);
+    console->info("Portal from {} connecting {} and {}, is IN={}", gate, connect);
 }
 
 RoomNode::RoomNode(
     nlohmann::json& json,
     GltfDataAccessorIFace* data_accessor,
     RoomResolver* _room_resolver,
+    RoomNodePortalRegister* _portal_register,
     Script* _roomScript,
     const std::string& room_name,
     StatesList* _states_list) :
@@ -70,7 +69,7 @@ RoomNode::RoomNode(
         auto points_accessor = data_accessor->accessId(accessor_points);
         points = make_shared<PointsBlock>(move(points_accessor));
 
-        jsonExecuteAllIfElement(extras, "phys_faces", [this, data_accessor, room_name](nlohmann::json& phys, int node_index) {
+        jsonExecuteAllIfElement(extras, "phys_faces", [this, _portal_register, data_accessor, room_name](nlohmann::json& phys, int node_index) {
             auto data = jsonGetElementByName(phys, "data");
             auto type = jsonGetElementByName(data, "type").get<string>();
             auto accessor = jsonGetElementByName(phys, "accessor").get<int>();
@@ -78,6 +77,7 @@ RoomNode::RoomNode(
             auto faces_data = data_accessor->accessId(accessor);
             if (type == "portal") {
                 portals.push_back(FacePortal(points, move(faces_data), data, room_name));
+                _portal_register->registerPortal(portals.back().gate, portals.back().connect);
             }
             if (type == "hard") {
                 walls.push_back(FaceHard(points, move(faces_data), data));
@@ -102,7 +102,7 @@ bool RoomNode::checkDrawGate(
     const FaceList::Face& face,
     DrawContext& newDrawContext) const
 {
-    float factor = portal.in ? 1.0 : -1.0;
+    float factor = (portal.connect == "A") ? 1.0 : -1.0;
 
     // compute vectors in local referential
     PointOfView localOriginDC = currentDrawContext.pov.changeCoordinateSystem(
@@ -117,22 +117,18 @@ bool RoomNode::checkDrawGate(
     // TODO: use frustum clipping instead
 
     // retrieve target room, and node_room objects for gate
-    auto target_room_name = portal.in ? portal.connect[1] : portal.connect[0];
-    auto target_room = currentDrawContext.room_resolver->getRoom(target_room_name);
-    if (target_room == nullptr) {
-        throw LevelException("Unable to get room:" + target_room_name);
-    }
-    auto [target_room_node, target_room_node_instance] = target_room->getGateNode(GateIdentifier{portal.gate, !portal.in});
+    auto target_connect = portal.connect == "A" ? "B" : "A";
+    auto [room_name, target_room_node, target_room_node_instance] = currentDrawContext.portal_provider->getPortal(portal.gate, target_connect);
     if (target_room_node == nullptr) {
-        throw LevelException("Unable to get room node for gate:" + portal.gate + " with in/out: " + to_string(!portal.in));
+        throw LevelException("Unable to get room node for gate:" + portal.gate + " with target: " + target_connect);
     }
     if (target_room_node_instance == nullptr) {
-        throw LevelException("Unable to get room node instance for gate:" + portal.gate + " with in/out: " + to_string(!portal.in));
+        throw LevelException("Unable to get room node instance for gate:" + portal.gate + " with in/out: " + target_connect);
     }
     // compute target
     newDrawContext = currentDrawContext;
     newDrawContext.pov = localOriginDC.changeCoordinateSystem(
-        target_room_name,
+        room_name,
         target_room_node_instance->getNodeMatrix());
 
     return true;
@@ -161,7 +157,8 @@ void RoomNode::draw(GltfNodeInstanceIface * nodeInstance, DrawContext& roomConte
                 //console->info("FBO = " + to_string(newDrawContext.fbo.fboIndex));
 
                 // draw room
-                newDrawContext.room_resolver->getRoom(newDrawContext.pov.room)->draw(newDrawContext);
+
+                room_resolver->getRoom(newDrawContext.pov.room)->draw(newDrawContext);
 
                 // switch to original FBO and context
                 setActiveFbo(&roomContext.fbo);
@@ -185,14 +182,14 @@ std::list<GateIdentifier> RoomNode::getPortalNameList()
 {
     std::list<GateIdentifier> result;
     for (auto& p: portals)
-        result.push_back(GateIdentifier{p.gate, p.in});
+        result.push_back(GateIdentifier{p.gate, p.connect});
     return result;
 }
 
 bool RoomNode::checkPortalCrossing(
             const glm::vec3& origin,
             const glm::vec3& destination,
-            std::string& roomTarget, GateIdentifier& gate,
+            GateIdentifier& gate,
             glm::vec3& changePoint,
             float& distance
             )
@@ -210,13 +207,13 @@ bool RoomNode::checkPortalCrossing(
                 vec3_to_string(origin),
                 vec3_to_string(destination)
                 );
-            bool crossed = facePortal.checkTrajectoryCross(origin, destination, impact, portalDistance, normal, !portal.in);
+            bool crossed = facePortal.checkTrajectoryCross(origin, destination, impact, portalDistance, normal, false);
             if (crossed) {
                 if ((result == false)||(portalDistance < distance)) {
                     changePoint = impact;
                     distance = portalDistance;
-                    gate = GateIdentifier{portal.gate, !portal.in};
-                    roomTarget = portal.in ? portal.connect[1] : portal.connect[0];
+                    auto target = portal.connect == "A" ? "B" : "A";
+                    gate = GateIdentifier{portal.gate, target};
                     result = true;
                     //console->info("Portal {} was crossed, going to room {}", gate.gate, roomTarget);
                 }

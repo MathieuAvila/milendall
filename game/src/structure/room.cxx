@@ -24,13 +24,13 @@ static auto console = getConsole("room");
 bool GateIdentifier::operator< (const GateIdentifier& b) const
 {
     if (gate == b.gate)
-        return (from < b.from);
+        return (connect < b.connect);
     return gate < b.gate;
 };
 
 bool GateIdentifier::operator== (const GateIdentifier& b) const
 {
-    return (gate == b.gate) && (from == b.from);
+    return (gate == b.gate) && (connect == b.connect);
 };
 
 void Room::parseApplicationData(nlohmann::json& json) {
@@ -54,6 +54,18 @@ Script* RoomScriptLoader::getScript()
 
 RoomScriptLoader::~RoomScriptLoader() {};
 
+struct RoomNodePortalRegisterImpl : public RoomNodePortalRegister
+{
+    virtual void registerPortal(std::string gateId, std::string connectId) override {
+        console->info(
+                "Add gate {} {}",
+                gateId, connectId);
+    };
+    virtual ~RoomNodePortalRegisterImpl() = default;
+};
+
+auto registrer = std::make_unique<RoomNodePortalRegisterImpl>();
+
 Room::Room(
     std::string _room_name,
     GltfMaterialLibraryIfacePtr materialLibrary,
@@ -65,12 +77,13 @@ Room::Room(
     GltfModel(materialLibrary, ref,
             [_room_resolver, _room_name, this, _states_list](nlohmann::json& json,
             GltfDataAccessorIFace* data_accessor) {
-                return make_shared<RoomNode>(json, data_accessor, _room_resolver, getScript(), _room_name, _states_list);
+                return make_shared<RoomNode>(json, data_accessor, _room_resolver, registrer.get(), getScript(), _room_name, _states_list);
             }),
     room_name(_room_name),
     room_resolver(_room_resolver),
     states_list(_states_list)
 {
+    auto registrer = std::make_unique<RoomNodePortalRegisterImpl>();
     instance = make_unique<GltfInstance>(getInstanceParameters());
     // collect portals list and associated index
     for (auto i =0; i < nodeTable.size(); i++) {
@@ -79,7 +92,7 @@ Room::Room(
             portalsIndices.insert(std::pair<GateIdentifier, int>(p, i));
             console->info(
                 "Add gate info room: {} {} to index {} - total count {}",
-                p.gate, p.from, i, portalsIndices.size());
+                p.gate, p.connect, i, portalsIndices.size());
         }
     }
     // Get specific data, if any. Needs to reload JSON
@@ -117,7 +130,7 @@ void Room::draw(PointOfView pov)
 {
     struct DrawContext drawContext {
         pov,
-        room_resolver,
+        nullptr, // TODO
         0,
         FboIndex{0,0}
     };
@@ -145,7 +158,7 @@ std::set<GateIdentifier> Room::getGateNameList() const
 std::pair<RoomNode*, GltfNodeInstanceIface*> Room::getGateNode(const GateIdentifier& gate) const
 {
     if (portalsIndices.count(gate) == 0)
-        throw LevelException(string("Requested gate ") + gate.gate + " " + (gate.from? "from":"to") + " does not exist in room:" + room_name);
+        throw LevelException(string("Requested gate ") + gate.gate + " " + gate.connect + " does not exist in room:" + room_name);
     auto i = portalsIndices.find(gate)->second;
     return std::pair<RoomNode*, GltfNodeInstanceIface*>{
         dynamic_cast<RoomNode*>(nodeTable[i].get()),
@@ -175,12 +188,12 @@ bool Room::getDestinationPov(
         string target_room;
         glm::vec3 changePointLocal;
         float distance = _distance;
-        bool crossed = roomNode->checkPortalCrossing(localOrigin.position, localDestination.position, target_room, gate, changePointLocal, distance);
+        bool crossed = roomNode->checkPortalCrossing(localOrigin.position, localDestination.position, gate, changePointLocal, distance);
         if (crossed) {
             changePoint = roomNodeInstance->getInvertedNodeMatrix() * positionToVec4(changePointLocal);
 
             console->debug("Crossed portal at change point local:\n{}\ndistance={}\nportal={}/{}==>{}\nwas from local:{}\nwas going to local:\n",
-                vec3_to_string(changePointLocal), distance, gate.gate, gate.from, target_room,
+                vec3_to_string(changePointLocal), distance, gate.gate, gate.connect, target_room,
                 vec3_to_string(localOrigin.position), vec3_to_string(localDestination.position)
                 );
 

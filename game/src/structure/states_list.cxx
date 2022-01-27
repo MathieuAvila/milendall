@@ -1,5 +1,3 @@
-#pragma once
-
 #include "states_list.hxx"
 #include "common.hxx"
 
