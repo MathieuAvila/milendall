@@ -1,0 +1,59 @@
+{
+    "$schema": "../../../../generator/schema/file_room_bricks.json",
+    "bricks": [
+        {
+            "b_id": "b0",
+            "pads": [
+                {
+                    "pad_id": "root_sphere0",
+                    "definition": {
+                        "translation": [
+                            -10.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                },
+                {
+                    "pad_id": "root_sphere1",
+                    "definition": {
+                        "translation": [
+                            10.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                }
+            ],
+            "parameters": {
+                "structure_class": "simple_pad_provider"
+            }
+        },
+        {
+            "b_id": "sphere0",
+            "root_pad": {
+                "ref_b_id": "b0",
+                "ref_pad_id": "root_sphere0"
+            },
+            "parameters": {
+                "structure_class": "sphere",
+                "dressing_parameters": {
+                    "radius" : 10.0
+                }
+            }
+        },
+        {
+            "b_id": "sphere1",
+            "root_pad": {
+                "ref_b_id": "b0",
+                "ref_pad_id": "root_sphere1"
+            },
+            "parameters": {
+                "structure_class": "sphere",
+                "dressing_parameters": {
+                    "radius" : 10.0
+                }
+            }
+        }
+    ]
+}

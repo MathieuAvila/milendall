@@ -1,0 +1,74 @@
+{
+    "$schema": "../../../../generator/schema/file_room_bricks.json",
+    "bricks": [
+        {
+            "b_id": "b0",
+            "pads": [
+                {
+                    "pad_id": "root_door0",
+                    "definition": {
+                        "translation": [
+                            1.0,
+                            0.1,
+                            0.0
+                        ]
+                    }
+                },
+                {
+                    "pad_id": "root_door1",
+                    "definition": {
+                        "translation": [
+                            5.0,
+                            0.1,
+                            0.0
+                        ]
+                    }
+                }
+            ],
+            "parameters": {
+                "structure_class": "simple_pad_provider"
+            }
+        },
+        {
+            "b_id": "b1",
+            "parameters": {
+                "structure_class": "rectangular",
+                "structure_parameters": {
+                    "size": [
+                        7.0,
+                        2.5,
+                        5.0
+                    ]
+                }
+            }
+        },
+        {
+            "b_id": "door0",
+            "root_pad": {
+                "ref_b_id": "b0",
+                "ref_pad_id": "root_door0"
+            },
+            "parameters": {
+                "structure_class": "simple_door",
+                "structure_parameters": {
+                    "gate_id" : "my_door",
+                    "connect" : "A"
+                }
+            }
+        },
+        {
+            "b_id": "door1",
+            "root_pad": {
+                "ref_b_id": "b0",
+                "ref_pad_id": "root_door1"
+            },
+            "parameters": {
+                "structure_class": "simple_door",
+                "structure_parameters": {
+                    "gate_id" : "my_door",
+                    "connect" : "B"
+                }
+            }
+        }
+    ]
+}
