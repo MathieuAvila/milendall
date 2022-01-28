@@ -71,6 +71,11 @@ add_library(game_lib STATIC
   game/src/structure/trigger.hxx
   game/src/structure/trigger.cxx
   game/src/structure/structure_object_type.hxx
+  game/src/structure/gate_id.hxx
+  game/src/structure/gate_id.cxx
+  game/src/structure/iface_room_node_portal_register.hxx
+  game/src/structure/impl_room_node_portal_register.hxx
+  game/src/structure/impl_room_node_portal_register.cxx
   game/src/gltf/gltf_mesh.hxx
   game/src/gltf/gltf_mesh.cxx
   game/src/gltf/gltf_model.hxx

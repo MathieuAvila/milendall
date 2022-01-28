@@ -16,34 +16,20 @@
 #include "gl_init.hxx"
 
 #include "room_node_gravity.hxx"
+#include "gate_id.hxx"
 
 struct DrawContext;
 class Script;
+struct IRoomNodePortalRegister;
 
-/** Provide this to the RoomNode at instantiation. This is its interface to register its portals */
-struct RoomNodePortalRegister
-{
-    virtual void registerPortal(std::string gateId, std::string connectId) = 0;
-    virtual ~RoomNodePortalRegister() = default;
-};
-
-struct GateIdentifier {
-    std::string gate;
-    std::string connect;
-    bool operator< (const GateIdentifier& b) const;
-    bool operator== (const GateIdentifier& b) const;
-};
 
 struct RoomNode : public GltfNode
 {
 
     struct FacePortal
     {
-        /** @brief How does it connect: "A" or "B" */
-        std::string connect;
-
-        /** @brief gate ID. Needed to differentiate gates, as 2 gates may connect the same rooms. */
-        std::string gate;
+        /** What it points at */
+        GateIdentifier gate;
 
         /** @brief Should contain 1 face only */
         std::unique_ptr<FaceList> face; // Should contain 1 face only
@@ -64,14 +50,18 @@ struct RoomNode : public GltfNode
     RoomResolver* room_resolver;
     std::unique_ptr<RoomNodeGravity> gravity;
     std::list<Trigger> triggers;
+    Room* room;
+    std::string room_name;
+    GltfNodeInstanceIface* node_instance;
 
     RoomNode(
         nlohmann::json& json,
         GltfDataAccessorIFace* data_accessor,
         RoomResolver* _room_resolver,
-        RoomNodePortalRegister* _portal_register,
+        IRoomNodePortalRegister* _portal_register,
         Script* _roomScript,
         const std::string& room_name,
+        Room* room,
         StatesList* _states_list = nullptr);
 
     /** internal method to check if a gate is drawable, and return new draw context.
@@ -86,9 +76,6 @@ struct RoomNode : public GltfNode
 
     /** specialized recursive draw for portals */
     void draw(GltfNodeInstanceIface * nodeInstance, DrawContext& roomContext);
-
-    /** Accessor to the list of portals it connects. */
-    std::list<GateIdentifier> getPortalNameList();
 
     /** @brief compute destination point if given portal is crossed
      * @param origin start position in Room referential
@@ -143,4 +130,6 @@ struct RoomNode : public GltfNode
             const glm::vec3& next_position,
             const STRUCTURE_OBJECT_TYPE object_type,
             const bool activated) const;
+
+    void setInstance(GltfNodeInstanceIface* _node_instance);
 };

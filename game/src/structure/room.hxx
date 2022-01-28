@@ -12,6 +12,7 @@
 #include "gravity_information.hxx"
 #include "room_animation.hxx"
 #include "structure_object_type.hxx"
+#include "gate_id.hxx"
 
 #include <gtest/gtest_prod.h>
 
@@ -19,6 +20,8 @@ struct RoomResolver;
 struct DrawContext;
 class Script;
 class StatesList;
+struct IRoomNodePortalRegister;
+
 
 /** @brief to be able to load script before the GltfModel
  * so that RoomNodes children can get a reference to the script */
@@ -29,6 +32,14 @@ class RoomScriptLoader {
         Script* getScript();
         virtual ~RoomScriptLoader();
 };
+
+/** The interface provided to register portals, this is provided to the room. */
+struct IRoomPortalRegister
+{
+    virtual void registerPortal(const Room* room, const RoomNode* roomNode, const std::string gateId, const std::string connectId) = 0;
+    virtual ~IRoomPortalRegister() = default;
+};
+
 
 /** @brief A room is both a Model (through inheritance) and an instance (through a class field) */
 class Room : private RoomScriptLoader, public GltfModel
@@ -96,6 +107,7 @@ class Room : private RoomScriptLoader, public GltfModel
             GltfMaterialLibraryIfacePtr materialLibrary,
             FileLibrary::UriReference& ref,
             RoomResolver*  _room_resolver = nullptr,
+            IRoomNodePortalRegister* portal_register = nullptr,
             StatesList* _states_list = nullptr);
 
         /** @brief full draw entry point

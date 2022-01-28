@@ -15,6 +15,8 @@
 
 #include "point_of_view.hxx"
 #include "room_draw_context.hxx"
+#include "iface_room_node_portal_register.hxx"
+#include "gate_id.hxx"
 
 static auto console = getConsole("room_node");
 
@@ -25,8 +27,9 @@ RoomNode::FacePortal::FacePortal(
     nlohmann::json& json,
     const std::string& room_name)
 {
-    gate = jsonGetElementByName(json, "gate").get<string>();
-    connect = jsonGetElementByName(json, "connect").get<string>();
+    gate = GateIdentifier(
+        jsonGetElementByName(json, "gate").get<string>(),
+        jsonGetElementByName(json, "connect").get<string>());
     face = make_unique<FaceList>(points, move(accessor));
     // compute list of triangles
     std::vector<unsigned short> triangles;
@@ -47,18 +50,19 @@ RoomNode::FacePortal::FacePortal(
         std::span<glm::vec3>(const_cast<glm::vec3*>(&p[0]), p.size()),
         std::span<unsigned short>(&triangles[0], triangles.size())
         );
-    console->info("Portal from {} connecting {} and {}, is IN={}", gate, connect);
+    console->info("Portal {} connect {}", gate.gate, gate.connect);
 }
 
 RoomNode::RoomNode(
     nlohmann::json& json,
     GltfDataAccessorIFace* data_accessor,
     RoomResolver* _room_resolver,
-    RoomNodePortalRegister* _portal_register,
+    IRoomNodePortalRegister* _portal_register,
     Script* _roomScript,
-    const std::string& room_name,
+    const std::string& _room_name,
+    Room* _room,
     StatesList* _states_list) :
-        GltfNode(json), room_resolver(_room_resolver)
+        GltfNode(json), room_resolver(_room_resolver), room(_room), room_name(_room_name)
 {
     gravity = make_unique<RoomNodeGravity>(name, _roomScript);
 
@@ -69,7 +73,7 @@ RoomNode::RoomNode(
         auto points_accessor = data_accessor->accessId(accessor_points);
         points = make_shared<PointsBlock>(move(points_accessor));
 
-        jsonExecuteAllIfElement(extras, "phys_faces", [this, _portal_register, data_accessor, room_name](nlohmann::json& phys, int node_index) {
+        jsonExecuteAllIfElement(extras, "phys_faces", [this, _portal_register, data_accessor](nlohmann::json& phys, int node_index) {
             auto data = jsonGetElementByName(phys, "data");
             auto type = jsonGetElementByName(data, "type").get<string>();
             auto accessor = jsonGetElementByName(phys, "accessor").get<int>();
@@ -77,7 +81,8 @@ RoomNode::RoomNode(
             auto faces_data = data_accessor->accessId(accessor);
             if (type == "portal") {
                 portals.push_back(FacePortal(points, move(faces_data), data, room_name));
-                _portal_register->registerPortal(portals.back().gate, portals.back().connect);
+                if (_portal_register)
+                    _portal_register->registerPortal(portals.back().gate, this);
             }
             if (type == "hard") {
                 walls.push_back(FaceHard(points, move(faces_data), data));
@@ -102,7 +107,7 @@ bool RoomNode::checkDrawGate(
     const FaceList::Face& face,
     DrawContext& newDrawContext) const
 {
-    float factor = (portal.connect == "A") ? 1.0 : -1.0;
+    float factor = (portal.gate.connect == "A") ? 1.0 : -1.0;
 
     // compute vectors in local referential
     PointOfView localOriginDC = currentDrawContext.pov.changeCoordinateSystem(
@@ -117,13 +122,17 @@ bool RoomNode::checkDrawGate(
     // TODO: use frustum clipping instead
 
     // retrieve target room, and node_room objects for gate
-    auto target_connect = portal.connect == "A" ? "B" : "A";
-    auto [room_name, target_room_node, target_room_node_instance] = currentDrawContext.portal_provider->getPortal(portal.gate, target_connect);
-    if (target_room_node == nullptr) {
-        throw LevelException("Unable to get room node for gate:" + portal.gate + " with target: " + target_connect);
+    auto target_connect = portal.gate.connect == "A" ? "B" : "A";
+    auto target_room_node = currentDrawContext.portal_provider->getPortal(GateIdentifier(portal.gate.gate, target_connect));
+    if (target_room_node) {
+        throw LevelException("Unable to get gate for :" + portal.gate.gate + " with target: " + target_connect);
+    }
+    auto target_room_node_instance = target_room_node->node_instance;
+    if (target_room_node_instance == nullptr) {
+        throw LevelException("Unable to get target_room_node_instance for gate:" + portal.gate.gate + " with target: " + target_connect);
     }
     if (target_room_node_instance == nullptr) {
-        throw LevelException("Unable to get room node instance for gate:" + portal.gate + " with in/out: " + target_connect);
+        throw LevelException("Unable to get room node instance for gate:" + portal.gate.gate + " with target: " + target_connect);
     }
     // compute target
     newDrawContext = currentDrawContext;
@@ -178,14 +187,6 @@ void RoomNode::draw(GltfNodeInstanceIface * nodeInstance, DrawContext& roomConte
     }
 }
 
-std::list<GateIdentifier> RoomNode::getPortalNameList()
-{
-    std::list<GateIdentifier> result;
-    for (auto& p: portals)
-        result.push_back(GateIdentifier{p.gate, p.connect});
-    return result;
-}
-
 bool RoomNode::checkPortalCrossing(
             const glm::vec3& origin,
             const glm::vec3& destination,
@@ -212,8 +213,8 @@ bool RoomNode::checkPortalCrossing(
                 if ((result == false)||(portalDistance < distance)) {
                     changePoint = impact;
                     distance = portalDistance;
-                    auto target = portal.connect == "A" ? "B" : "A";
-                    gate = GateIdentifier{portal.gate, target};
+                    auto target = portal.gate.connect == "A" ? "B" : "A";
+                    gate = GateIdentifier{portal.gate.gate, target};
                     result = true;
                     //console->info("Portal {} was crossed, going to room {}", gate.gate, roomTarget);
                 }
@@ -275,4 +276,9 @@ void RoomNode::applyTrigger(
     for (auto& trigger: triggers) {
         trigger.applyTrigger(previous_position, next_position, 0.0f, activated);
     }
+}
+
+void RoomNode::setInstance(GltfNodeInstanceIface* _node_instance)
+{
+    node_instance = _node_instance;
 }

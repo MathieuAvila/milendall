@@ -47,7 +47,7 @@ PairRoomStates loadRoomWithStates(std::string roomPath)
     fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../data/"));
     auto roomPathRef = fl.getRoot().getSubPath(roomPath);
     auto states_list = make_unique<StatesList>();
-    auto room = make_unique<Room>("room1", materialLibrary, roomPathRef, nullptr, states_list.get());
+    auto room = make_unique<Room>("room1", materialLibrary, roomPathRef, nullptr, nullptr, states_list.get());
     auto room_ptr = room.get();
     EXPECT_NE( room_ptr, nullptr );
     room->updateRoom(0.0f);
@@ -70,20 +70,19 @@ TEST_F(RoomTest, LoadLevel2Rooms1Gate_Room1) {
     auto room = loadRoom("/2_rooms_1_gate/room1/room.gltf");
 
 
-    EXPECT_EQ(room.get()->nodeTable.size(), 4);
+    EXPECT_EQ(room.get()->nodeTable.size(), 3);
     auto & table = room.get()->nodeTable;
     // next tests are for sanity checks, just to assure tests are done on the right objects.
     EXPECT_EQ(table[0].get()->name, "");
-    EXPECT_EQ(table[1].get()->name, "parent");
-    EXPECT_EQ(table[2].get()->name, "r1r2");
-    EXPECT_EQ(table[3].get()->name, "r1r2_impl");
+    EXPECT_EQ(table[1].get()->name, "b1_parent");
+    EXPECT_EQ(table[2].get()->name, "door0_door0");
 
     // checking portal
-    GltfNode* node_portal = table[3].get();
+    GltfNode* node_portal = table[2].get();
     RoomNode* nodePortal = dynamic_cast<RoomNode*>(node_portal);
     EXPECT_EQ(nodePortal->portals.size(), 1);
-    EXPECT_EQ(nodePortal->portals.front().gate, "room1");
-    EXPECT_EQ(nodePortal->portals.front().connect, "A");
+    EXPECT_EQ(nodePortal->portals.front().gate.gate, "my_door");
+    EXPECT_EQ(nodePortal->portals.front().gate.connect, "A");
     EXPECT_EQ(nodePortal->portals.front().face->getFaces().size(), 1); // should contain 1 face
 
     // checking one that has no portals

@@ -21,18 +21,6 @@
 
 static auto console = getConsole("room");
 
-bool GateIdentifier::operator< (const GateIdentifier& b) const
-{
-    if (gate == b.gate)
-        return (connect < b.connect);
-    return gate < b.gate;
-};
-
-bool GateIdentifier::operator== (const GateIdentifier& b) const
-{
-    return (gate == b.gate) && (connect == b.connect);
-};
-
 void Room::parseApplicationData(nlohmann::json& json) {
     console->info("Parse application data for room");
 }
@@ -54,46 +42,30 @@ Script* RoomScriptLoader::getScript()
 
 RoomScriptLoader::~RoomScriptLoader() {};
 
-struct RoomNodePortalRegisterImpl : public RoomNodePortalRegister
-{
-    virtual void registerPortal(std::string gateId, std::string connectId) override {
-        console->info(
-                "Add gate {} {}",
-                gateId, connectId);
-    };
-    virtual ~RoomNodePortalRegisterImpl() = default;
-};
-
-auto registrer = std::make_unique<RoomNodePortalRegisterImpl>();
-
 Room::Room(
     std::string _room_name,
     GltfMaterialLibraryIfacePtr materialLibrary,
     FileLibrary::UriReference& ref,
     RoomResolver* _room_resolver,
+    IRoomNodePortalRegister* portal_register,
     StatesList* _states_list)
     :
     RoomScriptLoader(ref),
     GltfModel(materialLibrary, ref,
-            [_room_resolver, _room_name, this, _states_list](nlohmann::json& json,
+            [_room_resolver, _room_name, this, _states_list, portal_register](nlohmann::json& json,
             GltfDataAccessorIFace* data_accessor) {
-                return make_shared<RoomNode>(json, data_accessor, _room_resolver, registrer.get(), getScript(), _room_name, _states_list);
+                // build a local wrapper reference to the room provider
+                return make_shared<RoomNode>(json, data_accessor, _room_resolver, portal_register, getScript(), _room_name, this, _states_list);
             }),
     room_name(_room_name),
     room_resolver(_room_resolver),
     states_list(_states_list)
 {
-    auto registrer = std::make_unique<RoomNodePortalRegisterImpl>();
     instance = make_unique<GltfInstance>(getInstanceParameters());
     // collect portals list and associated index
     for (auto i =0; i < nodeTable.size(); i++) {
-        auto portalList = dynamic_cast<RoomNode*>(nodeTable[i].get())->getPortalNameList();
-        for (auto p : portalList) {
-            portalsIndices.insert(std::pair<GateIdentifier, int>(p, i));
-            console->info(
-                "Add gate info room: {} {} to index {} - total count {}",
-                p.gate, p.connect, i, portalsIndices.size());
-        }
+        auto room_node = dynamic_cast<RoomNode*>(nodeTable[i].get());
+        room_node->setInstance(instance->getNode(i));
     }
     // Get specific data, if any. Needs to reload JSON
     auto raw_json = ref.readStringContent();
