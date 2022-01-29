@@ -1,0 +1,50 @@
+{
+    "$schema": "../../../schema/file_room_bricks.json",
+    "bricks": [
+        {
+            "b_id": "b0",
+            "pads": [
+                {
+                    "pad_id": "root_door0",
+                    "definition": {
+                        "translation": [
+                            8.0,
+                            0.0,
+                            4.0
+                        ]
+                    }
+                }
+            ],
+            "parameters": {
+                "structure_class": "simple_pad_provider"
+            }
+        },
+        {
+            "b_id": "b1",
+            "parameters": {
+                "structure_class": "rectangular",
+                "structure_parameters": {
+                    "size": [
+                        10.0,
+                        10.0,
+                        5.0
+                    ]
+                }
+            }
+        },
+        {
+            "b_id": "door0",
+            "root_pad": {
+                "ref_b_id": "b0",
+                "ref_pad_id": "root_door0"
+            },
+            "parameters": {
+                "structure_class": "simple_door",
+                "structure_parameters": {
+                    "gate_id": "my_door",
+                    "connect": "B"
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,45 @@
+{
+ "$schema": "../../../generator/schema/file_rooms_logic.json",
+ "declarations": {
+  "name": [
+   {
+    "lang": "en",
+    "value": "Simple Level"
+   }
+  ],
+  "section": "samples",
+  "game_type": {
+   "single_mode": {
+    "execution_time": 10,
+    "entry_point_room": "room1",
+    "end_point_room": "room2",
+    "entry_point_position": [
+     1.0,
+     2.0,
+     3.0
+    ]
+   }
+  }
+ },
+ "rooms": [
+  {
+   "room_id": "room1",
+   "name": [
+    {
+     "lang": "en",
+     "value": "room1"
+    }
+   ]
+  },
+  {
+   "room_id": "room2",
+   "name": [
+    {
+     "lang": "en",
+     "value": "room2"
+    }
+   ]
+  }
+ ],
+ "gates": []
+}
