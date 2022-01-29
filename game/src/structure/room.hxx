@@ -66,6 +66,8 @@ class Room : private RoomScriptLoader, public GltfModel
          */
         StatesList* states_list;
 
+        IRoomNodePortalRegister* portal_register;
+
         /** @brief List of animation code specific to the room. It relies on
          * the animations defined by the model and specific application data
          * to manage it
@@ -78,9 +80,6 @@ class Room : private RoomScriptLoader, public GltfModel
 
         /** @brief Overload recursive method to draw things, will draw portals */
         virtual void draw(GltfInstance*, int, void* context = nullptr) override;
-
-        /** @brief Mapping a list of portals and in/out to indices */
-        std::map<GateIdentifier, int> portalsIndices;
 
         /** @brief Full context information for drawing. Used by Room for bootstrapping, and RoomNode for recursing.
          * Draws all: room itself (all nodes), objects, portals.
@@ -117,12 +116,6 @@ class Room : private RoomScriptLoader, public GltfModel
         /** @brief apply transformation to instance
         */
         void updateRoom(float delta_time);
-
-        /** get the list of handled portals */
-        std::set<GateIdentifier> getGateNameList() const;
-
-        /** get the objects for a given portal */
-        std::pair<RoomNode*, GltfNodeInstanceIface*> getGateNode(const GateIdentifier& gate) const;
 
         /** @brief get an updated POV if it goes through a portal.
          * @param origin is the original POV, ie. start of trajectory

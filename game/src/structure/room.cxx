@@ -47,19 +47,20 @@ Room::Room(
     GltfMaterialLibraryIfacePtr materialLibrary,
     FileLibrary::UriReference& ref,
     RoomResolver* _room_resolver,
-    IRoomNodePortalRegister* portal_register,
+    IRoomNodePortalRegister* _portal_register,
     StatesList* _states_list)
     :
     RoomScriptLoader(ref),
     GltfModel(materialLibrary, ref,
-            [_room_resolver, _room_name, this, _states_list, portal_register](nlohmann::json& json,
+            [_room_resolver, _room_name, this, _states_list, _portal_register](nlohmann::json& json,
             GltfDataAccessorIFace* data_accessor) {
                 // build a local wrapper reference to the room provider
-                return make_shared<RoomNode>(json, data_accessor, _room_resolver, portal_register, getScript(), _room_name, this, _states_list);
+                return make_shared<RoomNode>(json, data_accessor, _room_resolver, _portal_register, getScript(), _room_name, this, _states_list);
             }),
     room_name(_room_name),
     room_resolver(_room_resolver),
-    states_list(_states_list)
+    states_list(_states_list),
+    portal_register(_portal_register)
 {
     instance = make_unique<GltfInstance>(getInstanceParameters());
     // collect portals list and associated index
@@ -102,7 +103,7 @@ void Room::draw(PointOfView pov)
 {
     struct DrawContext drawContext {
         pov,
-        nullptr, // TODO
+        portal_register, // TODO
         0,
         FboIndex{0,0}
     };
@@ -117,25 +118,6 @@ void Room::draw(GltfInstance* instance, int index, void* context)
     auto myNode = dynamic_cast<RoomNode*>(nodeTable[index].get());
     auto instanceNode = instance->getNode(index);
     myNode->draw(instanceNode, *(struct DrawContext*)(context));
-}
-
-std::set<GateIdentifier> Room::getGateNameList() const
-{
-    std::set<GateIdentifier> result;
-    for (auto& p : portalsIndices)
-        result.insert(p.first);
-    return result;
-}
-
-std::pair<RoomNode*, GltfNodeInstanceIface*> Room::getGateNode(const GateIdentifier& gate) const
-{
-    if (portalsIndices.count(gate) == 0)
-        throw LevelException(string("Requested gate ") + gate.gate + " " + gate.connect + " does not exist in room:" + room_name);
-    auto i = portalsIndices.find(gate)->second;
-    return std::pair<RoomNode*, GltfNodeInstanceIface*>{
-        dynamic_cast<RoomNode*>(nodeTable[i].get()),
-        dynamic_cast<GltfNodeInstanceIface*>(instance->getNode(i))
-        };
 }
 
 bool Room::getDestinationPov(
@@ -157,29 +139,35 @@ bool Room::getDestinationPov(
         auto localDestination = destination.changeCoordinateSystem(destination.room, roomNodeInstance->getInvertedNodeMatrix());
 
         GateIdentifier gate;
-        string target_room;
         glm::vec3 changePointLocal;
         float distance = _distance;
-        bool crossed = roomNode->checkPortalCrossing(localOrigin.position, localDestination.position, gate, changePointLocal, distance);
+        std::string dstRoom;
+        RoomNode *dstRoomNode;
+        GltfNodeInstanceIface *dstNodeInstance;
+        bool crossed = roomNode->checkPortalCrossing(
+            localOrigin.position, localDestination.position,
+            gate, changePointLocal, distance,
+            dstRoom, dstRoomNode, dstNodeInstance
+            );
         if (crossed) {
             changePoint = roomNodeInstance->getInvertedNodeMatrix() * positionToVec4(changePointLocal);
 
             console->debug("Crossed portal at change point local:\n{}\ndistance={}\nportal={}/{}==>{}\nwas from local:{}\nwas going to local:\n",
-                vec3_to_string(changePointLocal), distance, gate.gate, gate.connect, target_room,
+                vec3_to_string(changePointLocal), distance, gate.gate, gate.connect, dstRoom,
                 vec3_to_string(localOrigin.position), vec3_to_string(localDestination.position)
                 );
 
             // compute target position
-            auto new_room = room_resolver->getRoom(target_room);
-            auto [new_node, new_instance] = new_room->getGateNode(gate);
+            //auto new_room = room_resolver->getRoom(target_room);
+            //auto [new_node, new_instance] = new_room->getGateNode(gate);
             newPovDestination = localDestination.changeCoordinateSystem(
-                target_room,
-                new_instance->getNodeMatrix());
+                dstRoom,
+                dstNodeInstance->getNodeMatrix());
             auto localChangePointDestination(localDestination);
             localChangePointDestination.position = changePointLocal;
             newPovChangePoint = localChangePointDestination.changeCoordinateSystem(
-                target_room,
-                new_instance->getNodeMatrix());
+                dstRoom,
+                dstNodeInstance->getNodeMatrix());
             _distance = distance;
             result = true;
         }

@@ -9,6 +9,7 @@
 #include "level.hxx"
 #include "room.hxx"
 #include "states_list.hxx"
+#include "impl_room_node_portal_register.hxx"
 
 
 static auto console = getConsole("level");
@@ -36,13 +37,14 @@ Level::Level(FileLibrary::UriReference ref)
     console->info("Load level: {}", ref.getPath());
     json j_level = json::parse(ref.readStringContent());
     room_resolver = make_unique<LevelRoomResolver>(rooms);
+    portal_register = make_unique<ImplRoomNodePortalRegister>();
     GltfMaterialLibraryIfacePtr materialLibrary = GltfMaterialLibraryIface::getMaterialLibray();
     states_list = make_unique<StatesList>();
     for(auto room_it : jsonGetElementByName(j_level, "rooms")) {
             auto room_id = jsonGetElementByName(room_it, "room_id").get<string>();
             console->info("Found room_id: {}", room_id);
             auto ref_room = ref.getDirPath().getSubPath(room_id+ "/room.gltf");
-            auto room = std::make_shared<Room>(room_id, materialLibrary, ref_room, room_resolver.get(), nullptr, states_list.get());
+            auto room = std::make_shared<Room>(room_id, materialLibrary, ref_room, room_resolver.get(), portal_register.get(), states_list.get());
             rooms.insert({room_id, room});
     }
     auto declarations = jsonGetElementByName(j_level, "declarations");

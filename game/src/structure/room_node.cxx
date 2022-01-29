@@ -62,7 +62,7 @@ RoomNode::RoomNode(
     const std::string& _room_name,
     Room* _room,
     StatesList* _states_list) :
-        GltfNode(json), room_resolver(_room_resolver), room(_room), room_name(_room_name)
+        GltfNode(json), room_resolver(_room_resolver), room(_room), room_name(_room_name), portal_register(_portal_register)
 {
     gravity = make_unique<RoomNodeGravity>(name, _roomScript);
 
@@ -105,9 +105,11 @@ bool RoomNode::checkDrawGate(
     const DrawContext& currentDrawContext,
     const FacePortal& portal,
     const FaceList::Face& face,
-    DrawContext& newDrawContext) const
+    DrawContext& newDrawContext,
+    Room*& newRoom) const
 {
-    float factor = (portal.gate.connect == "A") ? 1.0 : -1.0;
+    //float factor = (portal.gate.connect == "A") ? 1.0 : -1.0;
+    float factor = 1.0;
 
     // compute vectors in local referential
     PointOfView localOriginDC = currentDrawContext.pov.changeCoordinateSystem(
@@ -123,8 +125,9 @@ bool RoomNode::checkDrawGate(
 
     // retrieve target room, and node_room objects for gate
     auto target_connect = portal.gate.connect == "A" ? "B" : "A";
-    auto target_room_node = currentDrawContext.portal_provider->getPortal(GateIdentifier(portal.gate.gate, target_connect));
-    if (target_room_node) {
+    auto target_gate = GateIdentifier(portal.gate.gate, target_connect);
+    auto target_room_node = currentDrawContext.portal_provider->getPortal(target_gate);
+    if (target_room_node == nullptr) {
         throw LevelException("Unable to get gate for :" + portal.gate.gate + " with target: " + target_connect);
     }
     auto target_room_node_instance = target_room_node->node_instance;
@@ -135,9 +138,10 @@ bool RoomNode::checkDrawGate(
         throw LevelException("Unable to get room node instance for gate:" + portal.gate.gate + " with target: " + target_connect);
     }
     // compute target
+    newRoom = target_room_node->room;
     newDrawContext = currentDrawContext;
     newDrawContext.pov = localOriginDC.changeCoordinateSystem(
-        room_name,
+        target_room_node->room_name,
         target_room_node_instance->getNodeMatrix());
 
     return true;
@@ -148,14 +152,14 @@ void RoomNode::draw(GltfNodeInstanceIface * nodeInstance, DrawContext& roomConte
     for (auto& portal: portals) {
         for (const auto& face : portal.face->getFaces()) {
             DrawContext newDrawContext;
-            /*
-            console->info("check gate {} from room {} ( {} / {})",
-                portal.gate,
-                portal.in ? portal.connect[0]: portal.connect[1],
-                portal.connect[0], portal.connect[1]);*/
-            bool valid = checkDrawGate(nodeInstance, roomContext, portal, face, newDrawContext);
+            Room* target_room;
+            bool valid = checkDrawGate(nodeInstance, roomContext, portal, face, newDrawContext, target_room);
             //console->info(" ==> {}", valid);
             newDrawContext.recurse_level = roomContext.recurse_level + 1;
+            if (newDrawContext.recurse_level >= 5) {
+                valid = false;
+            }
+
             if (valid) {
                 // Get a FBO to draw to
                 int result = getValidFbo(&newDrawContext.fbo);
@@ -163,11 +167,8 @@ void RoomNode::draw(GltfNodeInstanceIface * nodeInstance, DrawContext& roomConte
                     console->warn("No available FBO, must have gone too far. Sad.");
                     return;
                 }
-                //console->info("FBO = " + to_string(newDrawContext.fbo.fboIndex));
-
                 // draw room
-
-                room_resolver->getRoom(newDrawContext.pov.room)->draw(newDrawContext);
+                target_room->draw(newDrawContext);
 
                 // switch to original FBO and context
                 setActiveFbo(&roomContext.fbo);
@@ -192,7 +193,10 @@ bool RoomNode::checkPortalCrossing(
             const glm::vec3& destination,
             GateIdentifier& gate,
             glm::vec3& changePoint,
-            float& distance
+            float& distance,
+            std::string& dstRoom,
+            RoomNode*& dstRoomNode,
+            GltfNodeInstanceIface *& dstNodeInstance
             )
 {
     bool result = false;
@@ -215,8 +219,14 @@ bool RoomNode::checkPortalCrossing(
                     distance = portalDistance;
                     auto target = portal.gate.connect == "A" ? "B" : "A";
                     gate = GateIdentifier{portal.gate.gate, target};
+                    RoomNode* target_room_node = portal_register->getPortal(gate);
+                    if (target_room_node == nullptr) {
+                        console->warn("No portal for gate {} {}", gate.gate, gate.connect);
+                    }
+                    dstRoom = target_room_node->room_name;
+                    dstNodeInstance = target_room_node->node_instance;
                     result = true;
-                    //console->info("Portal {} was crossed, going to room {}", gate.gate, roomTarget);
+                    console->info("Portal {} was crossed, going to room {}", gate.gate, dstRoom);
                 }
             }
         }

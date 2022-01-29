@@ -10,6 +10,7 @@
 
 struct LevelRoomResolver;
 class StatesList;
+struct ImplRoomNodePortalRegister;
 
 class Level : public SpaceResolver, public GravityProvider
 {
@@ -111,5 +112,8 @@ class Level : public SpaceResolver, public GravityProvider
 
         /** All level states */
         std::unique_ptr<StatesList> states_list;
+
+        /** Global registry of all gates */
+        std::unique_ptr<ImplRoomNodePortalRegister> portal_register;
 };
 

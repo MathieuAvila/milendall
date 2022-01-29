@@ -53,6 +53,7 @@ struct RoomNode : public GltfNode
     Room* room;
     std::string room_name;
     GltfNodeInstanceIface* node_instance;
+    IRoomNodePortalRegister* portal_register;
 
     RoomNode(
         nlohmann::json& json,
@@ -72,7 +73,8 @@ struct RoomNode : public GltfNode
         const DrawContext& currentDrawContext,
         const FacePortal& portal,
         const FaceList::Face& face,
-        DrawContext& newDrawContext) const;
+        DrawContext& newDrawContext,
+        Room*& newRoom) const;
 
     /** specialized recursive draw for portals */
     void draw(GltfNodeInstanceIface * nodeInstance, DrawContext& roomContext);
@@ -90,7 +92,10 @@ struct RoomNode : public GltfNode
             const glm::vec3& destination,
             GateIdentifier& gate,
             glm::vec3& changePoint,
-            float& distance
+            float& distance,
+            std::string& dstRoom,
+            RoomNode*& dstRoomNode,
+            GltfNodeInstanceIface *& dstNodeInstance
             );
 
     /** @brief Check if a wall is reached

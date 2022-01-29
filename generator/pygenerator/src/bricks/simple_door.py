@@ -143,10 +143,14 @@ class SimpleDoorBrick(BrickStructure):
             [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
             {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
 
+        if structure_private["connect"] == "B":
+            list_portal = [ 16,17,18,19 ]
+        else:
+            list_portal = [ 19,18,17,16 ]
         child_object.add_structure_faces(
             index_wall,
             [
-                [ 16,17,18,19 ],
+                list_portal,
             ],
             concrete_room.Node.CAT_PHYS,
             [],
