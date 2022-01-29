@@ -8,9 +8,9 @@
                     "pad_id": "root_door0",
                     "definition": {
                         "translation": [
-                            1.0,
                             0.1,
-                            0.0
+                            0.0,
+                            1.0
                         ]
                     }
                 },
@@ -18,9 +18,9 @@
                     "pad_id": "root_door1",
                     "definition": {
                         "translation": [
-                            5.0,
-                            0.1,
-                            0.0
+                            8.0,
+                            0.0,
+                            4.0
                         ]
                     }
                 }
@@ -35,7 +35,7 @@
                 "structure_class": "rectangular",
                 "structure_parameters": {
                     "size": [
-                        7.0,
+                        10.0,
                         2.5,
                         5.0
                     ]
@@ -51,8 +51,8 @@
             "parameters": {
                 "structure_class": "simple_door",
                 "structure_parameters": {
-                    "gate_id" : "my_door",
-                    "connect" : "A"
+                    "gate_id": "my_door",
+                    "connect": "A"
                 }
             }
         },
@@ -65,8 +65,8 @@
             "parameters": {
                 "structure_class": "simple_door",
                 "structure_parameters": {
-                    "gate_id" : "my_door",
-                    "connect" : "B"
+                    "gate_id": "my_door",
+                    "connect": "B"
                 }
             }
         }
