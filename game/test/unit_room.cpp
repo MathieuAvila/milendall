@@ -9,6 +9,7 @@
 #include "room.hxx"
 #include "gltf_material_accessor_library_iface.hxx"
 #include "states_list.hxx"
+#include "impl_room_node_portal_register.hxx"
 
 #include "glmock.hpp"
 
@@ -60,6 +61,25 @@ std::unique_ptr<Room> loadRoom(std::string roomPath)
     std::unique_ptr<Room> result;
     result.swap(all.room);
     return result;
+}
+
+std::tuple<
+    std::shared_ptr<StatesList>,
+    std::shared_ptr<Room>,
+    std::shared_ptr<ImplRoomNodePortalRegister>> loadRoomFull(std::string roomPath)
+{
+    auto materialLibrary = GltfMaterialLibraryIface::getMaterialLibray();
+    auto fl = FileLibrary();
+    fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../game/test/sample/"));
+    fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../data/"));
+    auto roomPathRef = fl.getRoot().getSubPath(roomPath);
+    auto states_list = make_shared<StatesList>();
+    auto portal_register = make_shared<ImplRoomNodePortalRegister>();
+    auto room = make_shared<Room>("room1", materialLibrary, roomPathRef, nullptr, nullptr, states_list.get());
+    auto room_ptr = room.get();
+    EXPECT_NE( room_ptr, nullptr );
+    room->updateRoom(0.0f);
+    return std::make_tuple(states_list, room, portal_register);
 }
 
 TEST_F(RoomTest, LoadLevel2Rooms1Gate_Room1) {
@@ -399,9 +419,9 @@ TEST_F(RoomTest, animations) {
     // testing loading animations and applying
     InSequence s;
     GLMock mock;
-    PairRoomStates room_data = loadRoomWithStates("/room_2_animations/room.gltf");
+    auto [states, room, portal_register] = loadRoomFull("/room_2_animations/room.gltf");
 
-    auto& anim = room_data.room->room_animations;
+    auto& anim = room.get()->room_animations;
     const auto& first = anim.begin()->get();
     const auto& second = std::next(anim.begin(), 1)->get();
 
@@ -412,13 +432,13 @@ TEST_F(RoomTest, animations) {
     ASSERT_EQ(first->time_current, 0.0f);
     ASSERT_EQ(second->time_current, 0.0f);
 
-    room_data.room->updateRoom(0.1f);
+    room->updateRoom(0.1f);
 
     ASSERT_EQ(first->time_current, 0.0f);
     ASSERT_EQ(second->time_current, 0.0f);
 
-    room_data.states->setState("my_door_event_1", true);
-    room_data.room->updateRoom(0.1f);
+    states->setState("my_door_event_1", true);
+    room->updateRoom(0.1f);
 
     ASSERT_EQ(first->time_current, 0.1f);
     ASSERT_EQ(second->time_current, 0.0f);

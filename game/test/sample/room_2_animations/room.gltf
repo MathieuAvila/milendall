@@ -171,10 +171,7 @@
      {
       "data": {
        "type": "portal",
-       "connect": [
-        "room1",
-        "room2"
-       ],
+       "connect": "A",
        "gate": "door1"
       },
       "accessor": 25
@@ -215,10 +212,7 @@
      {
       "data": {
        "type": "portal",
-       "connect": [
-        "room1",
-        "room2"
-       ],
+       "connect": "A",
        "gate": "door2"
       },
       "accessor": 36
