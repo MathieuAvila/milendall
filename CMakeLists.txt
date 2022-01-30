@@ -190,6 +190,8 @@ game/test/unit_gravity_information.cxx
 game/test/unit_states_list.cxx
 game/test/unit_room_animation.cxx
 game/test/unit_trigger.cxx
+game/test/unit_gate_id.cxx
+game/test/unit_impl_room_node_portal_register.cxx
 )
 
 enable_testing()

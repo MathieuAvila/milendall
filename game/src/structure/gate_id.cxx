@@ -18,3 +18,13 @@ bool GateIdentifier::operator== (const GateIdentifier& b) const
 {
     return (gate == b.gate) && (connect == b.connect);
 };
+
+bool GateIdentifier::operator!= (const GateIdentifier& b) const
+{
+    return !(operator==(b));
+}
+
+std::string to_string(GateIdentifier g)
+{
+    return g.gate + ":" + g.connect;
+}

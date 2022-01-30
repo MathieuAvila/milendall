@@ -9,4 +9,7 @@ struct GateIdentifier {
     GateIdentifier(std::string _gate, std::string _connect);
     bool operator< (const GateIdentifier& b) const;
     bool operator== (const GateIdentifier& b) const;
+    bool operator!= (const GateIdentifier& b) const;
 };
+
+std::string to_string(GateIdentifier g);
