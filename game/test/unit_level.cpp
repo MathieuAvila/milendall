@@ -152,40 +152,6 @@ TEST_F(LevelTest, getDestinationPov_room1_r1r2_cross) {
         "room2"}));
 }
 
-TEST_F(LevelTest, getDestinationPov_room2_r1r2_cross___reversed) {
-    InSequence s; GLMock mock;
-
-    // Check crossing of a IN portal
-    auto level = loadLevel("2_rooms_1_gate");
-    auto level_ptr = level.get();
-    EXPECT_NE( level_ptr, nullptr );
-
-    PointOfView origin{
-        glm::vec3(0.0, 2.0, 5.0),
-        glm::mat4(1.0f),
-        "room2"
-    };
-    PointOfView destination{
-        glm::vec3(5.0, 2.0, 5.0),
-        glm::mat4(1.0f),
-        "room2"
-    };
-
-    auto result = level_ptr->getDestinationPov(origin, destination.position);
-
-    console->info("{}", to_string(result));
-    console->info("{}", mat4x4_to_string(result.local_reference));
-
-
-    ASSERT_EQ(result, (PointOfView{
-        glm::vec3(5.5, 2.0, 1.0),
-        glm::mat4(  0.000000, 0.000000, 1.000000, 0.000000,
-                    0.000000, 1.000000, 0.000000, 0.000000,
-                    -1.000000, 0.000000, 0.000000, 0.000000,
-                    0.000000, 0.000000, 0.000000, 1.000000),
-        "room1"}));
-}
-
 TEST_F(LevelTest, isWallReached_0_no_hit) {
     InSequence s; GLMock mock;
     auto level = loadLevel("2_rooms_1_gate");
