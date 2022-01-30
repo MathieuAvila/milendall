@@ -8,6 +8,7 @@
 
 #include "level.hxx"
 #include "room.hxx"
+#include "room_resolver.hxx"
 #include "states_list.hxx"
 #include "impl_room_node_portal_register.hxx"
 
@@ -44,7 +45,7 @@ Level::Level(FileLibrary::UriReference ref)
             auto room_id = jsonGetElementByName(room_it, "room_id").get<string>();
             console->info("Found room_id: {}", room_id);
             auto ref_room = ref.getDirPath().getSubPath(room_id+ "/room.gltf");
-            auto room = std::make_shared<Room>(room_id, materialLibrary, ref_room, room_resolver.get(), portal_register.get(), states_list.get());
+            auto room = std::make_shared<Room>(room_id, materialLibrary, ref_room, portal_register.get(), states_list.get());
             rooms.insert({room_id, room});
     }
     auto declarations = jsonGetElementByName(j_level, "declarations");

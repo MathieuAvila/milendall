@@ -48,7 +48,7 @@ PairRoomStates loadRoomWithStates(std::string roomPath)
     fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../data/"));
     auto roomPathRef = fl.getRoot().getSubPath(roomPath);
     auto states_list = make_unique<StatesList>();
-    auto room = make_unique<Room>("room1", materialLibrary, roomPathRef, nullptr, nullptr, states_list.get());
+    auto room = make_unique<Room>("room1", materialLibrary, roomPathRef, nullptr, states_list.get());
     auto room_ptr = room.get();
     EXPECT_NE( room_ptr, nullptr );
     room->updateRoom(0.0f);
@@ -75,7 +75,7 @@ std::tuple<
     auto roomPathRef = fl.getRoot().getSubPath(roomPath);
     auto states_list = make_shared<StatesList>();
     auto portal_register = make_shared<ImplRoomNodePortalRegister>();
-    auto room = make_shared<Room>("room1", materialLibrary, roomPathRef, nullptr, portal_register.get(), states_list.get());
+    auto room = make_shared<Room>("room1", materialLibrary, roomPathRef, portal_register.get(), states_list.get());
     auto room_ptr = room.get();
     EXPECT_NE( room_ptr, nullptr );
     room->updateRoom(0.0f);

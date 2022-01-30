@@ -7,7 +7,6 @@
 #include "gltf_model.hxx"
 #include "face_list.hxx"
 #include "face_hard.hxx"
-#include "room_resolver.hxx"
 #include "structure_object_type.hxx"
 #include "trigger.hxx"
 
@@ -21,7 +20,7 @@
 struct DrawContext;
 class Script;
 struct IRoomNodePortalRegister;
-
+class Room;
 
 struct RoomNode : public GltfNode
 {
@@ -47,7 +46,6 @@ struct RoomNode : public GltfNode
     std::shared_ptr<PointsBlock> points;
     std::list<FacePortal> portals;
     std::list<FaceHard> walls;
-    RoomResolver* room_resolver;
     std::unique_ptr<RoomNodeGravity> gravity;
     std::list<Trigger> triggers;
     Room* room;
@@ -58,7 +56,6 @@ struct RoomNode : public GltfNode
     RoomNode(
         nlohmann::json& json,
         GltfDataAccessorIFace* data_accessor,
-        RoomResolver* _room_resolver,
         IRoomNodePortalRegister* _portal_register,
         Script* _roomScript,
         const std::string& room_name,

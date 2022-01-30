@@ -56,13 +56,12 @@ RoomNode::FacePortal::FacePortal(
 RoomNode::RoomNode(
     nlohmann::json& json,
     GltfDataAccessorIFace* data_accessor,
-    RoomResolver* _room_resolver,
     IRoomNodePortalRegister* _portal_register,
     Script* _roomScript,
     const std::string& _room_name,
     Room* _room,
     StatesList* _states_list) :
-        GltfNode(json), room_resolver(_room_resolver), room(_room), room_name(_room_name), portal_register(_portal_register)
+        GltfNode(json), room(_room), room_name(_room_name), portal_register(_portal_register)
 {
     gravity = make_unique<RoomNodeGravity>(name, _roomScript);
 

@@ -46,19 +46,17 @@ Room::Room(
     std::string _room_name,
     GltfMaterialLibraryIfacePtr materialLibrary,
     FileLibrary::UriReference& ref,
-    RoomResolver* _room_resolver,
     IRoomNodePortalRegister* _portal_register,
     StatesList* _states_list)
     :
     RoomScriptLoader(ref),
     GltfModel(materialLibrary, ref,
-            [_room_resolver, _room_name, this, _states_list, _portal_register](nlohmann::json& json,
+            [_room_name, this, _states_list, _portal_register](nlohmann::json& json,
             GltfDataAccessorIFace* data_accessor) {
                 // build a local wrapper reference to the room provider
-                return make_shared<RoomNode>(json, data_accessor, _room_resolver, _portal_register, getScript(), _room_name, this, _states_list);
+                return make_shared<RoomNode>(json, data_accessor, _portal_register, getScript(), _room_name, this, _states_list);
             }),
     room_name(_room_name),
-    room_resolver(_room_resolver),
     states_list(_states_list),
     portal_register(_portal_register)
 {
@@ -158,8 +156,6 @@ bool Room::getDestinationPov(
                 );
 
             // compute target position
-            //auto new_room = room_resolver->getRoom(target_room);
-            //auto [new_node, new_instance] = new_room->getGateNode(gate);
             newPovDestination = localDestination.changeCoordinateSystem(
                 dstRoom,
                 dstNodeInstance->getNodeMatrix());

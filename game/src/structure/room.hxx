@@ -53,13 +53,6 @@ class Room : private RoomScriptLoader, public GltfModel
         /** @brief my very own instance */
         std::unique_ptr<GltfInstance> instance;
 
-        /**
-         * @brief Provides rooms when drawing needs to go through a portal.
-         * Level defines this.
-         * No ownership, should be valid for the life duration of the object.
-         */
-        RoomResolver* room_resolver;
-
         /** @brief Holds the states list provided by Level.
          * Level defines this.
          * No ownership, should be valid for the life duration of the object.
@@ -105,7 +98,6 @@ class Room : private RoomScriptLoader, public GltfModel
             std::string _room_name,
             GltfMaterialLibraryIfacePtr materialLibrary,
             FileLibrary::UriReference& ref,
-            RoomResolver*  _room_resolver = nullptr,
             IRoomNodePortalRegister* portal_register = nullptr,
             StatesList* _states_list = nullptr);
 
