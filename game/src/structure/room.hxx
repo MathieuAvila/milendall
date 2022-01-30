@@ -180,7 +180,7 @@ class Room : private RoomScriptLoader, public GltfModel
 
         friend struct RoomNode;
 
-    FRIEND_TEST(RoomTest, LoadLevel2Rooms1Gate_Room1);
+    FRIEND_TEST(RoomTest, LoadLevel2Rooms1Gate);
     FRIEND_TEST(RoomTest, animations);
 };
 

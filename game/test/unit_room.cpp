@@ -75,7 +75,7 @@ std::tuple<
     auto roomPathRef = fl.getRoot().getSubPath(roomPath);
     auto states_list = make_shared<StatesList>();
     auto portal_register = make_shared<ImplRoomNodePortalRegister>();
-    auto room = make_shared<Room>("room1", materialLibrary, roomPathRef, nullptr, nullptr, states_list.get());
+    auto room = make_shared<Room>("room1", materialLibrary, roomPathRef, nullptr, portal_register.get(), states_list.get());
     auto room_ptr = room.get();
     EXPECT_NE( room_ptr, nullptr );
     room->updateRoom(0.0f);
@@ -87,9 +87,8 @@ TEST_F(RoomTest, LoadLevel2Rooms1Gate) {
     InSequence s;
     GLMock mock;
 
-    auto room = loadRoom("/2_rooms_1_gate/room1/room.gltf");
+    auto [states, room, portal_register] = loadRoomFull("/2_rooms_1_gate/room1/room.gltf");
 
-/*
     EXPECT_EQ(room.get()->nodeTable.size(), 3);
     auto & table = room.get()->nodeTable;
     // next tests are for sanity checks, just to assure tests are done on the right objects.
@@ -101,15 +100,16 @@ TEST_F(RoomTest, LoadLevel2Rooms1Gate) {
     GltfNode* node_portal = table[2].get();
     RoomNode* nodePortal = dynamic_cast<RoomNode*>(node_portal);
     EXPECT_EQ(nodePortal->portals.size(), 1);
-    EXPECT_EQ(nodePortal->portals.front().gate.gate, "my_door");
-    EXPECT_EQ(nodePortal->portals.front().gate.connect, "A");
+    EXPECT_EQ(nodePortal->portals.front().gate, GateIdentifier("my_door", "A"));
     EXPECT_EQ(nodePortal->portals.front().face->getFaces().size(), 1); // should contain 1 face
 
     // checking one that has no portals
     GltfNode* node_parent = table[1].get();
     RoomNode* nodeParent = dynamic_cast<RoomNode*>(node_parent);
     EXPECT_EQ(nodeParent->portals.size(), 0);
-*/
+
+    // checking what was registered
+    EXPECT_EQ(node_portal, portal_register->getPortal(GateIdentifier("my_door", "A")));
 }
 
 TEST_F(RoomTest, GateLoading__LoadLevel3Rooms3Gate) {

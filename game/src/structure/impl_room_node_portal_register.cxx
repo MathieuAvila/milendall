@@ -24,6 +24,7 @@ void ImplRoomNodePortalRegister::registerPortal(GateIdentifier gate, RoomNode* r
 
 RoomNode* ImplRoomNodePortalRegister::getPortal(GateIdentifier gate)
 {
+    //dump(this);
     if (map.count(gate) == 0) {
         throw LevelException("Register hs no gate: " + to_string(gate));
     }
