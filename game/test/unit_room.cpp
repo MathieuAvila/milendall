@@ -117,23 +117,17 @@ TEST_F(RoomTest, GateLoading__LoadLevel3Rooms3Gate) {
     InSequence s;
     GLMock mock;
 
-    auto room = loadRoom("/3_rooms_3_gates_room1/room.gltf");
+    auto [states, room, portal_register] = loadRoomFull("/3_rooms_3_gates_room1/room.gltf");
 
-    // TODO
-/*
-    auto portal_list = room->getGateNameList();
+    auto & table = room.get()->nodeTable;
+    for (auto n: table) {
+        GltfNode* node = table[2].get();
+        console->info("Node {}={}", n->name, (void*)node);
+    }
 
-    for (auto e: portal_list)
-        console->info("{} {}", e.connect, e.gate);
-
-    EXPECT_EQ( portal_list, (std::set<GateIdentifier>{
-        GateIdentifier{"r2r1","B"},
-        GateIdentifier{"r1r2","A"},
-        GateIdentifier{"r3r1","B"}}) );
-
-    auto [room_node, instance] = room->getGateNode(GateIdentifier{"r2r1","A"});
-    EXPECT_EQ( room_node->name, "r2r1_impl" );
-    //EXPECT_EQ( instance->, "" ); // don't know how to check this*/
+    EXPECT_EQ("r1r2_impl", portal_register->getPortal(GateIdentifier("r1r2", "B"))->name);
+    EXPECT_EQ("r2r1_impl", portal_register->getPortal(GateIdentifier("r2r1", "A"))->name);
+    EXPECT_EQ("r3r1_impl", portal_register->getPortal(GateIdentifier("r3r1", "A"))->name);
 }
 
 

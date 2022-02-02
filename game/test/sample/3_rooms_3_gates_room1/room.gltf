@@ -189,7 +189,7 @@
      {
       "data": {
        "type": "portal",
-       "connect": "A",
+       "connect": "B",
        "gate": "r1r2"
       },
       "accessor": 27
