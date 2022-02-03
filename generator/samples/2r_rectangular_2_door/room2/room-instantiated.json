@@ -38,12 +38,14 @@
                 "ref_b_id": "b0",
                 "ref_pad_id": "root_door0"
             },
-            "parameters": {
-                "structure_class": "simple_door",
-                "structure_parameters": {
+            "portals": [
+                {
                     "gate_id": "my_door",
                     "connect": "B"
                 }
+            ],
+            "parameters": {
+                "structure_class": "simple_door"
             }
         }
     ]
