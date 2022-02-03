@@ -47,6 +47,29 @@
                 ]
             }
         },
+        "portals": {
+            "description": "Which portals the node has. This is accessed both as a generic and brick-specific data",
+            "type": "array",
+            "items": {
+                "description": "The definition of the portal",
+                "type": "object",
+                "properties": {
+                    "gate_id": {
+                        "description": "A unique ID at the level level",
+                        "type": "string"
+                    },
+                    "connect": {
+                        "description": "A unique face of the portl",
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "gate_id",
+                    "connect"
+                ]
+            }
+        },
         "triggers": {
             "description": "The list of triggers the brick holds",
             "type": "array",
@@ -59,6 +82,7 @@
         }
     },
     "required": [
-        "b_id","parameters"
+        "b_id",
+        "parameters"
     ]
 }

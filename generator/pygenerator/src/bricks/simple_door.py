@@ -35,10 +35,13 @@ class SimpleDoorBrick(BrickStructure):
     def check_structure(self):
         """check everything is as expected.
         """
-        structure_parameters = self._element.values.parameters.structure_parameters
-        if "gate_id" not in structure_parameters:
+        v = self._element.values
+        if "portals" not in v:
+            raise Exception("simple_door '%s' needs a portals" % self._element.get_id())
+        p = v.portals[0]
+        if "gate_id" not in p:
             raise Exception("simple_door '%s' needs a gate_id" % self._element.get_id())
-        if "connect" not in structure_parameters:
+        if "connect" not in p:
             raise Exception("simple_door '%s' needs a connect field" % self._element.get_id())
 
         logger.info("checking if door is ok: always ! door rules the world !")
@@ -92,6 +95,7 @@ class SimpleDoorBrick(BrickStructure):
         """Perform instantiation on concrete_room"""
         structure_private = self._element.values.parameters.structure_private
         s = structure_private["shift"]
+        portal = self._element.values.portals[0]
 
         child_object = concrete.add_child(None, self.brick.get_id())
 
@@ -143,7 +147,7 @@ class SimpleDoorBrick(BrickStructure):
             [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
             {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
 
-        if structure_private["connect"] == "B":
+        if portal["connect"] == "B":
             list_portal = [ 16,17,18,19 ]
         else:
             list_portal = [ 19,18,17,16 ]
@@ -156,8 +160,8 @@ class SimpleDoorBrick(BrickStructure):
             [],
             {
                 concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_PORTAL,
-                concrete_room.Node.PORTAL_CONNECT : structure_private["connect"],
-                concrete_room.Node.GATE_ID : structure_private["gate_id"]
+                concrete_room.Node.PORTAL_CONNECT : portal["connect"],
+                concrete_room.Node.GATE_ID : portal["gate_id"]
             }
         )
         door = structure_private["door"]
