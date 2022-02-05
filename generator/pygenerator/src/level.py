@@ -93,16 +93,18 @@ class Level:
     def dump_graph(self, output_dir):
         """ Dump a file in graphviz format that allows to graphically visualize
             level"""
-        output_file = output_dir + "/" + self.status_to_dump_graph[self.status]
-        with open(output_file, "w") as output_file:
+        output_file_name = output_dir + "/" + self.status_to_dump_graph[self.status]
+        with open(output_file_name, "w") as output_file:
             output_file.write("digraph g {\n")
+            output_file.write('newrank="true"\n');
             output_file.write("node [shape=box];\n")
             for _r in self.values.rooms:
                 _r.dump_graph(output_file)
             output_file.write("}\n")
-        if self.status >= state.LevelState.Instantiated:
-            for _room in self.values.rooms:
-                _room.dump_graph_rooms(output_dir)
+        value = os.system("dot -Tpng " + output_file_name + " -o " + output_file_name + ".png")
+        if value != 0:
+            logger.error("Graph generation returned: %i" % value)
+
 
     def _check_parameter_presence(self, element, structure_type, parameter_name):
         """Check a parameter is present"""

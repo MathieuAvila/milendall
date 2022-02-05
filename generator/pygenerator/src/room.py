@@ -90,19 +90,17 @@ class Room(Element):
         with open(room_file, "w") as output_file:
             output_file.write(_j)
 
-    def dump_graph(self, output):
+    def dump_graph(self, output_room, output_main):
         """
         dump a graphviz repr of a room
         """
 
         label = self.name
-        if self.values.triggers is not None:
-            label += "<BR/><B>".join(["\n"] + [t.trigger_id for t in self.values.triggers])+"</B>"
-        if self.values.structure_class is not None:
-            label += "<BR/><I>S: "+ self.values.structure_class + "</I>"
-        if self.values.dressing_class is not None:
-            label += "<BR/><I>D: "+ self.values.dressing_class + "</I>"
-        output.write('"' + self.values.room_id +'" ' + '[ label=< ' + label+ ' > ] ;\n')
+        logger.info("Dump room %s" % (self.name))
+        for brick in self.values["bricks"]:
+            logger.info("Dump brick %s" % (self.name))
+            brick.dump_graph(output_room, output_main, self.name)
+        #output.write('"' + self.name +'" ' + '[ label=< ' + label+ ' > ] ;\n')
 
     def finalize(self, level_directory=None, preview=False):
         """ Perform final generate and dressing on one room."""

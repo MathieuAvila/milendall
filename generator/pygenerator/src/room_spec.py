@@ -14,6 +14,13 @@ import logging
 logger = logging.getLogger("room_spec")
 logger.setLevel(logging.INFO)
 
+class WriteableString():
+    def __init__(self):
+        self.content = ""
+
+    def write(self, string):
+        self.content = self.content + string
+
 class RoomSpec():
 
     def __init__(self, values, level_directory, state, selector):
@@ -31,6 +38,18 @@ class RoomSpec():
         dump a graphviz repr of a room, only spec part
         """
 
+        logger.info("Dump room_spec %s" % (self.values.name))
+
+        # collect portals and write them out
+        gate_ids = []
+        for brick in self.room.values["bricks"]:
+            if "portals" in brick.values:
+                for portal in brick.values.portals:
+                    gate_ids.append(portal.gate_id)
+        for g in gate_ids:
+            output.write(g + ' [ shape=hexagon style=filled color=yellow ];\n')
+
+        # now you can dump the room
         label = self.values.room_id
         if self.values.triggers is not None:
             label += "<BR/><B>".join(["\n"] + [t.trigger_id for t in self.values.triggers])+"</B>"
@@ -38,15 +57,26 @@ class RoomSpec():
             label += "<BR/><I>S: "+ self.values.structure_class + "</I>"
         if self.values.dressing_class is not None:
             label += "<BR/><I>D: "+ self.values.dressing_class + "</I>"
-        output.write('"' + self.values.room_id +'" ' + '[ label=< ' + label+ ' > ] ;\n')
+        output.write('subgraph cluster_' + self.values.room_id +' {\n')
 
-    def dump_graph_rooms(self, output):
-        """
-        dump a graphviz repr of a room, only real rooms (bricks)
-        """
         if self.room is None:
             self.room = room.Room(self.level_directory, self.values.room_id, self.selector)
-            # TODO : dump
+
+        output_room = WriteableString()
+        output_main = WriteableString()
+
+        logger.info("Go to dump room %s" % (self.values.name))
+        self.room.dump_graph(output_room, output_main)
+
+        output.write(output_room.content)
+
+        output.write('style=filled;\n')
+        output.write('color=lightgrey;\n')
+        output.write('label=< ' + label+ ' >;\n')
+        output.write('};\n')
+
+        output.write(output_main.content)
+
 
     def structure_personalization(self):
         """Run the brick personalization process on the real room"""
