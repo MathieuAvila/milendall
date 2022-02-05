@@ -43,5 +43,35 @@ class TestJsonHelper(unittest.TestCase):
             has_error = True
         self.assertFalse(has_error)
 
+    def test_check_fragment_exist_success(self):
+        """ test checking fragment against sub schema, with successful fragment"""
+        has_error = False
+        try:
+            json_helper.check_json_fragment([{"lang":"fr", "value":"merde"}], "name.json")
+        except jsonschema.exceptions.ValidationError as e:
+            print("EXCEPTION %s" % repr(e))
+            has_error = True
+        self.assertFalse(has_error)
+
+    def test_check_fragment_exist_failure(self):
+        """ test checking fragment against sub schema, with successful fragment"""
+        has_error = False
+        try:
+            json_helper.check_json_fragment({"lang":"fr"}, "name.json") # not an array, and missing value
+        except jsonschema.exceptions.ValidationError as e:
+            print("EXCEPTION %s" % repr(e))
+            has_error = True
+        self.assertTrue(has_error)
+
+    def test_check_fragment_no_schema(self):
+        """ test checking fragment against sub schema, with successful fragment"""
+        has_error = False
+        try:
+            json_helper.check_json_fragment({"lang":"fr"}, "missing_schema.json") # not an array, and missing value
+        except jsonschema.exceptions.ValidationError as e:
+            print("EXCEPTION %s" % repr(e))
+            has_error = True
+        self.assertFalse(has_error)
+
 if __name__ == '__main__':
     unittest.main()

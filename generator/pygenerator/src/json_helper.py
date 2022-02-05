@@ -39,6 +39,18 @@ def load_and_validate_json(json_path, schema_name, decode_hook=None):
         obj = json.load(read_file, object_hook=decode_hook)
         return obj
 
+def check_json_fragment(fragment, schema_name):
+    '''If such schema exists, check against it. Otherwise keep going'''
+    schema_path = SCHEMA_LOCATION + schema_name
+    real_path = os.path.realpath(schema_path)
+    try:
+        with open(real_path, "r") as read_schema_file:
+            schema = json.load(read_schema_file)
+    except Exception as e:
+        return
+    schemaurl = "file://" + real_path
+    resolver = jsonschema.RefResolver(schemaurl, referrer=schema, handlers = { 'http': _handler , "file": _handler} )
+    jsonschema.validate(instance=fragment, resolver=resolver, schema=schema)
 
 class JSONEncoder(json.JSONEncoder):
 
