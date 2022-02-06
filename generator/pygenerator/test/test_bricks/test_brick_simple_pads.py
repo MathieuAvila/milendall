@@ -29,7 +29,7 @@ def_0 = {
             "pad_id" : "p1",
             "definition" : {
                "translation" : [ 1.0, 2.0, 3.0]
-           }
+            }
        },
        {
             "pad_id" : "p2",

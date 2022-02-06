@@ -30,8 +30,8 @@ class Brick(Element):
         if "parameters" in v:
             if "structure_parameters" in v.parameters:
                 schema = "bricks/" + v.parameters.structure_class + "/structure_parameters.json"
-                logger.info("Check pad fragment against %s" % schema)
-                json_helper.check_json_fragment(v.parameters.public_parameters, schema)
+                logger.info("Check structure_parameters fragment against %s" % schema)
+                json_helper.check_json_fragment(v.parameters.structure_parameters, schema)
 
 
     def get_class(self):
