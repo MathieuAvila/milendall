@@ -118,13 +118,6 @@ class Room(Element):
                 concrete_brick.set_root(root_id)
             concrete.merge(concrete_brick)
 
-        #for gate in self.gates:
-        #    if not hasattr(gate, "concrete"):
-        #        gate.concrete = concrete_room.ConcreteRoom()
-        #        gate.structure.generate(gate.concrete)
-        #        gate.dressing.generate(gate.concrete)
-        #    concrete.merge(gate.concrete)
-
         if level_directory == None:
             level_directory = self.level_directory
         room_path = level_directory + "/" + self.name
