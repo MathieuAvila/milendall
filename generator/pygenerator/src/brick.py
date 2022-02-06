@@ -2,15 +2,37 @@
 interface definition of a real brick
 """
 
-from element import Element
-
 from munch import DefaultMunch
+import logging
+
+from element import Element
+import json_helper
+
+logging.basicConfig()
+logger = logging.getLogger("brick")
+logger.setLevel(logging.INFO)
 
 class Brick(Element):
 
     def __init__(self, values, selector):
         self.values = DefaultMunch.fromDict(values)
         self.selector = selector
+
+        # check subparts against schema, if they exist
+        v = self.values
+        logger.info("Some schema checking for %s" % v.parameters.structure_class)
+        if "pads" in v:
+            for f in v.pads:
+                if "definition" in f:
+                    schema = "bricks/" + v.parameters.structure_class + "/pad.json"
+                    logger.info("Check pad fragment against %s" % schema)
+                    json_helper.check_json_fragment(f.definition, schema)
+        if "parameters" in v:
+            if "structure_parameters" in v.parameters:
+                schema = "bricks/" + v.parameters.structure_class + "/structure_parameters.json"
+                logger.info("Check pad fragment against %s" % schema)
+                json_helper.check_json_fragment(v.parameters.public_parameters, schema)
+
 
     def get_class(self):
         """ get my class for selector"""

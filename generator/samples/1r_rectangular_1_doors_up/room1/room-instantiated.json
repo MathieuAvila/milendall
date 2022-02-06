@@ -23,12 +23,12 @@
                             4.0
                         ],
                         "rotation": {
-                            "axis" : [
+                            "axis": [
                                 1.0,
                                 0.0,
                                 0.0
                             ],
-                            "angle" : -1.5708
+                            "angle": -1.5708
                         }
                     }
                 }
@@ -56,12 +56,15 @@
                 "ref_b_id": "b0",
                 "ref_pad_id": "root_door0"
             },
-            "parameters": {
-                "structure_class": "simple_door",
-                "structure_parameters": {
+            "portals": [
+                {
                     "gate_id": "my_door",
                     "connect": "A"
                 }
+            ],
+            "parameters": {
+                "structure_class": "simple_door",
+                "structure_parameters": {}
             }
         },
         {
@@ -70,12 +73,15 @@
                 "ref_b_id": "b0",
                 "ref_pad_id": "root_door1"
             },
-            "parameters": {
-                "structure_class": "simple_door",
-                "structure_parameters": {
+            "portals": [
+                {
                     "gate_id": "my_door",
                     "connect": "B"
                 }
+            ],
+            "parameters": {
+                "structure_class": "simple_door",
+                "structure_parameters": {}
             }
         }
     ]
