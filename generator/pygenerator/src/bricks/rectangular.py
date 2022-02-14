@@ -8,7 +8,8 @@ import concrete_room
 import cgtypes.vec3
 import cgtypes.mat4
 
-#from gltf_helper import vec4_to_vec3
+import milendall_math
+import gltf_helper
 
 from .register import register_brick_type
 
@@ -91,43 +92,71 @@ class BrickRectangular(BrickStructure):
             {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
 
         # add walls in every direction
-        parent.add_structure_faces(
-            index0,
-            [ [2,3,1,0], [4,5,3,2], [6,7,5,4], [0,1,7,6] ],
-            concrete_room.Node.CAT_PHYS_VIS,
-            [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
-            {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
+        #parent.add_structure_faces(
+        #    index0,
+        #    [ [2,3,1,0], [4,5,3,2], [6,7,5,4], [0,1,7,6] ],
+        #    concrete_room.Node.CAT_PHYS_VIS,
+        #    [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
+        #    {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
 
         wall_matrices = [
             cgtypes.mat4(
                 1.0, 0.0, 0.0, 0.0,
                 0.0, 1.0, 0.0, 0.0,
                 0.0, 0.0, 1.0, 0.0,
-                1.0, 1.0, 1.0, 1.0),
+                0.0, 0.0, 0.0, 0.0),
             cgtypes.mat4(
                 -1.0, 0.0, 0.0, direction_size[0],
                 0.0, 1.0, 0.0,  0.0,
                 0.0, 0.0, -1.0, direction_size[2],
-                1.0, 1.0, 1.0, 1.0),
+                0.0, 0.0, 0.0, 0.0),
             cgtypes.mat4(
                 0.0, 0.0, 1.0, 0,
                 0.0, 1.0, 0.0, 0.0,
                 -1.0, 0.0, 0.0, direction_size[2],
-                1.0, 1.0, 1.0, 1.0),
+                0.0, 0.0, 0.0, 0.0),
             cgtypes.mat4(
                 0.0, 0.0, -1.0, direction_size[0],
                 0.0, 1.0, 0.0, 0.0,
                 1.0, 0.0, 0.0, 0,
-                1.0, 1.0, 1.0, 1.0),
+                0.0, 0.0, 0.0, 0.0),
         ]
         pads = self._element.values.pads
 
-        for wall_dir in range(0,4):
+        sizes = [
+                 [0,1],
+                 [0,1],
+                 [2,1],
+                 [2,1],
+                ]
+
+        pO = cgtypes.vec3(0.0, 0.0, 0.0)
+        pX = cgtypes.vec3(1.0, 0.0, 0.0)
+        pY = cgtypes.vec3(0.0, 1.0, 0.0)
+
+        for wall_dir in range(0, 4):
             # TODO
             wall_mat = wall_matrices[wall_dir]
+            size = sizes[wall_dir]
+            org_points = [
+                pO,
+                pX * direction_size[size[0]],
+                pX * direction_size[size[0]] + pY * direction_size[size[1]],
+                pY * direction_size[size[1]]
+                ]
+            transformed_points = [ wall_mat * (cgtypes.vec4(p.x, p.y, p.z, 1.0))  for p in org_points]
+            transformed_points_vec3 = [ cgtypes.vec3(p.x, p.y, p.z) for p in transformed_points]
+            logger.info(transformed_points_vec3)
+            index_face = parent.add_structure_points(transformed_points_vec3)
+
+            parent.add_structure_faces(
+                index_face,
+                [[0,1,2,3]],
+                concrete_room.Node.CAT_PHYS_VIS,
+                [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
+                {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
             # append pads entries
             # TODO
-
 
 
 register_brick_type(BrickRectangular())
