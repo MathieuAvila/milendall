@@ -145,26 +145,27 @@ class BrickRectangular(BrickStructure):
                 ]
             org_faces = [[0,1,2,3]]
             faces = milendall_math.Faces(org_points, org_faces)
-            for pad in pads:
-                d = pad["definition"]
-                o = d["origin"]
-                org = cgtypes.vec3(o[0], o[1], 0.0)
-                S = d["size"]
-                s = cgtypes.vec3(S[0], S[1], 0.0)
-                if d["face"] == wall_dir:
-                    # punch hole
-                    face = [org,
-                            org + cgtypes.vec3(s.x, 0.0, 0.0),
-                            org + cgtypes.vec3(s.x, s.y, 0.0),
-                            org + cgtypes.vec3(0.0, s.y, 0.0)]
-                    faces.hole(face)
-                    # add pad
-                    mat = wall_mat * cgtypes.mat4(
-                        1.0, 0.0, 0.0, o[0],
-                        0.0, 1.0, 0.0, o[1],
-                        0.0, 0.0, 1.0, 0.0,
-                        0.0, 0.0, 0.0, 1.0)
-                    child_object = concrete.add_child("parent", pad.pad_id, mat)
+            if pads != None:
+                for pad in pads:
+                    d = pad["definition"]
+                    o = d["origin"]
+                    org = cgtypes.vec3(o[0], o[1], 0.0)
+                    S = d["size"]
+                    s = cgtypes.vec3(S[0], S[1], 0.0)
+                    if d["face"] == wall_dir:
+                        # punch hole
+                        face = [org,
+                                org + cgtypes.vec3(s.x, 0.0, 0.0),
+                                org + cgtypes.vec3(s.x, s.y, 0.0),
+                                org + cgtypes.vec3(0.0, s.y, 0.0)]
+                        faces.hole(face)
+                        # add pad
+                        mat = wall_mat * cgtypes.mat4(
+                            1.0, 0.0, 0.0, o[0],
+                            0.0, 1.0, 0.0, o[1],
+                            0.0, 0.0, 1.0, 0.0,
+                            0.0, 0.0, 0.0, 1.0)
+                        child_object = concrete.add_child("parent", pad.pad_id, mat)
 
             holed = faces.get_points_faces()
 
