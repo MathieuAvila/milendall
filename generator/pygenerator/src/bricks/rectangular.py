@@ -104,22 +104,22 @@ class BrickRectangular(BrickStructure):
                 1.0, 0.0, 0.0, 0.0,
                 0.0, 1.0, 0.0, 0.0,
                 0.0, 0.0, 1.0, 0.0,
-                0.0, 0.0, 0.0, 0.0),
+                0.0, 0.0, 0.0, 1.0),
             cgtypes.mat4(
                 -1.0, 0.0, 0.0, direction_size[0],
                 0.0, 1.0, 0.0,  0.0,
                 0.0, 0.0, -1.0, direction_size[2],
-                0.0, 0.0, 0.0, 0.0),
+                0.0, 0.0, 0.0, 1.0),
             cgtypes.mat4(
                 0.0, 0.0, 1.0, 0,
                 0.0, 1.0, 0.0, 0.0,
                 -1.0, 0.0, 0.0, direction_size[2],
-                0.0, 0.0, 0.0, 0.0),
+                0.0, 0.0, 0.0, 1.0),
             cgtypes.mat4(
                 0.0, 0.0, -1.0, direction_size[0],
                 0.0, 1.0, 0.0, 0.0,
                 1.0, 0.0, 0.0, 0,
-                0.0, 0.0, 0.0, 0.0),
+                0.0, 0.0, 0.0, 1.0),
         ]
         pads = self._element.values.pads
 
@@ -135,7 +135,6 @@ class BrickRectangular(BrickStructure):
         pY = cgtypes.vec3(0.0, 1.0, 0.0)
 
         for wall_dir in range(0, 4):
-            # TODO
             wall_mat = wall_matrices[wall_dir]
             size = sizes[wall_dir]
             org_points = [
@@ -144,19 +143,42 @@ class BrickRectangular(BrickStructure):
                 pX * direction_size[size[0]] + pY * direction_size[size[1]],
                 pY * direction_size[size[1]]
                 ]
-            transformed_points = [ wall_mat * (cgtypes.vec4(p.x, p.y, p.z, 1.0))  for p in org_points]
+            org_faces = [[0,1,2,3]]
+            faces = milendall_math.Faces(org_points, org_faces)
+            for pad in pads:
+                d = pad["definition"]
+                o = d["origin"]
+                org = cgtypes.vec3(o[0], o[1], 0.0)
+                S = d["size"]
+                s = cgtypes.vec3(S[0], S[1], 0.0)
+                if d["face"] == wall_dir:
+                    # punch hole
+                    face = [org,
+                            org + cgtypes.vec3(s.x, 0.0, 0.0),
+                            org + cgtypes.vec3(s.x, s.y, 0.0),
+                            org + cgtypes.vec3(0.0, s.y, 0.0)]
+                    faces.hole(face)
+                    # add pad
+                    mat = wall_mat * cgtypes.mat4(
+                        1.0, 0.0, 0.0, o[0],
+                        0.0, 1.0, 0.0, o[1],
+                        0.0, 0.0, 1.0, 0.0,
+                        0.0, 0.0, 0.0, 1.0)
+                    child_object = concrete.add_child("parent", pad.pad_id, mat)
+
+            holed = faces.get_points_faces()
+
+            transformed_points = [ wall_mat * (cgtypes.vec4(p.x, p.y, p.z, 1.0))  for p in holed[0]]
             transformed_points_vec3 = [ cgtypes.vec3(p.x, p.y, p.z) for p in transformed_points]
             logger.info(transformed_points_vec3)
             index_face = parent.add_structure_points(transformed_points_vec3)
-
             parent.add_structure_faces(
                 index_face,
-                [[0,1,2,3]],
+                holed[1],
                 concrete_room.Node.CAT_PHYS_VIS,
                 [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
                 {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
-            # append pads entries
-            # TODO
+
 
 
 register_brick_type(BrickRectangular())
