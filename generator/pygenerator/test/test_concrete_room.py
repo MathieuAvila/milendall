@@ -782,7 +782,7 @@ class TestConcreteRoomImpl(unittest.TestCase):
 
         room.set_root("my_parent")
         self.assertEqual(room.objects[0].parent, "my_parent")
-        self.assertEqual(room.objects[1].parent, "parent1")
+        self.assertEqual(room.objects[1].parent, "my_parentparent1")
 
     def test_append_prefix(self):
         """Test setting a prefix to all nodes"""
