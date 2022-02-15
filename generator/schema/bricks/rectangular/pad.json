@@ -1,0 +1,37 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://milendall.com/schemas/bricks/simple_pad_provider/pad.json",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "size": {
+            "description": "Size in X and Y dimension",
+            "type": "array",
+            "items": {
+                "type": "number"
+            },
+            "maxItems": 2,
+            "minItems": 2
+        },
+        "origin" :  {
+            "description": "Starting point in X and Y direction",
+            "type": "array",
+            "items": {
+                "type": "number"
+            },
+            "maxItems": 2,
+            "minItems": 2
+        },
+        "face": {
+            "type": "integer"
+        },
+        "border": {
+            "type": "integer"
+        }
+    },
+    "required": [
+        "size",
+        "face",
+        "border"
+    ]
+}
