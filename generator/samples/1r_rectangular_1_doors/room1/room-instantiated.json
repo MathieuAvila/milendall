@@ -7,18 +7,30 @@
                 {
                     "pad_id": "root_door0",
                     "definition": {
-                        "origin" : [2.0, 0.0],
-                        "size" : [1.5, 1.5],
-                        "face" : 0,
+                        "origin": [
+                            2.0,
+                            0.0
+                        ],
+                        "size": [
+                            1.5,
+                            1.5
+                        ],
+                        "face": 0,
                         "border": 0
                     }
                 },
                 {
                     "pad_id": "root_door1",
                     "definition": {
-                        "origin" : [0.5, 0.0],
-                        "size" : [1.5, 1.5],
-                        "face" : 1,
+                        "origin": [
+                            0.5,
+                            0.0
+                        ],
+                        "size": [
+                            1.5,
+                            1.5
+                        ],
+                        "face": 1,
                         "border": 0
                     }
                 }

@@ -6,8 +6,10 @@ import logging
 from brick_structure import BrickStructure
 from .register import register_brick_type
 import cgtypes.vec3
+import cgtypes.mat4
 import concrete_room
 import animation
+import math
 
 from jsonmerge import merge
 
@@ -97,7 +99,12 @@ class SimpleDoorBrick(BrickStructure):
         s = structure_private["shift"]
         portal = self._element.values.portals[0]
 
-        child_object = concrete.add_child(None, self.brick.get_id())
+        mat = None
+        if portal["connect"] == "B":
+            mat = cgtypes.mat4.translation([s["x_floor_end_int"], 0.0, 0.0]) * cgtypes.mat4.rotation(math.pi, cgtypes.vec3(0.0, 1.0, 0.0))
+
+
+        child_object = concrete.add_child(None, self.brick.get_id(), mat)
 
         index_wall = child_object.add_structure_points(
                     [
