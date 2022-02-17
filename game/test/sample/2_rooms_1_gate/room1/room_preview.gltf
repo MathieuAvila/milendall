@@ -72,44 +72,26 @@
     3
    ],
    "matrix": [
-    0.0,
-    0.0,
-    -1.0,
-    0,
-    0.0,
-    1.0,
-    0.0,
-    0,
     1.0,
     0.0,
     0.0,
     0,
     0.0,
+    1.0,
     0.0,
-    3.0,
+    0,
+    0.0,
+    0.0,
+    1.0,
+    0,
+    4.0,
+    0.0,
+    0.0,
     1
    ]
   },
   {
    "name": "door0_door0",
-   "matrix": [
-    -1.0,
-    0.0,
-    -1.2246467991473532e-16,
-    0,
-    0.0,
-    1.0,
-    0.0,
-    0,
-    1.2246467991473532e-16,
-    0.0,
-    -1.0,
-    0,
-    1.5,
-    0.0,
-    0.0,
-    1
-   ],
    "mesh": 1,
    "extras": {
     "phys_faces": [
@@ -122,7 +104,7 @@
      {
       "data": {
        "type": "portal",
-       "connect": "B",
+       "connect": "A",
        "gate": "my_door"
       },
       "accessor": 21
@@ -250,17 +232,17 @@
   {
    "buffer": 0,
    "byteOffset": 1152,
-   "byteLength": 10
-  },
-  {
-   "buffer": 0,
-   "byteOffset": 1164,
-   "byteLength": 10
-  },
-  {
-   "buffer": 0,
-   "byteOffset": 1176,
    "byteLength": 30
+  },
+  {
+   "buffer": 0,
+   "byteOffset": 1184,
+   "byteLength": 10
+  },
+  {
+   "buffer": 0,
+   "byteOffset": 1196,
+   "byteLength": 10
   },
   {
    "buffer": 0,
@@ -383,7 +365,7 @@
    ],
    "max": [
     10.0,
-    10.0,
+    2.0,
     5.0
    ]
   },
@@ -398,8 +380,8 @@
     -10.0
    ],
    "max": [
-    10.0,
-    10.0
+    5.0,
+    4.0
    ]
   },
   {
@@ -423,12 +405,12 @@
    "type": "VEC3",
    "min": [
     0.0,
-    10.0,
+    2.0,
     0.0
    ],
    "max": [
     10.0,
-    10.0,
+    2.0,
     5.0
    ]
   },
@@ -473,7 +455,7 @@
    ],
    "max": [
     10.0,
-    10.0,
+    2.0,
     5.0
    ]
   },
@@ -507,13 +489,13 @@
    "bufferView": 12,
    "byteOffset": 0,
    "componentType": 5123,
-   "count": 5,
+   "count": 15,
    "type": "SCALAR",
    "min": [
     4
    ],
    "max": [
-    11
+    19
    ]
   },
   {
@@ -526,14 +508,14 @@
     4
    ],
    "max": [
-    15
+    23
    ]
   },
   {
    "bufferView": 14,
    "byteOffset": 0,
    "componentType": 5123,
-   "count": 15,
+   "count": 5,
    "type": "SCALAR",
    "min": [
     4
@@ -646,13 +628,13 @@
  ],
  "images": [
   {
-   "uri": "/common/basic/ground.jpg"
+   "uri": "ground.jpg"
   },
   {
-   "uri": "/common/basic/wall.jpg"
+   "uri": "wall.jpg"
   },
   {
-   "uri": "/common/basic/ceiling.jpg"
+   "uri": "ceiling.jpg"
   }
  ],
  "textures": [

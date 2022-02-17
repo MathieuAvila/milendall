@@ -2,6 +2,9 @@
 
 #include "helper_math.hxx"
 
+#include <glm/gtc/epsilon.hpp>
+#include <glm/gtx/component_wise.hpp>
+
 PointOfView PointOfView::changeCoordinateSystem(std::string newRoom, const glm::mat4& newMatrix) const
 {
     glm::mat3x3 no_trans(newMatrix);
@@ -24,9 +27,15 @@ PointOfView PointOfView::prependCoordinateSystem(const glm::mat3& newMatrix) con
 
 bool PointOfView::operator==(const PointOfView& p) const
 {
-    return (position == p.position)
-        && (local_reference == p.local_reference)
-        && (room == p.room);
+    static const float epsilon = 0.001f;
+    auto diff = local_reference - p.local_reference;
+    auto s = 0.0;
+    for (auto i = 0; i<3; i++)
+        for (auto j = 0; j<3; j++)
+            s += std::abs(diff[i][j]);
+    return (glm::all(glm::lessThan(glm::abs(position - p.position), glm::vec3(epsilon)))
+        && (s < epsilon)
+        && (room == p.room));
 }
 
 std::string to_string(const PointOfView& p)

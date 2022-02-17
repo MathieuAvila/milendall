@@ -35,9 +35,9 @@
     "entry_point_room": "room1",
     "end_point_room": "room2",
     "entry_point_position": [
-        1.0,
-        2.0,
-        3.0
+     1.0,
+     2.0,
+     3.0
     ]
    }
   }

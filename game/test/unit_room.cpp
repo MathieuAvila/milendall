@@ -89,15 +89,16 @@ TEST_F(RoomTest, LoadLevel2Rooms1Gate) {
 
     auto [states, room, portal_register] = loadRoomFull("/2_rooms_1_gate/room1/room.gltf");
 
-    EXPECT_EQ(room.get()->nodeTable.size(), 3);
+    EXPECT_EQ(room.get()->nodeTable.size(), 4);
     auto & table = room.get()->nodeTable;
     // next tests are for sanity checks, just to assure tests are done on the right objects.
     EXPECT_EQ(table[0].get()->name, "");
-    EXPECT_EQ(table[1].get()->name, "b1_parent");
-    EXPECT_EQ(table[2].get()->name, "door0_door0");
+    EXPECT_EQ(table[1].get()->name, "b0_parent");
+    EXPECT_EQ(table[2].get()->name, "b0_root_door0");
+    EXPECT_EQ(table[3].get()->name, "door0_door0");
 
     // checking portal
-    GltfNode* node_portal = table[2].get();
+    GltfNode* node_portal = table[3].get();
     RoomNode* nodePortal = dynamic_cast<RoomNode*>(node_portal);
     EXPECT_EQ(nodePortal->portals.size(), 1);
     EXPECT_EQ(nodePortal->portals.front().gate, GateIdentifier("my_door", "A"));
