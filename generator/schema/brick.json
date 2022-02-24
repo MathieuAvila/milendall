@@ -13,10 +13,40 @@
             "description": "Reference to a root pad that the brick is linked to. This defines its reference. If it's defined, it must exist, otherwise an error is raised. If it doesn't exist, it is assumed that it's at the root of the room",
             "properties": {
                 "ref_b_id": {
+                    "description": "Brick ID reference target",
                     "type": "string"
                 },
                 "ref_pad_id": {
+                    "description": "Pad ID reference target inside the brick ID reference target",
                     "type": "string"
+                },
+                "translation": {
+                    "description": "Append translation inside PAD. Optional.",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    },
+                    "minItems" : 3,
+                    "maxItems" : 3
+                },
+                "rotation": {
+                    "description": "Append rotation inside PAD. Optional.",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "axis": {
+                            "type": "array",
+                            "items": {
+                                "type": "number"
+                            },
+                            "minItems" : 3,
+                            "maxItems" : 3
+                        },
+                        "angle": {
+                            "type": "number"
+                        }
+                    },
+                    "required": [ "axis" , "angle"]
                 }
             },
             "required": [

@@ -1,0 +1,32 @@
+{
+    "$schema": "../../../../../../schema/file_room_bricks.json",
+    "bricks": [
+        {
+            "b_id": "b0",
+            "pads": [
+                {
+                    "pad_id": "pad0",
+                    "definition": {}
+                }
+            ],
+            "parameters": {
+                "structure_class": "brick_structure_1"
+            }
+        },
+        {
+            "b_id": "b1",
+            "root_pad": {
+                "ref_b_id": "b0",
+                "ref_pad_id": "pad0",
+                "translation": [
+                    1.0,
+                    2.0,
+                    3.0
+                ]
+            },
+            "parameters": {
+                "structure_class": "brick_structure_1"
+            }
+        }
+    ]
+}

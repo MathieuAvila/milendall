@@ -9,6 +9,8 @@ from element import Element
 import json_helper
 import state
 import logging
+import cgtypes.mat4
+import cgtypes.vec3
 
 from munch import DefaultMunch
 
@@ -102,10 +104,13 @@ class Room(Element):
             brick.dump_graph(output_room, output_main, self.name)
         #output.write('"' + self.name +'" ' + '[ label=< ' + label+ ' > ] ;\n')
 
-    def finalize(self, level_directory=None, preview=False):
+    def finalize(self, level_directory=None, preview=False, concrete_test_param = None):
         """ Perform final generate and dressing on one room."""
 
-        concrete = concrete_room.ConcreteRoom()
+        if concrete_test_param is not None:
+            concrete = concrete_test_param
+        else:
+            concrete = concrete_room.ConcreteRoom()
 
         for brick in self.values["bricks"]:
             logger.info("in brick %s" % brick.values.b_id)
@@ -113,9 +118,22 @@ class Room(Element):
             brick.finalize(concrete_brick)
             concrete_brick.append_prefix(brick.values.b_id + "_")
             if "root_pad" in brick.values:
-                root_id = brick.values.root_pad.ref_b_id + "_" + brick.values.root_pad.ref_pad_id
+                root_pad = brick.values.root_pad
+                root_id = root_pad.ref_b_id + "_" + root_pad.ref_pad_id
+                parent_root_id = root_id
                 logger.info("set root pad to: %s", root_id)
-                concrete_brick.set_root(root_id)
+                if "translation" in root_pad or "rotation" in root_pad:
+                    mat = cgtypes.mat4(1.0)
+                    if "rotation" in root_pad:
+                        r = root_pad["rotation"]
+                        a = r["axis"]
+                        mat = mat * cgtypes.mat4.rotation(r["angle"], cgtypes.vec3(a[0],a[1],a[2]))
+                    if "translation" in root_pad:
+                        t = root_pad["translation"]
+                        mat = cgtypes.mat4.translation(cgtypes.vec3(t[0],t[1],t[2])) * mat
+                    parent_root_id = "%s%s%s" %( root_id , "_root_", brick.values.b_id)
+                    concrete.add_child(root_id, parent_root_id, mat)
+                concrete_brick.set_root(parent_root_id)
             concrete.merge(concrete_brick)
 
         if level_directory == None:
