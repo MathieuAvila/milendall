@@ -1,0 +1,46 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://milendall.com/schemas/bricks/stair/structure_parameters.json",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "x_length": {
+            "description": "X end point of last step. Note that first step is at x=0.0",
+            "type": "number"
+        },
+        "y_height": {
+            "description": "Y end point of last step. Note that first step is at y=0.0",
+            "type": "number"
+        },
+        "nr_steps": {
+            "description": "Number of steps",
+            "type": "number"
+        },
+        "y_base_start": {
+            "description": "Y Basement start",
+            "type": "number"
+        },
+        "y_base_end": {
+            "description": "Y Basement end",
+            "type": "number"
+        },
+        "x_pre": {
+            "description": "X pre platform",
+            "type": "number"
+        },
+        "x_post": {
+            "description": "X post platform",
+            "type": "number"
+        },
+        "z0": {
+            "description": "Z start",
+            "type": "number"
+        },
+        "z1": {
+            "description": "Z end",
+            "type": "number"
+        }
+    },
+    "required": [
+    ]
+}
