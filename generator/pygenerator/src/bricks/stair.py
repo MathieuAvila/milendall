@@ -113,6 +113,25 @@ class BrickStair(BrickStructure):
                 [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
                 {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
 
+
+        # add under border
+        index = parent.add_structure_points([
+                    cgtypes.vec3(0, y_base_start, z0),
+                    cgtypes.vec3(0, y_base_start, z1),
+
+                    cgtypes.vec3(x_end, y_base_end, z0),
+                    cgtypes.vec3(x_end, y_base_end, z1)
+            ])
+        parent.add_structure_faces(
+                index,
+                [
+                    [2,3,1,0], # up
+
+                ],
+                concrete_room.Node.CAT_PHYS_VIS,
+                [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
+                {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
+
         # extend if pre
         pre = structure_private["x_pre"]
 
