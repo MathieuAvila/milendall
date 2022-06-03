@@ -57,6 +57,7 @@ static int currentActiveFbo;
 GLuint defaultProgramID;
 GLuint MatrixID;
 GLuint TextureID;
+GLuint ClipPlaneID;
 
 GLuint portalProgramID;
 GLuint MatrixIDportal;
@@ -311,6 +312,17 @@ void activateDefaultDrawingProgram()
 	glUniform1i(TextureID, 0);
     usingProgram = MAIN;
     updateTransformMatrix();
+    for (auto i = 0; i < 6; i++)
+        glEnable(GL_CLIP_DISTANCE0 + i);
+    float PlaneEquation[6][4] = {
+         {0.0, -1.0, 0.95, 0.0},
+         {-1.0, 0.0, 0.95, 0.0},
+         {1.0, 0.0, 0.95, 0.0},
+         {0.0, 1.0, 0.95, 0.0},
+         {-1.0, 0.0, 1.0, 0.0},
+         {-1.0, 0.0, 1.0, 0.0},
+    };
+    glUniform4fv(ClipPlaneID, 6, &PlaneEquation[0][0]);
 }
 
 void activatePortalDrawingProgram()
@@ -318,6 +330,8 @@ void activatePortalDrawingProgram()
 	glUseProgram(portalProgramID);
     glActiveTexture(GL_TEXTURE0);
 	glUniform1i(TextureIDportal, 0);
+    for (auto i = 0; i < 6; i++)
+        glDisable(GL_CLIP_DISTANCE0 + i);
     usingProgram = PORTAL;
     updateTransformMatrix();
 }
@@ -325,6 +339,8 @@ void activatePortalDrawingProgram()
 unsigned int activateFontDrawingProgram()
 {
 	glUseProgram(fontProgramID);
+    for (auto i = 0; i < 6; i++)
+        glDisable(GL_CLIP_DISTANCE0 + i);
     usingProgram = FONT;
     return fontProgramID;
 }
@@ -385,6 +401,7 @@ int milendall_gl_init(FileLibrary& library)
 	defaultProgramID = LoadShaders(library, "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
     MatrixID = glGetUniformLocation(defaultProgramID, "MVP");
 	TextureID  = glGetUniformLocation(defaultProgramID, "myTextureSampler");
+    ClipPlaneID = glGetUniformLocation(defaultProgramID, "ClipPlane");
 
     portalProgramID = LoadShaders(library, "Portal.vertexshader", "Portal.fragmentshader" );
     MatrixIDportal = glGetUniformLocation(portalProgramID, "MVP");

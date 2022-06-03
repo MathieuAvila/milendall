@@ -10,12 +10,24 @@ out vec2 UV;
 // Values that stay constant for the whole mesh.
 uniform mat4 MVP;
 
+
+out float gl_ClipDistance[6];
+
+uniform vec4 ClipPlane[6];
+
 void main(){
 
 	// Output position of the vertex, in clip space : MVP * position
 	gl_Position =  MVP * vec4(vertexPosition_modelspace,1);
-    //gl_Position.x = gl_Position.x;
 
 	// UV of the vertex. No special space for this one.
 	UV = vertexUV;
+
+    // clip test
+    gl_ClipDistance[0] = dot(gl_Position, ClipPlane[0]);
+    gl_ClipDistance[1] = dot(gl_Position, ClipPlane[1]);
+    gl_ClipDistance[2] = dot(gl_Position, ClipPlane[2]);
+    gl_ClipDistance[3] = dot(gl_Position, ClipPlane[3]);
+    gl_ClipDistance[4] = dot(gl_Position, ClipPlane[4]);
+    gl_ClipDistance[5] = dot(gl_Position, ClipPlane[5]);
 }
