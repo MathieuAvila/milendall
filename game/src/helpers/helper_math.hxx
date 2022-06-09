@@ -4,6 +4,8 @@
 #include <string>
 #include <functional>
 
+#include <gtest/gtest_prod.h>
+
 /** @brief Helper function to print a matrix */
 std::string mat4x4_to_string(glm::mat4x4);
 
@@ -87,3 +89,43 @@ bool checkAdherenceCone(glm::vec3 normal, glm::vec3 graivty, float adherence);
  * @param angle_provider The function that returns the angle to apply based on the original one
  * */
 glm::mat3x3 computeRotatedMatrix(glm::mat3x3 original, glm::vec3 second_vector, std::function<float(float)> angle_provider );
+
+/**
+ * @brief Cut a 2D segment defined by p0/p1 in two, by a plane defined by a 2D equation plane.
+ * no use outside ClippingPlanes, exposed here for test purposes.
+ */
+glm::vec2 plane2DCutPoint(glm::vec3 plane, glm::vec2 p0, glm::vec2 p1);
+
+/** @brief Clipping facility
+ *         Builds a list of clipping equations and helps cut them.
+ */
+class ClippingPlanes
+{
+    std::vector<glm::vec2> currentPoints;
+
+    /* internal clipping by a 2-D line set on Z=1.0 */
+    void clipByPlane(glm::vec3 plane);
+
+    public:
+        /** @brief initialize to a standard cone view, for test purposes. Defaults to 1.01 / 1.01 */
+        ClippingPlanes();
+        /** @brief initialize to a cone view with specific aspect ratio */
+        ClippingPlanes(float width, float height);
+        /** @brief cut by a polygon intersect, as defined by a list of points */
+        void clipByPolygon(std::vector<glm::vec3>&);
+        /** @brief get a list of planes equations
+         * defined by a list of X,Y values. Z=1.0, U=0.0
+         * If void, everything is discarded*/
+        std::vector<glm::vec2> getEquations();
+        /** @brief for debug purposes */
+        std::string toString();
+
+    FRIEND_TEST(HelperMathTest, ClippingPlanes_all_fit);
+    FRIEND_TEST(HelperMathTest, ClippingPlanes_none_fit);
+    FRIEND_TEST(HelperMathTest, ClippingPlanes_half_fit);
+    FRIEND_TEST(HelperMathTest, ClippingPlanes_half_fit_rot0);
+    FRIEND_TEST(HelperMathTest, ClippingPlanes_half_fit_rot1);
+    FRIEND_TEST(HelperMathTest, ClippingPlanes_half_fit_rot2);
+    FRIEND_TEST(HelperMathTest, ClippingPlanes_plane_purge_1_point);
+    FRIEND_TEST(HelperMathTest, ClippingPlanes_plane_purge_2_point);
+};

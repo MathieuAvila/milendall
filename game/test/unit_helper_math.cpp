@@ -504,3 +504,111 @@ TEST_F(HelperMathTest, computeRotatedMatrix_5_rotZ_pi4___going_Y) {
 
     ASSERT_TRUE(mat4x4_abs_diff(result, expected) <  0.01f );
 }
+
+TEST_F(HelperMathTest, 01_plane2DCutPoint) {
+
+    // plane: x = 1
+    ASSERT_EQ(plane2DCutPoint(glm::vec3(1.0, 0.0, -1.0), pO, (float)2.0 * (pX+pY) ), glm::vec2(1.0, 1.0));
+}
+
+TEST_F(HelperMathTest, ClippingPlanes_all_fit) {
+
+    ClippingPlanes clipping, clippingOrg;
+
+    // plane x = -10
+    clipping.clipByPlane(glm::vec3(1.0, 0.0, 10.0));
+
+    console->debug("equ ref:\n{}", clippingOrg.toString());
+    console->debug("equ res:\n{}", clipping.toString());
+
+    ASSERT_EQ(clipping.getEquations(), clippingOrg.getEquations() );
+}
+
+TEST_F(HelperMathTest, ClippingPlanes_none_fit) {
+
+    ClippingPlanes clipping;
+
+    // plane x = 10
+    clipping.clipByPlane(glm::vec3(1.0, 0.0, -10.0));
+
+    console->debug("equ res:\n{}", clipping.toString());
+
+    ASSERT_EQ(clipping.getEquations(), std::vector<glm::vec2>());
+}
+
+TEST_F(HelperMathTest, ClippingPlanes_half_fit) {
+    ClippingPlanes clipping;
+    // plane x = 0
+    clipping.clipByPlane(glm::vec3(1.0, 0.0, 0.0));
+    console->debug("equ res:\n{}", clipping.toString());
+    ASSERT_EQ(clipping.currentPoints,
+        std::vector<glm::vec2>( {
+            glm::vec2(1.01,1.01),
+            glm::vec2(1.01,-1.01),
+            glm::vec2(0,-1.01),
+            glm::vec2(0,1.01)
+        }));
+}
+
+TEST_F(HelperMathTest, ClippingPlanes_half_fit_rot0) {
+    ClippingPlanes clipping;
+    // plane y = 0
+    clipping.clipByPlane(glm::vec3(0.0, 1.0, 0.0));
+    console->debug("equ res:\n{}", clipping.toString());
+    ASSERT_EQ(clipping.currentPoints,
+        std::vector<glm::vec2>( {
+            glm::vec2(-1.01,  1.01),
+            glm::vec2(1.01,   1.01),
+            glm::vec2(1.01,   0.0),
+            glm::vec2(-1.01,  0.0)
+        }));
+}
+
+TEST_F(HelperMathTest, ClippingPlanes_half_fit_rot1) {
+    ClippingPlanes clipping;
+    // plane -x = 0
+    clipping.clipByPlane(glm::vec3(-1.0, 0.0, 0.0));
+    console->debug("equ res:\n{}", clipping.toString());
+    ASSERT_EQ(clipping.currentPoints,
+        std::vector<glm::vec2>( {
+            glm::vec2(-1.01,  -1.01),
+            glm::vec2(-1.01,  1.01),
+            glm::vec2(0.0,    1.01),
+            glm::vec2(0.0,    -1.01)
+        }));
+}
+
+TEST_F(HelperMathTest, ClippingPlanes_half_fit_rot2) {
+    ClippingPlanes clipping;
+    // plane x = 0
+    clipping.clipByPlane(glm::vec3(0.0, -1.0, 0.0));
+    console->debug("equ res:\n{}", clipping.toString());
+    ASSERT_EQ(clipping.currentPoints,
+        std::vector<glm::vec2>( {
+            glm::vec2(1.01,   -1.01),
+            glm::vec2(-1.01,  -1.01),
+            glm::vec2(-1.01,   0.0),
+            glm::vec2(1.01,    0.0)
+        }));
+}
+
+
+ TEST_F(HelperMathTest, ClippingPlanes_plane_purge_1_point)
+ {
+    ClippingPlanes clipping(1.0,1.0);
+    // plane x = 1.0
+    clipping.clipByPlane(glm::vec3(0.0, -1.0, 0.0));
+    console->debug("equ res:\n{}", clipping.toString());
+    ASSERT_EQ(clipping.currentPoints,
+        std::vector<glm::vec2>( {
+            glm::vec2(1.01,   -1.01),
+            glm::vec2(-1.01,  -1.01),
+            glm::vec2(-1.01,   0.0),
+            glm::vec2(1.01,    0.0)
+        }));
+ }
+
+ TEST_F(HelperMathTest, ClippingPlanes_plane_purge_2_point)
+ {
+
+ }

@@ -155,7 +155,7 @@ void RoomNode::draw(GltfNodeInstanceIface * nodeInstance, DrawContext& roomConte
             bool valid = checkDrawGate(nodeInstance, roomContext, portal, face, newDrawContext, target_room);
             //console->info(" ==> {}", valid);
             newDrawContext.recurse_level = roomContext.recurse_level + 1;
-            if (newDrawContext.recurse_level >= 5) {
+            if (newDrawContext.recurse_level >= 3) {
                 valid = false;
             }
 
