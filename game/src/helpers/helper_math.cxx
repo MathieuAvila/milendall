@@ -441,12 +441,27 @@ void ClippingPlanes::clipByPlane(glm::vec3 plane)
     newCurrentPoints.push_back(pCUT1);
     newCurrentPoints.push_back(pCUT0);
 
-    for (auto i = 0 ; i < newCurrentPoints.size(); i++) {
-        console->debug("clipByPlane, result {} = {},{}", i,
-            newCurrentPoints[i].x,
-            newCurrentPoints[i].y);
+    // purge same points
+    decltype(newCurrentPoints) purgedCurrentPoints;
+    auto currentPoint = newCurrentPoints[0];
+    purgedCurrentPoints.push_back(currentPoint);
+    for (auto i = 1 ; i < newCurrentPoints.size(); i++) {
+        auto newPoint = newCurrentPoints[i];
+        if (newPoint != currentPoint) {
+            currentPoint = newPoint;
+            purgedCurrentPoints.push_back(newPoint);
+            console->debug("clipByPlane, result {} = {},{}", i,
+                newCurrentPoints[i].x,
+                newCurrentPoints[i].y);
+        }
     }
-    currentPoints = newCurrentPoints;
+    // remove if first and last are same
+    if (purgedCurrentPoints.front() == purgedCurrentPoints.back()) {
+        purgedCurrentPoints.erase(purgedCurrentPoints.begin());
+    }
+    if (purgedCurrentPoints.size() < 3)
+        purgedCurrentPoints.clear();
+    currentPoints = purgedCurrentPoints;
 }
 
 void ClippingPlanes::clipByPolygon(std::vector<glm::vec3>& polygon)

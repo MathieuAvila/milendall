@@ -596,19 +596,19 @@ TEST_F(HelperMathTest, ClippingPlanes_half_fit_rot2) {
  TEST_F(HelperMathTest, ClippingPlanes_plane_purge_1_point)
  {
     ClippingPlanes clipping(1.0,1.0);
-    // plane x = 1.0
-    clipping.clipByPlane(glm::vec3(0.0, -1.0, 0.0));
+    // plane x+y = 2.0
+    clipping.clipByPlane(glm::vec3(1.0, 1.0, -2.0));
     console->debug("equ res:\n{}", clipping.toString());
     ASSERT_EQ(clipping.currentPoints,
-        std::vector<glm::vec2>( {
-            glm::vec2(1.01,   -1.01),
-            glm::vec2(-1.01,  -1.01),
-            glm::vec2(-1.01,   0.0),
-            glm::vec2(1.01,    0.0)
-        }));
+        std::vector<glm::vec2>({}));
  }
 
  TEST_F(HelperMathTest, ClippingPlanes_plane_purge_2_point)
  {
-
+   ClippingPlanes clipping(1.0,1.0);
+    // plane x = 1.0
+    clipping.clipByPlane(glm::vec3(1.0, 0.0, -1.0));
+    console->debug("equ res:\n{}", clipping.toString());
+    ASSERT_EQ(clipping.currentPoints,
+        std::vector<glm::vec2>({}));
  }
