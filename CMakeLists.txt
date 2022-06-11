@@ -95,6 +95,8 @@ add_library(game_lib STATIC
   game/src/gltf/gltf_animation_target_iface.hxx
   game/src/helpers/helper_math.hxx
   game/src/helpers/helper_math.cxx
+  game/src/helpers/clipping_planes.hxx
+  game/src/helpers/clipping_planes.cxx
   game/src/helpers/json_helper_accessor.hxx
   game/src/helpers/json_helper_accessor.cxx
   game/src/helpers/json_helper_math.hxx
@@ -178,6 +180,7 @@ game/test/unit_gltf_data_accessor.cpp
 game/test/unit_gltf_animation.cxx
 game/test/unit_json_helper_math.cpp
 game/test/unit_helper_math.cpp
+game/test/unit_clipping_planes.cpp
 game/test/unit_gltf_model.cxx
 game/test/unit_gltf_node.cxx
 game/test/unit_face_list.cpp
