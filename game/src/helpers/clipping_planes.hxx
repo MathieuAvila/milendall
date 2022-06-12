@@ -36,3 +36,5 @@ class ClippingPlanes
     FRIEND_TEST(HelperClippingPlanes, ClippingPlanes_plane_purge_1_point);
     FRIEND_TEST(HelperClippingPlanes, ClippingPlanes_plane_purge_2_point);
 };
+
+std::string clippingEquationsToString(std::vector<glm::vec3> equ);
