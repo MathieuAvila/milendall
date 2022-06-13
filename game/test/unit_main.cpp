@@ -25,7 +25,7 @@ bool check_equal_vec3(const glm::vec3 v1, const glm::vec3 v2)
 }
 
 void setMeshMatrix(glm::mat4 mat) {};
-void setViewComponents(glm::vec3 position, glm::vec3 direction, glm::vec3 up) {};
+void setViewMatrix(glm::mat4x4 mat) {};
 int getValidFbo(FboIndex* result) { return 0;};
 void unlockAllFbo() {};
 void setActiveFbo(FboIndex* fbo) {};
