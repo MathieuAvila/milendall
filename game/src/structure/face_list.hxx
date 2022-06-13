@@ -6,6 +6,7 @@
 
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
+#include <glm/mat4x4.hpp>
 
 #include "gltf/gltf_data_accessor_iface.hxx"
 
@@ -52,6 +53,8 @@ class FaceList
              */
             bool checkSphereTrajectoryCross(glm::vec3 p0, glm::vec3 p1, float radius, glm::vec3& impact, float& distance, glm::vec3& normal, bool reversed = false) const;
 
+            /** @brief Get polygon in final space. Used to compute clipping equations */
+            void getPolygon(glm::mat4& user_space, std::vector<glm::vec3>& result) const;
     };
 
     protected:

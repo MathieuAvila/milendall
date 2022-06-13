@@ -9,9 +9,12 @@
 #include "common.hxx"
 #include "gltf/gltf_exception.hxx"
 #include "face_list.hxx"
+#include "helper_math.hxx"
 #include "gltf/gltf_data_accessor.hxx"
 
 #include <glm/gtx/string_cast.hpp>
+
+#include "test_common.hpp"
 
 using namespace std;
 
@@ -304,6 +307,70 @@ TEST_F(FaceListTest, FaceList_trajectory_borders) {
     console->info("{}", glm::to_string(impact));
     console->info("{}", distance);
     console->info("{}", glm::to_string(normal));
+}
 
 
+std::string polyToString(std::vector<glm::vec3> poly)
+{
+    if (poly.size() == 0) return "";
+    std::string delim, result;
+    for (auto& i : poly) {
+        result += delim + to_string(i.x) + ", " + to_string(i.y) + ", " + to_string(i.z);
+        delim = "\n";
+    }
+    return result;
+}
+
+TEST_F(FaceListTest, FaceList_getPolygon_no_matrix) {
+
+    auto data_accessor = get_test_face_list_accessor();
+
+    auto data_points = data_accessor->accessId(index_points);
+    shared_ptr<PointsBlock> points = make_shared<PointsBlock>(move(data_points));
+    auto data_portal = data_accessor->accessId(index_portal);
+
+    FaceList faceList(points, move(data_portal));
+    auto faces = faceList.getFaces();
+    EXPECT_EQ(faces.size(), 1);
+
+    auto& face = faces.front();
+    auto id = glm::mat4x4(1.0);
+    std::vector<glm::vec3> poly;
+    face.getPolygon(id, poly);
+
+    console->info("{}", polyToString(poly));
+    EXPECT_EQ(poly.size(), 4);
+    EXPECT_EQ(poly[0], glm::vec3(0.10, 0.00, 0.0));
+    EXPECT_EQ(poly[1], glm::vec3(0.20, 2.50, 0.0));
+    EXPECT_EQ(poly[2], glm::vec3(2.30, 2.50, 0.0));
+    EXPECT_EQ(poly[3], glm::vec3(3.00, 0.00, 0.0));
+}
+
+
+TEST_F(FaceListTest, FaceList_getPolygon_matrix) {
+
+    auto data_accessor = get_test_face_list_accessor();
+
+    auto data_points = data_accessor->accessId(index_points);
+    shared_ptr<PointsBlock> points = make_shared<PointsBlock>(move(data_points));
+    auto data_portal = data_accessor->accessId(index_portal);
+
+    FaceList faceList(points, move(data_portal));
+    auto faces = faceList.getFaces();
+    EXPECT_EQ(faces.size(), 1);
+
+    auto& face = faces.front();
+    auto id = glm::mat4x4(1.0);
+    auto translate = glm::translate(id, glm::vec3(1.0, 0.0, 0.0));
+    std::vector<glm::vec3> poly;
+    //console->info(" translate matrix \n{}", mat4x4_to_string(translate));
+    face.getPolygon(translate, poly);
+
+    console->info("{}", polyToString(poly));
+    console->info("{}", vec3_to_string(poly[1]));
+    EXPECT_EQ(poly.size(), 4);
+    EXPECT_TRUE(check_equal_vec3(poly[0], glm::vec3(1.10, 0.00, 0.0)));
+    EXPECT_TRUE(check_equal_vec3(poly[1], glm::vec3(1.20, 2.50, 0.0)));
+    EXPECT_TRUE(check_equal_vec3(poly[2], glm::vec3(3.30, 2.50, 0.0)));
+    EXPECT_TRUE(check_equal_vec3(poly[3], glm::vec3(4.00, 0.00, 0.0)));
 }

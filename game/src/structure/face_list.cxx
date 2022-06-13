@@ -59,6 +59,16 @@ FaceList::FaceList::Face::Face(std::shared_ptr<PointsBlock> _points, vector<unsi
     }
 }
 
+void FaceList::FaceList::Face::getPolygon(glm::mat4& user_space, std::vector<glm::vec3>& result) const
+{
+    for (auto point_index: indices) {
+        auto p = positionToVec4(points.get()->getPoints()[point_index.index]);
+        auto new_p = user_space * p;
+        //console->debug("face, p={}, new_p={} ]", vec4_to_string(p), vec4_to_string(new_p));
+        result.push_back(new_p);
+    }
+}
+
 FaceList::FaceList(std::shared_ptr<PointsBlock> _points, std::unique_ptr<GltfDataAccessorIFace::DataBlock> data)
 {
     points = _points;
