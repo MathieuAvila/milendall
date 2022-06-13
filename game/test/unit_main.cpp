@@ -5,6 +5,8 @@
 #include <stdint.h>
 
 #include "gl_init.hxx"
+#include <glm/glm.hpp>
+#include <glm/gtc/epsilon.hpp>
 
 float mat4x4_abs_diff(const glm::mat4x4& mat1, const glm::mat4x4& mat2)
 {
@@ -13,6 +15,13 @@ float mat4x4_abs_diff(const glm::mat4x4& mat1, const glm::mat4x4& mat2)
 	    for(glm::length_t j = 0; j < 4; ++j)
 		result += abs(mat1[i][j] - mat2[i][j]);
 	return result;
+}
+
+bool check_equal_vec3(const glm::vec3 v1, const glm::vec3 v2)
+{
+    auto epsi = glm::epsilonEqual(v1, v2, 0.1f);
+    bool result = (glm::bvec3(true,true,true) == epsi);
+    return result;
 }
 
 void setMeshMatrix(glm::mat4 mat) {};
