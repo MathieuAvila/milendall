@@ -4,6 +4,8 @@
 
 #include <glm/gtc/epsilon.hpp>
 #include <glm/gtx/component_wise.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 PointOfView PointOfView::changeCoordinateSystem(std::string newRoom, const glm::mat4& newMatrix) const
 {
@@ -73,5 +75,12 @@ position(_position), local_reference(_local_reference), room(_room)
 PointOfView::PointOfView(const PointOfView& obj):
 position(obj.position), local_reference(obj.local_reference), room(obj.room)
 {
+}
 
+glm::mat4x4 PointOfView::getViewMatrix()
+{
+    return glm::lookAt(
+					position,
+					position+ getDirection(),
+					getUp());
 }

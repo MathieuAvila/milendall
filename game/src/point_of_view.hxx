@@ -41,6 +41,8 @@ struct PointOfView
     /** @brief Build a new PoV where matrix is premultipled by another frame of reference */
     PointOfView prependCoordinateSystem(const glm::mat3& newMatrix) const;
 
+    /** @brief Return ViewMatrix as expected by GL */
+    glm::mat4x4 getViewMatrix();
 };
 
 std::string to_string(const PointOfView&);

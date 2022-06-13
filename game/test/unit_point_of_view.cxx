@@ -127,3 +127,38 @@ TEST(PointOfView, getRight )
     console->info("{}", vec3_to_string(right));
     ASSERT_TRUE(glm::distance(right, glm::vec3(0.7, 0.0, -0.7))< 0.05f);
 }
+
+TEST(PointOfView, getViewMatrix_id )
+{
+    PointOfView pov{
+        glm::vec3(0.0, 0.0, 0.0),
+        getRotatedMatrix(0.0f, 0.0f),
+        "myRoom"
+    };
+    auto view = pov.getViewMatrix();
+    console->info("{}", mat4x4_to_string(view));
+    glm::mat4x4 expected_result(
+        -1.0, 0.0, 0.0,  0.0,
+        0.0,  1.0, 0.0,  0.0,
+        0.0,  0.0, -1.0, 0.0,
+        0.0,  0.0, 0.0,  1.0);
+    ASSERT_TRUE(mat4x4_abs_diff(view, expected_result)< 0.05f);
+}
+
+TEST(PointOfView, getViewMatrix_translated )
+{
+    auto id = glm::mat4x4(1.0);
+    PointOfView pov{
+        glm::vec3(1.0, 0.0, 0.0),
+        id,
+        "myRoom"
+    };
+    auto view = pov.getViewMatrix();
+    console->info("{}", mat4x4_to_string(view));
+    glm::mat4x4 expected_result(
+        -1.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, -1.0, 0.0,
+        1.0, 0.0, 0.0, 1.0);
+    ASSERT_TRUE(mat4x4_abs_diff(view, expected_result)< 0.05f);
+}
