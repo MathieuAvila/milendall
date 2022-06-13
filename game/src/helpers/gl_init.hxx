@@ -63,7 +63,6 @@ extern float horizontalAngle;
 extern float verticalAngle;
 
 void setMeshMatrix(glm::mat4);
-void setViewComponents(glm::vec3 position, glm::vec3 direction, glm::vec3 up);
 void setViewMatrix(glm::mat4x4 mat);
 
 void setClippingEquations(std::vector<glm::vec3>);

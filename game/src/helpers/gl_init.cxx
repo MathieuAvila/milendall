@@ -175,16 +175,6 @@ void setMeshMatrix(glm::mat4 mat)
 	updateTransformMatrix();
 }
 
-void setViewComponents(glm::vec3 position, glm::vec3 direction, glm::vec3 up)
-{
-    ViewMatrix       = glm::lookAt(
-								position,           // Camera is here
-								position+direction, // and looks here : at the same position, plus "direction"
-								up                  // Head is up (set to 0,-1,0 to look upside-down)
-						   );
-    updateTransformMatrix();
-}
-
 void setViewMatrix(glm::mat4x4 mat)
 {
     ViewMatrix = mat;

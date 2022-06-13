@@ -93,7 +93,7 @@ void Room::draw(DrawContext& draw_context)
 {
     //console->info("Room draw: {} - level={}", room_name, draw_context.recurse_level);
     setActiveFbo(&draw_context.fbo);
-    setViewComponents(draw_context.pov.position, draw_context.pov.getDirection(), draw_context.pov.getUp());
+    setViewMatrix(draw_context.pov.getViewMatrix());
     GltfModel::draw(instance.get(), &draw_context);
 }
 
@@ -105,7 +105,7 @@ void Room::draw(PointOfView pov)
         0,
         FboIndex{0,0}
     };
-    setViewComponents(pov.position, pov.getDirection(), pov.getUp());
+    setViewMatrix(pov.getViewMatrix());
     GltfModel::draw(instance.get(), &drawContext);
 }
 
