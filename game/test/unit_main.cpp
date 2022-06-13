@@ -22,6 +22,7 @@ void unlockAllFbo() {};
 void setActiveFbo(FboIndex* fbo) {};
 void activateDefaultDrawingProgram() {};
 void activatePortalDrawingProgram() {};
+void setClippingEquations(std::vector<glm::vec3>) {};
 
 void TrianglesBufferInfo::draw() {}
 

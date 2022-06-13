@@ -25,8 +25,8 @@ using namespace std;
 static auto console = getConsole("gl_init");
 
 
-glm::mat4 ViewMatrix;
-glm::mat4 ProjectionMatrix;
+static glm::mat4 ViewMatrix;
+static glm::mat4 ProjectionMatrix;
 
 // Initial position : on +Z
 glm::vec3 position = glm::vec3( 2, 2, 2 );
@@ -57,7 +57,8 @@ static int currentActiveFbo;
 GLuint defaultProgramID;
 GLuint MatrixID;
 GLuint TextureID;
-GLuint ClipPlaneID;
+GLuint MainClipPlaneID;
+GLuint PortalClipPlaneID;
 
 GLuint portalProgramID;
 GLuint MatrixIDportal;
@@ -67,15 +68,8 @@ GLuint fontProgramID;
 
 enum { NONE, MAIN, PORTAL, FONT } usingProgram;
 
-void computeMatricesFromInputs(){
-
-	// glfwGetTime is called only once, the first time this function is called
-	static double lastTime = glfwGetTime();
-
-	// Compute time difference between current and last frame
-	double currentTime = glfwGetTime();
-	float deltaTime = float(currentTime - lastTime);
-
+void updatePlayerInputs()
+{
 	// Get mouse position
 	double xpos, ypos;
 	glfwGetCursorPos(window, &xpos, &ypos);
@@ -86,54 +80,6 @@ void computeMatricesFromInputs(){
 	// Compute new orientation
 	horizontalAngle += mouseSpeed * float(1024/2 - xpos );
 	verticalAngle   += mouseSpeed * float( 768/2 - ypos );
-
-	// Direction : Spherical coordinates to Cartesian coordinates conversion
-	direction = glm::vec3(
-		cos(verticalAngle) * sin(horizontalAngle),
-		sin(verticalAngle),
-		cos(verticalAngle) * cos(horizontalAngle)
-	);
-
-	// Right vector
-	glm::vec3 right = glm::vec3(
-		sin(horizontalAngle - 3.14f/2.0f),
-		0,
-		cos(horizontalAngle - 3.14f/2.0f)
-	);
-
-	// Up vector
-	up = glm::cross( right, direction );
-
-	// Move forward
-	if (glfwGetKey( window, GLFW_KEY_UP ) == GLFW_PRESS){
-		position += direction * deltaTime * speed;
-	}
-	// Move backward
-	if (glfwGetKey( window, GLFW_KEY_DOWN ) == GLFW_PRESS){
-		position -= direction * deltaTime * speed;
-	}
-	// Strafe right
-	if (glfwGetKey( window, GLFW_KEY_RIGHT ) == GLFW_PRESS){
-		position += right * deltaTime * speed;
-	}
-	// Strafe left
-	if (glfwGetKey( window, GLFW_KEY_LEFT ) == GLFW_PRESS){
-		position -= right * deltaTime * speed;
-	}
-
-	float FoV = initialFoV;// - 5 * glfwGetMouseWheel(); // Now GLFW 3 requires setting up a callback for this. It's a bit too complicated for this beginner's tutorial, so it's disabled instead.
-
-	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-	ProjectionMatrix = glm::perspective(glm::radians(FoV), 4.0f / 3.0f, 0.1f, 100.0f);
-	// Camera matrix
-	ViewMatrix       = glm::lookAt(
-								position,           // Camera is here
-								position+direction, // and looks here : at the same position, plus "direction"
-								up                  // Head is up (set to 0,-1,0 to look upside-down)
-						   );
-
-	// For the next frame, the "last time" will be "now"
-	lastTime = currentTime;
 }
 
 GLuint LoadShaders(FileLibrary& library, std::string vertex_file_path, std::string fragment_file_path){
@@ -213,6 +159,9 @@ static glm::mat4 ModelMatrix = glm::mat4(1.0);
 
 static void updateTransformMatrix()
 {
+    float FoV = initialFoV;// - 5 * glfwGetMouseWheel(); // Now GLFW 3 requires setting up a callback for this. It's a bit too complicated for this beginner's tutorial, so it's disabled instead.
+	ProjectionMatrix = glm::perspective(glm::radians(FoV), 4.0f / 3.0f, 0.0001f, 100.0f);
+
     glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
     if (usingProgram == MAIN)
     	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
@@ -228,13 +177,17 @@ void setMeshMatrix(glm::mat4 mat)
 
 void setViewComponents(glm::vec3 position, glm::vec3 direction, glm::vec3 up)
 {
-    float FoV = initialFoV;// - 5 * glfwGetMouseWheel(); // Now GLFW 3 requires setting up a callback for this. It's a bit too complicated for this beginner's tutorial, so it's disabled instead.
-	ProjectionMatrix = glm::perspective(glm::radians(FoV), 4.0f / 3.0f, 0.0001f, 100.0f);
-	ViewMatrix       = glm::lookAt(
+    ViewMatrix       = glm::lookAt(
 								position,           // Camera is here
 								position+direction, // and looks here : at the same position, plus "direction"
 								up                  // Head is up (set to 0,-1,0 to look upside-down)
 						   );
+    updateTransformMatrix();
+}
+
+void setViewMatrix(glm::mat4x4 mat)
+{
+    ViewMatrix = mat;
     updateTransformMatrix();
 }
 
@@ -305,6 +258,36 @@ void setActiveFbo(FboIndex* fbo)
     currentActiveFbo = fbo->fboIndex;
 }
 
+void setClippingEquations(std::vector<glm::vec3> equs)
+{
+    float planeEquation[6][4] = {
+         {-1.0, 0.0, 1.0, 0.0},
+         {-1.0, 0.0, 1.0, 0.0},
+         {-1.0, 0.0, 1.0, 0.0},
+         {-1.0, 0.0, 1.0, 0.0},
+         {-1.0, 0.0, 1.0,  0.0},
+         {-1.0, 0.0, 1.0, 0.0},
+    };
+    int m = equs.size() > 6 ? 6 : equs.size();
+    for (int i = 0; i < m; i++) {
+        planeEquation[i][0] = equs[i].x;
+        planeEquation[i][1] = equs[i].y;
+        planeEquation[i][2] = equs[i].z;
+
+        planeEquation[i][3] = -0.05;
+    }
+    switch (usingProgram) {
+    case MAIN:
+        glUniform4fv(MainClipPlaneID, 6, &planeEquation[0][0]);
+        break;
+    case PORTAL:
+        glUniform4fv(PortalClipPlaneID, 6, &planeEquation[0][0]);
+        break;
+    default:
+        break;
+    }
+}
+
 void activateDefaultDrawingProgram()
 {
 	glUseProgram(defaultProgramID);
@@ -314,15 +297,6 @@ void activateDefaultDrawingProgram()
     updateTransformMatrix();
     for (auto i = 0; i < 6; i++)
         glEnable(GL_CLIP_DISTANCE0 + i);
-    float PlaneEquation[6][4] = {
-         {0.0, -1.01, 1.0, 0.0},
-         {-1.01, 0.0, 1.0, 0.0},
-         {1.01, 0.0, 1.0, 0.0},
-         {0.0, 1.01, 1.0, 0.0},
-         {-1.0, 0.0, 1.0, 0.0},
-         {-1.0, 0.0, 1.0, 0.0},
-    };
-    glUniform4fv(ClipPlaneID, 6, &PlaneEquation[0][0]);
 }
 
 void activatePortalDrawingProgram()
@@ -331,7 +305,7 @@ void activatePortalDrawingProgram()
     glActiveTexture(GL_TEXTURE0);
 	glUniform1i(TextureIDportal, 0);
     for (auto i = 0; i < 6; i++)
-        glDisable(GL_CLIP_DISTANCE0 + i);
+        glEnable(GL_CLIP_DISTANCE0 + i);
     usingProgram = PORTAL;
     updateTransformMatrix();
 }
@@ -401,11 +375,12 @@ int milendall_gl_init(FileLibrary& library)
 	defaultProgramID = LoadShaders(library, "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
     MatrixID = glGetUniformLocation(defaultProgramID, "MVP");
 	TextureID  = glGetUniformLocation(defaultProgramID, "myTextureSampler");
-    ClipPlaneID = glGetUniformLocation(defaultProgramID, "ClipPlane");
+    MainClipPlaneID = glGetUniformLocation(defaultProgramID, "ClipPlane");
 
     portalProgramID = LoadShaders(library, "Portal.vertexshader", "Portal.fragmentshader" );
     MatrixIDportal = glGetUniformLocation(portalProgramID, "MVP");
 	TextureIDportal  = glGetUniformLocation(defaultProgramID, "myTextureSampler");
+    PortalClipPlaneID = glGetUniformLocation(defaultProgramID, "ClipPlane");
 
     fontProgramID = LoadShaders(library, "font.vertexshader", "font.fragmentshader" );
 

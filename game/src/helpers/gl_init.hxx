@@ -51,14 +51,9 @@ void activatePortalDrawingProgram();
 /** Activate font program for drawing , returns program ID for use */
 unsigned int activateFontDrawingProgram();
 
-void computeMatricesFromInputs();
+void updatePlayerInputs();
 
 extern GLFWwindow* window;
-extern glm::mat4 ViewMatrix;
-extern glm::mat4 ProjectionMatrix;
-
-glm::mat4 getViewMatrix();
-glm::mat4 getProjectionMatrix();
 
 extern glm::vec3 position;
 extern glm::vec3 direction;
@@ -69,6 +64,9 @@ extern float verticalAngle;
 
 void setMeshMatrix(glm::mat4);
 void setViewComponents(glm::vec3 position, glm::vec3 direction, glm::vec3 up);
+void setViewMatrix(glm::mat4x4 mat);
+
+void setClippingEquations(std::vector<glm::vec3>);
 
 class TrianglesBufferInfo
 {

@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
 		// Use our shader
 		activateDefaultDrawingProgram();
 
-        computeMatricesFromInputs();
+        updatePlayerInputs();
 
         PointOfView player_position;
         Player::ActionSet actionSet;
@@ -131,7 +131,6 @@ int main(int argc, char* argv[])
         if (found == false)
             throw system_error();
 
-    	setMeshMatrix(glm::mat4(1.0));
         level.get()->draw(player_position);
 
         auto new_time = std::chrono::steady_clock::now();

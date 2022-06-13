@@ -95,15 +95,10 @@ int main(int argc, char* argv[])
 
 	do{
         unlockAllFbo();
-        setMeshMatrix(glm::mat4(1.0));
 
-		// Use our shader
 		activateDefaultDrawingProgram();
 
-		// Compute the MVP matrix from keyboard and mouse input
-		computeMatricesFromInputs();
-
-		setMeshMatrix(glm::mat4(1.0));
+		updatePlayerInputs();
 
         level.get()->draw(PointOfView(
             position,
