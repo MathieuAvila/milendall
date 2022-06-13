@@ -48,17 +48,17 @@ std::string to_string(const PointOfView& p)
     + "\nr: " + mat4x4_to_string(p.local_reference);
 }
 
-glm::vec3 PointOfView::getDirection()
+glm::vec3 PointOfView::getDirection() const
 {
     return local_reference * glm::vec3(0.0, 0.0, 1.0);
 }
 
-glm::vec3 PointOfView::getUp()
+glm::vec3 PointOfView::getUp() const
 {
     return local_reference * glm::vec3(0.0, 1.0, 0.0);
 }
 
-glm::vec3 PointOfView::getRight()
+glm::vec3 PointOfView::getRight() const
 {
     return local_reference * glm::vec3(1.0, 0.0, 0.0);
 }
@@ -77,7 +77,7 @@ position(obj.position), local_reference(obj.local_reference), room(obj.room)
 {
 }
 
-glm::mat4x4 PointOfView::getViewMatrix()
+glm::mat4x4 PointOfView::getViewMatrix() const
 {
     return glm::lookAt(
 					position,

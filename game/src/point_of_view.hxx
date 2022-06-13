@@ -14,13 +14,13 @@ struct PointOfView
     glm::vec3 position;
 
     /** @brief get "forward" vector, computed from local_reference */
-    glm::vec3 getDirection();
+    glm::vec3 getDirection() const;
 
     /** @brief get "up" vector, computed from local_reference */
-    glm::vec3 getUp();
+    glm::vec3 getUp() const;
 
     /** @brief get "right" vector, computed from local_reference */
-    glm::vec3 getRight();
+    glm::vec3 getRight() const;
 
     /** This is the local reference of the object. This is changed when crossing a portal in order
      * to let direction/up the same, while changing the local frame of reference for the PoV. */
@@ -42,7 +42,7 @@ struct PointOfView
     PointOfView prependCoordinateSystem(const glm::mat3& newMatrix) const;
 
     /** @brief Return ViewMatrix as expected by GL */
-    glm::mat4x4 getViewMatrix();
+    glm::mat4x4 getViewMatrix() const;
 };
 
 std::string to_string(const PointOfView&);
