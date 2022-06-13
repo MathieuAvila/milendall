@@ -23,7 +23,7 @@ void main(){
 	// UV of the vertex. No special space for this one.
 	UV = vertexUV;
 
-    // clip test
+    // clip
     gl_ClipDistance[0] = dot(gl_Position, ClipPlane[0]);
     gl_ClipDistance[1] = dot(gl_Position, ClipPlane[1]);
     gl_ClipDistance[2] = dot(gl_Position, ClipPlane[2]);

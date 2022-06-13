@@ -11,7 +11,18 @@ in vec2 in_uv;
 //Outputs
 out vec4 ex_uv;
 
+out float gl_ClipDistance[6];
+uniform vec4 ClipPlane[6];
+
 void main(void) {
 	gl_Position = MVP * vec4(in_pos, 1.0);
 	ex_uv = gl_Position;
+
+    // portal
+    gl_ClipDistance[0] = dot(gl_Position, ClipPlane[0]);
+    gl_ClipDistance[1] = dot(gl_Position, ClipPlane[1]);
+    gl_ClipDistance[2] = dot(gl_Position, ClipPlane[2]);
+    gl_ClipDistance[3] = dot(gl_Position, ClipPlane[3]);
+    gl_ClipDistance[4] = dot(gl_Position, ClipPlane[4]);
+    gl_ClipDistance[5] = dot(gl_Position, ClipPlane[5]);
 }
