@@ -255,7 +255,7 @@ void setClippingEquations(std::vector<glm::vec3> equs)
          {-1.0, 0.0, 1.0, 0.0},
          {-1.0, 0.0, 1.0, 0.0},
          {-1.0, 0.0, 1.0, 0.0},
-         {-1.0, 0.0, 1.0,  0.0},
+         {-1.0, 0.0, 1.0, 0.0},
          {-1.0, 0.0, 1.0, 0.0},
     };
     int m = equs.size() > 6 ? 6 : equs.size();
@@ -264,7 +264,7 @@ void setClippingEquations(std::vector<glm::vec3> equs)
         planeEquation[i][1] = equs[i].y;
         planeEquation[i][2] = equs[i].z;
 
-        planeEquation[i][3] = -0.05;
+        planeEquation[i][3] = 0.0;
     }
     switch (usingProgram) {
     case MAIN:
