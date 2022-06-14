@@ -112,10 +112,12 @@ void Room::draw(PointOfView pov)
 void Room::draw(GltfInstance* instance, int index, void* context)
 {
     //console->debug("room draw index {}", index);
+    struct DrawContext* draw_context = (struct DrawContext*)(context);
+    setClippingEquations(draw_context->clipping.getEquations());
     GltfModel::draw(instance, index, context);
     auto myNode = dynamic_cast<RoomNode*>(nodeTable[index].get());
     auto instanceNode = instance->getNode(index);
-    myNode->draw(instanceNode, *(struct DrawContext*)(context));
+    myNode->draw(instanceNode, *draw_context);
 }
 
 bool Room::getDestinationPov(

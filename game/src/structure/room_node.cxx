@@ -3,6 +3,8 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "common.hxx"
 #include "room.hxx"
 #include "gltf_mesh.hxx"
@@ -107,20 +109,33 @@ bool RoomNode::checkDrawGate(
     DrawContext& newDrawContext,
     Room*& newRoom) const
 {
-    //float factor = (portal.gate.connect == "A") ? 1.0 : -1.0;
-    float factor = 1.0;
-
     // compute vectors in local referential
     PointOfView localOriginDC = currentDrawContext.pov.changeCoordinateSystem(
         currentDrawContext.pov.room,
         currentNodeInstance->getInvertedNodeMatrix());
 
     // compute position side and exclude if we're not on the right side
-    auto side = pointPlaneProjection(face.plane, localOriginDC.position) * factor;
+    auto side = pointPlaneProjection(face.plane, localOriginDC.position);
     if (side <= 0.0)
         return false;
 
-    // TODO: use frustum clipping instead
+    // compute face in final space, and apply clipping
+    std::vector<glm::vec3> polygon;
+
+    // ugly: should put this elsewhere
+    float FoV = 45.0f;
+	auto ProjectionMatrix = glm::perspective(glm::radians(FoV), 4.0f / 3.0f, 0.0001f, 100.0f);
+
+    glm::mat4x4 mat =
+            (ProjectionMatrix * currentDrawContext.pov.getViewMatrix() * currentNodeInstance->getNodeMatrix());
+    face.getPolygon(mat, polygon);
+    ClippingPlanes newClipping = currentDrawContext.clipping;
+    newClipping.clipByPolygon(polygon);
+
+    // exclude if everything is clipped out.
+    if (newClipping.isVoid()) {
+        return false;
+    }
 
     // retrieve target room, and node_room objects for gate
     auto target_connect = portal.gate.connect == "A" ? "B" : "A";
@@ -139,6 +154,7 @@ bool RoomNode::checkDrawGate(
     // compute target
     newRoom = target_room_node->room;
     newDrawContext = currentDrawContext;
+    newDrawContext.clipping = newClipping;
     newDrawContext.pov = localOriginDC.changeCoordinateSystem(
         target_room_node->room_name,
         target_room_node_instance->getNodeMatrix());
@@ -155,7 +171,7 @@ void RoomNode::draw(GltfNodeInstanceIface * nodeInstance, DrawContext& roomConte
             bool valid = checkDrawGate(nodeInstance, roomContext, portal, face, newDrawContext, target_room);
             //console->info(" ==> {}", valid);
             newDrawContext.recurse_level = roomContext.recurse_level + 1;
-            if (newDrawContext.recurse_level >= 3) {
+            if (newDrawContext.recurse_level >= 5) {
                 valid = false;
             }
 
@@ -174,8 +190,10 @@ void RoomNode::draw(GltfNodeInstanceIface * nodeInstance, DrawContext& roomConte
                 setViewMatrix(roomContext.pov.getViewMatrix());
                 setMeshMatrix(nodeInstance->getNodeMatrix());
 
-                // switch to portal program and draw portal
+                // switch to portal program and draw portal in current context
                 activatePortalDrawingProgram();
+                setClippingEquations(roomContext.clipping.getEquations());
+
                 glActiveTexture(GL_TEXTURE0);
 	            glBindTexture(GL_TEXTURE_2D, newDrawContext.fbo.textureIndex);
                 portal.portal_triangles->draw();
