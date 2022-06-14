@@ -2,6 +2,7 @@
 
 #include "point_of_view.hxx"
 #include "gl_init.hxx"
+#include "clipping_planes.hxx"
 
 struct IRoomNodePortalRegister;
 
@@ -10,4 +11,5 @@ struct DrawContext {
     IRoomNodePortalRegister* portal_provider;
     int recurse_level;
     FboIndex fbo;
+    ClippingPlanes clipping;
 };
