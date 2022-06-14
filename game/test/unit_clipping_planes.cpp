@@ -157,3 +157,20 @@ TEST_F(HelperClippingPlanes, ClippingPlanes_get_equations)
                   glm::vec3(0.0, 4.0, 1.0)
               }));
 }
+
+TEST_F(HelperClippingPlanes, ClippingPlanes_is_void)
+{
+    ClippingPlanes clipping(1.0, 1.0);
+    std::vector<glm::vec3> poly(
+        {
+            glm::vec3(-10.0, 10.0, 1.0),
+            glm::vec3(-15.0, 10.0, 1.0),
+            glm::vec3(-15.0, -10.0, 1.0)
+        });
+    clipping.clipByPolygon(poly);
+
+    ASSERT_TRUE(clipping.isVoid());
+
+    ClippingPlanes clipping2(1.0, 1.0);
+    ASSERT_FALSE(clipping2.isVoid());
+ }

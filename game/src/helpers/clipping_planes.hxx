@@ -24,6 +24,8 @@ class ClippingPlanes
          * defined by a list of X,Y values. Z=1.0, U=0.0
          * If void, everything is discarded*/
         std::vector<glm::vec3> getEquations();
+        /** @brief Is there something to print ? */
+        bool isVoid() const;
         /** @brief for debug purposes */
         std::string toString();
 

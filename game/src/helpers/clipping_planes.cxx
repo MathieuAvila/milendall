@@ -145,7 +145,7 @@ std::vector<glm::vec3> ClippingPlanes::getEquations()
         glm::vec3 p1_3 = glm::vec3(p1.x, p1.y, 1.0);
         glm::vec3 p2_3 = glm::vec3(p2.x, p2.y, 1.0);
         glm::vec4 p = getPlaneEquation(p0, glm::cross(p1_3, p2_3));
-        p = p / p.z;
+        p = p / (-abs(p.z));
         console->debug("equ {}", vec4_to_string(p));
         result.push_back(p);
     }
@@ -176,4 +176,9 @@ std::string clippingEquationsToString(std::vector<glm::vec3> equ)
         delim = "\n";
     }
     return result;
+}
+
+bool ClippingPlanes::isVoid() const
+{
+    return currentPoints.size() == 0;
 }
