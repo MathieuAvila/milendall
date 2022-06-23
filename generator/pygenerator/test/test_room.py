@@ -72,6 +72,29 @@ class TestRoom(unittest.TestCase):
         self.assertIsNotNone(reloaded_room.values.bricks)
         self.assertEqual(len(reloaded_room.values.bricks), 2)
 
+    def test_01_load_save_objects(self):
+        """ test loading and saving a void room"""
+        selector = selector_fake.SelectorFake()
+        loaded_room = room.Room("../test/test_samples/room/room_3object/", "room1", selector)
+        self.assertIsNotNone(loaded_room)
+        loaded_room.load(state.LevelState.Instantiated)
+
+        self.assertEqual(len(loaded_room.values.objects), 3)
+
+        # todo: check connections
+
+        output = "/tmp/test_01_load_save_2b"
+        self.remake_dest(output)
+        _dump = loaded_room.save(output)
+        reloaded_room = room.Room(output, "room1", selector)
+        reloaded_room.load(state.LevelState.Instantiated)
+        self.assertIsNotNone(reloaded_room)
+
+        logger.info(reloaded_room.values)
+
+        self.assertEqual(len(loaded_room.values.objects), 3)
+
+
     def test_02_structure_personalization(self):
         """Test the personalization algo using a fake selector"""
         my_test_dir = "/tmp/test_01_structure_personalization"

@@ -1,0 +1,33 @@
+{
+    "$schema": "../../../../../../schema/file_room_bricks.json",
+    "bricks": [],
+    "objects": [
+        {
+            "type": "tomate",
+            "position": [
+                0,
+                1,
+                2
+            ]
+        },
+        {
+            "type": "carotte",
+            "position": [
+                10,
+                11,
+                12
+            ]
+        },
+        {
+            "type": "patate",
+            "position": [
+                20,
+                21,
+                22
+            ],
+            "parameters": {
+                "origine": "Belgique"
+            }
+        }
+    ]
+}

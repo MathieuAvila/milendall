@@ -1,0 +1,30 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://milendall.com/schemas/trigger.json",
+    "description": "An object definition, can be anything like a pickable option or only visual",
+    "type": "object",
+    "properties": {
+        "type": {
+            "type": "string",
+            "description": "a well-known string that defines the object"
+        },
+        "position": {
+            "type": "array",
+            "description": "XYZ position inside the room where it belongs.",
+            "items": {
+                "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3
+        },
+        "parameters": {
+            "type": "object",
+            "description": "Additional parameters, depends on the object type"
+        }
+    },
+    "required": [
+        "type",
+        "position"
+    ],
+    "additionalProperties": false
+}

@@ -10,6 +10,13 @@
                 "$ref": "brick.json"
             }
         },
+        "objects": {
+            "description": "The list of objects contained in the room",
+            "type": "array",
+            "items": {
+                "$ref": "object.json"
+            }
+        },
         "$schema": {
             "type": "string"
         },
