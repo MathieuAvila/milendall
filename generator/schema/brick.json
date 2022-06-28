@@ -109,6 +109,13 @@
         },
         "parameters": {
             "$ref": "parameters.json"
+        },
+        "objects": {
+            "description": "The list of objects contained in the brick",
+            "type": "array",
+            "items": {
+                "$ref": "object.json"
+            }
         }
     },
     "required": [

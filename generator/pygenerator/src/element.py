@@ -83,7 +83,7 @@ class Element():
         self.structure = self.selector.get_structure_from_name(
                 self.values.parameters.structure_class,
                 self)
-        self.structure.generate(concrete)
+        self.structure.generic_generate(concrete)
         self.dressing = self.selector.get_dressing_from_name(
                 self.values.parameters.dressing_class,
                 self)

@@ -14,9 +14,11 @@ import concrete_room
 import cgtypes.mat4
 import cgtypes.vec3
 import math
+import json
 
 logger = logging.getLogger("TestRoom")
 logger.setLevel(logging.INFO)
+
 
 class TestRoom(unittest.TestCase):
 
@@ -28,7 +30,8 @@ class TestRoom(unittest.TestCase):
     def test_01_load_save_void(self):
         """ test loading and saving a void room"""
         selector = selector_fake.SelectorFake()
-        loaded_room = room.Room("../test/test_samples/room/room_0b/", "room1", selector)
+        loaded_room = room.Room(
+            "../test/test_samples/room/room_0b/", "room1", selector)
         self.assertIsNotNone(loaded_room)
         loaded_room.load(state.LevelState.Instantiated)
 
@@ -51,7 +54,8 @@ class TestRoom(unittest.TestCase):
     def test_01_load_save_2b(self):
         """ test loading and saving a void room"""
         selector = selector_fake.SelectorFake()
-        loaded_room = room.Room("../test/test_samples/room/room_2b/", "room1", selector)
+        loaded_room = room.Room(
+            "../test/test_samples/room/room_2b/", "room1", selector)
         self.assertIsNotNone(loaded_room)
         loaded_room.load(state.LevelState.Instantiated)
 
@@ -73,13 +77,14 @@ class TestRoom(unittest.TestCase):
         self.assertEqual(len(reloaded_room.values.bricks), 2)
 
     def test_01_load_save_objects(self):
-        """ test loading and saving a void room"""
+        """ test loading and saving a 1 brick room with 3 objects"""
         selector = selector_fake.SelectorFake()
-        loaded_room = room.Room("../test/test_samples/room/room_3object/", "room1", selector)
+        loaded_room = room.Room(
+            "../test/test_samples/room/room_3object/", "room1", selector)
         self.assertIsNotNone(loaded_room)
         loaded_room.load(state.LevelState.Instantiated)
 
-        self.assertEqual(len(loaded_room.values.objects), 3)
+        self.assertEqual(len(loaded_room.values.bricks[0].values.objects), 3)
 
         # todo: check connections
 
@@ -92,15 +97,15 @@ class TestRoom(unittest.TestCase):
 
         logger.info(reloaded_room.values)
 
-        self.assertEqual(len(loaded_room.values.objects), 3)
-
+        self.assertEqual(len(loaded_room.values.bricks[0].values.objects), 3)
 
     def test_02_structure_personalization(self):
         """Test the personalization algo using a fake selector"""
         my_test_dir = "/tmp/test_01_structure_personalization"
         self.remake_dest(my_test_dir)
         selector = selector_fake.SelectorFake()
-        loaded_room = room.Room("../test/test_samples/room/room_2b/", "room1", selector)
+        loaded_room = room.Room(
+            "../test/test_samples/room/room_2b/", "room1", selector)
         self.assertIsNotNone(loaded_room)
         loaded_room.load(state.LevelState.Instantiated)
         loaded_room.structure_personalization()
@@ -111,7 +116,8 @@ class TestRoom(unittest.TestCase):
         my_test_dir = "/tmp/test_01_dressing_instantiation"
         self.remake_dest(my_test_dir)
         selector = selector_fake.SelectorFake()
-        loaded_room = room.Room("../test/test_samples/room/room_2b/", "room1", selector)
+        loaded_room = room.Room(
+            "../test/test_samples/room/room_2b/", "room1", selector)
         self.assertIsNotNone(loaded_room)
         loaded_room.load(state.LevelState.Instantiated)
         loaded_room.structure_personalization()
@@ -123,7 +129,8 @@ class TestRoom(unittest.TestCase):
         selector = selector_fake.SelectorFake()
         my_test_dir = "/tmp/test_01_dressing_personalization"
         self.remake_dest(my_test_dir)
-        loaded_room = room.Room("../test/test_samples/room/room_2b/", "room1", selector)
+        loaded_room = room.Room(
+            "../test/test_samples/room/room_2b/", "room1", selector)
         self.assertIsNotNone(loaded_room)
         loaded_room.load(state.LevelState.Instantiated)
         loaded_room.structure_personalization()
@@ -131,14 +138,14 @@ class TestRoom(unittest.TestCase):
         loaded_room.dressing_personalization()
         loaded_room.save(my_test_dir)
 
-
     def test_05_finalize_01_2b(self):
         """Test the finalize"""
         """Test the dressing personalization algo using a fake selector"""
         selector = selector_fake.SelectorFake()
         my_test_dir = "/tmp/test_05_finalize_01_2b"
         self.remake_dest(my_test_dir)
-        loaded_room = room.Room("../test/test_samples/room/room_2b/", "room1", selector)
+        loaded_room = room.Room(
+            "../test/test_samples/room/room_2b/", "room1", selector)
         self.assertIsNotNone(loaded_room)
         loaded_room.load(state.LevelState.Instantiated)
         loaded_room.structure_personalization()
@@ -153,7 +160,8 @@ class TestRoom(unittest.TestCase):
         selector = selector_fake.SelectorFake()
         my_test_dir = "/tmp/test_05_finalize_01_2b_linked"
         self.remake_dest(my_test_dir)
-        loaded_room = room.Room("../test/test_samples/room/room_2b_linked/", "room1", selector)
+        loaded_room = room.Room(
+            "../test/test_samples/room/room_2b_linked/", "room1", selector)
         self.assertIsNotNone(loaded_room)
         loaded_room.load(state.LevelState.Instantiated)
         loaded_room.structure_personalization()
@@ -167,7 +175,8 @@ class TestRoom(unittest.TestCase):
         selector = selector_fake.SelectorFake()
         my_test_dir = "/tmp/test_06_finalize_brick_translation"
         self.remake_dest(my_test_dir)
-        loaded_room = room.Room("../test/test_samples/room/room_2b_root_pad_translation/", "room1", selector)
+        loaded_room = room.Room(
+            "../test/test_samples/room/room_2b_root_pad_translation/", "room1", selector)
         self.assertIsNotNone(loaded_room)
         loaded_room.load(state.LevelState.Instantiated)
         loaded_room.structure_personalization()
@@ -175,7 +184,8 @@ class TestRoom(unittest.TestCase):
         loaded_room.dressing_personalization()
         loaded_room.save(my_test_dir)
         concrete = concrete_room.ConcreteRoom()
-        loaded_room.finalize(my_test_dir, preview=False, concrete_test_param=concrete)
+        loaded_room.finalize(my_test_dir, preview=False,
+                             concrete_test_param=concrete)
         objs = concrete.get_objects()
         obj_p = {}
         for o in objs:
@@ -183,21 +193,22 @@ class TestRoom(unittest.TestCase):
             obj_p[o.name] = o.parent
             if o.name == "b0_pad0_root_b1":
                 special = o
-        self.assertEquals(obj_p , {
-            "b0_parent" : None,
-            "b0_pad0" : "b0_parent",
-            "b0_pad0_root_b1" : "b0_pad0",
-            "b1_parent":"b0_pad0_root_b1"})
+        self.assertEquals(obj_p, {
+            "b0_parent": None,
+            "b0_pad0": "b0_parent",
+            "b0_pad0_root_b1": "b0_pad0",
+            "b1_parent": "b0_pad0_root_b1"})
         self.assertIsNotNone(special)
-        self.assertEquals(special.matrix, cgtypes.mat4.translation(cgtypes.vec3(1.0,2.0,3.0)))
-
+        self.assertEquals(special.matrix, cgtypes.mat4.translation(
+            cgtypes.vec3(1.0, 2.0, 3.0)))
 
     def test_06_finalize_brick_rotation(self):
         """Test a brick root pad with rotation"""
         selector = selector_fake.SelectorFake()
         my_test_dir = "/tmp/test_06_finalize_brick_rotation"
         self.remake_dest(my_test_dir)
-        loaded_room = room.Room("../test/test_samples/room/room_2b_root_pad_rotation/", "room1", selector)
+        loaded_room = room.Room(
+            "../test/test_samples/room/room_2b_root_pad_rotation/", "room1", selector)
         self.assertIsNotNone(loaded_room)
         loaded_room.load(state.LevelState.Instantiated)
         loaded_room.structure_personalization()
@@ -205,7 +216,8 @@ class TestRoom(unittest.TestCase):
         loaded_room.dressing_personalization()
         loaded_room.save(my_test_dir)
         concrete = concrete_room.ConcreteRoom()
-        loaded_room.finalize(my_test_dir, preview=False, concrete_test_param=concrete)
+        loaded_room.finalize(my_test_dir, preview=False,
+                             concrete_test_param=concrete)
         objs = concrete.get_objects()
         obj_p = {}
         for o in objs:
@@ -213,26 +225,27 @@ class TestRoom(unittest.TestCase):
             obj_p[o.name] = o.parent
             if o.name == "b0_pad0_root_b1":
                 special = o
-        self.assertEquals(obj_p , {
-            "b0_parent" : None,
-            "b0_pad0" : "b0_parent",
-            "b0_pad0_root_b1" : "b0_pad0",
-            "b1_parent":"b0_pad0_root_b1"})
+        self.assertEquals(obj_p, {
+            "b0_parent": None,
+            "b0_pad0": "b0_parent",
+            "b0_pad0_root_b1": "b0_pad0",
+            "b1_parent": "b0_pad0_root_b1"})
         self.assertIsNotNone(special)
-        diff = special.matrix - cgtypes.mat4.rotation(math.pi, cgtypes.vec3(0.0,1.0,0.0))
+        diff = special.matrix - \
+            cgtypes.mat4.rotation(math.pi, cgtypes.vec3(0.0, 1.0, 0.0))
         sum = 0.0
-        for i in range(0,4):
-            for j in range(0,4):
-               sum = sum + abs(diff[i][j])
+        for i in range(0, 4):
+            for j in range(0, 4):
+                sum = sum + abs(diff[i][j])
         self.assertTrue(sum < 0.1)
-
 
     def test_06_finalize_brick_rotation_translation(self):
         """Test a brick root pad with rotation translation"""
         selector = selector_fake.SelectorFake()
         my_test_dir = "/tmp/test_06_finalize_brick_rotation_translation"
         self.remake_dest(my_test_dir)
-        loaded_room = room.Room("../test/test_samples/room/room_2b_root_pad_rotation_translation/", "room1", selector)
+        loaded_room = room.Room(
+            "../test/test_samples/room/room_2b_root_pad_rotation_translation/", "room1", selector)
         self.assertIsNotNone(loaded_room)
         loaded_room.load(state.LevelState.Instantiated)
         loaded_room.structure_personalization()
@@ -240,7 +253,8 @@ class TestRoom(unittest.TestCase):
         loaded_room.dressing_personalization()
         loaded_room.save(my_test_dir)
         concrete = concrete_room.ConcreteRoom()
-        loaded_room.finalize(my_test_dir, preview=False, concrete_test_param=concrete)
+        loaded_room.finalize(my_test_dir, preview=False,
+                             concrete_test_param=concrete)
         objs = concrete.get_objects()
         obj_p = {}
         for o in objs:
@@ -248,22 +262,82 @@ class TestRoom(unittest.TestCase):
             obj_p[o.name] = o.parent
             if o.name == "b0_pad0_root_b1":
                 special = o
-        self.assertEquals(obj_p , {
-            "b0_parent" : None,
-            "b0_pad0" : "b0_parent",
-            "b0_pad0_root_b1" : "b0_pad0",
-            "b1_parent":"b0_pad0_root_b1"})
+        self.assertEquals(obj_p, {
+            "b0_parent": None,
+            "b0_pad0": "b0_parent",
+            "b0_pad0_root_b1": "b0_pad0",
+            "b1_parent": "b0_pad0_root_b1"})
         self.assertIsNotNone(special)
         diff = special.matrix - (
-                    cgtypes.mat4.translation(cgtypes.vec3(1.0,2.0,3.0)) *
-                    cgtypes.mat4.rotation(math.pi, cgtypes.vec3(0.0,1.0,0.0))
-                    )
+            cgtypes.mat4.translation(cgtypes.vec3(1.0, 2.0, 3.0)) *
+            cgtypes.mat4.rotation(math.pi, cgtypes.vec3(0.0, 1.0, 0.0))
+        )
 
         sum = 0.0
-        for i in range(0,4):
-            for j in range(0,4):
-               sum = sum + abs(diff[i][j])
+        for i in range(0, 4):
+            for j in range(0, 4):
+                sum = sum + abs(diff[i][j])
         self.assertTrue(sum < 0.1)
+
+    def test_06_finalize_brick_objects(self):
+        """Test a brick with objects"""
+        selector = selector_fake.SelectorFake()
+        my_test_dir = "/tmp/test_06_finalize_brick_rotation_translation"
+        self.remake_dest(my_test_dir)
+        loaded_room = room.Room(
+            "../test/test_samples/room/room_3object/", "room1", selector)
+        self.assertIsNotNone(loaded_room)
+        loaded_room.load(state.LevelState.Instantiated)
+        loaded_room.structure_personalization()
+        loaded_room.dressing_instantiation()
+        loaded_room.dressing_personalization()
+        loaded_room.save(my_test_dir)
+        concrete = concrete_room.ConcreteRoom()
+        loaded_room.finalize(my_test_dir, preview=False,
+                             concrete_test_param=concrete)
+        objs = concrete.get_objects()
+        obj_p = {}
+        for o in objs:
+            logger.info("%s => %s", o.name, o.parent)
+            obj_p[o.name] = o
+            if o.name == "b0_objects":
+                special = o
+        self.assertEquals(obj_p.keys(), {"b0_parent", "b0_objects"})
+        with open(my_test_dir + "/room1/room.gltf") as f:
+            j = json.load(f)
+        r = j["nodes"][1]["extras"]["objects"]
+        self.assertEquals(r, [
+            {
+                "type": "tomate",
+                "position": [
+                    0,
+                    1,
+                    2
+                ],
+                "parameters": None
+            },
+            {
+                "type": "carotte",
+                "position": [
+                    10,
+                    11,
+                    12
+                ],
+                "parameters": None
+            },
+            {
+                "type": "patate",
+                "position": [
+                    20,
+                    21,
+                    22
+                ],
+                "parameters": {
+                    "origine": "Belgique"
+                }
+            }
+        ]
+        )
 
 
 if __name__ == '__main__':

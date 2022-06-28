@@ -38,6 +38,7 @@ class Node:
         self.gravity_script = None
         self.gravity_mode = None
         self.triggers = []
+        self.objects = []
 
     def set_gravity(self, gravity):
         self.gravity = gravity
@@ -99,6 +100,11 @@ class Node:
     TRIGGER_BOX_MODE   = "is_box_mode_enter"   # set to true if trigger is changed when entering, false if leaving
     TRIGGER_BOX_TARGET = "target_value"        # set to value in which trigger must be set
 
+    # for objets
+    OBJECT_TYPE        = "type"
+    OBJECT_POSITION    = "position"
+    OBJECT_PARAMETERS  = "parameters"
+
     def add_trigger_box(self, enter_or_leave, set_true_or_false, box_min, box_max, event_name):
         self.triggers.append(
             {
@@ -106,6 +112,14 @@ class Node:
                 self.TRIGGER_SET : event_name,
                 self.TRIGGER_BOX_MODE : enter_or_leave,
                 self.TRIGGER_BOX_TARGET : set_true_or_false
+            })
+
+    def add_object(self, type, position, parameters = {}):
+        self.objects.append(
+            {
+                self.OBJECT_TYPE : copy.deepcopy(type),
+                self.OBJECT_POSITION : copy.deepcopy(position),
+                self.OBJECT_PARAMETERS : copy.deepcopy(parameters)
             })
 
     def add_structure_faces(self, point_offset, faces, categories, hints, physics = None):
@@ -241,6 +255,11 @@ class Node:
         if len(self.triggers) != 0:
             extra = self.get_extras(gltf_node)
             extra["triggers"] = copy.deepcopy(self.triggers)
+
+    def gltf_generate_objects(self, gltf_node):
+        if len(self.objects) != 0:
+            extra = self.get_extras(gltf_node)
+            extra["objects"] = copy.deepcopy(self.objects)
 
     def gltf_generate_physical_faces(self, gltf, gltf_node, data_file):
         list_physical_faces = self.get_physical_faces()
@@ -526,6 +545,9 @@ class ConcreteRoom:
 
             # add triggers
             node.gltf_generate_triggers(gltf_node)
+
+            # add objects
+            node.gltf_generate_objects(gltf_node)
 
         # generate each animation associated to this room
         for animation in self.animations:

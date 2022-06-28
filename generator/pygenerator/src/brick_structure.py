@@ -22,3 +22,11 @@ class BrickStructure(ElementalStructure):
     def check_fit(self):
         """check it can be applied. """
         raise "subclass me"
+
+    def generic_generate(self, concrete):
+        if self._element.values.objects is not None:
+            objects = concrete.add_child(None, "objects")
+            for object in self._element.values.objects:
+                objects.add_object(object.type, object.position, object.parameters)
+        self.generate(concrete)
+
