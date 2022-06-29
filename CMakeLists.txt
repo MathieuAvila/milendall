@@ -146,12 +146,22 @@ set(gl_libs
     glfw
 )
 
-# add the preview executable
+# add the room preview executable
 add_executable(preview_room
     game/src/main_preview_room.cxx
 )
 
 target_link_libraries(preview_room
+    ${core_lib}
+    ${gl_libs}
+)
+
+# add the object preview executable
+add_executable(preview_object
+    game/src/main_preview_object.cxx
+)
+
+target_link_libraries(preview_object
     ${core_lib}
     ${gl_libs}
 )
