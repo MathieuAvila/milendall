@@ -16,13 +16,12 @@ ObjectManager::ObjectManager(
     GravityProvider* _gravityProvider) :
 spaceResolver(_spaceResolver), gravityProvider(_gravityProvider)
 {
-
 }
 
-int ObjectManager::insertObject(std::shared_ptr<ManagedObject> object, PointOfView pos)
+ObjectManager::ObjectUid ObjectManager::insertObject(std::shared_ptr<ManagedObject> object, PointOfView pos)
 {
-    static int ID = 0;
-    managed_objects.insert(std::pair<int, std::unique_ptr<ManagedObjectInstance>>(++ID,
+    static ObjectUid ID = 0;
+    managed_objects.insert(std::pair<ObjectUid, std::unique_ptr<ManagedObjectInstance>>(++ID,
         std::make_unique<ManagedObjectInstance>(object, pos, spaceResolver, gravityProvider)));
     return ID;
 }
@@ -35,7 +34,7 @@ void ObjectManager::update(float total_time)
     }
 }
 
-bool ObjectManager::getObjectPosition(int objectId, PointOfView& pos)
+bool ObjectManager::getObjectPosition(ObjectManager::ObjectUid objectId, PointOfView& pos)
 {
     if (managed_objects.count(objectId) != 1)
         return false;
