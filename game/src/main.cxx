@@ -32,7 +32,7 @@ using namespace glm;
 
 void help()
 {
-    console->info("preview_room [-h] -d model_file [-f path ...]");
+    console->info("preview_room [-h] -f model_file [-d path ...]");
     exit(1);
 }
 
