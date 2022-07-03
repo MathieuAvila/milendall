@@ -204,3 +204,15 @@ TEST(GltfDataAccessor, getTypes) {
     EXPECT_EQ(*d_float, SPECIFIC_FLOAT); // offset in blob
 }
 
+
+TEST(GltfDataAccessor, stride) {
+
+    auto data_accessor = get_test_accessor_blob("accessor_stride", "stride.json");
+    EXPECT_NE(data_accessor, nullptr);
+
+    auto block0 = data_accessor->accessId(0);
+    EXPECT_NE(block0, nullptr);
+    EXPECT_EQ(block0->stride, 1024);
+
+}
+

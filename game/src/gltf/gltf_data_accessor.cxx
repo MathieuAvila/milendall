@@ -51,6 +51,7 @@ std::unique_ptr<GltfDataAccessor::DataBlock> GltfDataAccessor::accessId(uint32_t
    auto bufferview_byteOffset = jsonGetElementByName(bufferView_json, "byteOffset").get<int>();
    auto bufferview_byteLength = jsonGetElementByName(bufferView_json, "byteLength").get<int>();
    auto bufferview_buffer = jsonGetElementByName(bufferView_json, "buffer").get<int>();
+   auto bufferview_stride = bufferView_json.contains("byteStride") ? jsonGetElementByName(bufferView_json, "byteStride").get<int>() : 0;
 
    if (bufferview_buffer >= loaded_buffers.size())
         throw(GltfException(std::string("Buffer index is too big. Has:")
@@ -59,6 +60,9 @@ std::unique_ptr<GltfDataAccessor::DataBlock> GltfDataAccessor::accessId(uint32_t
         + std::to_string(loaded_buffers.size())));
 
    FileContentPtr& buffPtr = loaded_buffers[bufferview_buffer];
+
+   console->info("Accessing index {} - stride {} - buferView offset={} accessor offset={} count={}",
+                index, bufferview_stride, bufferview_byteOffset, byteOffset, count);
 
    auto endIndex = bufferview_byteOffset + byteOffset + bufferview_byteLength;
    if (endIndex > buffPtr->size())
@@ -72,7 +76,7 @@ std::unique_ptr<GltfDataAccessor::DataBlock> GltfDataAccessor::accessId(uint32_t
    return make_unique<GltfDataAccessor::DataBlock>(
         type,
         componentType,
-        count, nptr);
+        count, bufferview_stride, nptr);
 }
 
 GltfDataAccessor::~GltfDataAccessor()

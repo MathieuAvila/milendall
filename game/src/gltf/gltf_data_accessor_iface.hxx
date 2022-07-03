@@ -20,13 +20,15 @@ class GltfDataAccessorIFace
         using UNIT_TYPE = enum { FLOAT, UNSIGNED_SHORT, UNSIGNED_INT };
         UNIT_TYPE unit_type;
         unsigned count;
+        unsigned stride;
         uint8_t* data;
 
         /** default ctor */
-        DataBlock(VEC_TYPE _vec_type, UNIT_TYPE _unit_type, unsigned _count, uint8_t* _data):
+        DataBlock(VEC_TYPE _vec_type, UNIT_TYPE _unit_type, unsigned _count, unsigned _stride, uint8_t* _data):
             vec_type(_vec_type),
             unit_type(_unit_type),
             count(_count),
+            stride(_stride),
             data(_data) {};
 
         /* may release data if necessary, so make it virtual */
