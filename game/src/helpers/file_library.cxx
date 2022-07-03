@@ -86,7 +86,7 @@ FileContentPtr FileLibrary::UriReference::readContent() const
          console->debug("Is a match, now try to open", final_path);
          auto file_size = std::filesystem::file_size(final_path);
          FILE *file = fopen(final_path.c_str(), "rb");
-         FileContentPtr result = make_unique<std::vector<uint8_t>>(file_size);
+         FileContentPtr result = make_shared<std::vector<uint8_t>>(file_size);
          fread(result->data(), file_size, 1, file);
          return result;
       }

@@ -15,7 +15,7 @@ class LibraryException: public std::runtime_error
         LibraryException(const std::string err): runtime_error(err) {};
 };
 
-using FileContentPtr = std::unique_ptr< std::vector<uint8_t> >;
+using FileContentPtr = std::shared_ptr< std::vector<uint8_t> >;
 
 /** An abstraction of filesystem, that masks the fact that things are
  * in real FS roots or embedded zipped files.
