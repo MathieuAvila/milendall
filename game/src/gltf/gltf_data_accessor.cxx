@@ -35,6 +35,7 @@ std::unique_ptr<GltfDataAccessor::DataBlock> GltfDataAccessor::accessId(uint32_t
     };
    std::map<int, GltfDataAccessor::DataBlock::UNIT_TYPE> mapper_component_type = {
            {5126, GltfDataAccessor::DataBlock::FLOAT},
+           {5125, GltfDataAccessor::DataBlock::UNSIGNED_INT},
            {5123, GltfDataAccessor::DataBlock::UNSIGNED_SHORT}
     };
    auto accessor = jsonGetIndex(accessors, index);

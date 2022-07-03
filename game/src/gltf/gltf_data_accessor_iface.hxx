@@ -17,7 +17,7 @@ class GltfDataAccessorIFace
     struct DataBlock {
         using VEC_TYPE = enum { SCALAR, VEC2, VEC3 };
         VEC_TYPE vec_type;
-        using UNIT_TYPE = enum { FLOAT, UNSIGNED_SHORT };
+        using UNIT_TYPE = enum { FLOAT, UNSIGNED_SHORT, UNSIGNED_INT };
         UNIT_TYPE unit_type;
         unsigned count;
         uint8_t* data;

@@ -1,0 +1,60 @@
+{
+    "buffers": [
+     {
+      "byteLength": 1024
+     }
+    ],
+    "bufferViews": [
+     {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 288,
+      "target": 34962
+     }
+    ],
+    "accessors": [
+     {
+      "bufferView": 0,
+      "byteOffset": 0,
+      "componentType": 5123,
+      "count": 10,
+      "type": "SCALAR",
+      "min": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "max": [
+       4.0,
+       4.0,
+       4.0
+      ]
+     },
+     {
+      "bufferView": 0,
+      "byteOffset": 512,
+      "componentType": 5125,
+      "count": 10,
+      "type": "SCALAR",
+      "min": [
+       0
+      ],
+      "max": [
+       6
+      ]
+     },
+     {
+      "bufferView": 0,
+      "byteOffset": 1024,
+      "componentType": 5126,
+      "count": 10,
+      "type": "SCALAR",
+      "min": [
+       0
+      ],
+      "max": [
+       6
+      ]
+     }
+    ]
+   }

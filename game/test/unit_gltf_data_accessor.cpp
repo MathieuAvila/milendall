@@ -13,6 +13,9 @@ using namespace std;
 
 static auto console = getConsole("unit_gltf_data_accessor");
 
+#define SPECIFIC_FLOAT 3.14f
+#define SPECIFIC_INT 666
+
 static std::unique_ptr<GltfDataAccessor> get_test_accessor()
 {
     auto fl = FileLibrary();
@@ -25,18 +28,22 @@ static std::unique_ptr<GltfDataAccessor> get_test_accessor()
     return elem;
 }
 
-static std::unique_ptr<GltfDataAccessor> get_test_accessor_blob()
+static std::unique_ptr<GltfDataAccessor> get_test_accessor_blob(std::string dir, std::string file)
 {
     auto fl = FileLibrary();
     std::string pwd = std::filesystem::current_path();
-    fl.addRootFilesystem(pwd + "/../game/test/sample/accessor_blob");
-    auto ref = fl.getRoot().getSubPath("blob.json");
+    fl.addRootFilesystem(pwd + "/../game/test/sample/" + dir);
+    auto ref = fl.getRoot().getSubPath(file);
     auto raw_json = ref.readStringContent();
     auto json_element = json::parse(raw_json.c_str());
     FileContentPtr blob = std::make_shared<std::vector<uint8_t>>();
-    for (unsigned i = 0; i < 1024; i++) {
+    for (unsigned i = 0; i < 2048; i++) {
         blob->push_back(i % 256);
     }
+    // for types test, force some unsigned int and float values
+    *(unsigned int*)(&blob->at(512)) = SPECIFIC_INT;
+    *(float*)(&blob->at(1024)) = SPECIFIC_FLOAT;
+
     auto elem = std::make_unique<GltfDataAccessor>(json_element, ref.getDirPath(), blob);
     return elem;
 }
@@ -151,14 +158,14 @@ TEST(GltfDataAccessor, getLast) {
 
     auto data_accessor = get_test_accessor();
     auto data = data_accessor->accessId(5);
-    EXPECT_TRUE(data->unit_type == GltfDataAccessorIFace::DataBlock::FLOAT);
-    EXPECT_TRUE(data->vec_type == GltfDataAccessorIFace::DataBlock::VEC2);
-    EXPECT_TRUE(data->count == 8);
+    EXPECT_EQ(data->unit_type, GltfDataAccessorIFace::DataBlock::FLOAT);
+    EXPECT_EQ(data->vec_type, GltfDataAccessorIFace::DataBlock::VEC2);
+    EXPECT_EQ(data->count, 8);
 }
 
 TEST(GltfDataAccessor, data_blob) {
 
-    auto data_accessor = get_test_accessor_blob();
+    auto data_accessor = get_test_accessor_blob("accessor_blob", "blob.json");
     EXPECT_NE(data_accessor, nullptr);
     auto block0 = data_accessor->accessId(0);
     EXPECT_NE(block0, nullptr);
@@ -169,6 +176,31 @@ TEST(GltfDataAccessor, data_blob) {
     EXPECT_NE(block1, nullptr);
     EXPECT_EQ(block1->count, 10);
     EXPECT_EQ(block1->data[0], 10); // offset in blob
+}
 
+TEST(GltfDataAccessor, getTypes) {
+
+    auto data_accessor = get_test_accessor_blob("accessor_data_types", "types.json");
+    EXPECT_NE(data_accessor, nullptr);
+
+    auto block0 = data_accessor->accessId(0);
+    EXPECT_NE(block0, nullptr);
+    EXPECT_EQ(block0->unit_type, GltfDataAccessorIFace::DataBlock::UNSIGNED_SHORT);
+    EXPECT_EQ(block0->count, 10);
+    EXPECT_EQ(block0->data[0], 0);
+
+    auto block1 = data_accessor->accessId(1);
+    EXPECT_NE(block1, nullptr);
+    EXPECT_EQ(block1->unit_type, GltfDataAccessorIFace::DataBlock::UNSIGNED_INT);
+    EXPECT_EQ(block1->count, 10);
+    unsigned int* d = (unsigned int*)(&block1->data[0]);
+    EXPECT_EQ(*d, SPECIFIC_INT);
+
+    auto block2 = data_accessor->accessId(2);
+    EXPECT_NE(block2, nullptr);
+    EXPECT_EQ(block2->unit_type, GltfDataAccessorIFace::DataBlock::FLOAT);
+    EXPECT_EQ(block2->count, 10);
+    float* d_float = (float*)(&block2->data[0]);
+    EXPECT_EQ(*d_float, SPECIFIC_FLOAT); // offset in blob
 }
 
