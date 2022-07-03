@@ -42,10 +42,15 @@ std::unique_ptr<GltfDataAccessor::DataBlock> GltfDataAccessor::accessId(uint32_t
 
    auto bufferView = jsonGetElementByName(accessor, "bufferView").get<int>();
    auto byteOffset = jsonGetElementByName(accessor, "byteOffset").get<int>();
-   auto componentType = mapper_component_type[jsonGetElementByName(accessor, "componentType").get<int>()];
+   auto componentType_int = jsonGetElementByName(accessor, "componentType").get<int>();
+   if (!mapper_component_type.count(componentType_int))
+    throw(GltfException(std::string("Unknown accessor component type:") + std::to_string(componentType_int)));
+   auto componentType = mapper_component_type[componentType_int];
    auto count = jsonGetElementByName(accessor, "count").get<int>();
-   auto type = mapper_type[jsonGetElementByName(accessor, "type").get<std::string>()];
-
+   auto type_str = jsonGetElementByName(accessor, "type").get<std::string>();
+   if (!mapper_type.count(type_str))
+    throw(GltfException(std::string("Unknown accessor type:") + type_str));
+   auto type = mapper_type[type_str];
 
    auto bufferView_json = jsonGetIndex(bufferViews, bufferView);
    auto bufferview_byteOffset = jsonGetElementByName(bufferView_json, "byteOffset").get<int>();
