@@ -78,15 +78,95 @@ GltfModel::GltfModel(GltfMaterialLibraryIfacePtr materialLibrary, const FileLibr
 GltfModel::GltfModel(GltfMaterialLibraryIfacePtr materialLibrary, const FileLibrary::UriReference ref,
                     GltfNodeProvider nodeProvider)
 {
-    console->info("Load level: {}", ref.getPath());
-    auto raw_json = ref.readStringContent();
-    auto file_json = json::parse(raw_json.c_str());
-    // build a data accessor from this
-    unique_ptr<GltfDataAccessorIFace> data_accessor(new GltfDataAccessor(file_json, ref.getDirPath()));
+    auto p = ref.getPath();
+    console->info("Load model: {}", p);
 
+    string raw_json;
+    bool glb = false;
+    FileContentPtr content;
+
+    if (p.size()>4) {
+        auto last = (p.substr(p.size() -4, 4));
+        if (last == ".glb") { // Not conforming to spec. Don't care.
+            glb = true;
+            auto contentAll = ref.readContent();
+
+            struct header {
+                uint32_t header;
+                uint32_t version;
+                uint32_t length;
+
+                uint32_t json_length;
+                uint32_t json_type;
+                char json_data;
+            } __attribute__((packed))* head;
+
+            head = (struct header*)&contentAll.get()->at(0);
+
+            console->debug("GLB size={}", contentAll->size());
+            console->debug("Header={:x}, version={} length={}",
+                        head->header, head->version, head->length);
+            console->debug("Json type={:x}, length={}",
+                        head->json_type, head->json_length);
+
+            if (head->header != 0x46546C67)
+                throw GltfException(std::string("GLB invalid header (should be 0x46546C67)"));
+            if (head->version != 2)
+                throw GltfException(std::string("GLB invalid version (should be 2)"));
+            if (head->json_type != 0x4E4F534A)
+                throw GltfException(std::string("GLB invalid JSON type (should be 0x4E4F534A)"));
+
+            char* start = &(head->json_data);
+            char* end = start + head->json_length;
+            *end = 0;
+            raw_json = string(start);
+
+            struct header_data {
+                uint32_t length;
+                uint32_t type;
+                char data;
+            } __attribute__((packed))* head_data = (struct header_data*)end;
+
+            console->info("Data type={:x}, length={}",
+                        head_data->type, head_data->length);
+
+            if (head_data->type != 0x004E4942)
+                throw GltfException(std::string("GLB invalid data type (should be 0x004E4942)"));
+
+            char* start_data = &(head_data->data) ;
+            char* end_data = (char*)&(contentAll->at(contentAll->size()-1))+1 ; // start_data + head_data->length;
+            auto table = std::make_shared<std::vector<uint8_t>>();
+            table->assign(start_data, end_data);
+            content = FileContentPtr(table);
+        }
+    }
+    if (!glb) {
+        raw_json = ref.readStringContent();
+    }
+
+    nlohmann::json file_json;
+    try
+    {
+        file_json = json::parse(raw_json.c_str());
+        console->debug("{}", file_json.dump(1));
+    }
+    catch (json::parse_error& e)
+    {
+        console->error("message: {}, exception id: {} byte position of error: {}",
+                        e.what() , e.id, e.byte);
+        throw GltfException(std::string("GLTF parse error ") + e.what() + " at char: " + std::to_string(e.byte));
+    }
+    catch (json::exception& e)
+    {
+        console->error("message: {}, exception id: {}",
+                        e.what() , e.id);
+        throw GltfException(std::string("GLTF parse error ") + e.what());
+    }
+
+    // build a data accessor from this
+    unique_ptr<GltfDataAccessorIFace> data_accessor(new GltfDataAccessor(file_json, ref.getDirPath(), content));
     // access a material accessor from the json file
     materialAccessor = materialLibrary->getMaterialAccessor(ref.getDirPath(), file_json);
-
     // Load all meshes, whether used or not
     jsonExecuteAllIfElement(file_json, "meshes", [this, &data_accessor](nlohmann::json& child, int node_index) {
         console->info("Load mesh: {}", node_index);

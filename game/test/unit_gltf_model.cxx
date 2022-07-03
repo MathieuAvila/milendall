@@ -23,6 +23,48 @@ class GltfModelTest : public GltfModel
         }
 };
 
+
+class GltfMaterialAccessorTestImpl : public GltfMaterialAccessorIFace {
+
+    public:
+
+        // accessing this directly in the test
+        static GltfMaterialAccessorTestImpl* current;
+
+        const FileLibrary::UriReference& dir;
+        nlohmann::json file;
+
+    GltfMaterialAccessorTestImpl(
+        const FileLibrary::UriReference& _dir,
+        nlohmann::json& _file) : dir(_dir), file(_file)
+    {
+        current = this;
+    }
+
+    void loadId(uint32_t index) override{}
+
+    ~GltfMaterialAccessorTestImpl() override{};
+};
+
+// needed static decl
+GltfMaterialAccessorTestImpl* GltfMaterialAccessorTestImpl::current;
+
+class GltfMaterialLibraryTestImpl : public GltfMaterialLibraryIface {
+public:
+
+    //std::unique_ptr<GltfMaterialAccessorTestImpl> accessorTestImpl;
+
+    UGltfMaterialAccessorIFace getMaterialAccessor(
+        const FileLibrary::UriReference& dir,
+        nlohmann::json& file) override
+        {
+            return std::make_unique<GltfMaterialAccessorTestImpl>(dir, file);
+        }
+
+    GltfMaterialLibraryTestImpl(){};
+    virtual ~GltfMaterialLibraryTestImpl() override {};
+};
+
 TEST(GLTF_MODEL, Load_GLTF_model) {
 
     InSequence s;
@@ -31,10 +73,29 @@ TEST(GLTF_MODEL, Load_GLTF_model) {
     auto fl = FileLibrary();
     fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../game/test/sample"));
     auto ref = fl.getRoot().getSubPath("/cube/room_preview.gltf");
-    GltfMaterialLibraryIfacePtr materialLibrary = GltfMaterialLibraryIface::getMaterialLibray();
+    auto materialLibrary = std::make_shared<GltfMaterialLibraryTestImpl>();
     GltfModel* model = new GltfModel(materialLibrary, ref);
 
     EXPECT_TRUE(model != nullptr);
+}
+
+
+TEST(GLTF_MODEL, Load_GLTF_model_GLB) {
+
+    InSequence s;
+    GLMock mock;
+
+    auto fl = FileLibrary();
+    fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../game/test/sample"));
+    auto ref = fl.getRoot().getSubPath("/glb/pumpkin.glb");
+    auto materialLibrary = std::make_shared<GltfMaterialLibraryTestImpl>();
+   GltfModel* model = new GltfModel(materialLibrary, ref);
+
+    EXPECT_TRUE(model != nullptr);
+    // High-level test to check that JSON file was loaded
+    EXPECT_EQ(2, model->getInstanceParameters());
+    // High-level test to check that DATA file was loaded
+    EXPECT_TRUE(GltfMaterialAccessorTestImpl::current->file.contains("accessors"));
 }
 
 TEST(GLTF_MODEL, multi_scene_multi_children_matrices) {
