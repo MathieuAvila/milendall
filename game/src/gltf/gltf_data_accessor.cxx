@@ -2,17 +2,25 @@
 #include "json_helper_accessor.hxx"
 #include "gltf_exception.hxx"
 
+#include "common.hxx"
+
 using namespace std;
 using namespace nlohmann;
 
-GltfDataAccessor::GltfDataAccessor(nlohmann::json& json, const FileLibrary::UriReference ref)
+static auto console = getConsole("gltf_accessor");
+
+GltfDataAccessor::GltfDataAccessor(nlohmann::json& json, const FileLibrary::UriReference ref, FileContentPtr content)
 {
         /** load all buffers in memory now */
         auto buffers_json = json["buffers"];
         for(auto buffer_json: buffers_json) {
-                auto buf_ref = ref.getSubPath(buffer_json["uri"]);
-                //auto content = buf_ref.readContent();
-                loaded_buffers.push_back(buf_ref.readContent());
+                if (buffer_json.contains("uri")) {
+                    auto buf_ref = ref.getSubPath(buffer_json["uri"]);
+                    //auto content = buf_ref.readContent();
+                    loaded_buffers.push_back(buf_ref.readContent());
+                } else {
+                    loaded_buffers.push_back(content);
+                }
         }
         accessors = jsonGetElementByName(json, "accessors");
         bufferViews = jsonGetElementByName(json, "bufferViews");

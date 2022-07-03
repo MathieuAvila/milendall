@@ -25,7 +25,7 @@ class GltfDataAccessor: public GltfDataAccessorIFace
       * @param _json No need to keep it valid after ctor. Needed elements are deep-copied
       * @param ref Is the current directory where the file is located, for relative accesses
      */
-    GltfDataAccessor(nlohmann::json& _json, const FileLibrary::UriReference ref);
+    GltfDataAccessor(nlohmann::json& _json, const FileLibrary::UriReference ref, FileContentPtr content = nullptr);
 
     virtual std::unique_ptr<DataBlock> accessId(uint32_t index);
     virtual ~GltfDataAccessor();

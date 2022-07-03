@@ -25,6 +25,22 @@ static std::unique_ptr<GltfDataAccessor> get_test_accessor()
     return elem;
 }
 
+static std::unique_ptr<GltfDataAccessor> get_test_accessor_blob()
+{
+    auto fl = FileLibrary();
+    std::string pwd = std::filesystem::current_path();
+    fl.addRootFilesystem(pwd + "/../game/test/sample/accessor_blob");
+    auto ref = fl.getRoot().getSubPath("blob.json");
+    auto raw_json = ref.readStringContent();
+    auto json_element = json::parse(raw_json.c_str());
+    FileContentPtr blob = std::make_shared<std::vector<uint8_t>>();
+    for (unsigned i = 0; i < 1024; i++) {
+        blob->push_back(i % 256);
+    }
+    auto elem = std::make_unique<GltfDataAccessor>(json_element, ref.getDirPath(), blob);
+    return elem;
+}
+
 TEST(GltfDataAccessor, getVec3) {
 
     auto data_accessor = get_test_accessor();
@@ -139,3 +155,20 @@ TEST(GltfDataAccessor, getLast) {
     EXPECT_TRUE(data->vec_type == GltfDataAccessorIFace::DataBlock::VEC2);
     EXPECT_TRUE(data->count == 8);
 }
+
+TEST(GltfDataAccessor, data_blob) {
+
+    auto data_accessor = get_test_accessor_blob();
+    EXPECT_NE(data_accessor, nullptr);
+    auto block0 = data_accessor->accessId(0);
+    EXPECT_NE(block0, nullptr);
+    EXPECT_EQ(block0->count, 10);
+    EXPECT_EQ(block0->data[0], 0); // 1st in blob
+
+    auto block1 = data_accessor->accessId(1);
+    EXPECT_NE(block1, nullptr);
+    EXPECT_EQ(block1->count, 10);
+    EXPECT_EQ(block1->data[0], 10); // offset in blob
+
+}
+
