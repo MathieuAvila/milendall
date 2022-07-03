@@ -45,6 +45,12 @@ void setActiveFbo(FboIndex* fbo);
 /** Activate main program for drawing */
 void activateDefaultDrawingProgram();
 
+/** When default drawing program is used, commute between texture and
+ * color with those 2 functions */
+void setPBR(float metallicFactor, float roughnessFactor);
+void setTextureMode(unsigned int texture);
+void setColoredMode(float color[3]);
+
 /** Activate portal program for drawing */
 void activatePortalDrawingProgram();
 

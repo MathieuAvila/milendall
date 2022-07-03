@@ -289,6 +289,20 @@ void activateDefaultDrawingProgram()
         glEnable(GL_CLIP_DISTANCE0 + i);
 }
 
+void setPBR(float metallicFactor, float roughnessFactor)
+{
+}
+
+void setTextureMode(unsigned int texture)
+{
+    glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
+}
+
+void setColoredMode(float color[3])
+{
+}
+
 void activatePortalDrawingProgram()
 {
 	glUseProgram(portalProgramID);

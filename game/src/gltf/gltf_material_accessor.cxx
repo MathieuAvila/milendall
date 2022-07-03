@@ -8,6 +8,7 @@
 #include "json_helper_accessor.hxx"
 
 #include "common.hxx"
+#include "gl_init.hxx"
 
 class GltfMaterialLibraryImpl;
 using SGltfMaterialLibraryImpl = std::shared_ptr<GltfMaterialLibraryImpl>;
@@ -58,7 +59,10 @@ public:
 class GltfMaterialAccessorImpl : public GltfMaterialAccessorIFace {
 
     struct material {
-        int textureIndex; // -1 if none
+        int textureIndex; // -1 if none, then it's a color
+        float colors[3];
+        float metallicFactor;
+        float roughnessFactor;
     };
 
     GltfMaterialLibraryImpl* libImpl;
@@ -88,15 +92,24 @@ class GltfMaterialAccessorImpl : public GltfMaterialAccessorIFace {
             texture_to_image.push_back(source_index);
             console->debug("texture {} is using image {}", texture_index, source_index);
         });
-        jsonExecuteAllIfElement(file, "materials", [&texture_to_image](nlohmann::json& child, int node_index) {
+        jsonExecuteAllIfElement(file, "materials", [this, &texture_to_image](nlohmann::json& child, int node_index) {
             string name;
             string textureFileName;
             struct material mat;
             mat.textureIndex = -1;
+            mat.metallicFactor = 1.0;
+            mat.roughnessFactor = 1.0;
+
             jsonExecuteIfElement(child, "name", [&name](nlohmann::json& name_child) {
                 name = name_child.get<string>();
             });
-            jsonExecuteIfElement(child, "pbrMetallicRoughness", [&texture_to_image, node_index, &mat](nlohmann::json& pbr_child) {
+            jsonExecuteIfElement(child, "pbrMetallicRoughness", [this, &texture_to_image, node_index, &mat](nlohmann::json& pbr_child) {
+                jsonExecuteIfElement(pbr_child, "metallicFactor", [&mat](nlohmann::json& metallicFactor) {
+                    mat.metallicFactor = metallicFactor.get<float>();
+                });
+                jsonExecuteIfElement(pbr_child, "roughnessFactor", [&mat](nlohmann::json& roughnessFactor) {
+                    mat.roughnessFactor = roughnessFactor.get<float>();
+                });
                 jsonExecuteIfElement(pbr_child, "baseColorTexture", [&texture_to_image, node_index, &mat](nlohmann::json& baseColorTexture) {
                     jsonExecuteIfElement(baseColorTexture, "index", [&texture_to_image, node_index, &mat](nlohmann::json& index) {
                         int texture_index = index.get<int>();
@@ -109,18 +122,33 @@ class GltfMaterialAccessorImpl : public GltfMaterialAccessorIFace {
                                     node_index, texture_index, image_index);
                     });
                 });
+                jsonExecuteIfElement(pbr_child, "baseColorFactor", [node_index, &mat](nlohmann::json& baseColorMaterial) {
+                    mat.textureIndex = -1;
+                    mat.colors[0] = baseColorMaterial[0];
+                    mat.colors[1] = baseColorMaterial[1];
+                    mat.colors[2] = baseColorMaterial[2];
+                    console->info("material {} is using color with RGB={},{},{}",
+                                    node_index, mat.colors[0], mat.colors[1], mat.colors[2]);
+                });
+                materialList.push_back(mat);
             });
             console->info("found material:{} with name '{}' with texture ID={}", to_string(node_index), name, mat.textureIndex);
-            //children.push_back(child.get<int>());
     });
     }
 
     void loadId(uint32_t index) override
     {
-        if (index >= textureList.size())
-            throw GltfException("No such material with index ");
-        console->debug("Apply texture {}", index);
-        textureList[index]->apply();
+        if (index >= materialList.size())
+            throw GltfException("No such material with index: " + std::to_string(index));
+        auto& mat = materialList[index];
+        setPBR(mat.metallicFactor, mat.roughnessFactor);
+        if (mat.textureIndex != -1) {
+            console->debug("Apply texture {} from material {}", mat.textureIndex, index);
+            textureList[mat.textureIndex]->apply();
+        } else {
+            console->debug("Apply colored material {}", index);
+            setColoredMode(mat.colors);
+        }
     }
 
     ~GltfMaterialAccessorImpl() override
@@ -219,10 +247,7 @@ GltfTextureReference::GltfTextureReference(PGltfMaterialLibraryImpl _lib, const 
 void GltfTextureReference::apply()
 {
     console->debug("Apply texture {} {}", ref.getPath().c_str(), gl_texture);
-    glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, gl_texture);
-    //glUniform1i(1, 0);
-	//glUniform1i(TextureID, 0);
+    setTextureMode(gl_texture);
 }
 
 GltfTextureReference::~GltfTextureReference()

@@ -8,6 +8,14 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/epsilon.hpp>
 
+#include "test_common.hpp"
+
+float currentMetallicFactor;
+float currentRoughnessFactor;
+unsigned int currentTexture;
+float currentColor[3];
+bool isCurrentModeTexture;
+
 float mat4x4_abs_diff(const glm::mat4x4& mat1, const glm::mat4x4& mat2)
 {
 	float result = 0.0f;
@@ -57,3 +65,24 @@ struct ConsoleInit {
 };
 
 ConsoleInit consoleInit;
+
+
+void setPBR(float metallicFactor, float roughnessFactor)
+{
+    currentMetallicFactor = metallicFactor;
+    currentRoughnessFactor = roughnessFactor;
+}
+
+void setTextureMode(unsigned int texture)
+{
+    isCurrentModeTexture = true;
+    currentTexture = texture;
+}
+
+void setColoredMode(float color[3])
+{
+    isCurrentModeTexture = false;
+    currentColor[0] = color[0];
+    currentColor[1] = color[1];
+    currentColor[2] = color[2];
+}
