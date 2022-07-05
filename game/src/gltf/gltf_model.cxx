@@ -148,7 +148,7 @@ GltfModel::GltfModel(GltfMaterialLibraryIfacePtr materialLibrary, const FileLibr
     try
     {
         file_json = json::parse(raw_json.c_str());
-        console->debug("{}", file_json.dump(1));
+        //console->info("{}", file_json.dump(1));
     }
     catch (json::parse_error& e)
     {

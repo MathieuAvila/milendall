@@ -19,9 +19,15 @@ static void store_if_contains(int& storage, json& json, string name)
 
 class GltfMesh::GltfPrimitive {
 
-    GLuint vertexbuffer;
-	GLuint uvbuffer;
-	GLuint elementbuffer;
+    struct bufferDef {
+        GLuint buffer;
+        unsigned stride;
+        int glformat;
+    };
+    struct bufferDef vertexbuffer;
+	struct bufferDef uvbuffer;
+	struct bufferDef elementbuffer;
+    struct bufferDef normalbuffer;
     unsigned int indicesCount;
     int material;
     SGltfMaterialAccessorIFace material_accessor;
@@ -45,6 +51,7 @@ GltfMesh::GltfPrimitive::GltfPrimitive(
     int indices, mode, NORMAL, POSITION, TEXCOORD_0;
     indicesCount = 0;
     material = -1;
+    NORMAL = -1;
     store_if_contains(indices, j_prim, "indices");
     store_if_contains(mode, j_prim, "mode");
     store_if_contains(material, j_prim, "material");
@@ -77,28 +84,70 @@ GltfMesh::GltfPrimitive::GltfPrimitive(
         console->warn("Only mode 4 supported");
         return;
     }
+
     auto indexed_vertices = data_accessor->accessId(POSITION);
     auto indexed_uvs = data_accessor->accessId(TEXCOORD_0);
-    //auto normalbuffer = data_accessor->accessId(NORMAL);
+    std::unique_ptr<GltfDataAccessorIFace::DataBlock> indexed_normal;
+    if (NORMAL != -1) {
+        indexed_normal = data_accessor->accessId(NORMAL);
+    }
     auto indicesbuffer = data_accessor->accessId(indices);
 
-    glGenBuffers(1, &vertexbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    vertexbuffer.stride = indexed_vertices->stride;
+    uvbuffer.stride = indexed_uvs->stride;
+    elementbuffer.stride = indicesbuffer->stride;
+
+    std::map<GltfDataAccessor::DataBlock::UNIT_TYPE, unsigned int> mapper_gl_type = {
+           {GltfDataAccessor::DataBlock::FLOAT,          GL_FLOAT },
+           {GltfDataAccessor::DataBlock::UNSIGNED_INT,   GL_UNSIGNED_INT},
+           {GltfDataAccessor::DataBlock::UNSIGNED_SHORT, GL_UNSIGNED_SHORT}
+    };
+
+    std::map<GltfDataAccessor::DataBlock::UNIT_TYPE, unsigned int> mapper_gl_size = {
+           {GltfDataAccessor::DataBlock::FLOAT,          8 },
+           {GltfDataAccessor::DataBlock::UNSIGNED_INT,   4 },
+           {GltfDataAccessor::DataBlock::UNSIGNED_SHORT, 2 }
+    };
+
+    vertexbuffer.glformat = mapper_gl_type[indexed_vertices->unit_type];
+    uvbuffer.glformat = mapper_gl_type[indexed_uvs->unit_type];
+    elementbuffer.glformat = mapper_gl_type[indicesbuffer->unit_type];
+
+    glGenBuffers(1, &vertexbuffer.buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer.buffer);
 	glBufferData(GL_ARRAY_BUFFER, indexed_vertices->count * sizeof(glm::vec3), indexed_vertices->data, GL_STATIC_DRAW);
 
-    glGenBuffers(1, &uvbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+    glGenBuffers(1, &uvbuffer.buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer.buffer);
 	glBufferData(GL_ARRAY_BUFFER, indexed_uvs->count * sizeof(glm::vec2), indexed_uvs->data, GL_STATIC_DRAW);
 
-    glGenBuffers(1, &elementbuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesbuffer->count * sizeof(unsigned short), indicesbuffer->data , GL_STATIC_DRAW);
+    normalbuffer.buffer = 0;
+    if (NORMAL != -1) {
+        normalbuffer.glformat = mapper_gl_type[indexed_normal->unit_type];
+        glGenBuffers(1, &normalbuffer.buffer);
+	    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer.buffer);
+	    glBufferData(GL_ARRAY_BUFFER, indexed_normal->count * sizeof(glm::vec3), indexed_normal->data, GL_STATIC_DRAW);
+    }
+
+    glGenBuffers(1, &elementbuffer.buffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer.buffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesbuffer->count * mapper_gl_size[indicesbuffer->unit_type], indicesbuffer->data , GL_STATIC_DRAW);
 
     indicesCount = indicesbuffer->count;
 
+
     console->info(
-        "vertexbuffer={}, uvbuffer={}, elementbuffer={}",
-        vertexbuffer, uvbuffer, elementbuffer);
+        "vertexbuffer={} - stride={} - format={}",
+        vertexbuffer.buffer,vertexbuffer.stride, vertexbuffer.glformat);
+    console->info(
+        "uvbuffer={} - stride={} - format={}",
+        uvbuffer.buffer,uvbuffer.stride, uvbuffer.glformat);
+    console->info(
+        "elementbuffer={} - stride={} - format={}",
+        elementbuffer.buffer,elementbuffer.stride, elementbuffer.glformat);
+    console->info(
+        "normalbuffer={} - stride={} - format={}",
+        normalbuffer.buffer,normalbuffer.stride, normalbuffer.glformat);
 }
 
 GltfMesh::GltfMesh(
@@ -123,36 +172,48 @@ void GltfMesh::GltfPrimitive::draw()
 
     // 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer.buffer);
 	glVertexAttribPointer(
 			0,                  // attribute
 			3,                  // size
-			GL_FLOAT,           // type
+			vertexbuffer.glformat,           // type
 			GL_FALSE,           // normalized?
-			0,                  // stride
+			vertexbuffer.stride,// stride
 			(void*)0            // array buffer offset
 		);
 
-	// 2nd attribute buffer : UVs
+	// 2nd attribute buffer : UVs or NORMAL
 	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer.buffer);
 	glVertexAttribPointer(
 			1,                                // attribute
 			2,                                // size
-			GL_FLOAT,                         // type
+			uvbuffer.glformat,                // type
 			GL_FALSE,                         // normalized?
-			0,                                // stride
+			uvbuffer.stride,                  // stride
 			(void*)0                          // array buffer offset
 		);
+    if (normalbuffer.buffer) {
+        glEnableVertexAttribArray(2);
+        glBindBuffer(GL_ARRAY_BUFFER, normalbuffer.buffer);
+	    glVertexAttribPointer(
+			2,                                // attribute
+			3,                                // size
+			normalbuffer.glformat,            // type
+			GL_FALSE,                         // normalized?
+			normalbuffer.stride,              // stride
+			(void*)0                          // array buffer offset
+		);
+    }
 
 	// Index buffer
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer.buffer);
 
 		// Draw the triangles !
 	glDrawElements(
 		GL_TRIANGLES,      // mode
 		indicesCount,    // count
-		GL_UNSIGNED_SHORT,   // type
+		elementbuffer.glformat,   // type
 		(void*)0           // element array buffer offset
 	);
 

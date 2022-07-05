@@ -54,19 +54,26 @@ static int currentFboIndex;
 static int currentActiveFbo;
 
 /* Shaders management */
-GLuint defaultProgramID;
-GLuint MatrixID;
-GLuint TextureID;
-GLuint MainClipPlaneID;
-GLuint PortalClipPlaneID;
+GLuint texturedProgramID;
+GLuint texturedMatrixID;
+GLuint texturedTextureID;
+GLuint texturedClipPlaneID;
+
+GLuint coloredProgramID;
+GLuint coloredMatrixID;
+GLuint coloredLightPos;
+GLuint coloredLightColor;
+GLuint coloredObjectColor;
+GLuint coloredClipPlaneID;
 
 GLuint portalProgramID;
 GLuint MatrixIDportal;
 GLuint TextureIDportal;
+GLuint PortalClipPlaneID;
 
 GLuint fontProgramID;
 
-enum { NONE, MAIN, PORTAL, FONT } usingProgram;
+enum { NONE, MAIN_TEXTURED, MAIN_COLORED, PORTAL, FONT } usingProgram;
 
 void updatePlayerInputs()
 {
@@ -163,10 +170,20 @@ static void updateTransformMatrix()
 	ProjectionMatrix = glm::perspective(glm::radians(FoV), 4.0f / 3.0f, 0.0001f, 100.0f);
 
     glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
-    if (usingProgram == MAIN)
-    	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-    else if (usingProgram == PORTAL)
-        glUniformMatrix4fv(MatrixIDportal, 1, GL_FALSE, &MVP[0][0]);
+    switch (usingProgram)
+    {
+        case MAIN_TEXTURED:
+    	    glUniformMatrix4fv(texturedMatrixID, 1, GL_FALSE, &MVP[0][0]);
+            break;
+        case MAIN_COLORED:
+            glUniformMatrix4fv(coloredMatrixID, 1, GL_FALSE, &MVP[0][0]);
+            break;
+        case PORTAL:
+            glUniformMatrix4fv(MatrixIDportal, 1, GL_FALSE, &MVP[0][0]);
+            break;
+        default:
+            break;
+    }
 }
 
 void setMeshMatrix(glm::mat4 mat)
@@ -267,8 +284,11 @@ void setClippingEquations(std::vector<glm::vec3> equs)
         planeEquation[i][3] = 0.0;
     }
     switch (usingProgram) {
-    case MAIN:
-        glUniform4fv(MainClipPlaneID, 6, &planeEquation[0][0]);
+    case MAIN_TEXTURED:
+        glUniform4fv(texturedClipPlaneID, 6, &planeEquation[0][0]);
+        break;
+    case MAIN_COLORED:
+        glUniform4fv(coloredClipPlaneID, 6, &planeEquation[0][0]);
         break;
     case PORTAL:
         glUniform4fv(PortalClipPlaneID, 6, &planeEquation[0][0]);
@@ -280,10 +300,8 @@ void setClippingEquations(std::vector<glm::vec3> equs)
 
 void activateDefaultDrawingProgram()
 {
-	glUseProgram(defaultProgramID);
-    glActiveTexture(GL_TEXTURE0);
-	glUniform1i(TextureID, 0);
-    usingProgram = MAIN;
+	glUseProgram(texturedProgramID);
+    usingProgram = MAIN_TEXTURED;
     updateTransformMatrix();
     for (auto i = 0; i < 6; i++)
         glEnable(GL_CLIP_DISTANCE0 + i);
@@ -295,12 +313,22 @@ void setPBR(float metallicFactor, float roughnessFactor)
 
 void setTextureMode(unsigned int texture)
 {
+    glUseProgram(texturedProgramID);
+    usingProgram = MAIN_TEXTURED;
     glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
+	glUniform1i(texturedTextureID, 0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    updateTransformMatrix();
 }
 
 void setColoredMode(float color[3])
 {
+    glUseProgram(coloredProgramID);
+    usingProgram = MAIN_COLORED;
+    glUniform3f(coloredObjectColor, color[0], color[1], color[2]);
+    glUniform3f(coloredLightColor, 1.0f, 1.0f, 1.0f);
+    glUniform3f(coloredLightPos, 2.0f, 0.0f, 0.0f);
+    updateTransformMatrix();
 }
 
 void activatePortalDrawingProgram()
@@ -376,15 +404,22 @@ int milendall_gl_init(FileLibrary& library)
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
-	defaultProgramID = LoadShaders(library, "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
-    MatrixID = glGetUniformLocation(defaultProgramID, "MVP");
-	TextureID  = glGetUniformLocation(defaultProgramID, "myTextureSampler");
-    MainClipPlaneID = glGetUniformLocation(defaultProgramID, "ClipPlane");
+	texturedProgramID = LoadShaders(library, "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
+    texturedMatrixID = glGetUniformLocation(texturedProgramID, "MVP");
+	texturedTextureID  = glGetUniformLocation(texturedProgramID, "myTextureSampler");
+    texturedClipPlaneID = glGetUniformLocation(texturedProgramID, "ClipPlane");
+
+	coloredProgramID = LoadShaders(library, "ColorVertexShader.vertexshader", "ColorFragmentShader.fragmentshader" );
+    coloredMatrixID = glGetUniformLocation(coloredProgramID, "MVP");
+	coloredClipPlaneID = glGetUniformLocation(coloredProgramID, "ClipPlane");
+    coloredLightPos = glGetUniformLocation(coloredProgramID, "lightPos");
+    coloredLightColor = glGetUniformLocation(coloredProgramID, "lightColor");
+    coloredObjectColor = glGetUniformLocation(coloredProgramID, "objectColor");
 
     portalProgramID = LoadShaders(library, "Portal.vertexshader", "Portal.fragmentshader" );
     MatrixIDportal = glGetUniformLocation(portalProgramID, "MVP");
-	TextureIDportal  = glGetUniformLocation(defaultProgramID, "myTextureSampler");
-    PortalClipPlaneID = glGetUniformLocation(defaultProgramID, "ClipPlane");
+	TextureIDportal  = glGetUniformLocation(texturedProgramID, "myTextureSampler");
+    PortalClipPlaneID = glGetUniformLocation(texturedProgramID, "ClipPlane");
 
     fontProgramID = LoadShaders(library, "font.vertexshader", "font.fragmentshader" );
 
@@ -395,7 +430,7 @@ int milendall_gl_init(FileLibrary& library)
 
 void milendall_gl_close()
 {
-	glDeleteProgram(defaultProgramID);
+	glDeleteProgram(texturedProgramID);
 	glDeleteProgram(portalProgramID);
 	glDeleteProgram(fontProgramID);
 	glfwTerminate();
