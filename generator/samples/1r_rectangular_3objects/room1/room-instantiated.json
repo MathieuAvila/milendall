@@ -1,0 +1,70 @@
+{
+    "$schema": "../../../../generator/schema/file_room_bricks.json",
+    "bricks": [
+        {
+            "b_id": "b0",
+            "pads": [
+                {
+                    "pad_id": "root_option",
+                    "definition": {
+                        "translation": [
+                            0.0,
+                            1.0,
+                            0.0
+                        ]
+                    }
+                }
+            ],
+            "parameters": {
+                "structure_class": "simple_pad_provider"
+            }
+        },
+        {
+            "b_id": "objects",
+            "root_pad": {
+                "ref_b_id": "b0",
+                "ref_pad_id": "root_option"
+            },
+            "pads": [],
+            "parameters": {
+                "structure_class": "simple_pad_provider"
+            },
+            "objects": [
+                {
+                    "type": "t+_5s",
+                    "position": [
+                        1.0,
+                        0.5,
+                        2.0
+                    ]
+                },
+                {
+                    "type": "t-_5s",
+                    "position": [
+                        1.0,
+                        0.5,
+                        3.0
+                    ]
+                },
+                {
+                    "type": "speedX",
+                    "position": [
+                        1.0,
+                        0.5,
+                        3.0
+                    ],
+                    "parameters": {
+                        "factor": 1.5,
+                        "duration": 5
+                    }
+                }
+            ]
+        },
+        {
+            "b_id": "rect",
+            "parameters": {
+                "structure_class": "rectangular"
+            }
+        }
+    ]
+}
