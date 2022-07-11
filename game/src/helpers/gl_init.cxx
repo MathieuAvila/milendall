@@ -61,10 +61,12 @@ GLuint texturedClipPlaneID;
 
 GLuint coloredProgramID;
 GLuint coloredMatrixID;
+GLuint coloredMatrixMV;
 GLuint coloredLightPos;
 GLuint coloredLightColor;
 GLuint coloredObjectColor;
 GLuint coloredClipPlaneID;
+GLuint coloredViewPos;
 
 GLuint portalProgramID;
 GLuint MatrixIDportal;
@@ -170,14 +172,20 @@ static void updateTransformMatrix()
 	ProjectionMatrix = glm::perspective(glm::radians(FoV), 4.0f / 3.0f, 0.0001f, 100.0f);
 
     glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+    glm::mat4 MV =  ModelMatrix;
     switch (usingProgram)
     {
         case MAIN_TEXTURED:
     	    glUniformMatrix4fv(texturedMatrixID, 1, GL_FALSE, &MVP[0][0]);
             break;
         case MAIN_COLORED:
+        {
             glUniformMatrix4fv(coloredMatrixID, 1, GL_FALSE, &MVP[0][0]);
+            glUniformMatrix4fv(coloredMatrixMV, 1, GL_FALSE, &MV[0][0]);
+            //console->info("pos {} {} {} ", position.x, position.y, position.z);
+            glUniform3f(coloredViewPos, position[0], position[1], position[2]);
             break;
+        }
         case PORTAL:
             glUniformMatrix4fv(MatrixIDportal, 1, GL_FALSE, &MVP[0][0]);
             break;
@@ -192,9 +200,10 @@ void setMeshMatrix(glm::mat4 mat)
 	updateTransformMatrix();
 }
 
-void setViewMatrix(glm::mat4x4 mat)
+void setViewMatrix(glm::mat4x4 mat, glm::vec3 _position)
 {
     ViewMatrix = mat;
+    position = position;
     updateTransformMatrix();
 }
 
@@ -321,13 +330,19 @@ void setTextureMode(unsigned int texture)
     updateTransformMatrix();
 }
 
+static int rot_counter = 0;
 void setColoredMode(float color[3])
 {
     glUseProgram(coloredProgramID);
     usingProgram = MAIN_COLORED;
     glUniform3f(coloredObjectColor, color[0], color[1], color[2]);
     glUniform3f(coloredLightColor, 1.0f, 1.0f, 1.0f);
-    glUniform3f(coloredLightPos, 2.0f, 0.0f, 0.0f);
+
+    rot_counter+=1;
+    float angle = rot_counter * 0.025f * 6.28f / 80.0f;
+    angle = 3.14f / 2.0f;
+
+    glUniform3f(coloredLightPos, 2.0f * cos(angle) + 2.5f, 2.0f, 1.9f + 2.0f * sin(angle));
     updateTransformMatrix();
 }
 
@@ -411,10 +426,12 @@ int milendall_gl_init(FileLibrary& library)
 
 	coloredProgramID = LoadShaders(library, "ColorVertexShader.vertexshader", "ColorFragmentShader.fragmentshader" );
     coloredMatrixID = glGetUniformLocation(coloredProgramID, "MVP");
+    coloredMatrixMV = glGetUniformLocation(coloredProgramID, "MV");
 	coloredClipPlaneID = glGetUniformLocation(coloredProgramID, "ClipPlane");
     coloredLightPos = glGetUniformLocation(coloredProgramID, "lightPos");
     coloredLightColor = glGetUniformLocation(coloredProgramID, "lightColor");
     coloredObjectColor = glGetUniformLocation(coloredProgramID, "objectColor");
+    coloredViewPos = glGetUniformLocation(coloredProgramID, "viewPos");
 
     portalProgramID = LoadShaders(library, "Portal.vertexshader", "Portal.fragmentshader" );
     MatrixIDportal = glGetUniformLocation(portalProgramID, "MVP");

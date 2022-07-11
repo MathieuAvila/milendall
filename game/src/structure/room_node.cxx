@@ -198,7 +198,7 @@ void RoomNode::draw(GltfNodeInstanceIface *nodeInstance, DrawContext &roomContex
 
                 // switch to original FBO and context
                 setActiveFbo(&roomContext.fbo);
-                setViewMatrix(roomContext.pov.getViewMatrix());
+                setViewMatrix(roomContext.pov.getViewMatrix(), roomContext.pov.position);
                 setMeshMatrix(nodeInstance->getNodeMatrix());
 
                 // switch to portal program and draw portal in current context

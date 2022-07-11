@@ -61,15 +61,11 @@ void updatePlayerInputs();
 
 extern GLFWwindow* window;
 
-extern glm::vec3 position;
-extern glm::vec3 direction;
-extern glm::vec3 up;
-
 extern float horizontalAngle;
 extern float verticalAngle;
 
 void setMeshMatrix(glm::mat4);
-void setViewMatrix(glm::mat4x4 mat);
+void setViewMatrix(glm::mat4x4 mat, glm::vec3 position);
 
 void setClippingEquations(std::vector<glm::vec3>);
 
