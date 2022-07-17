@@ -1,0 +1,137 @@
+{
+    "$schema": "../../../../generator/schema/file_room_bricks.json",
+    "bricks": [
+        {
+            "b_id": "base",
+            "pads": [
+                {
+                    "pad_id": "root_door0_stairs",
+                    "definition": {
+                        "origin": [
+                            1.0,
+                            0.2
+                        ],
+                        "size": [
+                            1.5,
+                            1.5
+                        ],
+                        "face": 0,
+                        "border": 0
+                    }
+                },
+                {
+                    "pad_id": "root_door1_stairs",
+                    "definition": {
+                        "origin": [
+                            0.2,
+                            0.0
+                        ],
+                        "size": [
+                            1.5,
+                            1.5
+                        ],
+                        "face": 5,
+                        "border": 3
+                    }
+                }
+            ],
+            "parameters": {
+                "structure_class": "rectangular",
+                "structure_parameters": {
+                    "size": [
+                        7.0,
+                        4.0,
+                        5.0
+                    ]
+                }
+            }
+        },
+        {
+            "b_id": "stair",
+            "root_pad": {
+                "ref_b_id": "base",
+                "ref_pad_id": "root_door0_stairs",
+                "translation": [
+                    1.5,
+                    0.0,
+                    0.0
+                ]
+            },
+            "parameters": {
+                "structure_class": "stair",
+                "structure_parameters": {
+                    "x_pre": 1.5,
+                    "x_post": 1.5
+                }
+            }
+        },
+        {
+            "b_id": "gravity_brick",
+            "root_pad": {
+                "ref_b_id": "base",
+                "ref_pad_id": "root_door0_stairs",
+                "translation": [
+                    0.0,
+                    0.0,
+                    1.0
+                ]
+            },
+            "parameters": {
+                "structure_class": "gravity_sampler",
+                "structure_parameters": {
+                    "segments_nr": 100,
+                    "func": [
+                        "(u)*5.0",
+                        "(u)*4.5",
+                        "0.0"
+                    ],
+                    "gravity": [
+                        "(function() if u < 0.5 then return 0.0 else return 1.0 end end)()",
+                        "(function() if u < 0.5 then return -1.0 else return 0.0 end end)()",
+                        "0.0"
+                    ],
+                    "up": [
+                        "(function() if u < 0.5 then return 0.0 else return -1.0 end end)()",
+                        "(function() if u < 0.5 then return 1.0 else return 0.0 end end)()",
+                        "0.0"
+                    ],
+                    "mode_up_gravity": "none",
+                    "weight": "(function() if distance < 2.0 then return 1.0 else return 0.0 end end)()",
+                    "frequency": 1.0
+                }
+            }
+        },
+        {
+            "b_id": "door0",
+            "root_pad": {
+                "ref_b_id": "base",
+                "ref_pad_id": "root_door0_stairs"
+            },
+            "portals": [
+                {
+                    "gate_id": "my_door",
+                    "connect": "A"
+                }
+            ],
+            "parameters": {
+                "structure_class": "simple_door"
+            }
+        },
+        {
+            "b_id": "door1",
+            "root_pad": {
+                "ref_b_id": "base",
+                "ref_pad_id": "root_door1_stairs"
+            },
+            "portals": [
+                {
+                    "gate_id": "my_door",
+                    "connect": "B"
+                }
+            ],
+            "parameters": {
+                "structure_class": "simple_door"
+            }
+        }
+    ]
+}
