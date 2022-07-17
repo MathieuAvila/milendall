@@ -173,6 +173,7 @@ TEST_F(LevelTest, isWallReached_0_no_hit)
     glm::vec3 normal;
     float distance;
     FaceHard *face;
+    bool portalCrossed;
 
     bool hit = level->isWallReached(
         origin,
@@ -181,9 +182,11 @@ TEST_F(LevelTest, isWallReached_0_no_hit)
         endPoint, vectorEndPoint, destinationEndPoint,
         normal,
         distance,
-        face);
+        face,
+        portalCrossed);
     console->debug("vectorEndPoint = {}", vec3_to_string(vectorEndPoint));
     ASSERT_FALSE(hit);
+    ASSERT_FALSE(portalCrossed);
     ASSERT_EQ(endPoint, (PointOfView{
                             glm::vec3(4.7, 1.0, 1.9),
                             glm::mat4(1.0f),
@@ -210,6 +213,7 @@ TEST_F(LevelTest, isWallReached_1_hit_ground_no_matrix_change)
     glm::vec3 normal;
     float distance;
     FaceHard *face;
+    bool portalCrossed;
 
     bool hit = level->isWallReached(
         origin,
@@ -218,11 +222,13 @@ TEST_F(LevelTest, isWallReached_1_hit_ground_no_matrix_change)
         endPoint, vectorEndPoint, destinationEndPoint,
         normal,
         distance,
-        face);
+        face,
+        portalCrossed);
     console->debug("endPoint = {}", to_string(endPoint));
     console->debug("vectorEndPoint = {}", vec3_to_string(vectorEndPoint));
     console->debug("distance = {}", distance);
     ASSERT_TRUE(hit);
+    ASSERT_FALSE(portalCrossed);
     ASSERT_EQ(endPoint, (PointOfView{
                             glm::vec3(5.0, 1.0, 3.0),
                             glm::mat4(1.0f),
@@ -254,6 +260,7 @@ TEST_F(LevelTest, isWallReached_2_hit_wall_matrix_change)
     glm::vec3 normal;
     float distance;
     FaceHard *face;
+    bool portalCrossed;
 
     bool hit = level->isWallReached(
         origin,
@@ -262,11 +269,13 @@ TEST_F(LevelTest, isWallReached_2_hit_wall_matrix_change)
         endPoint, vectorEndPoint, destinationEndPoint,
         normal,
         distance,
-        face);
+        face,
+        portalCrossed);
     console->debug("endPoint = {}", to_string(endPoint));
     console->debug("vectorEndPoint = {}", vec3_to_string(vectorEndPoint));
     console->debug("distance = {}", distance);
     ASSERT_TRUE(hit);
+    ASSERT_FALSE(portalCrossed);
     ASSERT_EQ(endPoint, (PointOfView{
                             glm::vec3(5.5f, 1.0f, 1.2f),
                             glm::mat4(1.0f),
@@ -303,6 +312,7 @@ TEST_F(LevelTest, isWallReached_3_no_hit_cross_portal)
     glm::vec3 normal(0.0f);
     float distance;
     FaceHard *face;
+    bool portalCrossed;
 
     bool hit = level->isWallReached(
         origin,
@@ -311,13 +321,15 @@ TEST_F(LevelTest, isWallReached_3_no_hit_cross_portal)
         endPoint, vectorEndPoint, destinationEndPoint,
         normal,
         distance,
-        face);
+        face,
+        portalCrossed);
     console->debug("endPoint = {}", vec3_to_string(endPoint.position));
     console->debug("vectorEndPoint = {}", vec3_to_string(vectorEndPoint));
     console->debug("destinationEndPoint = {}", vec3_to_string(destinationEndPoint));
     console->debug("normal = {}", vec3_to_string(normal));
     console->debug("distance = {}", distance);
     ASSERT_FALSE(hit);
+    ASSERT_TRUE(portalCrossed);
     ASSERT_EQ(distance, 3.5f);
     ASSERT_EQ(endPoint.position, glm::vec3(0.5f, 1.0f, 2.75f));
     ASSERT_EQ(vectorEndPoint, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -345,6 +357,7 @@ TEST_F(LevelTest, isWallReached_4_hit_cross_portal_wall_no_matrix_change)
     glm::vec3 normal;
     float distance;
     FaceHard *face;
+    bool portalCrossed;
 
     bool hit = level->isWallReached(
         origin,
@@ -353,13 +366,15 @@ TEST_F(LevelTest, isWallReached_4_hit_cross_portal_wall_no_matrix_change)
         endPoint, vectorEndPoint, destinationEndPoint,
         normal,
         distance,
-        face);
+        face,
+        portalCrossed);
     console->info("Check wall normal {}", vec3_to_string(normal));
     console->info("endPoint = {}", to_string(endPoint));
     console->info("destinationEndPoint = {}", vec3_to_string(destinationEndPoint));
     console->info("distance = {}", to_string(distance));
     console->info("normal = {}", vec3_to_string(normal));
     ASSERT_TRUE(hit);
+    ASSERT_TRUE(portalCrossed);
     ASSERT_TRUE(glm::length(endPoint.position - glm::vec3(9.8f, 1.0f, 2.2f)) < 0.01f);
     ASSERT_FLOAT_EQ(distance, 11.8f);
     ASSERT_EQ(endPoint.room, "room2");
@@ -395,6 +410,7 @@ TEST_F(LevelTest, isWallReached_6_border_hit)
     glm::vec3 normal;
     float distance;
     FaceHard *face;
+    bool portalCrossed;
 
     bool hit = level->isWallReached(
         origin,
@@ -403,11 +419,13 @@ TEST_F(LevelTest, isWallReached_6_border_hit)
         endPoint, vectorEndPoint, destinationEndPoint,
         normal,
         distance,
-        face);
+        face,
+        portalCrossed);
     console->info("Check wall normal {}", vec3_to_string(normal));
     console->info("endPoint = {}", to_string(endPoint));
     console->info("distance = {}", distance);
     ASSERT_TRUE(hit);
+    ASSERT_FALSE(portalCrossed);
     ASSERT_TRUE(glm::length(endPoint.position - glm::vec3(4.7 , 1.325 , 0.7)) < 0.01f);
     ASSERT_TRUE(abs(distance - 1.34f) < 0.01f);
     ASSERT_EQ(endPoint.room, "room2");

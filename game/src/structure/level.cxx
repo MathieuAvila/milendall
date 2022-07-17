@@ -113,7 +113,8 @@ bool Level::isWallReached(
             glm::vec3& destinationEndPoint,
             glm::vec3& normal,
             float& distance,
-            FaceHard*& face
+            FaceHard*& face,
+            bool& portalCrossed
             ) const
 {
     PointOfView current_origin(origin);
@@ -121,6 +122,7 @@ bool Level::isWallReached(
     bool need_recompute;
     bool wall_hit = false;
     distance = 0.0f;
+    portalCrossed = false;
 
     int counter = 0;
 
@@ -190,6 +192,7 @@ bool Level::isWallReached(
             //        to_string(current_origin), vec3_to_string(current_destination));
             distance += portal_distance;
             need_recompute = true;
+            portalCrossed = true;
         }
         if (counter++ == 100) {
             console->warn("Reached max loop count. This is unusual and probably a bug.");

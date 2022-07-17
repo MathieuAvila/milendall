@@ -101,10 +101,11 @@ void ManagedObjectInstance::move(glm::vec3 newPos, float time_delta)
     bool wall_bounced;
 
     wall_adherence = false;
-    auto previous_position = mainPosition;
+    auto original_previous_position = mainPosition;
 
     float total_distance = 0.0f;
     glm::vec3 move_vector(0.0f);
+    bool portalCrossedGlobal = false;
 
     int counter = 0;
     do {
@@ -117,6 +118,7 @@ void ManagedObjectInstance::move(glm::vec3 newPos, float time_delta)
         auto previous_position = mainPosition;
 
         // Stop if wall is reached
+        bool portalCrossedLocal = false;
         wall_bounced = spaceResolver->isWallReached(
             mainPosition,
             newPos,
@@ -124,7 +126,9 @@ void ManagedObjectInstance::move(glm::vec3 newPos, float time_delta)
             endPoint,vectorEndPoint,destinationEndPoint,
             normal,
             distance,
-            face);
+            face,
+            portalCrossedLocal);
+        portalCrossedGlobal = portalCrossedGlobal || portalCrossedLocal;
         total_distance += distance;
         mainPosition = endPoint;
         if (wall_bounced) {
@@ -154,15 +158,15 @@ void ManagedObjectInstance::move(glm::vec3 newPos, float time_delta)
     current_speed = (move_vector * total_distance) / time_delta;
 
     // if room changed, re-init gravity
-    if (previous_position.room != mainPosition.room) {
+    if (portalCrossedGlobal) {
         gravity_validity = 0.0f;
-        console->debug("room changed {} => {}, re-init gravity", previous_position.room, mainPosition.room);
+        console->info("portal crossed {} => {}, re-init gravity", original_previous_position.room, mainPosition.room);
     }
 
     // Once this is done, advertize to the space
-    if (previous_position.room == mainPosition.room) {
+    if (original_previous_position.room == mainPosition.room) {
         spaceResolver->applyTrigger(
-            previous_position, mainPosition.position,
+            original_previous_position, mainPosition.position,
             STRUCTURE_OBJECT_TYPE::OBJECT_PLAYER, // TODO
             false // TODO
             );

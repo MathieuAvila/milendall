@@ -33,6 +33,7 @@ class SpaceResolver
          * @param normal is filled with the normal of the wall
          * @param distance is filled with the distance, if a wall is reached
          * @param face face that was hit
+         * @param portalCrossed If a portal was crossed
          * @return True if a wall was reached, if ever
         */
         virtual bool isWallReached(
@@ -44,7 +45,8 @@ class SpaceResolver
             glm::vec3& destinationEndPoint,
             glm::vec3& normal,
             float& distance,
-            FaceHard*& face
+            FaceHard*& face,
+            bool& portalCrossed
             ) const = 0;
 
         /** @brief Manage actions when moving an object inside a given POV.

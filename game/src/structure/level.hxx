@@ -76,7 +76,8 @@ class Level : public SpaceResolver, public GravityProvider
             glm::vec3& destinationEndPoint,
             glm::vec3& normal,
             float& distance,
-            FaceHard*& face
+            FaceHard*& face,
+            bool& portalCrossed
             ) const override;
 
         /** @brief From GravityProvider
