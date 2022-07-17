@@ -1,0 +1,262 @@
+{
+    "$schema": "../../../../../generator/schema/file_room_bricks.json",
+    "bricks": [
+        {
+            "b_id": "b_room",
+            "pads": [
+                {
+                    "pad_id": "root_door0",
+                    "definition": {
+                        "origin": [
+                            1.0,
+                            0.0
+                        ],
+                        "size": [
+                            1.5,
+                            1.5
+                        ],
+                        "face": 0,
+                        "border": 0
+                    }
+                },
+                {
+                    "pad_id": "root_door1",
+                    "definition": {
+                        "origin": [
+                            1.0,
+                            2.0
+                        ],
+                        "size": [
+                            1.5,
+                            1.5
+                        ],
+                        "face": 3,
+                        "border": 0
+                    }
+                },
+                {
+                    "pad_id": "root_door2",
+                    "definition": {
+                        "origin": [
+                            8.0,
+                            4.0
+                        ],
+                        "size": [
+                            1.5,
+                            1.5
+                        ],
+                        "face": 3,
+                        "border": 0
+                    }
+                },
+                {
+                    "pad_id": "root_door3",
+                    "definition": {
+                        "origin": [
+                            4.0,
+                            5.0
+                        ],
+                        "size": [
+                            1.5,
+                            1.5
+                        ],
+                        "face": 2,
+                        "border": 0
+                    }
+                },
+                {
+                    "pad_id": "root_door4",
+                    "definition": {
+                        "origin": [
+                            4.5,
+                            8.0
+                        ],
+                        "size": [
+                            1.5,
+                            1.5
+                        ],
+                        "face": 3,
+                        "border": 0
+                    }
+                },
+                {
+                    "pad_id": "root_door5",
+                    "definition": {
+                        "origin": [
+                            4.0,
+                            3.0
+                        ],
+                        "size": [
+                            1.5,
+                            1.5
+                        ],
+                        "face": 3,
+                        "border": 2
+                    }
+                }
+            ],
+            "parameters": {
+                "structure_class": "rectangular",
+                "structure_parameters": {
+                    "size": [
+                        10.0,
+                        10.0,
+                        10.0
+                    ]
+                }
+            }
+        },
+        {
+            "b_id": "door0",
+            "root_pad": {
+                "ref_b_id": "b_room",
+                "ref_pad_id": "root_door0"
+            },
+            "portals": [
+                {
+                    "gate_id": "0-1",
+                    "connect": "A"
+                }
+            ],
+            "parameters": {
+                "structure_class": "simple_door"
+            }
+        },
+        {
+            "b_id": "door1",
+            "root_pad": {
+                "ref_b_id": "b_room",
+                "ref_pad_id": "root_door1"
+            },
+            "portals": [
+                {
+                    "gate_id": "0-1",
+                    "connect": "B"
+                }
+            ],
+            "parameters": {
+                "structure_class": "simple_door"
+            }
+        },
+        {
+            "b_id": "door2",
+            "root_pad": {
+                "ref_b_id": "b_room",
+                "ref_pad_id": "root_door2"
+            },
+            "portals": [
+                {
+                    "gate_id": "2-3",
+                    "connect": "A"
+                }
+            ],
+            "parameters": {
+                "structure_class": "simple_door"
+            }
+        },
+        {
+            "b_id": "door3",
+            "root_pad": {
+                "ref_b_id": "b_room",
+                "ref_pad_id": "root_door3"
+            },
+            "portals": [
+                {
+                    "gate_id": "2-3",
+                    "connect": "B"
+                }
+            ],
+            "parameters": {
+                "structure_class": "simple_door"
+            }
+        },
+        {
+            "b_id": "door4",
+            "root_pad": {
+                "ref_b_id": "b_room",
+                "ref_pad_id": "root_door4"
+            },
+            "portals": [
+                {
+                    "gate_id": "4-5",
+                    "connect": "A"
+                }
+            ],
+            "parameters": {
+                "structure_class": "simple_door"
+            }
+        },
+        {
+            "b_id": "door5",
+            "root_pad": {
+                "ref_b_id": "b_room",
+                "ref_pad_id": "root_door5"
+            },
+            "portals": [
+                {
+                    "gate_id": "4-5",
+                    "connect": "B"
+                }
+            ],
+            "parameters": {
+                "structure_class": "simple_door"
+            }
+        },
+        {
+            "b_id": "stair-1-2",
+            "root_pad": {
+                "ref_b_id": "b_room",
+                "ref_pad_id": "root_door1",
+                "translation": [
+                    1.5,
+                    0.0,
+                    0.0
+                ]
+            },
+            "parameters": {
+                "structure_class": "stair",
+                "structure_parameters": {
+                    "x_pre": 1.5,
+                    "x_post": 1.5,
+                    "x_length": 5.5,
+                    "y_height": 2.0,
+                    "nr_steps": 15,
+                    "y_base_start": -0.3,
+                    "y_base_end": 1.7
+                }
+            }
+        },
+        {
+            "b_id": "stair-3-4",
+            "root_pad": {
+                "ref_b_id": "b_room",
+                "ref_pad_id": "root_door3",
+                "rotation": {
+                    "axis": [
+                        0.0,
+                        1.0,
+                        0.0
+                    ],
+                    "angle": -1.5707
+                },
+                "translation": [
+                    1.5,
+                    0.0,
+                    1.0
+                ]
+            },
+            "parameters": {
+                "structure_class": "stair",
+                "structure_parameters": {
+                    "x_pre": 1.0,
+                    "x_post": 1.0,
+                    "x_length": 9.0,
+                    "y_height": 3.0,
+                    "nr_steps": 15,
+                    "y_base_start": -0.3,
+                    "y_base_end": 2.5
+                }
+            }
+        }
+    ]
+}
