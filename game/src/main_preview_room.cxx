@@ -90,6 +90,8 @@ int main(int argc, char* argv[])
     auto current_room = room_ids.begin();
     console->info("Set current room to {}", *current_room);
 
+    glm::vec3 position;
+
     auto new_space_state = GLFW_RELEASE;
     auto space_state = GLFW_RELEASE;
 
