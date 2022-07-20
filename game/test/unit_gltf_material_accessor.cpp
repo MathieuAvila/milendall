@@ -57,14 +57,7 @@ TEST(GltfMaterial, use_material)
     InSequence s;
     GLMock mock;
 
-    EXPECT_CALL(mock, gl_GenTextures(1, _)).WillOnce(Return());
-    EXPECT_CALL(mock, gl_GetError()).WillOnce(Return(0));
-    EXPECT_CALL(mock, gl_BindTexture(GL_TEXTURE_2D, _)).WillOnce(Return());
-    EXPECT_CALL(mock, gl_GetError()).WillOnce(Return(0));
-    EXPECT_CALL(mock, gl_TexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_BGR, GL_UNSIGNED_BYTE, _)).WillOnce(Return());
-    EXPECT_CALL(mock, gl_GetError()).WillOnce(Return(0));
     EXPECT_CALL(mock, gl_TexParameteri(_, _, _)).WillRepeatedly(Return());
-    EXPECT_CALL(mock, gl_GetError()).WillOnce(Return(0));
 
     auto fl = FileLibrary();
     fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../game/test/sample"));

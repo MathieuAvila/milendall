@@ -1,0 +1,67 @@
+{
+    "materials": [
+        {
+            "pbrMetallicRoughness": {
+                "baseColorFactor": [
+                    0.1,
+                    0.2,
+                    0.3,
+                    0.4
+                ],
+                "metallicFactor": 0.5,
+                "roughnessFactor": 0.6
+            }
+        },
+        {
+            "pbrMetallicRoughness": {
+                "baseColorFactor": [
+                    0.1,
+                    0.2,
+                    0.3,
+                    0.4
+                ]
+            }
+        },
+        {
+            "pbrMetallicRoughness": {
+                "baseColorTexture": {
+                    "index": 0
+                   },
+                "metallicFactor": 0.5,
+                "roughnessFactor": 0.6
+            }
+        },
+        {
+            "pbrMetallicRoughness": {
+                "baseColorTexture": {
+                    "index": 0
+                   }
+            }
+        }
+    ],
+    "images": [
+     {
+      "uri": "/fake_texture/black.jpg"
+     },
+     {
+      "uri": "/fake_texture/black.jpg"
+     },
+     {
+      "uri": "/fake_texture/black.jpg"
+     }
+    ],
+    "textures": [
+     {
+      "sampler": 0,
+      "source": 0
+     },
+     {
+      "sampler": 0,
+      "source": 1
+     },
+     {
+      "sampler": 0,
+      "source": 2
+     }
+    ]
+}
