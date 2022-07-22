@@ -234,27 +234,18 @@ bool Room::_getGravity(unsigned int instance_index, glm::vec3 position, glm::vec
     std::list<GravityInformation> child_gravity_list;
     for (auto child_node: roomNode->children) {
         GravityInformation child_gravity;
-        bool child_result = _getGravity(child_node, position, speed, weight, radius, total_time, child_gravity);
-        if (child_result) {
-            child_gravity_list.push_back(child_gravity);
-        }
+        _getGravity(child_node, position, speed, weight, radius, total_time, child_gravity);
+        child_gravity_list.push_back(child_gravity);
     }
-    if (child_gravity_list.size() != 0 ) { // at least one child defined gravity, this is enough.
-        result = GravityInformation(child_gravity_list);
-        return true;
-    }
-
-    // no child has gravity, compute for current node and return if set
     auto instanceNode = instance->getNode(instance_index);
     auto localPosition = instanceNode->getInvertedNodeMatrix() *  positionToVec4(position);
     auto localSpeed = instanceNode->getInvertedNodeMatrix() * vectorToVec4(speed);
-    bool local_gravity = roomNode->getGravity(localPosition, localSpeed, weight, radius, total_time, result);
-    if (local_gravity) {
-        // back transform
-        result.gravity = instanceNode->getNodeMatrix() * vectorToVec4(result.gravity);
-        result.up = instanceNode->getNodeMatrix() * vectorToVec4(result.up);
-    }
-    return local_gravity;
+    roomNode->getGravity(localPosition, localSpeed, weight, radius, total_time, result);
+    result.gravity = instanceNode->getNodeMatrix() * vectorToVec4(result.gravity);
+    result.up = instanceNode->getNodeMatrix() * vectorToVec4(result.up);
+    child_gravity_list.push_back(result);
+    result = GravityInformation(child_gravity_list);
+    return true;
 }
 
 void Room::applyTrigger(

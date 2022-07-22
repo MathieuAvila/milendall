@@ -300,7 +300,7 @@ TEST_F(RoomTest, gravity_1__1_node) {
     auto room = loadRoom("/room_gravity/1_node/room.gltf");
 
     GravityInformation gravity = room->getGravity(glm::vec3(0.0f), glm::vec3(0.0f), 1.0f, 1.0f, 1.0f);
-    GravityInformation applied_gravity(glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0f), 1000.0f);
+    GravityInformation applied_gravity(glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0f), 1000.0f, 1.0f);
 
     console->info("gravity {}", vec3_to_string(applied_gravity.gravity));
     console->info("up {}", vec3_to_string(applied_gravity.up));
@@ -320,7 +320,7 @@ TEST_F(RoomTest, gravity_2__1_child_node_no_matrix) {
     auto room = loadRoom("/room_gravity/1_child_node_no_matrix/room.gltf");
 
     GravityInformation gravity = room->getGravity(glm::vec3(0.0f), glm::vec3(0.0f), 1.0f, 1.0f, 1.0f);
-    GravityInformation applied_gravity(glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0f), 1000.0f);
+    GravityInformation applied_gravity(glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0f), 1000.0f, 1.0f);
 
     console->info("gravity {}", vec3_to_string(applied_gravity.gravity));
     console->info("up {}", vec3_to_string(applied_gravity.up));
@@ -341,7 +341,7 @@ TEST_F(RoomTest, gravity_3__1_child_node_matrix) {
     auto room = loadRoom("/room_gravity/1_child_node_matrix/room.gltf");
 
     GravityInformation gravity = room->getGravity(glm::vec3(0.0f), glm::vec3(0.0f), 1.0f, 1.0f, 1.0f);
-    GravityInformation applied_gravity(glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, 0.0, -1.0f), 1000.0f);
+    GravityInformation applied_gravity(glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, 0.0, -1.0f), 1000.0f, 1.0f);
 
     console->info("gravity {}", vec3_to_string(applied_gravity.gravity));
     console->info("up {}", vec3_to_string(applied_gravity.up));
@@ -361,7 +361,7 @@ TEST_F(RoomTest, gravity_4__2_child_node) {
     auto room = loadRoom("/room_gravity/2_child_node/room.gltf");
 
     GravityInformation gravity = room->getGravity(glm::vec3(0.0f), glm::vec3(0.0f), 1.0f, 1.0f, 1.0f);
-    GravityInformation applied_gravity(glm::vec3(3.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0f), 1000.0f);
+    GravityInformation applied_gravity(glm::vec3(1.5, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0f), 1000.0f, 1.0f);
 
     console->info("gravity {}", vec3_to_string(applied_gravity.gravity));
     console->info("up {}", vec3_to_string(applied_gravity.up));
@@ -381,7 +381,7 @@ TEST_F(RoomTest, gravity_5__2_child_node_1_root) {
     auto room = loadRoom("/room_gravity/2_child_node_1_root/room.gltf");
 
     GravityInformation gravity = room->getGravity(glm::vec3(0.0f), glm::vec3(0.0f), 1.0f, 1.0f, 1.0f);
-    GravityInformation applied_gravity(glm::vec3(3.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0f), 1000.0f);
+    GravityInformation applied_gravity(glm::vec3(8.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0f), 1000.0f, 1.0f);
 
     console->info("gravity {}", vec3_to_string(applied_gravity.gravity));
     console->info("up {}", vec3_to_string(applied_gravity.up));
@@ -405,8 +405,8 @@ TEST_F(RoomTest, gravity_6__load_script) {
     console->info("validity {}", gravity.validity);
 
     // must apply function for r1r2
-    ASSERT_EQ(gravity.up, glm::vec3(-1.0f, 0.0f, 0.0f));
-    ASSERT_EQ(gravity.validity, 2.0f);
+    ASSERT_EQ(gravity.up, glm::vec3(0.6f, 0.8f, 0.8f));
+    ASSERT_EQ(gravity.validity, 1.0f);
 
 }
 

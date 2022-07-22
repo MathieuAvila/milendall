@@ -65,11 +65,11 @@ TEST_F(ManagedObjectInstanceTest, update_gravity_check_validity) {
     GravityInformation gravity_1(
         glm::vec3(0.0f, -2.0f, 0.0f),
         glm::vec3(0.0f, 1.0f, 0.0f),
-        2.0f);
+        2.0f, 1.0f);
     GravityInformation gravity_2{
         glm::vec3(0.0f, -3.0f, 0.0f),
         glm::vec3(0.0f, 2.0f, 0.0f),
-        1.0f };
+        1.0f, 1.0f };
 
     std::unique_ptr<MockGravityProvider> gravity = std::make_unique<MockGravityProvider>();
     MockGravityProvider& ref_gravity = *gravity;
@@ -121,7 +121,7 @@ TEST_F(ManagedObjectInstanceTest, update_gravity_check_rotation) {
     GravityInformation gravity_1{
         glm::vec3(1.0f, 0.0f, 0.0f), // this is gravity
         glm::vec3(0.0f, 0.0f, 1.0f), // this is up
-        10.0f };
+        10.0f, 1.0f };
 
     std::unique_ptr<MockGravityProvider> gravity = std::make_unique<MockGravityProvider>();
     MockGravityProvider& ref_gravity = *gravity;

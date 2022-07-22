@@ -26,7 +26,7 @@
      }
     ],
     "points": 9,
-    "gravity" : { "default" : { "gravity": [ 10.0, 0.0, 0.0] , "up": [ 0.0, 0.0, 1.0]  } }
+    "gravity" : { "default" : { "gravity": [ 10.0, 0.0, 0.0] , "up": [ 0.0, 0.0, 1.0]  , "weight": 7.0 } }
    }
   },
   {
@@ -35,7 +35,7 @@
     "extras": {
         "phys_faces": [],
         "points": 9,
-        "gravity" : { "default" : { "gravity": [ 1.0, 0.0, 0.0] , "up": [ 0.0, 0.0, 1.0]  } }
+        "gravity" : { "default" : { "gravity": [ 2.5, 0.0, 0.0] , "up": [ 0.0, 0.0, 1.0]  , "weight": 2.0 } }
     }
    },
    {
@@ -44,7 +44,7 @@
      "extras": {
          "phys_faces": [],
          "points": 9,
-         "gravity" : { "default" : { "gravity": [ 2.0, 0.0, 0.0] , "up": [ 0.0, 0.0, 1.0]  } }
+         "gravity" : { "default" : { "gravity": [ 5.0, 0.0, 0.0] , "up": [ 0.0, 0.0, 1.0]  , "weight": 1.0 } }
         }
     }
  ],

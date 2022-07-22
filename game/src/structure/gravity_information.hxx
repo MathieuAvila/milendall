@@ -4,7 +4,7 @@
 
 #include "file_library.hxx"
 #include "point_of_view.hxx"
-
+#include "helper_math.hxx"
 #include <list>
 
 /** @brief Result of gravity computation */
@@ -22,15 +22,18 @@ struct GravityInformation {
     float validity;
     /** @brief space kind */
     SpaceKind space_kind;
+    /** @brief Weight of this graivty information. This is only meaningful when
+     * traversing different spaces with different gravities */
+    float weight;
 
     /** default constructor will build reasonable values, with none validity */
     GravityInformation();
 
     /** constructor with all values*/
-    GravityInformation(glm::vec3 _gravity, glm::vec3 _up, float _validity, SpaceKind _space_kind);
+    GravityInformation(glm::vec3 _gravity, glm::vec3 _up, float _validity, SpaceKind _space_kind, float _weight);
 
     /** constructor with assumption of ground */
-    GravityInformation(glm::vec3 _gravity, glm::vec3 _up, float _validity);
+    GravityInformation(glm::vec3 _gravity, glm::vec3 _up, float _validity, float _weight);
 
     /** constructor from a combined list of gravity information. ATM, mix them */
     GravityInformation(std::list<GravityInformation> sources);

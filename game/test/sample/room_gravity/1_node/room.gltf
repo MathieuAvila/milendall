@@ -25,7 +25,7 @@
       "accessor": 10
      }
     ],
-    "gravity" : { "default" : { "gravity": [ 1.0, 0.0, 0.0] , "up": [ 0.0, 0.0, 1.0]  } },
+    "gravity" : { "default" : { "gravity": [ 1.0, 0.0, 0.0] , "up": [ 0.0, 0.0, 1.0], "weight": 2.0  } },
     "points": 9
    }
   },

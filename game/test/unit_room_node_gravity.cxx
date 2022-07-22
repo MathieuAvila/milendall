@@ -76,6 +76,7 @@ TEST_F(RoomNodeGravityTest, get_script_unboxed) {
     ASSERT_EQ(result.gravity, glm::vec3(11.0, 101.0, 1001.0));
     ASSERT_EQ(result.up, glm::vec3(21.0, 201.0, 2001.0));
     ASSERT_EQ(result.validity, 3330.0);
+    ASSERT_EQ(result.weight, 0.5f);
 }
 
 TEST_F(RoomNodeGravityTest, missing_script) {

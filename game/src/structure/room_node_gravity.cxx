@@ -4,6 +4,7 @@
 #include "json_helper_accessor.hxx"
 #include "json_helper_math.hxx"
 #include "level_exception.hxx"
+#include "helper_math.hxx"
 
 static auto console = getConsole("room_node_gravity");
 
@@ -52,11 +53,14 @@ bool RoomNodeGravity::getGravityInformation(
                     gravity.up.z = result["u_z"];
                     gravity.space_kind = GravityInformation::GROUND;
                     gravity.validity = result["v"];
+                    gravity.weight = result["w"];
+                    console->info("weight {} gravity {} up {} validity {}",
+                        gravity.weight, vec3_to_string(gravity.gravity), vec3_to_string(gravity.up), gravity.validity);
                 }
                 catch (Script::ScriptException e) {
                     throw LevelException("Invalid script " + script_name);
                 }
-                return true;
+                return (gravity.weight != 0.0f);
             }
         }
     }
@@ -93,6 +97,7 @@ void RoomNodeGravity::readParameters(nlohmann::json& json)
         constValues.up = jsonGetVec3(jsonGetElementByName(j_default, "up"));
         constValues.space_kind = GravityInformation::GROUND; // TODO
         constValues.validity = 100000.0f; // big enough to have no trouble
+        constValues.weight = j_default["weight"].get<float>();
     }
 
     // quick check on script

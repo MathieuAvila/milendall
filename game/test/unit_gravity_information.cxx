@@ -23,23 +23,26 @@ TEST_F(GravityInformationTest, default_init) {
     ASSERT_EQ(gravity.gravity, glm::vec3(0.0f, -1.0f, 0.0f));
     ASSERT_EQ(gravity.validity, 1000.0f);
     ASSERT_EQ(gravity.space_kind, GravityInformation::SpaceKind::GROUND);
+    ASSERT_EQ(gravity.weight, 0.0f);
 }
 
 TEST_F(GravityInformationTest, init_no_space_kind) {
-    GravityInformation gravity(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), 2000.0f);
+    GravityInformation gravity(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), 2000.0f, 1.0f);
     ASSERT_EQ(gravity.up, glm::vec3(1.0f, 0.0f, 0.0f));
     ASSERT_EQ(gravity.gravity, glm::vec3(0.0f, 10.0f, 0.0f));
     ASSERT_EQ(gravity.validity, 2000.0f);
     ASSERT_EQ(gravity.space_kind, GravityInformation::SpaceKind::GROUND);
+    ASSERT_EQ(gravity.weight, 1.0f);
 }
 
 TEST_F(GravityInformationTest, init_full) {
     GravityInformation gravity(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), 2000.0f,
-            GravityInformation::SpaceKind::FLY);
+            GravityInformation::SpaceKind::FLY, 1.0f);
     ASSERT_EQ(gravity.up, glm::vec3(1.0f, 0.0f, 0.0f));
     ASSERT_EQ(gravity.gravity, glm::vec3(0.0f, 10.0f, 0.0f));
     ASSERT_EQ(gravity.validity, 2000.0f);
     ASSERT_EQ(gravity.space_kind, GravityInformation::SpaceKind::FLY);
+    ASSERT_EQ(gravity.weight, 1.0f);
 }
 
 TEST_F(GravityInformationTest, init_mixed_none) {
@@ -51,33 +54,44 @@ TEST_F(GravityInformationTest, init_mixed_none) {
     ASSERT_EQ(gravity.gravity, glm::vec3(0.0f, -1.0f, 0.0f));
     ASSERT_EQ(gravity.validity, 1000.0f);
     ASSERT_EQ(gravity.space_kind, GravityInformation::SpaceKind::GROUND);
+    ASSERT_EQ(gravity.weight, 0.0f);
 }
 
 TEST_F(GravityInformationTest, init_mixed_multiple) {
 
     std::list<GravityInformation> grav_list;
-    grav_list.push_back(GravityInformation(glm::vec3(10.0f, 0.0f, 0.0f), glm::vec3(-2.0f, 0.0f, 0.0f), 2.0f));
-    grav_list.push_back(GravityInformation(glm::vec3(10.0f, 0.0f, 0.0f), glm::vec3(-2.0f, 0.0f, 0.0f), 1.0f));
-    grav_list.push_back(GravityInformation(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), 3.0f));
-    grav_list.push_back(GravityInformation(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), 5.0f));
+    grav_list.push_back(GravityInformation(glm::vec3(10.0f, 0.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0f), 2.0f, 10.0f));
+    grav_list.push_back(GravityInformation(glm::vec3(20.0f, 0.0f, 0.0f), glm::vec3(-2.0f, 0.0f, 0.0f), 1.0f, 15.0f));
+    grav_list.push_back(GravityInformation(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(2.0f, 0.0f, 0.0f), 3.0f, 15.0f));
+    grav_list.push_back(GravityInformation(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), 5.0f, 10.0f));
 
     GravityInformation gravity(grav_list);
-    ASSERT_EQ(gravity.up, glm::vec3(-1.0f, 0.0f, 0.0f));
-    ASSERT_EQ(gravity.gravity, glm::vec3(20.0f, 20.0f, 0.0f));
+
+    console->debug("{}", vec3_to_string(gravity.gravity));
+    console->debug("{}", vec3_to_string(gravity.up));
+    console->debug("{}", gravity.validity);
+
+    ASSERT_EQ(gravity.up, glm::vec3(0.0f, 0.0f, 0.0f));
+    ASSERT_EQ(gravity.gravity, glm::vec3(8.0f, 5.0f, 0.0f));
     ASSERT_EQ(gravity.validity, 1.0f);
     ASSERT_EQ(gravity.space_kind, GravityInformation::SpaceKind::GROUND);
+    ASSERT_EQ(gravity.weight, 50.0f);
 }
 
 
 TEST_F(GravityInformationTest, init_mixed_multiple_up_is_null) {
 
     std::list<GravityInformation> grav_list;
-    grav_list.push_back(GravityInformation(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), 2.0f));
-    grav_list.push_back(GravityInformation(glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0f), 1.0f));
+    grav_list.push_back(GravityInformation(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), 2.0f, 1.0f));
+    grav_list.push_back(GravityInformation(glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0f), 1.0f, 1.0f));
 
     GravityInformation gravity(grav_list);
-    ASSERT_EQ(gravity.up, glm::vec3(0.0f, 1.0f, 0.0f));
-    ASSERT_EQ(gravity.gravity, glm::vec3(0.0f, 30.0f, 0.0f));
+    console->debug("{}", vec3_to_string(gravity.gravity));
+    console->debug("{}", vec3_to_string(gravity.up));
+    console->debug("{}", gravity.validity);
+
+    ASSERT_EQ(gravity.up, glm::vec3(0.0f, 0.0f, 0.0f));
+    ASSERT_EQ(gravity.gravity, glm::vec3(0.0f, 15.0f, 0.0f));
     ASSERT_EQ(gravity.validity, 1.0f);
     ASSERT_EQ(gravity.space_kind, GravityInformation::SpaceKind::GROUND);
 }

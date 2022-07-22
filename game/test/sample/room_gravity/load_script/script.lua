@@ -7,6 +7,7 @@ function gravity_parent(tab_in)
 	tab_out["u_y"] = tab_in["vy"] + 1.0
 	tab_out["u_z"] = tab_in["vz"] + 1.0
 	tab_out["v"] = 1.0
+	tab_out["w"] = 4.0
 	return tab_out
 end
 
@@ -19,5 +20,6 @@ function gravity_r1r2_impl(tab_in)
 	tab_out["u_y"] = tab_in["vy"] + 0.0
 	tab_out["u_z"] = tab_in["vz"] + 0.0
 	tab_out["v"] = 2.0
+	tab_out["w"] = 1.0
 	return tab_out
 end

@@ -31,7 +31,7 @@
   {
     "name": "child",
     "extras": {
-        "gravity" : { "default" : { "gravity": [ 1.0, 0.0, 0.0] , "up": [ 0.0, 0.0, 1.0]  } },
+        "gravity" : { "default" : { "gravity": [ 1.0, 0.0, 0.0] , "up": [ 0.0, 0.0, 1.0] , "weight": 1.0 } },
         "points": 9
     },
     "mesh": 0
