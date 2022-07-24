@@ -67,5 +67,21 @@ jobs:
     #   make bootstrap
     #   make release
 
+
+    - name: Test
+      run: |
+        cd build
+        ctest -C Debug --output-on-failure --verbose
+
+    - name: Setup python
+      uses: actions/setup-python@v2
+      if: contains(matrix.os, 'ubuntu')
+      with:
+        python-version: 3.8
+
+    - name: TestPython
+      run: |
+       PYTHONPATH=$PYTHONPATH:$PWD/generator/pygenerator/src:$PWD/generator/pygenerator/test/ pytest -s generator/pygenerator/test
+
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
