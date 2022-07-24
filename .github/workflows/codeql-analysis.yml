@@ -71,7 +71,7 @@ jobs:
     - name: Test
       run: |
         cd build
-        ctest -C Debug --output-on-failure --verbose
+        ctest -C Debug --output-on-failure --verbose --output-junit test_result.xml
 
     - name: Setup python
       uses: actions/setup-python@v2
@@ -84,4 +84,4 @@ jobs:
        PYTHONPATH=$PYTHONPATH:$PWD/generator/pygenerator/src:$PWD/generator/pygenerator/test/ pytest -s generator/pygenerator/test
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v1
+      uses: github/codeql-action/analyze@v2
