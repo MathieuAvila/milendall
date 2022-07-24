@@ -83,5 +83,5 @@ jobs:
       run: |
        PYTHONPATH=$PYTHONPATH:$PWD/generator/pygenerator/src:$PWD/generator/pygenerator/test/ pytest -s generator/pygenerator/test
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+    #- name: Perform CodeQL Analysis
+    #  uses: github/codeql-action/analyze@v2
