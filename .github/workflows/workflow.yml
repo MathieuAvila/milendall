@@ -93,7 +93,7 @@ jobs:
         continue-on-error: true
         run: |
           sudo apt update
-          sudo apt install -y cmake
+          sudo apt install -y cmake nlohmann-json3-dev libboost-all-dev libspdlog-dev libspdlog1 libglm-dev libfreeimageplus-dev googletest libgmock-dev libgl-dev libopengl-dev libglew-dev libglfw3-dev libglfw3 libfreetype-dev libfreetype6-dev liblua5.1-dev
           cd ./build
           ctest -C Debug --output-on-failure --verbose --output-junit test_result.xml
           echo continue
@@ -102,4 +102,4 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action/composite@v1
         if: always()
         with:
-          files: "$SOURCEDIR_PATH/build/*.xml"
+          files: "./build/*.xml"
