@@ -1,4 +1,5 @@
-name: "CodeQL"
+
+name: "BuildAndTest"
 
 on:
   push:
@@ -11,7 +12,7 @@ on:
 
 jobs:
   analyze:
-    name: Analyze
+    name: BuildTest
     runs-on: ubuntu-latest
 
     strategy:
@@ -23,14 +24,14 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
-      with:
-        languages: ${{ matrix.language }}
-    - run: |
+    - name: Build
+      run: |
         sudo apt update
         sudo apt install -y nlohmann-json3-dev libboost-all-dev libspdlog-dev libspdlog1 libglm-dev libfreeimageplus-dev googletest libgmock-dev libgl-dev libopengl-dev libglew-dev libglfw3-dev libglfw3 libfreetype-dev libfreetype6-dev liblua5.1-dev ninja-build
         sudo pip install pytest munch
+        cmake -G Ninja -S $PWD -B $PWD/build
+        cd $PWD/build
+        ninja all
 
     - name: Setup python
       uses: actions/setup-python@v2
@@ -38,5 +39,14 @@ jobs:
       with:
         python-version: 3.8
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+    - name: Test
+      run: |
+        cd build
+        ctest -C Debug --output-on-failure --verbose --output-junit test_result.xml
+        export PYTHONPATH=$PYTHONPATH:$PWD/generator/pygenerator/src:$PWD/generator/pygenerator/test/ ; ( cd generator/pygenerator/test ;  pytest -s . --junit-xml=../../../build/python-test.xml )
+
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action/composite@v1
+      if: always()
+      with:
+        files: "build/*.xml"
