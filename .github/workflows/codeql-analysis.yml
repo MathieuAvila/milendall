@@ -85,7 +85,12 @@ jobs:
 
     - name: TestPython
       run: |
-       PYTHONPATH=$PYTHONPATH:$PWD/generator/pygenerator/src:$PWD/generator/pygenerator/test/ pytest -s generator/pygenerator/test
+       export PYTHONPATH=$PYTHONPATH:$PWD/generator/pygenerator/src:$PWD/generator/pygenerator/test/ ; ( cd generator/pygenerator/test ;  pytest -s . --junit-xml=../../../build/python-test.xml )
 
     #- name: Perform CodeQL Analysis
     #  uses: github/codeql-action/analyze@v2
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action/composite@v1
+      if: always()
+      with:
+        files: "build/*.xml" 
