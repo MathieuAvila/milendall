@@ -81,8 +81,7 @@ jobs:
       - name: Run Pytest
         run: |
           sudo pip install pytest munch jsonmerge
-          export PYTHONPATH=$PYTHONPATH:$PWD/generator/pygenerator/src:$PWD/generator/pygenerator/test/ ; ( cd ./generator/pygenerator/test ;  pytest -s . --junit-xml=../../../build/python-test.xml )
-          echo continue
+          export PYTHONPATH=$PYTHONPATH:$PWD/generator/pygenerator/src:$PWD/generator/pygenerator/test/ ; ( cd ./generator/pygenerator/test ;  pytest -s . --junit-xml=../../../build/python-test.xml ; echo continue)
 
       - name: Run GTest
         run: |
