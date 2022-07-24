@@ -63,7 +63,7 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
 
-  pytest:
+  test:
     needs: build
     name: Run Python Test
     runs-on: ubuntu-latest
@@ -76,27 +76,10 @@ jobs:
         run: |
           export PYTHONPATH=$PYTHONPATH:$PWD/generator/pygenerator/src:$PWD/generator/pygenerator/test/ ; ( cd ./generator/pygenerator/test ;  pytest -s . --junit-xml=../../../build/python-test.xml )
 
-  gtest:
-    needs: build
-    name: Run C++ Test
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: build
       - name: Run GTest
         run: |
           cd ./build
           ctest -C Debug --output-on-failure --verbose --output-junit test_result.xml
-
-  publishtest:
-
-    needs: [ gtest, pytest ]
-    name: Publish tests
-    runs-on: ubuntu-latest
-
-    steps:
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action/composite@v1
