@@ -78,7 +78,7 @@ jobs:
 
   test:
     needs: build
-    name: Run Python Test
+    name: Run Tests and push results
     runs-on: ubuntu-latest
 
     steps:
