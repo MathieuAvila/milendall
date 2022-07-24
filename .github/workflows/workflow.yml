@@ -27,6 +27,7 @@ jobs:
           cmake -G Ninja -S $PWD -B $PWD/build
           cd $PWD/build
           ninja all
+          echo "SOURCEDIR=$PWD" >> $GITHUB_ENV
 
       - name: Setup python
         uses: actions/setup-python@v2
@@ -60,7 +61,7 @@ jobs:
     steps:
       - name: Run Pytest
         run: |
-          export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/generator/pygenerator/src:$GITHUB_WORKSPACE/generator/pygenerator/test/ ; ( cd $GITHUB_WORKSPACE/generator/pygenerator/test ;  pytest -s . --junit-xml=../../../build/python-test.xml )
+          export PYTHONPATH=$PYTHONPATH:$SOURCEDIR/generator/pygenerator/src:$SOURCEDIR/generator/pygenerator/test/ ; ( cd $SOURCEDIR/generator/pygenerator/test ;  pytest -s . --junit-xml=../../../build/python-test.xml )
 
   gtest:
     needs: build
@@ -71,7 +72,7 @@ jobs:
 
       - name: Run GTest
         run: |
-          cd build
+          cd $SOURCEDIR/build
           ctest -C Debug --output-on-failure --verbose --output-junit test_result.xml
 
   publishtest:
@@ -86,4 +87,4 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action/composite@v1
         if: always()
         with:
-          files: "build/*.xml"
+          files: "$SOURCEDIR/build/*.xml"
