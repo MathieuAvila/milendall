@@ -33,12 +33,14 @@ jobs:
         if: contains(matrix.os, 'ubuntu')
         with:
           python-version: 3.8
+      - name: Tar files
+        run: tar -cvf build.tar .
 
       - name: Saves build
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: build
-          path: ./
+          path: build.tar
 
   analyze:
     needs: build
@@ -50,9 +52,12 @@ jobs:
       matrix:
         language: ['cpp', 'python']
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: build
+
+      - name: Untar
+        run: tar xvf build.tar
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
@@ -68,24 +73,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: build
+      - name: Untar
+        run: tar xvf build.tar
       - name: Run Pytest
         run: |
-          sudo pip install pytest munch
+          sudo pip install pytest munch jsonmerge
           export PYTHONPATH=$PYTHONPATH:$PWD/generator/pygenerator/src:$PWD/generator/pygenerator/test/ ; ( cd ./generator/pygenerator/test ;  pytest -s . --junit-xml=../../../build/python-test.xml )
+          echo continue
 
       - name: Run GTest
         run: |
           sudo apt update
           sudo apt install -y cmake
           cd ./build
-          ls -la
-          echo "chmod"
-          chmod u+x unit_test
-          ls -la
           ctest -C Debug --output-on-failure --verbose --output-junit test_result.xml
+          echo continue
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action/composite@v1
