@@ -43,7 +43,7 @@ jobs:
       run: |
         cd build
         ctest -C Debug --output-on-failure --verbose --output-junit test_result.xml
-        export PYTHONPATH=$PYTHONPATH:$PWD/generator/pygenerator/src:$PWD/generator/pygenerator/test/ ; ( cd generator/pygenerator/test ;  pytest -s . --junit-xml=../../../build/python-test.xml )
+        export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/generator/pygenerator/src:$GITHUB_WORKSPACE/generator/pygenerator/test/ ; ( cd $GITHUB_WORKSPACE/generator/pygenerator/test ;  pytest -s . --junit-xml=../../../build/python-test.xml )
 
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action/composite@v1
