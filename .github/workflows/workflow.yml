@@ -81,6 +81,10 @@ jobs:
           sudo apt update
           sudo apt install -y cmake
           cd ./build
+          ls -la
+          echo "chmod"
+          chmod u+x unit_test
+          ls -la
           ctest -C Debug --output-on-failure --verbose --output-junit test_result.xml
 
       - name: Publish Test Results
