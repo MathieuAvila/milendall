@@ -14,11 +14,6 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ 'cpp', 'python' ]
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -39,9 +34,9 @@ jobs:
         python-version: 3.8
 
   analyze:
+    needs: build
     name: Analyze
     runs-on: ubuntu-latest
-    needs: build
 
     strategy:
       fail-fast: false
@@ -57,11 +52,11 @@ jobs:
       uses: github/codeql-action/analyze@v2
 
   test:
-    name: BuildTest
-    runs-on: ubuntu-latest
     needs: build
+    name: Test
+    runs-on: ubuntu-latest
 
-    - name: Test
+    - name: Run Tests
       run: |
         cd build
         ctest -C Debug --output-on-failure --verbose --output-junit test_result.xml
