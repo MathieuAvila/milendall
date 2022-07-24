@@ -51,14 +51,18 @@ jobs:
       matrix:
         language: ['cpp', 'python']
     steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: build
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
           languages: ${{ matrix.language }}
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: build
 
       - name: Untar
         run: |
