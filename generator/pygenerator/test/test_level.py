@@ -125,6 +125,8 @@ class TestLevel(unittest.TestCase):
             "file_final_level.json")
         self.assertIsNotNone(obj)
         self.assertIsNotNone(obj_golden_sample)
+        obj["$schema"] = ""
+        obj_golden_sample["$schema"] = ""
         self.assertEqual(obj, obj_golden_sample)
 
 
