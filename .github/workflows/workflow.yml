@@ -26,7 +26,6 @@ jobs:
           cmake -G Ninja -S $PWD -B $PWD/build
           cd $PWD/build
           ninja all
-          echo "SOURCEDIR_PATH=$PWD" >> $GITHUB_ENV
 
       - name: Setup python
         uses: actions/setup-python@v2
@@ -62,7 +61,13 @@ jobs:
           languages: ${{ matrix.language }}
 
       - name: Untar
-        run: tar xvf build.tar
+        run: |
+          tar xvf build.tar
+          sudo apt update
+          sudo apt install -y nlohmann-json3-dev libboost-all-dev libspdlog-dev libspdlog1 libglm-dev libfreeimageplus-dev googletest libgmock-dev libgl-dev libopengl-dev libglew-dev libglfw3-dev libglfw3 libfreetype-dev libfreetype6-dev liblua5.1-dev ninja-build
+          cmake -G Ninja -S $PWD -B $PWD/build
+          cd $PWD/build
+          ninja all
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
@@ -79,11 +84,13 @@ jobs:
       - name: Untar
         run: tar xvf build.tar
       - name: Run Pytest
+        continue-on-error: true
         run: |
           sudo pip install pytest munch jsonmerge
           export PYTHONPATH=$PYTHONPATH:$PWD/generator/pygenerator/src:$PWD/generator/pygenerator/test/ ; ( cd ./generator/pygenerator/test ;  pytest -s . --junit-xml=../../../build/python-test.xml ; echo continue)
 
       - name: Run GTest
+        continue-on-error: true
         run: |
           sudo apt update
           sudo apt install -y cmake
