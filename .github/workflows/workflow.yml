@@ -35,6 +35,12 @@ jobs:
         with:
           python-version: 3.8
 
+      - name: Saves build
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: ./
+
   analyze:
     needs: build
     name: Analyze
@@ -45,6 +51,10 @@ jobs:
       matrix:
         language: ['cpp', 'python']
     steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: build
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
@@ -59,9 +69,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: build
       - name: Run Pytest
         run: |
-          export PYTHONPATH=$PYTHONPATH:$SOURCEDIR_PATH/generator/pygenerator/src:$SOURCEDIR_PATH/generator/pygenerator/test/ ; ( cd $SOURCEDIR_PATH/generator/pygenerator/test ;  pytest -s . --junit-xml=../../../build/python-test.xml )
+          export PYTHONPATH=$PYTHONPATH:$PWD/generator/pygenerator/src:$PWD/generator/pygenerator/test/ ; ( cd ./generator/pygenerator/test ;  pytest -s . --junit-xml=../../../build/python-test.xml )
 
   gtest:
     needs: build
@@ -69,10 +82,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
+      - uses: actions/download-artifact@v2
+        with:
+          name: build
       - name: Run GTest
         run: |
-          cd $SOURCEDIR_PATH/build
+          cd ./build
           ctest -C Debug --output-on-failure --verbose --output-junit test_result.xml
 
   publishtest:
