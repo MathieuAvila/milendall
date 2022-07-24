@@ -52,17 +52,35 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
 
-  test:
+  pytest:
     needs: build
-    name: Test
+    name: Run Python Test
     runs-on: ubuntu-latest
 
     steps:
-      - name: Run Tests
+      - name: Run Pytest
+        run: |
+          export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/generator/pygenerator/src:$GITHUB_WORKSPACE/generator/pygenerator/test/ ; ( cd $GITHUB_WORKSPACE/generator/pygenerator/test ;  pytest -s . --junit-xml=../../../build/python-test.xml )
+
+  gtest:
+    needs: build
+    name: Run C++ Test
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Run GTest
         run: |
           cd build
           ctest -C Debug --output-on-failure --verbose --output-junit test_result.xml
-          export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/generator/pygenerator/src:$GITHUB_WORKSPACE/generator/pygenerator/test/ ; ( cd $GITHUB_WORKSPACE/generator/pygenerator/test ;  pytest -s . --junit-xml=../../../build/python-test.xml )
+
+  publishtest:
+
+    needs: [ gtest, pytest ]
+    name: Publish tests
+    runs-on: ubuntu-latest
+
+    steps:
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action/composite@v1
