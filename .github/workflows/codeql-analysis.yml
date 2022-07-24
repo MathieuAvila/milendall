@@ -50,6 +50,7 @@ jobs:
     - run: |
         sudo apt update
         sudo apt install -y nlohmann-json3-dev libboost-all-dev libspdlog-dev libspdlog1 libglm-dev libfreeimageplus-dev googletest libgmock-dev libgl-dev libopengl-dev libglew-dev libglfw3-dev libglfw3 libfreetype-dev libfreetype6-dev liblua5.1-dev ninja-build
+        sudo pip install pytest
 
     # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
     # If this step fails, then you should remove it and run the build manually (see below)
@@ -87,10 +88,11 @@ jobs:
       run: |
        export PYTHONPATH=$PYTHONPATH:$PWD/generator/pygenerator/src:$PWD/generator/pygenerator/test/ ; ( cd generator/pygenerator/test ;  pytest -s . --junit-xml=../../../build/python-test.xml )
 
-    #- name: Perform CodeQL Analysis
-    #  uses: github/codeql-action/analyze@v2
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
+
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action/composite@v1
       if: always()
       with:
-        files: "build/*.xml" 
+        files: "build/*.xml"
