@@ -1,11 +1,12 @@
+---
 name: "Build, Analysis, Test"
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ main ]
+    branches: [main]
   schedule:
     - cron: '30 14 * * 4'
 
@@ -15,23 +16,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Build
-      run: |
-        sudo apt update
-        sudo apt install -y nlohmann-json3-dev libboost-all-dev libspdlog-dev libspdlog1 libglm-dev libfreeimageplus-dev googletest libgmock-dev libgl-dev libopengl-dev libglew-dev libglfw3-dev libglfw3 libfreetype-dev libfreetype6-dev liblua5.1-dev ninja-build
-        sudo pip install pytest munch
-        cmake -G Ninja -S $PWD -B $PWD/build
-        cd $PWD/build
-        ninja all
+      - name: Build
+        run: |
+          sudo apt update
+          sudo apt install -y nlohmann-json3-dev libboost-all-dev libspdlog-dev libspdlog1 libglm-dev libfreeimageplus-dev googletest libgmock-dev libgl-dev libopengl-dev libglew-dev libglfw3-dev libglfw3 libfreetype-dev libfreetype6-dev liblua5.1-dev ninja-build
+          sudo pip install pytest munch
+          cmake -G Ninja -S $PWD -B $PWD/build
+          cd $PWD/build
+          ninja all
 
-    - name: Setup python
-      uses: actions/setup-python@v2
-      if: contains(matrix.os, 'ubuntu')
-      with:
-        python-version: 3.8
+      - name: Setup python
+        uses: actions/setup-python@v2
+        if: contains(matrix.os, 'ubuntu')
+        with:
+          python-version: 3.8
 
   analyze:
     needs: build
@@ -41,30 +42,30 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'cpp', 'python' ]
+        language: ['cpp', 'python']
+    steps:
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: ${{ matrix.language }}
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
-      with:
-        languages: ${{ matrix.language }}
-
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
 
   test:
     needs: build
     name: Test
     runs-on: ubuntu-latest
 
-    - name: Run Tests
-      run: |
-        cd build
-        ctest -C Debug --output-on-failure --verbose --output-junit test_result.xml
-        export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/generator/pygenerator/src:$GITHUB_WORKSPACE/generator/pygenerator/test/ ; ( cd $GITHUB_WORKSPACE/generator/pygenerator/test ;  pytest -s . --junit-xml=../../../build/python-test.xml )
+    steps:
+      - name: Run Tests
+        run: |
+          cd build
+          ctest -C Debug --output-on-failure --verbose --output-junit test_result.xml
+          export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/generator/pygenerator/src:$GITHUB_WORKSPACE/generator/pygenerator/test/ ; ( cd $GITHUB_WORKSPACE/generator/pygenerator/test ;  pytest -s . --junit-xml=../../../build/python-test.xml )
 
-    - name: Publish Test Results
-      uses: EnricoMi/publish-unit-test-result-action/composite@v1
-      if: always()
-      with:
-        files: "build/*.xml"
-
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action/composite@v1
+        if: always()
+        with:
+          files: "build/*.xml"
