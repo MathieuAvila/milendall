@@ -203,7 +203,7 @@ void setMeshMatrix(glm::mat4 mat)
 void setViewMatrix(glm::mat4x4 mat, glm::vec3 _position)
 {
     ViewMatrix = mat;
-    position = position;
+    position = _position;
     updateTransformMatrix();
 }
 
