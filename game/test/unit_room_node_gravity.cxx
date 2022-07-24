@@ -32,7 +32,7 @@ TEST_F(RoomNodeGravityTest, get_default_unboxed) {
 
     RoomNodeGravity gravity("my_name", nullptr);
     GravityInformation result;
-    auto my_json = json::parse("{ \"default\" : { \"gravity\": [ 1.0, 2.0, 3.0] ,  \"up\": [ 4.0, 5.0, 6.0]  } }");
+    auto my_json = json::parse("{ \"default\" : { \"gravity\": [ 1.0, 2.0, 3.0] ,  \"up\": [ 4.0, 5.0, 6.0] , \"weight\" : 1.0} }");
 
     gravity.readParameters(my_json);
     ASSERT_TRUE(gravity.getGravityInformation(glm::vec3(), glm::vec3(), 0.0, 0.0, 0.0, result));
@@ -46,7 +46,7 @@ TEST_F(RoomNodeGravityTest, get_default_boxed) {
     GravityInformation result;
     auto my_json = json::parse(
         "{"
-            "\"default\" : { \"gravity\": [ 1.0, 2.0, 3.0] ,  \"up\": [ 4.0, 5.0, 6.0]  } , "
+            "\"default\" : { \"gravity\": [ 1.0, 2.0, 3.0] ,  \"up\": [ 4.0, 5.0, 6.0] , \"weight\" : 1.0 } , "
             "\"box\": { \"min\" : [ 10.0, 20.0, 30.0] ,  \"max\" : [ 40.0, 50.0, 60.0]  }"
         "}");
 
