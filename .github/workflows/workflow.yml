@@ -56,13 +56,13 @@ jobs:
         with:
           name: build
 
-      - name: Untar
-        run: tar xvf build.tar
-
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
           languages: ${{ matrix.language }}
+
+      - name: Untar
+        run: tar xvf build.tar
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
