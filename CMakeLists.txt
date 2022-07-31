@@ -76,6 +76,10 @@ add_library(game_lib STATIC
   game/src/structure/iface_room_node_portal_register.hxx
   game/src/structure/impl_room_node_portal_register.hxx
   game/src/structure/impl_room_node_portal_register.cxx
+  game/src/structure/viewables_registrar.hxx
+  game/src/structure/viewables_registrar_impl.hxx
+  game/src/structure/viewables_registrar_impl.cxx
+  game/src/structure/viewable_object.hxx
   game/src/gltf/gltf_mesh.hxx
   game/src/gltf/gltf_mesh.cxx
   game/src/gltf/gltf_model.hxx
@@ -205,6 +209,7 @@ game/test/unit_room_animation.cxx
 game/test/unit_trigger.cxx
 game/test/unit_gate_id.cxx
 game/test/unit_impl_room_node_portal_register.cxx
+game/test/unit_viewables_registrar_impl.cxx
 )
 
 enable_testing()
