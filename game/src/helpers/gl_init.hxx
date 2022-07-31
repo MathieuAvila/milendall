@@ -71,10 +71,13 @@ void setClippingEquations(std::vector<glm::vec3>);
 
 class TrianglesBufferInfo
 {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-private-field"
     unsigned int vertexBuffer;
     unsigned int uvbuffer;
     unsigned int elementbuffer;
     unsigned int indicesCount;
+#pragma clang diagnostic pop
 
     public:
 
