@@ -77,6 +77,7 @@ add_library(game_lib STATIC
   game/src/structure/impl_room_node_portal_register.hxx
   game/src/structure/impl_room_node_portal_register.cxx
   game/src/structure/viewables_registrar.hxx
+  game/src/structure/viewables_registrar.cxx
   game/src/structure/viewables_registrar_impl.hxx
   game/src/structure/viewables_registrar_impl.cxx
   game/src/structure/viewable_object.hxx
