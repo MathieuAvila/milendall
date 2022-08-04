@@ -103,7 +103,7 @@ GltfMesh::GltfPrimitive::GltfPrimitive(
            {GltfDataAccessor::DataBlock::UNSIGNED_SHORT, GL_UNSIGNED_SHORT}
     };
 
-    std::map<GltfDataAccessor::DataBlock::UNIT_TYPE, unsigned int> mapper_gl_size = {
+    std::map<GltfDataAccessor::DataBlock::UNIT_TYPE, unsigned long> mapper_gl_size = {
            {GltfDataAccessor::DataBlock::FLOAT,          8 },
            {GltfDataAccessor::DataBlock::UNSIGNED_INT,   4 },
            {GltfDataAccessor::DataBlock::UNSIGNED_SHORT, 2 }
