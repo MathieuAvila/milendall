@@ -22,7 +22,7 @@ ViewablesRegistrar::viewableId ViewablesRegistrarImpl::appendViewable(ViewableOb
     return counter;
 }
 
-void ViewablesRegistrarImpl::updateViewable(ViewablesRegistrar::viewableId id, std::list<PointOfView> positions)
+void ViewablesRegistrarImpl::updateViewableSolved(ViewablesRegistrar::viewableId id, std::list<PointOfView> positions)
 {
     std::unique_lock<std::mutex> lock(access_mutex);
 
@@ -50,9 +50,15 @@ void ViewablesRegistrarImpl::updateViewable(ViewablesRegistrar::viewableId id, s
     }
 }
 
+void ViewablesRegistrarImpl::updateViewable(viewableId id, PointOfView position)
+{
+    auto positions = solvePosition(position);
+    updateViewableSolved(id, positions);
+}
+
 void ViewablesRegistrarImpl::removeViewable(ViewablesRegistrar::viewableId id)
 {
-    updateViewable(id, std::list<PointOfView>());
+    updateViewableSolved(id, std::list<PointOfView>());
 
     std::unique_lock<std::mutex> lock(access_mutex);
     if (!objects.count(id))
