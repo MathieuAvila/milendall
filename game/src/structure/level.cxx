@@ -235,3 +235,8 @@ void Level::applyTrigger(
             object_type,
             activated);
 }
+
+std::list<PointOfView> Level::solvePosition(PointOfView mainPos) const
+{
+   return { mainPos };
+}

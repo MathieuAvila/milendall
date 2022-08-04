@@ -7,12 +7,13 @@
 #include "level_exception.hxx"
 #include "space_resolver.hxx"
 #include "gravity_provider.hxx"
+#include "viewables_registrar_impl.hxx"
 
 struct LevelRoomResolver;
 class StatesList;
 struct ImplRoomNodePortalRegister;
 
-class Level : public SpaceResolver, public GravityProvider
+class Level : public SpaceResolver, public GravityProvider, public ViewablesRegistrarImpl
 {
     public:
 
@@ -96,6 +97,10 @@ class Level : public SpaceResolver, public GravityProvider
             const glm::vec3& next_position,
             const STRUCTURE_OBJECT_TYPE object_type,
             const bool activated) const override;
+
+        /** @brief From ViewablesRegistrarImpl
+         */
+        virtual std::list<PointOfView> solvePosition(PointOfView mainPos) const override;
 
     private:
 
