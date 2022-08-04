@@ -34,7 +34,7 @@ public:
 
     virtual ~TestViewable(){};
 
-    virtual void outputObject(glm::vec4 masterMatrix) const override{
+    virtual void outputObject() const override{
 
     };
 };

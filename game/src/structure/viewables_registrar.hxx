@@ -29,9 +29,13 @@ class ViewablesRegistrar
         typedef unsigned int viewableId;
         typedef std::shared_ptr<ViewableObject> ViewableObjectPtr;
 
+        /** Used by object manager */
         virtual viewableId appendViewable(ViewableObjectPtr _object) = 0;
         virtual void updateViewable(viewableId id, PointOfView position) = 0;
         virtual void removeViewable(viewableId id) = 0;
+
+        /** @brief Get objects in a room ready to be drawn */
+        virtual std::list<ViewableObjectPtr> getViewables(std::string room) = 0;
 
         virtual ~ViewablesRegistrar();
 };

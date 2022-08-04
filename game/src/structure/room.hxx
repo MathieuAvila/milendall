@@ -21,6 +21,7 @@ struct DrawContext;
 class Script;
 class StatesList;
 struct IRoomNodePortalRegister;
+class ViewablesRegistrar;
 
 
 /** @brief to be able to load script before the GltfModel
@@ -59,7 +60,11 @@ class Room : private RoomScriptLoader, public GltfModel
          */
         StatesList* states_list;
 
+        /** @brief Holds portal registrer. Provided by Level */
         IRoomNodePortalRegister* portal_register;
+
+        /** @brief Holds viewables provider. Provided by Level */
+        ViewablesRegistrar* viewables_registrar;
 
         /** @brief List of animation code specific to the room. It relies on
          * the animations defined by the model and specific application data
@@ -99,7 +104,8 @@ class Room : private RoomScriptLoader, public GltfModel
             GltfMaterialLibraryIfacePtr materialLibrary,
             FileLibrary::UriReference& ref,
             IRoomNodePortalRegister* portal_register = nullptr,
-            StatesList* _states_list = nullptr);
+            StatesList* _states_list = nullptr,
+            ViewablesRegistrar* _viewables_registrar = nullptr);
 
         /** @brief full draw entry point
         */

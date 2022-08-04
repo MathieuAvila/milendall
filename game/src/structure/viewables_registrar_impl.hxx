@@ -60,7 +60,7 @@ class ViewablesRegistrarImpl : public ViewablesRegistrar
         virtual void removeViewable(viewableId id) override;
 
         /** @brief Get objects in a room ready to be drawn */
-        virtual std::list<ViewableObjectPtr> getViewables(std::string room);
+        virtual std::list<ViewableObjectPtr> getViewables(std::string room) override;
 
         /** @brief for debug purposes */
         void dump();

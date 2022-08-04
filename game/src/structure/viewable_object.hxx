@@ -1,7 +1,5 @@
 #pragma once
 
-#include "glm/mat4x4.hpp"
-
 /** @brief Interface class for any object that needs to be drawn */
 class ViewableObject
 {
@@ -11,7 +9,7 @@ class ViewableObject
         multiple different rooms */
         virtual float getRadius() const = 0;
 
-        /** @brief Render object, in the given position. Other matrices must NOT be changed */
-        virtual void outputObject(glm::vec4 masterMatrix) const = 0;
+        /** @brief Render object. Other matrices must NOT be changed */
+        virtual void outputObject() const = 0;
 };
 

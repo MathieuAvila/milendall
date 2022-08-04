@@ -10,6 +10,8 @@
 #include "gltf_exception.hxx"
 #include "level_exception.hxx"
 #include "room_animation.hxx"
+#include "viewables_registrar.hxx"
+#include "viewable_object.hxx"
 
 #include "helper_math.hxx"
 #include "gl_init.hxx"
@@ -47,7 +49,8 @@ Room::Room(
     GltfMaterialLibraryIfacePtr materialLibrary,
     FileLibrary::UriReference& ref,
     IRoomNodePortalRegister* _portal_register,
-    StatesList* _states_list)
+    StatesList* _states_list,
+    ViewablesRegistrar* _viewables_registrar)
     :
     RoomScriptLoader(ref),
     GltfModel(materialLibrary, ref,
@@ -58,7 +61,8 @@ Room::Room(
             }),
     room_name(_room_name),
     states_list(_states_list),
-    portal_register(_portal_register)
+    portal_register(_portal_register),
+    viewables_registrar(_viewables_registrar)
 {
     instance = make_unique<GltfInstance>(getInstanceParameters());
     // collect portals list and associated index
@@ -107,6 +111,14 @@ void Room::draw(PointOfView pov)
     };
     setViewMatrix(pov.getViewMatrix(), pov.position);
     GltfModel::draw(instance.get(), &drawContext);
+
+    // Draw included objects
+    if (viewables_registrar) {
+        auto objects = viewables_registrar->getViewables(room_name);
+        for (auto& obj : objects) {
+            obj->outputObject();
+        }
+    }
 }
 
 void Room::draw(GltfInstance* instance, int index, void* context)
