@@ -131,7 +131,7 @@ GltfMesh::GltfPrimitive::GltfPrimitive(
 
     glGenBuffers(1, &elementbuffer.buffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer.buffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesbuffer->count * mapper_gl_size[indicesbuffer->unit_type], indicesbuffer->data , GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, (unsigned long)(indicesbuffer->count) * mapper_gl_size[indicesbuffer->unit_type], indicesbuffer->data , GL_STATIC_DRAW);
 
     indicesCount = indicesbuffer->count;
 
