@@ -207,9 +207,6 @@ Level::~Level()
 {
 }
 
-#include <glm/gtc/constants.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
 GravityInformation Level::getGravityInformation(
             const PointOfView& position,
             glm::vec3 speed,
