@@ -27,7 +27,7 @@ GltfNode::GltfNode(json& json): default_transform(identity)
     if (json.contains("mesh")) {
         my_mesh = jsonGetElementByName(json, "mesh").get<int>();
     }
-     if (json.contains("name")) {
+    if (json.contains("name")) {
         name = jsonGetElementByName(json, "name").get<string>();
         console->info("Node name is {}", name);
     }
@@ -176,6 +176,10 @@ GltfModel::GltfModel(GltfMaterialLibraryIfacePtr materialLibrary, const FileLibr
     // Load all nodes, whether used or not
     jsonExecuteAllIfElement(file_json, "nodes", [this, &nodeProvider, &data_accessor](nlohmann::json& child, int node_index) {
         console->info("Load node: {}", node_index);
+        // Force name if none is provided
+        if (!child.contains("name") || child["name"].get<std::string>() == "") {
+            child["name"] = std::string("#") + std::to_string(node_index);
+        }
         nodeTable.push_back(nodeProvider(child, data_accessor.get()));
     });
 
