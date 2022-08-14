@@ -6,11 +6,13 @@
 
 #include "point_of_view.hxx"
 
+#include "iface_object_loader.hxx"
+
 class SpaceResolver;
 class GravityProvider;
 class ManagedObjectInstance;
 
-class ObjectManager
+class ObjectManager: public IObjectLoader
 {
     public:
 
@@ -39,7 +41,10 @@ class ObjectManager
         */
         void update(float total_time);
 
-        /** manadatory due to fwd decslaration */
+        /** @brief From IObjectLoader */
+        virtual void loadObject(std::string room_name, std::string mesh_name, nlohmann::json& root) override;
+
+        /** @brief manadatory due to fwd decslaration */
         virtual ~ObjectManager();
 
     private:
