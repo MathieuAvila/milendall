@@ -124,6 +124,8 @@ add_library(game_lib STATIC
   game/src/objects/managed_object_instance.cxx
   game/src/objects/player.hxx
   game/src/objects/player.cxx
+  game/src/objects/object_option.hxx
+  game/src/objects/object_option.cxx
   game/src/point_of_view.hxx
   game/src/point_of_view.cxx
 )
