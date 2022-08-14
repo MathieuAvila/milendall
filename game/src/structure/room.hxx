@@ -22,7 +22,7 @@ class Script;
 class StatesList;
 struct IRoomNodePortalRegister;
 class ViewablesRegistrar;
-
+class IObjectLoader;
 
 /** @brief to be able to load script before the GltfModel
  * so that RoomNodes children can get a reference to the script */
@@ -105,7 +105,8 @@ class Room : private RoomScriptLoader, public GltfModel
             FileLibrary::UriReference& ref,
             IRoomNodePortalRegister* portal_register = nullptr,
             StatesList* _states_list = nullptr,
-            ViewablesRegistrar* _viewables_registrar = nullptr);
+            ViewablesRegistrar* _viewables_registrar = nullptr,
+            IObjectLoader* object_loader = nullptr);
 
         /** @brief full draw entry point
         */

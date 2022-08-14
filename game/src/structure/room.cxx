@@ -50,14 +50,23 @@ Room::Room(
     FileLibrary::UriReference& ref,
     IRoomNodePortalRegister* _portal_register,
     StatesList* _states_list,
-    ViewablesRegistrar* _viewables_registrar)
+    ViewablesRegistrar* _viewables_registrar,
+    IObjectLoader* _object_loader)
     :
     RoomScriptLoader(ref),
     GltfModel(materialLibrary, ref,
-            [_room_name, this, _states_list, _portal_register](nlohmann::json& json,
+            [_room_name, this, _states_list, _portal_register, _object_loader](nlohmann::json& json,
             GltfDataAccessorIFace* data_accessor) {
                 // build a local wrapper reference to the room provider
-                return make_shared<RoomNode>(json, data_accessor, _portal_register, getScript(), _room_name, this, _states_list);
+                return make_shared<RoomNode>(
+                    json,
+                    data_accessor,
+                    _portal_register,
+                    getScript(),
+                    _room_name,
+                    this,
+                    _states_list,
+                    _object_loader);
             }),
     room_name(_room_name),
     states_list(_states_list),

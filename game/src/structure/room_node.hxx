@@ -21,6 +21,7 @@ struct DrawContext;
 class Script;
 struct IRoomNodePortalRegister;
 class Room;
+class IObjectLoader;
 
 struct RoomNode : public GltfNode
 {
@@ -60,7 +61,8 @@ struct RoomNode : public GltfNode
         Script* _roomScript,
         const std::string& room_name,
         Room* room,
-        StatesList* _states_list = nullptr);
+        StatesList* _states_list = nullptr,
+        IObjectLoader* _object_loader = nullptr);
 
     /** internal method to check if a gate is drawable, and return new draw context.
      * exposed for testability

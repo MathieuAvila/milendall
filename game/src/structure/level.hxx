@@ -24,9 +24,10 @@ class Level : public SpaceResolver, public GravityProvider, public ViewablesRegi
             unsigned recommended_time;
         };
 
-        /** build the level from the path to the final level file.
-         * It's up to the called to have a naming scheme for levels */
-        Level(FileLibrary::UriReference ref);
+        /** @brief build the level from the path to the final level file.
+         * It's up to the called to have a naming scheme for levels
+         * @param object_loader An interface to an object loader capable object. Ignored if nullptr - for tests only */
+        Level(FileLibrary::UriReference ref, IObjectLoader* object_loader = nullptr);
 
         /** Get its global parameters */
         GlobalDefinition getDefinition();

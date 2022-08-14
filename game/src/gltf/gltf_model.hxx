@@ -10,6 +10,8 @@
 #include "gltf_material_accessor_library_iface.hxx"
 #include "gltf_instance_iface.hxx"
 
+#include <gtest/gtest_prod.h>
+
 class GltfDataAccessorIFace;
 class GltfInstance;
 class GltfAnimation;
@@ -91,5 +93,7 @@ class GltfModel
 
         /** Apply an animation given its name and an instance*/
         virtual void applyAnimation(GltfInstance* instance, std::string name,float time);
+
+        FRIEND_TEST(GLTF_MODEL, Load_GLTF_model_missing_node_name);
 };
 

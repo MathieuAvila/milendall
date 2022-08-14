@@ -19,6 +19,7 @@
 #include "room_draw_context.hxx"
 #include "iface_room_node_portal_register.hxx"
 #include "gate_id.hxx"
+#include "iface_object_loader.hxx"
 
 static auto console = getConsole("room_node");
 
@@ -62,7 +63,8 @@ RoomNode::RoomNode(
     Script *_roomScript,
     const std::string &_room_name,
     Room *_room,
-    StatesList *_states_list) : GltfNode(json), room(_room), room_name(_room_name), portal_register(_portal_register)
+    StatesList *_states_list,
+    IObjectLoader* _object_loader) : GltfNode(json), room(_room), room_name(_room_name), portal_register(_portal_register)
 {
     gravity = make_unique<RoomNodeGravity>(name, _roomScript);
 
@@ -100,6 +102,13 @@ RoomNode::RoomNode(
 
         jsonExecuteIfElement(extras, "gravity", [this](nlohmann::json &json_gravity)
                              { gravity->readParameters(json_gravity); });
+
+        jsonExecuteAllIfElement(extras, "objects", [this, _object_loader](nlohmann::json& element, unsigned i) {
+            if (_object_loader) {
+                _object_loader->loadObject(room_name, name, element);
+            } else
+                console->warn("object found, but no object_loader");
+        });
     }
 }
 

@@ -12,7 +12,6 @@
 #include "states_list.hxx"
 #include "impl_room_node_portal_register.hxx"
 
-
 static auto console = getConsole("level");
 
 struct LevelRoomResolver : public RoomResolver
@@ -33,7 +32,7 @@ RoomResolver* Level::getRoomResolver()
     return room_resolver.get();
 }
 
-Level::Level(FileLibrary::UriReference ref)
+Level::Level(FileLibrary::UriReference ref, IObjectLoader* object_loader)
 {
     console->info("Load level: {}", ref.getPath());
     json j_level = json::parse(ref.readStringContent());
@@ -45,7 +44,13 @@ Level::Level(FileLibrary::UriReference ref)
             auto room_id = jsonGetElementByName(room_it, "room_id").get<string>();
             console->info("Found room_id: {}", room_id);
             auto ref_room = ref.getDirPath().getSubPath(room_id+ "/room.gltf");
-            auto room = std::make_shared<Room>(room_id, materialLibrary, ref_room, portal_register.get(), states_list.get());
+            auto room = std::make_shared<Room>(
+                room_id,
+                materialLibrary,
+                ref_room,
+                portal_register.get(),
+                states_list.get(),
+                this);
             rooms.insert({room_id, room});
     }
     auto declarations = jsonGetElementByName(j_level, "declarations");
