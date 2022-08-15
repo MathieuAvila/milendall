@@ -52,7 +52,7 @@ ObjectManager::~ObjectManager()
 
 void ObjectManager::loadObject(std::string room_name, std::string mesh_name, nlohmann::json& root)
 {
-    auto type = jsonGetElementByName(root, "type");
+    auto type = jsonGetElementByName(root, "type").get<std::string>();
     console->info("Load from room={} node={} type={}", room_name, mesh_name, type);
     // TODO: need an anonymous loader for beauty of architecture
     if (type == "" ) {
