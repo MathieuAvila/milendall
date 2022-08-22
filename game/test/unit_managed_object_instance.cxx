@@ -44,12 +44,12 @@ class FakeObject: public ManagedObject
 {
     public:
     MovableObjectDefinition def;
-    virtual MovableObjectDefinition& getObjectDefinition() {
+    virtual const MovableObjectDefinition& getObjectDefinition() const {
         return def;
     };
-    virtual MovementWish getRequestedMovement() { return MovementWish(); };
-    virtual glm::mat4x4 getOwnMatrix() { return glm::mat4x4(1.0f); };
-    virtual bool checkEol() { return false; };
+    virtual MovementWish getRequestedMovement() const { return MovementWish(); };
+    virtual glm::mat4x4 getOwnMatrix() const { return glm::mat4x4(1.0f); };
+    virtual bool checkEol() const { return false; } ;
     FakeObject(): def(MovableObjectDefinition(2.0f, 3.0f, 4.0f, 0.5f)) {}; // updates only 0.5 times as fast as time
     virtual ~FakeObject() = default;
 };
@@ -83,8 +83,10 @@ TEST_F(ManagedObjectInstanceTest, update_gravity_check_validity) {
     std::unique_ptr<ManagedObjectInstance> object_instance = std::make_unique<ManagedObjectInstance>(
         object,
         mainPosition,
+        "",
         nullptr,
-        gravity.get());
+        gravity.get(),
+        nullptr);
 
     object_instance->updateGravity(2.0f, 1.0f * 2.0f);
 
@@ -134,8 +136,10 @@ TEST_F(ManagedObjectInstanceTest, update_gravity_check_rotation) {
     std::unique_ptr<ManagedObjectInstance> object_instance = std::make_unique<ManagedObjectInstance>(
         object,
         mainPosition,
+        "",
         nullptr,
-        gravity.get());
+        gravity.get(),
+        nullptr);
 
 
     // Check that main vector is half rotated

@@ -9,16 +9,20 @@ static auto console = getConsole("managed_object_instance");
 ManagedObjectInstance::ManagedObjectInstance(
     std::shared_ptr<ManagedObject> _object,
     PointOfView _mainPosition,
+    std::string _mesh_name,
     SpaceResolver* _spaceResolver,
-    GravityProvider* _gravityProvider):
+    GravityProvider* _gravityProvider,
+    ViewablesRegistrar* _viewables_registrar):
         object(_object),
         mainPosition(_mainPosition),
+        mesh_name(_mesh_name),
         wall_adherence(false),
         current_speed(0.0f),
         current_gravity(0.0f, -0.3f, 0.0f),
         current_up(0.0f, 1.0f, 0.0f),
         spaceResolver(_spaceResolver),
         gravityProvider(_gravityProvider),
+        viewables_registrar(_viewables_registrar),
         gravity_validity(0.0f), // sets this to force recomputation
         last_update(0.0f) // starts counting from there
 {

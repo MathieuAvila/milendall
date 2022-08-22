@@ -10,7 +10,7 @@
 struct FaceHard;
 class SpaceResolver;
 class GravityProvider;
-
+class ViewablesRegistrar;
 
 class ManagedObjectInstance
 {
@@ -20,6 +20,9 @@ class ManagedObjectInstance
 
         /** @brief This is the real position of the center of the object*/
         PointOfView mainPosition;
+
+        /** @brief The mesh it is linked to; "" means none. */
+        std::string mesh_name;
 
         /** @brief This is other positions that the object crosses */
         std::list<PointOfView> otherPosition;
@@ -44,6 +47,9 @@ class ManagedObjectInstance
         /** @brief needed to recompute gravity*/
         GravityProvider* gravityProvider;
 
+        /**@brief needed to output viewables objects */
+        ViewablesRegistrar* viewables_registrar;
+
         /** @brief Absolute time of validity of gravity and up */
         float gravity_validity;
 
@@ -64,8 +70,10 @@ class ManagedObjectInstance
         ManagedObjectInstance(
             std::shared_ptr<ManagedObject> _object,
             PointOfView _mainPosition,
+            std::string _mesh_name,
             SpaceResolver* _spaceResolver,
-            GravityProvider* _gravityProvider
+            GravityProvider* _gravityProvider,
+            ViewablesRegistrar* _viewables_registrar
             );
 
         /** @brief Return the corrent POV */

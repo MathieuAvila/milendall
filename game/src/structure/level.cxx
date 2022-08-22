@@ -11,6 +11,7 @@
 #include "room_resolver.hxx"
 #include "states_list.hxx"
 #include "impl_room_node_portal_register.hxx"
+#include "iface_object_loader.hxx"
 
 static auto console = getConsole("level");
 
@@ -40,6 +41,8 @@ Level::Level(FileLibrary::UriReference ref, IObjectLoader* object_loader)
     portal_register = make_unique<ImplRoomNodePortalRegister>();
     GltfMaterialLibraryIfacePtr materialLibrary = GltfMaterialLibraryIface::getMaterialLibray();
     states_list = make_unique<StatesList>();
+    if (object_loader)
+        object_loader->setReferences(this, this, this);
     for(auto room_it : jsonGetElementByName(j_level, "rooms")) {
             auto room_id = jsonGetElementByName(room_it, "room_id").get<string>();
             console->info("Found room_id: {}", room_id);
@@ -50,7 +53,8 @@ Level::Level(FileLibrary::UriReference ref, IObjectLoader* object_loader)
                 ref_room,
                 portal_register.get(),
                 states_list.get(),
-                this);
+                this,
+                object_loader);
             rooms.insert({room_id, room});
     }
     auto declarations = jsonGetElementByName(j_level, "declarations");

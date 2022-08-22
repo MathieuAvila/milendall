@@ -23,10 +23,11 @@ class Player : public ManagedObject
         float verticalAngle;
     };
 
-    virtual MovableObjectDefinition& getObjectDefinition() override;
-    virtual MovementWish getRequestedMovement() override;
-    virtual bool checkEol() override;
-    virtual glm::mat4x4 getOwnMatrix() override;
+    virtual const MovableObjectDefinition& getObjectDefinition() const override;
+    virtual MovementWish getRequestedMovement() const override;
+    virtual bool checkEol() const override;
+    virtual glm::mat4x4 getOwnMatrix() const override;
+
 
     void setActionSet(ActionSet actions);
 

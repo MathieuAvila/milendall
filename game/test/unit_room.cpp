@@ -493,6 +493,14 @@ public:
 
     std::vector<obj> objs;
 
+    virtual void setReferences(
+            SpaceResolver* _spaceResolver,
+            GravityProvider* _gravityProvider,
+            ViewablesRegistrar* _viewables_registrar) override
+    {
+
+    }
+
     virtual void loadObject(std::string room_name, std::string mesh_name, nlohmann::json &root) override
     {
         obj o{room_name, mesh_name, root["type"].get<std::string>()};

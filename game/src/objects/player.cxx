@@ -13,12 +13,12 @@ Player::~Player()
 
 }
 
-MovableObjectDefinition& Player::getObjectDefinition()
+const MovableObjectDefinition& Player::getObjectDefinition() const
 {
     return movable_definition;
 }
 
-MovementWish Player::getRequestedMovement()
+MovementWish Player::getRequestedMovement() const
 {
     MovementWish wish;
 
@@ -39,12 +39,12 @@ MovementWish Player::getRequestedMovement()
     return wish;
 }
 
-glm::mat4x4 Player::getOwnMatrix()
+glm::mat4x4 Player::getOwnMatrix() const
 {
     return getRotatedMatrix(currentActions.verticalAngle, currentActions.horizontalAngle);
 }
 
-bool Player::checkEol()
+bool Player::checkEol() const
 {
     return false;
 }

@@ -11,6 +11,7 @@
 class SpaceResolver;
 class GravityProvider;
 class ManagedObjectInstance;
+class ViewablesRegistrar;
 
 class ObjectManager: public IObjectLoader
 {
@@ -20,15 +21,27 @@ class ObjectManager: public IObjectLoader
 
         ObjectManager(
             SpaceResolver* _spaceResolver,
-            GravityProvider* _gravityProvider
+            GravityProvider* _gravityProvider,
+            ViewablesRegistrar* _viewables_registrar = nullptr
             );
+
+        ObjectManager();
+
+        virtual void setReferences(
+            SpaceResolver* _spaceResolver,
+            GravityProvider* _gravityProvider,
+            ViewablesRegistrar* _viewables_registrar = nullptr) override;
 
         /** @brief Insert any object in the list of managed objects.
          * @param obj The bject to insert
          * @param pos Where to insert it (main position)
+         * @param mesh_name mesh to insert it in, if any.
          * @return a UID that can be used later on to reference objects
          */
-        ObjectUid insertObject(std::shared_ptr<ManagedObject> obj, PointOfView pos);
+        ObjectUid insertObject(
+            std::shared_ptr<ManagedObject> obj,
+            PointOfView pos,
+            std::string mesh_name = "");
 
         /** @brief Retrieve an object's position. Mainly used to know where the user is,
          * so that drawing is made from that position.
@@ -51,6 +64,7 @@ class ObjectManager: public IObjectLoader
 
         SpaceResolver* spaceResolver;
         GravityProvider* gravityProvider;
+        ViewablesRegistrar* viewables_registrar;
 
         /** mapping unique ID to objects */
         std::map<ObjectUid, std::unique_ptr<ManagedObjectInstance>> managed_objects;

@@ -83,7 +83,9 @@ int main(int argc, char* argv[])
     auto ref = fl.getRoot().getSubPath(modelPath);
     GltfMaterialLibraryIfacePtr materialLibrary = GltfMaterialLibraryIface::getMaterialLibray();
 
-    auto level = make_unique<Level>(ref);
+    auto object_manager = make_unique<ObjectManager>();
+
+    auto level = make_unique<Level>(ref, object_manager.get());
     auto room_ids = level.get()->getRoomNames();
     level.get()->update(0.0);
     PointOfView currentPov{
@@ -92,16 +94,14 @@ int main(int argc, char* argv[])
             *room_ids.begin()};
     console->info("Set current room to {}", currentPov.room);
 
+    auto player = make_shared<Player>();
+    auto player_id = object_manager ->insertObject(player,
+        PointOfView(currentPov.position, currentPov.local_reference, currentPov.room)
+    );
     auto fontRegular = fl.getRoot().getSubPath("/common/fonts/fredoka-one.one-regular.ttf");
     auto fontCandy = fl.getRoot().getSubPath("/common/fonts/emilyscandy/EmilysCandy-Regular.ttf");
     fontLoadFont("regular", fontRegular);
     fontLoadFont("candy", fontCandy);
-
-    auto player = make_shared<Player>();
-    auto object_manager = make_unique<ObjectManager>(level.get(), level.get());
-    auto player_id = object_manager ->insertObject(player,
-        PointOfView(currentPov.position, currentPov.local_reference, currentPov.room)
-    );
 
     auto current_time = std::chrono::steady_clock::now();
     auto total_time = 0.0f;
