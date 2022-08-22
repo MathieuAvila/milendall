@@ -31,29 +31,36 @@
             },
             "objects": [
                 {
-                    "type": "t+_5s",
+                    "type": "option",
                     "position": [
                         1.0,
                         0.5,
                         2.0
-                    ]
+                    ],
+                    "parameters": {
+                        "subtype" : "time+1"
+                    }
                 },
                 {
-                    "type": "t-_5s",
-                    "position": [
-                        1.0,
-                        0.5,
-                        3.0
-                    ]
-                },
-                {
-                    "type": "speedX",
+                    "type": "option",
                     "position": [
                         1.0,
                         0.5,
                         3.0
                     ],
                     "parameters": {
+                        "subtype" : "time+5"
+                    }
+                },
+                {
+                    "type": "option",
+                    "position": [
+                        1.0,
+                        0.5,
+                        3.0
+                    ],
+                    "parameters": {
+                        "subtype" : "speed+",
                         "factor": 1.5,
                         "duration": 5
                     }
