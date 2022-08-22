@@ -120,6 +120,7 @@ add_library(game_lib STATIC
   game/src/objects/object_manager.cxx
   game/src/objects/object_manager.hxx
   game/src/objects/managed_object.hxx
+  game/src/objects/managed_object.cxx
   game/src/objects/managed_object_instance.hxx
   game/src/objects/managed_object_instance.cxx
   game/src/objects/player.hxx
