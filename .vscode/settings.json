@@ -1,5 +1,4 @@
 {
-    "restructuredtext.confPath": "",
     "python.testing.unittestEnabled": true,
     "python.linting.pylintArgs": [
         "--disable=F0401", "--disable=C0115"
@@ -96,6 +95,5 @@
         "valarray": "cpp",
         "variant": "cpp"
     },
-    "restructuredtext.languageServer.disabled": true,
     "C_Cpp.errorSquiggles": "Enabled"
 }
