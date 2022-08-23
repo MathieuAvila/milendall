@@ -3,6 +3,7 @@
 #include "common.hxx"
 #include "test_common.hpp"
 #include "glmock.hpp"
+#include "filesystem"
 
 #include "model_registry.hxx"
 #include "gltf_material_accessor_library_iface.hxx"
