@@ -127,6 +127,8 @@ add_library(game_lib STATIC
   game/src/objects/player.cxx
   game/src/objects/object_option.hxx
   game/src/objects/object_option.cxx
+  game/src/objects/model_registry.hxx
+  game/src/objects/model_registry.cxx
   game/src/point_of_view.hxx
   game/src/point_of_view.cxx
 )
@@ -214,6 +216,7 @@ game/test/unit_trigger.cxx
 game/test/unit_gate_id.cxx
 game/test/unit_impl_room_node_portal_register.cxx
 game/test/unit_viewables_registrar_impl.cxx
+game/test/unit_model_registry.cxx
 )
 
 enable_testing()
