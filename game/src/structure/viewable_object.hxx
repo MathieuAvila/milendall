@@ -9,7 +9,7 @@ class ViewableObject
         multiple different rooms */
         virtual float getRadius() const = 0;
 
-        /** @brief Render object. Other matrices must NOT be changed */
-        virtual void outputObject() const = 0;
+        /** @brief Render object. Only gltf_mesh can be changed, other matrices must NOT be changed */
+        virtual void outputObject(glm::mat4& rel_pos) const = 0;
 };
 
