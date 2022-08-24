@@ -15,9 +15,12 @@
 
 static auto console = getConsole("object_manager");
 
-ObjectManager::ObjectManager()
+ObjectManager::ObjectManager(
+    std::shared_ptr<ModelRegistry> _model_registry,
+    std::shared_ptr<FileLibrary> _library):
+        model_registry(_model_registry),
+        library(_library)
 {
-
 }
 
 void ObjectManager::setReferences(
@@ -31,9 +34,13 @@ void ObjectManager::setReferences(
 }
 
 ObjectManager::ObjectManager(
+    std::shared_ptr<ModelRegistry> _model_registry,
+    std::shared_ptr<FileLibrary> _library,
     SpaceResolver *_spaceResolver,
     GravityProvider *_gravityProvider,
-    ViewablesRegistrar* _viewables_registrar)
+    ViewablesRegistrar* _viewables_registrar) :
+        model_registry(_model_registry),
+        library(_library)
 {
     setReferences(
             _spaceResolver,
@@ -68,6 +75,7 @@ void ObjectManager::update(float total_time)
     {
         auto p = _obj.second.get();
         p->computeNextPosition(total_time);
+        p->updateViewable();
     }
 }
 
@@ -98,7 +106,7 @@ void ObjectManager::loadObject(std::string room_name, std::string mesh_name, nlo
         if (root.contains("parameters")) {
             parameters = &(root["parameters"]);
         }
-        auto obj = make_shared<ObjectOption>(parameters);
+        auto obj = make_shared<ObjectOption>(model_registry.get(), library.get(), parameters);
         insertObject(obj, pov);
     }
     else

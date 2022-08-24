@@ -12,6 +12,8 @@ class SpaceResolver;
 class GravityProvider;
 class ManagedObjectInstance;
 class ViewablesRegistrar;
+class ModelRegistry;
+class FileLibrary;
 
 class ObjectManager: public IObjectLoader
 {
@@ -19,14 +21,20 @@ class ObjectManager: public IObjectLoader
 
         using ObjectUid = int;
 
+        /** @brief full initialization, only for tests */
         ObjectManager(
+            std::shared_ptr<ModelRegistry> _model_registry,
+            std::shared_ptr<FileLibrary> _library,
             SpaceResolver* _spaceResolver,
             GravityProvider* _gravityProvider,
             ViewablesRegistrar* _viewables_registrar = nullptr
             );
 
-        ObjectManager();
+        /** @brief partial initialization, real world use,
+         * then initializarion completed by @class Level with setReferences */
+        ObjectManager(std::shared_ptr<ModelRegistry> _model_registry, std::shared_ptr<FileLibrary> _library);
 
+        /** @brief see @class IObjectLoader */
         virtual void setReferences(
             SpaceResolver* _spaceResolver,
             GravityProvider* _gravityProvider,
@@ -61,6 +69,9 @@ class ObjectManager: public IObjectLoader
         virtual ~ObjectManager();
 
     private:
+
+        std::shared_ptr<ModelRegistry> model_registry;
+        std::shared_ptr<FileLibrary> library;
 
         SpaceResolver* spaceResolver;
         GravityProvider* gravityProvider;

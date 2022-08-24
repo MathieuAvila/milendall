@@ -4,6 +4,7 @@
 #include "glm/mat4x4.hpp"
 #include "../point_of_view.hxx"
 #include "managed_object.hxx"
+#include "viewables_registrar.hxx"
 
 #include <gtest/gtest_prod.h>
 
@@ -56,6 +57,9 @@ class ManagedObjectInstance
         /** last update time */
         float last_update;
 
+        /** @brief ID if viewable exists */
+        ViewablesRegistrar::viewableId viewable_id;
+
         /** @brief get computed next position without walls detection collision */
         glm::vec3 getComputeNextPosition(float time_delta) const;
 
@@ -81,6 +85,11 @@ class ManagedObjectInstance
 
         /** @brief compute next position */
         void computeNextPosition(float total_time);
+
+        /** @brief update viewable */
+        void updateViewable();
+
+        ~ManagedObjectInstance();
 
     FRIEND_TEST(ManagedObjectInstanceTest, update_gravity_check_validity);
     FRIEND_TEST(ManagedObjectInstanceTest, update_gravity_check_rotation);

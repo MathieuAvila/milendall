@@ -24,7 +24,8 @@ ManagedObjectInstance::ManagedObjectInstance(
         gravityProvider(_gravityProvider),
         viewables_registrar(_viewables_registrar),
         gravity_validity(0.0f), // sets this to force recomputation
-        last_update(0.0f) // starts counting from there
+        last_update(0.0f), // starts counting from there
+        viewable_id(0)
 {
 }
 
@@ -40,6 +41,25 @@ void ManagedObjectInstance::computeNextPosition(float total_time)
     auto newPos = getComputeNextPosition(delta_time);
     move(newPos, delta_time);
     last_update = total_time;
+}
+
+void ManagedObjectInstance::updateViewable()
+{
+    if (viewables_registrar == nullptr)
+        return;
+
+    // check viewable
+    if (viewable_id == 0) {
+        auto viewable = object->getViewable();
+        if (viewable.get() != nullptr) {
+            viewable_id = viewables_registrar->appendViewable(viewable);
+            console->info("Found viewable and inserted with ID={}", viewable_id);
+        }
+    }
+    // update if any
+    if (viewable_id != 0) {
+        viewables_registrar->updateViewable(viewable_id, mainPosition);
+    }
 }
 
 void ManagedObjectInstance::updateGravity(float total_time, float time_delta)
@@ -176,4 +196,11 @@ void ManagedObjectInstance::move(glm::vec3 newPos, float time_delta)
             );
     }
 
+}
+
+ManagedObjectInstance::~ManagedObjectInstance()
+{
+    if (viewable_id != 0) {
+        viewables_registrar->removeViewable(viewable_id);
+    }
 }

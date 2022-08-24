@@ -17,6 +17,7 @@
 
 #include "objects/player.hxx"
 #include "objects/object_manager.hxx"
+#include "objects/model_registry.hxx"
 
 #include "helper_math.hxx"
 #include "fps_counter.hxx"
@@ -74,7 +75,8 @@ int main(int argc, char* argv[])
 
     auto [modelPath, libPaths] = readParams(argc, argv);
 
-    auto fl = FileLibrary();
+    auto flp = make_shared<FileLibrary>();
+    auto& fl = *flp.get();
     for (auto p: libPaths)
         fl.addRootFilesystem(p);
 
@@ -83,7 +85,8 @@ int main(int argc, char* argv[])
     auto ref = fl.getRoot().getSubPath(modelPath);
     GltfMaterialLibraryIfacePtr materialLibrary = GltfMaterialLibraryIface::getMaterialLibray();
 
-    auto object_manager = make_unique<ObjectManager>();
+    auto model_registry = make_shared<ModelRegistry>(materialLibrary);
+    auto object_manager = make_unique<ObjectManager>(model_registry, flp);
 
     auto level = make_unique<Level>(ref, object_manager.get());
     auto room_ids = level.get()->getRoomNames();

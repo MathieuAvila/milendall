@@ -6,6 +6,8 @@
 
 
 class ViewableObject;
+class ModelRegistry;
+class FileLibrary;
 
 /** @brief All options objects */
 class ObjectOption : public ManagedObject
@@ -21,8 +23,10 @@ class ObjectOption : public ManagedObject
 
         /** @brief Load from file
          * @param root parameters root, or nullptr
+         * @param registry one shot usage, only during initialization
+         * @param library one shot usage, only during initialization
         */
-        ObjectOption(nlohmann::json* root);
+        ObjectOption(ModelRegistry* registry, FileLibrary* library, nlohmann::json* root);
 
         /** @brief from ManagedObject */
         virtual bool checkEol() const override;

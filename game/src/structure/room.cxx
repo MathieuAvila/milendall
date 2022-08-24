@@ -124,8 +124,12 @@ void Room::draw(PointOfView pov)
     // Draw included objects
     if (viewables_registrar) {
         auto objects = viewables_registrar->getViewables(room_name);
-        for (auto& obj : objects) {
-            obj->outputObject();
+        for (auto& locs : objects) {
+            auto obj = locs.obj;
+            for (auto pov: locs.povs) {
+                auto mat = pov.getPosMatrix();
+                obj->outputObject(mat);
+            }
         }
     }
 }
