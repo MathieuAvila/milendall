@@ -7,6 +7,12 @@
 #include "viewable_object.hxx"
 #include "object_option.hxx"
 
+// To animate option.
+#include <glm/gtc/matrix_transform.hpp>
+
+// TODO manage elsewhere.
+#include <chrono>
+
 static auto console = getConsole("object_option");
 
 class ObjectOptionViewable : public ViewableObject {
@@ -16,6 +22,9 @@ class ObjectOptionViewable : public ViewableObject {
 
     /** @brief own instance */
     std::unique_ptr<GltfInstance> instance;
+
+    // TODO: provide time from elsewhere
+    std::chrono::steady_clock::time_point begin;
 
     public:
 
@@ -27,6 +36,7 @@ class ObjectOptionViewable : public ViewableObject {
             // TODO switch on type
             model = registry->getModel(library->getRoot().getSubPath("/common/objects/time_plus__apple.glb"));
             instance = make_unique<GltfInstance>(model->getInstanceParameters());
+            begin = std::chrono::steady_clock::now();
         }
 
         virtual ~ObjectOptionViewable() = default;
@@ -37,7 +47,14 @@ class ObjectOptionViewable : public ViewableObject {
 
         virtual void outputObject(glm::mat4& rel_pos) const override {
             //console->info("print option");
-            model->applyDefaultTransform(instance.get(), rel_pos);
+
+            std::chrono::steady_clock::time_point current = std::chrono::steady_clock::now();
+            auto diff_sec = (float)(std::chrono::duration_cast<std::chrono::microseconds>)(current - begin).count() / 1000000.0f;
+
+            auto rot = glm::rotate(rel_pos, diff_sec * glm::pi<float>()/4.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+            auto final = glm::translate(rot, glm::vec3(0.0f, glm::cos(diff_sec * 2.0f) * 0.1f - 0.2, 0.0f));
+
+            model->applyDefaultTransform(instance.get(), final);
             model->draw(instance.get());
         }
 };
