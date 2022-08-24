@@ -26,8 +26,14 @@ class ViewablesRegistrar
 
     public:
 
+
+        typedef std::list<PointOfView> PovList;
         typedef unsigned int viewableId;
         typedef std::shared_ptr<ViewableObject> ViewableObjectPtr;
+        typedef struct {
+            ViewableObjectPtr obj;
+            PovList povs;
+        } ViewableLocation;
 
         /** @brief Used by object manager */
         virtual viewableId appendViewable(ViewableObjectPtr _object) = 0;
@@ -35,7 +41,7 @@ class ViewablesRegistrar
         virtual void removeViewable(viewableId id) = 0;
 
         /** @brief Get objects in a room ready to be drawn */
-        virtual std::list<ViewableObjectPtr> getViewables(std::string room) = 0;
+        virtual std::list<ViewableLocation> getViewables(std::string room) = 0;
 
         virtual ~ViewablesRegistrar();
 };

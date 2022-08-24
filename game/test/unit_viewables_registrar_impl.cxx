@@ -34,17 +34,17 @@ public:
 
     virtual ~TestViewable(){};
 
-    virtual void outputObject() const override{
+    virtual void outputObject(glm::mat4 &rel_pos) const override{
 
     };
 };
 
-std::list<PointOfView> getPovList(std::list<std::string> rooms)
+std::list<PointOfView> getPovList(std::list<std::string> rooms, int counter)
 {
     std::list<PointOfView> result;
     for (auto &r : rooms)
     {
-        result.push_back(PointOfView(glm::vec3(), glm::mat3x3(), r));
+        result.push_back(PointOfView(glm::vec3((float)counter++, 0.0f, 0.0f), glm::mat3x3(), r));
     }
     return result;
 }
@@ -67,18 +67,18 @@ public:
     ViewablesRegistrarImplTest(){};
     virtual ~ViewablesRegistrarImplTest(){};
 
-    ViewablesRegistrar::viewableId helperSetObjectId(std::shared_ptr<TestViewable> _object, std::list<std::string> rooms)
+    ViewablesRegistrar::viewableId helperSetObjectId(std::shared_ptr<TestViewable> _object, std::list<std::string> rooms, int counter = 0)
     {
         auto id = appendViewable(_object);
-        setNextPositions(getPovList(rooms));
+        setNextPositions(getPovList(rooms, counter));
         updateViewable(id, PointOfView());
         _object->assigned_id = id;
         return id;
     }
 
-    void helperUpdateObjectId(ViewablesRegistrar::viewableId id, std::list<std::string> rooms)
+    void helperUpdateObjectId(ViewablesRegistrar::viewableId id, std::list<std::string> rooms, int counter = 0)
     {
-        setNextPositions(getPovList(rooms));
+        setNextPositions(getPovList(rooms, counter));
         updateViewable(id, PointOfView());
     }
 };
@@ -104,7 +104,7 @@ bool checkContent(ViewablesRegistrarImpl *registrar, std::string room, std::list
         bool found = false;
         for (auto sid : content)
         {
-            TestViewable *tv = dynamic_cast<TestViewable *>(sid.get());
+            TestViewable *tv = dynamic_cast<TestViewable *>(sid.obj.get());
             if (tv->assigned_id == id)
             {
                 found = true;
@@ -112,6 +112,39 @@ bool checkContent(ViewablesRegistrarImpl *registrar, std::string room, std::list
         }
         if (found == false)
         {
+            registrar->dump();
+            return false;
+        }
+    }
+    return true;
+}
+
+bool checkContentFull(ViewablesRegistrarImpl *registrar, std::string room, std::list<std::tuple<ViewablesRegistrar::viewableId, int>> list)
+{
+    auto content = registrar->getViewables(room);
+    for (auto id_tuple : list)
+    {
+        console->debug("SEARCH {} {}",std::get<0>(id_tuple), std::get<1>(id_tuple));
+        bool found = false;
+        for (auto sid : content)
+        {
+            TestViewable *tv = dynamic_cast<TestViewable *>(sid.obj.get());
+            for (auto pov : sid.povs)
+            {
+                int counter = pov.position[0];
+                std::tuple<ViewablesRegistrar::viewableId, int> tup = {tv->assigned_id , counter};
+                console->debug(
+                    "compare against {} {}",
+                    std::get<0>(tup), std::get<1>(tup));
+                if (tup == id_tuple)
+                {
+                    found = true;
+                }
+            }
+        }
+        if (found == false)
+        {
+            console->debug("FAILED");
             registrar->dump();
             return false;
         }
@@ -181,4 +214,17 @@ TEST_F(ViewablesRegistrarImplUnitTest, update)
     ASSERT_TRUE(checkContent(registrar.get(), "room1", {id_1, id_2, id_3}));
     ASSERT_TRUE(checkContent(registrar.get(), "room2", {id_3}));
     ASSERT_TRUE(checkContent(registrar.get(), "room3", {}));
+}
+
+TEST_F(ViewablesRegistrarImplUnitTest, multipos_matrix)
+{
+    std::unique_ptr<ViewablesRegistrarImplTest> registrar = make_unique<ViewablesRegistrarImplTest>();
+    auto my_obj_1 = make_shared<TestViewable>(1.0);
+    auto my_obj_2 = make_shared<TestViewable>(2.0);
+    auto id_1 = registrar->helperSetObjectId(my_obj_1, {"room1", "room1"}, 1);
+    auto id_2 = registrar->helperSetObjectId(my_obj_2, {"room1", "room2"}, 10);
+
+    registrar->dump();
+
+    ASSERT_TRUE(checkContentFull(registrar.get(), "room1", { {id_1, 1}, {id_1, 2}, {id_2, 10} } ));
 }

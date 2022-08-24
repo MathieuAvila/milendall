@@ -11,6 +11,8 @@ class ViewableObject;
 class ViewablesRegistrarImpl : public ViewablesRegistrar
 {
 
+    typedef std::map<viewableId, PovList> MapIdPovList;
+
     /** @brief Storing information for a viewable object. ID is in the
      * enclosing map */
     typedef struct ViewableObjectInfo_s
@@ -19,13 +21,13 @@ class ViewablesRegistrarImpl : public ViewablesRegistrar
         ViewableObjectPtr object;
         /** @brief the list of room it is implied in with the associated
          * positions. Must be in sync with mapRoomObject */
-        std::list<PointOfView> povList;
+        PovList povList;
 
     } ViewableObjectInfo;
 
     /** @brief keep this up to date to have a way to quickly access the list of
      * objects associated to a room */
-    std::map<std::string, std::list<viewableId>> mapRoomObject;
+    std::map<std::string, MapIdPovList> mapRoomObject;
 
     /** @brief Full list of objects */
     std::map<viewableId, ViewableObjectInfo> objects;
@@ -60,7 +62,7 @@ class ViewablesRegistrarImpl : public ViewablesRegistrar
         virtual void removeViewable(viewableId id) override;
 
         /** @brief Get objects in a room ready to be drawn */
-        virtual std::list<ViewableObjectPtr> getViewables(std::string room) override;
+        virtual std::list<ViewableLocation> getViewables(std::string room) override;
 
         /** @brief for debug purposes */
         void dump();

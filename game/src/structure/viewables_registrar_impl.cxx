@@ -1,6 +1,7 @@
 #include "viewables_registrar_impl.hxx"
 #include "viewable_object.hxx"
 #include "common.hxx"
+#include "helper_math.hxx"
 
 static auto console = getConsole("viewables_registrar_impl");
 
@@ -31,10 +32,10 @@ void ViewablesRegistrarImpl::updateViewableSolved(ViewablesRegistrar::viewableId
 
     auto& obj = objects[id];
     // first remove where it appears
-    for (auto& pov: obj.povList) {
+    for (auto& pov: obj.povList) { // NOTE: one room may be accessed multiple times, but this is costless.
         if (mapRoomObject.count(pov.room)) {
             auto& subr = mapRoomObject[pov.room];
-            subr.remove(id);
+            subr.erase(id);
         }
     }
     // replace
@@ -42,10 +43,15 @@ void ViewablesRegistrarImpl::updateViewableSolved(ViewablesRegistrar::viewableId
     // then append in new position
     for (auto& pov: obj.povList) {
         if (mapRoomObject.count(pov.room) == 0) {
-            std::list<ViewablesRegistrar::viewableId> ids = {counter};
-            mapRoomObject.insert(std::pair<std::string, std::list<ViewablesRegistrar::viewableId>>(pov.room, ids));
-        } else {
-            mapRoomObject[pov.room].push_back(counter);
+            MapIdPovList voidList;
+            mapRoomObject.insert(std::pair<std::string, MapIdPovList>(pov.room, voidList));
+        };
+        MapIdPovList& room_ids = mapRoomObject[pov.room];
+        if (room_ids.count(id) == 0) {
+            room_ids.insert(std::pair<viewableId, PovList>(id, { pov }));
+        }
+         else {
+            room_ids[id].push_back(pov);
         }
     }
 }
@@ -67,14 +73,16 @@ void ViewablesRegistrarImpl::removeViewable(ViewablesRegistrar::viewableId id)
     objects.erase(id);
 }
 
-std::list<ViewablesRegistrar::ViewableObjectPtr> ViewablesRegistrarImpl::getViewables(std::string room)
+std::list<ViewablesRegistrar::ViewableLocation> ViewablesRegistrarImpl::getViewables(std::string room)
 {
     std::unique_lock<std::mutex> lock(access_mutex);
-    std::list<ViewablesRegistrar::ViewableObjectPtr> result;
+    std::list<ViewablesRegistrar::ViewableLocation> result;
     if (mapRoomObject.count(room) != 0) {
         auto listIds = mapRoomObject[room];
         for (auto id : listIds) {
-            result.push_back(objects[id].object);
+            auto objptr = objects[id.first].object;
+            ViewablesRegistrar::ViewableLocation loc = { objptr , id.second };
+            result.push_back(loc);
         }
     }
     return result;
@@ -87,7 +95,10 @@ void ViewablesRegistrarImpl::dump()
     {
         console->debug("ROOM={}", kv.first);
         for (auto id : kv.second) {
-            console->debug("ID={}", id);
+            console->debug("ID={}", id.first);
+            for (auto pov : id.second) {
+               console->debug("P={}", vec3_to_string(pov.position));
+            }
         }
     }
     console->debug("===== DEBUG IDS");
