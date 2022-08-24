@@ -13,6 +13,8 @@
 // TODO manage elsewhere.
 #include <chrono>
 
+#include "object_exception.hxx"
+
 static auto console = getConsole("object_option");
 
 class ObjectOptionViewable : public ViewableObject {
@@ -33,8 +35,20 @@ class ObjectOptionViewable : public ViewableObject {
             FileLibrary* library,
             std::string type)
         {
-            // TODO switch on type
-            model = registry->getModel(library->getRoot().getSubPath("/common/objects/time_plus__apple.glb"));
+            if (type == "time_+1") {
+                model = registry->getModel(library->getRoot().getSubPath("/common/objects/time_plus_1__apple.glb"));
+            } else if (type == "time_+2") {
+                model = registry->getModel(library->getRoot().getSubPath("/common/objects/time_plus_2__broccoli.glb"));
+            } else if (type == "time_+5") {
+                model = registry->getModel(library->getRoot().getSubPath("/common/objects/time_plus_5__banana.glb"));
+            } else if (type == "time_-1") {
+                model = registry->getModel(library->getRoot().getSubPath("/common/objects/time_less_1__candy.glb"));
+            } else if (type == "time_-2") {
+                model = registry->getModel(library->getRoot().getSubPath("/common/objects/time_less_2__sundae.glb"));
+            } else if (type == "time_-5") {
+                model = registry->getModel(library->getRoot().getSubPath("/common/objects/time_less_5__burgercheesedouble.glb"));
+            } else
+                throw ObjectException("Unknown option type " + type);
             instance = make_unique<GltfInstance>(model->getInstanceParameters());
             begin = std::chrono::steady_clock::now();
         }
@@ -84,7 +98,7 @@ glm::mat4x4 ObjectOption::getOwnMatrix() const
     return glm::mat4x4();
 }
 
-static MovableObjectDefinition option_def(false); // don't need to compute move
+static MovableObjectDefinition option_def(false, MovableObjectDefinition::InteractionLevel::LOW); // don't need to compute move
 
 const MovableObjectDefinition &ObjectOption::getObjectDefinition() const
 {

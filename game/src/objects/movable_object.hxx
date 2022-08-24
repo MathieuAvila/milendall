@@ -15,8 +15,13 @@
 struct MovableObjectDefinition
 {
 
+        typedef enum { NONE, LOW, ALL } InteractionLevel;
+
         /** @brief If the object is able to move. If not, don' compute movement */
         const bool can_move;
+
+        /** @brief Interaction level */
+        const InteractionLevel interaction_level;
 
         /** @brief radius of the object */
         const float radius;
@@ -34,9 +39,9 @@ struct MovableObjectDefinition
         const float rotation_speed;
 
         MovableObjectDefinition(float _radius, float _weight, float _roughness, float _rotation_speed):
-            can_move(true), radius(_radius), weight(_weight), roughness(_roughness), rotation_speed(_rotation_speed){};
+            can_move(true), interaction_level(ALL), radius(_radius), weight(_weight), roughness(_roughness), rotation_speed(_rotation_speed){};
 
-        MovableObjectDefinition(bool _can_move):
-            can_move(_can_move), radius(0.0), weight(0.0), roughness(0.0), rotation_speed(0.0)
+        MovableObjectDefinition(bool _can_move, InteractionLevel _interaction_level):
+            can_move(_can_move), interaction_level(_interaction_level), radius(0.0), weight(0.0), roughness(0.0), rotation_speed(0.0)
         {};
 };
