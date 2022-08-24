@@ -69,6 +69,8 @@ void ManagedObjectInstance::updateViewable()
 
 void ManagedObjectInstance::updateGravity(float total_time, float time_delta)
 {
+    if (!gravityProvider)
+        return;
     console->debug("Update total_time {} time_delta {} gravity_validity {}", total_time, time_delta, gravity_validity);
     auto &def = object.get()->getObjectDefinition();
     if (gravity_validity < total_time)
@@ -127,6 +129,9 @@ glm::vec3 ManagedObjectInstance::getComputeNextPosition(float time_delta) const
 
 void ManagedObjectInstance::move(glm::vec3 newPos, float time_delta)
 {
+    if (!spaceResolver)
+        return;
+
     bool wall_bounced;
 
     wall_adherence = false;
