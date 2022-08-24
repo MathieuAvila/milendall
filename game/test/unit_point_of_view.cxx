@@ -162,3 +162,24 @@ TEST(PointOfView, getViewMatrix_translated )
         1.0, 0.0, 0.0, 1.0);
     ASSERT_TRUE(mat4x4_abs_diff(view, expected_result)< 0.05f);
 }
+
+TEST(PointOfView, getPosMatrix )
+{
+    auto id = glm::mat4(1.0f);
+    auto x = glm::vec3(1.0f, 0.0f , 0.0f);
+    auto rot = glm::rotate(id, glm::pi<float>(), x);
+
+    PointOfView pov{
+        glm::vec3(1.0, 0.0, 0.0),
+        rot,
+        "myRoom"
+    };
+    auto mat = pov.getPosMatrix();
+    console->info("{}", mat4x4_to_string(mat));
+    glm::mat4x4 expected_result(
+        1.0, 0.0, 0.0, 0.0,
+        0.0, -1.0, 0.0, 0.0,
+        0.0, 0.0, -1.0, 0.0,
+        1.0, 0.0, 0.0, 1.0);
+    ASSERT_TRUE(mat4x4_abs_diff(mat, expected_result)< 0.05f);
+}

@@ -43,6 +43,9 @@ struct PointOfView
 
     /** @brief Return ViewMatrix as expected by GL */
     glm::mat4x4 getViewMatrix() const;
+
+    /** @brief positionning matrix, made of position and local_reference */
+    glm::mat4x4 getPosMatrix() const;
 };
 
 std::string to_string(const PointOfView&);
