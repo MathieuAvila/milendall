@@ -2,6 +2,9 @@
 #include <cmath>
 
 #include "helper_math.hxx"
+#include "common.hxx"
+
+static auto console = getConsole("player");
 
 Player::Player() : movable_definition(MovableObjectDefinition(0.7f, 1.0f, 1.0f, 0.3f))
 {
@@ -52,4 +55,10 @@ bool Player::checkEol() const
 void Player::setActionSet(ActionSet actions)
 {
     currentActions = actions;
+}
+
+bool Player::addTime(float time)
+{
+    console->info("Received time {}", time);
+    return true;
 }

@@ -28,6 +28,7 @@ class Player : public ManagedObject
     virtual bool checkEol() const override;
     virtual glm::mat4x4 getOwnMatrix() const override;
 
+    virtual bool addTime(float time) override;
 
     void setActionSet(ActionSet actions);
 

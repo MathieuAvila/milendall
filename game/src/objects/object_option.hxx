@@ -16,6 +16,12 @@ class ObjectOption : public ManagedObject
     /** @brief shared object for viewing */
     std::shared_ptr<ViewableObject> viewable;
 
+    /** @brief End on player interaction */
+    bool end;
+
+    /** @brief based on subtype, time to append */
+    float time_value;
+
     public:
 
         // to be derived
@@ -42,6 +48,9 @@ class ObjectOption : public ManagedObject
 
         /** @brief from ManagedObject */
         virtual std::shared_ptr<ViewableObject> getViewable() const override;
+
+        /** @brief send messages about time and speed */
+        virtual void interact(ManagedObject* second_object) override;
 
         // needs too be derivable.
         virtual ~ObjectOption() = default;
