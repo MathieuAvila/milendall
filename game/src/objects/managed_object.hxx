@@ -37,6 +37,14 @@ class ManagedObject
         /** @brief Get a reference to the associated viewable object. Defaults to nullptr == no viewable */
         virtual std::shared_ptr<ViewableObject> getViewable() const;
 
+        /** @brief In case of interaction, add this amount of time.
+         * By default, this does nothing, only player should implement it.
+         * @return True if done something with it, false otherwise */
+        virtual bool addTime(float time);
+
+        /** @brief Interact with me. Does nothing by default */
+        virtual void interact(ManagedObject* second_object);
+
         /** @brief to be derived */
         ManagedObject() = default;
 

@@ -86,6 +86,15 @@ class ManagedObjectInstance
         /** @brief compute next position */
         void computeNextPosition(float total_time);
 
+        /** @brief accessor to compute interactions */
+        void getInteractionParameters(float &radius, MovableObjectDefinition::InteractionLevel &level, PointOfView &pos);
+
+        /** @brief Run interact */
+        void interact(ManagedObjectInstance* second_object);
+
+        /** @brief proxy to checkEol. */
+        bool checkEol();
+
         /** @brief update viewable */
         void updateViewable();
 

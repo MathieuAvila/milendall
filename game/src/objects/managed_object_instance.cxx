@@ -208,6 +208,27 @@ void ManagedObjectInstance::move(glm::vec3 newPos, float time_delta)
     }
 }
 
+void ManagedObjectInstance::getInteractionParameters(
+    float &radius,
+    MovableObjectDefinition::InteractionLevel &level,
+    PointOfView &pos)
+{
+    auto& def = object.get()->getObjectDefinition();
+    radius = def.radius;
+    level = def.interaction_level;
+    pos = mainPosition;
+}
+
+void ManagedObjectInstance::interact(ManagedObjectInstance* second_object)
+{
+    object.get()->interact(second_object->object.get());
+}
+
+bool ManagedObjectInstance::checkEol()
+{
+    return object.get()->checkEol();
+}
+
 ManagedObjectInstance::~ManagedObjectInstance()
 {
     if (viewable_id != 0)
