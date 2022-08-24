@@ -10,22 +10,21 @@ ManagedObjectInstance::ManagedObjectInstance(
     std::shared_ptr<ManagedObject> _object,
     PointOfView _mainPosition,
     std::string _mesh_name,
-    SpaceResolver* _spaceResolver,
-    GravityProvider* _gravityProvider,
-    ViewablesRegistrar* _viewables_registrar):
-        object(_object),
-        mainPosition(_mainPosition),
-        mesh_name(_mesh_name),
-        wall_adherence(false),
-        current_speed(0.0f),
-        current_gravity(0.0f, -0.3f, 0.0f),
-        current_up(0.0f, 1.0f, 0.0f),
-        spaceResolver(_spaceResolver),
-        gravityProvider(_gravityProvider),
-        viewables_registrar(_viewables_registrar),
-        gravity_validity(0.0f), // sets this to force recomputation
-        last_update(0.0f), // starts counting from there
-        viewable_id(0)
+    SpaceResolver *_spaceResolver,
+    GravityProvider *_gravityProvider,
+    ViewablesRegistrar *_viewables_registrar) : object(_object),
+                                                mainPosition(_mainPosition),
+                                                mesh_name(_mesh_name),
+                                                wall_adherence(false),
+                                                current_speed(0.0f),
+                                                current_gravity(0.0f, -0.3f, 0.0f),
+                                                current_up(0.0f, 1.0f, 0.0f),
+                                                spaceResolver(_spaceResolver),
+                                                gravityProvider(_gravityProvider),
+                                                viewables_registrar(_viewables_registrar),
+                                                gravity_validity(0.0f), // sets this to force recomputation
+                                                last_update(0.0f),      // starts counting from there
+                                                viewable_id(0)
 {
 }
 
@@ -38,8 +37,11 @@ void ManagedObjectInstance::computeNextPosition(float total_time)
 {
     float delta_time = total_time - last_update;
     updateGravity(total_time, delta_time);
-    auto newPos = getComputeNextPosition(delta_time);
-    move(newPos, delta_time);
+    if (object.get()->getObjectDefinition().can_move)
+    {
+        auto newPos = getComputeNextPosition(delta_time);
+        move(newPos, delta_time);
+    }
     last_update = total_time;
 }
 
@@ -49,23 +51,26 @@ void ManagedObjectInstance::updateViewable()
         return;
 
     // check viewable
-    if (viewable_id == 0) {
+    if (viewable_id == 0)
+    {
         auto viewable = object->getViewable();
-        if (viewable.get() != nullptr) {
+        if (viewable.get() != nullptr)
+        {
             viewable_id = viewables_registrar->appendViewable(viewable);
             console->info("Found viewable and inserted with ID={}", viewable_id);
         }
     }
     // update if any
-    if (viewable_id != 0) {
+    if (viewable_id != 0)
+    {
         viewables_registrar->updateViewable(viewable_id, mainPosition);
     }
 }
 
 void ManagedObjectInstance::updateGravity(float total_time, float time_delta)
 {
-    console->debug("Update total_time {} time_delta {} gravity_validity {}",total_time, time_delta, gravity_validity);
-    auto& def = object.get()->getObjectDefinition();
+    console->debug("Update total_time {} time_delta {} gravity_validity {}", total_time, time_delta, gravity_validity);
+    auto &def = object.get()->getObjectDefinition();
     if (gravity_validity < total_time)
     {
         console->debug("Request new values");
@@ -85,12 +90,11 @@ void ManagedObjectInstance::updateGravity(float total_time, float time_delta)
         mainPosition.local_reference,
         current_up,
         std::function<float(float)>([time_delta, def](float originalAngle)
-        {
+                                    {
             if (originalAngle > 0.0f)
                 return min(originalAngle, 3.14f * def.rotation_speed * time_delta);
             else
-                return max(originalAngle, -3.14f * def.rotation_speed * time_delta);
-        } ));
+                return max(originalAngle, -3.14f * def.rotation_speed * time_delta); }));
 }
 
 glm::vec3 ManagedObjectInstance::getComputeNextPosition(float time_delta) const
@@ -99,7 +103,8 @@ glm::vec3 ManagedObjectInstance::getComputeNextPosition(float time_delta) const
 
     auto _current_speed = current_speed;
 
-    if (wall_adherence) {
+    if (wall_adherence)
+    {
         // apply requested movement
         _current_speed = glm::vec3(0.0f);
         auto walk = object.get()->getRequestedMovement().walk;
@@ -132,12 +137,13 @@ void ManagedObjectInstance::move(glm::vec3 newPos, float time_delta)
     bool portalCrossedGlobal = false;
 
     int counter = 0;
-    do {
+    do
+    {
         PointOfView endPoint;
         glm::vec3 vectorEndPoint, destinationEndPoint;
         glm::vec3 normal;
         float distance;
-        FaceHard* face;
+        FaceHard *face;
 
         auto previous_position = mainPosition;
 
@@ -147,7 +153,7 @@ void ManagedObjectInstance::move(glm::vec3 newPos, float time_delta)
             mainPosition,
             newPos,
             object.get()->getObjectDefinition().radius,
-            endPoint,vectorEndPoint,destinationEndPoint,
+            endPoint, vectorEndPoint, destinationEndPoint,
             normal,
             distance,
             face,
@@ -155,7 +161,8 @@ void ManagedObjectInstance::move(glm::vec3 newPos, float time_delta)
         portalCrossedGlobal = portalCrossedGlobal || portalCrossedLocal;
         total_distance += distance;
         mainPosition = endPoint;
-        if (wall_bounced) {
+        if (wall_bounced)
+        {
             newPos = moveOnPlane(endPoint.position, destinationEndPoint, normal, 0.00001f);
             mainPosition.position += normal * 0.00001f;
             wall_adherence = wall_adherence || checkAdherenceCone(normal, current_gravity, 0.5f);
@@ -164,12 +171,14 @@ void ManagedObjectInstance::move(glm::vec3 newPos, float time_delta)
             move_vector = vectorEndPoint;
 
         console->debug("wall_bounced={} distance={} move_vector={}", wall_bounced, distance, vec3_to_string(move_vector));
-        console->debug("\n" "mainPosition = {}\n"
-                           "newPos       = {}",
-                        vec3_to_string(mainPosition.position),
-                        vec3_to_string(newPos));
+        console->debug("\n"
+                       "mainPosition = {}\n"
+                       "newPos       = {}",
+                       vec3_to_string(mainPosition.position),
+                       vec3_to_string(newPos));
 
-        if (counter++ == 20) {
+        if (counter++ == 20)
+        {
             console->warn("Reached max loop count. This is unusual and probably a bug.");
             break;
         }
@@ -182,25 +191,27 @@ void ManagedObjectInstance::move(glm::vec3 newPos, float time_delta)
     current_speed = (move_vector * total_distance) / time_delta;
 
     // if room changed, re-init gravity
-    if (portalCrossedGlobal) {
+    if (portalCrossedGlobal)
+    {
         gravity_validity = 0.0f;
         console->info("portal crossed {} => {}, re-init gravity", original_previous_position.room, mainPosition.room);
     }
 
     // Once this is done, advertize to the space
-    if (original_previous_position.room == mainPosition.room) {
+    if (original_previous_position.room == mainPosition.room)
+    {
         spaceResolver->applyTrigger(
             original_previous_position, mainPosition.position,
             STRUCTURE_OBJECT_TYPE::OBJECT_PLAYER, // TODO
-            false // TODO
-            );
+            false                                 // TODO
+        );
     }
-
 }
 
 ManagedObjectInstance::~ManagedObjectInstance()
 {
-    if (viewable_id != 0) {
+    if (viewable_id != 0)
+    {
         viewables_registrar->removeViewable(viewable_id);
     }
 }

@@ -67,7 +67,7 @@ glm::mat4x4 ObjectOption::getOwnMatrix() const
     return glm::mat4x4();
 }
 
-static MovableObjectDefinition option_def(0.2, 0.0, 0.0, 0.0);
+static MovableObjectDefinition option_def(false); // don't need to compute move
 
 const MovableObjectDefinition &ObjectOption::getObjectDefinition() const
 {
