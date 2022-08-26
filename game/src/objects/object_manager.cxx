@@ -7,11 +7,10 @@
 #include "json_helper_accessor.hxx"
 #include "json_helper_math.hxx"
 
+#include "object_type_register.hxx"
 #include "managed_object_instance.hxx"
 #include "object_exception.hxx"
-#include "object_option.hxx"
-
-#define GLM_ENABLE_EXPERIMENTAL 1
+#include "object_type_register.hxx"
 
 static auto console = getConsole("object_manager");
 
@@ -31,6 +30,24 @@ void ObjectManager::setReferences(
     gravityProvider = _gravityProvider;
     viewables_registrar = _viewables_registrar;
 }
+
+static std::map<std::string, ObjectTypeRegisterMethod> objectTypeRegistry;
+
+void registerObjectType(
+    std::string type_name,
+    ObjectTypeRegisterMethod method
+    )
+{
+    console->debug("Register object type {}", type_name);
+    objectTypeRegistry.insert(std::pair<std::string, ObjectTypeRegisterMethod>(type_name, method));
+}
+
+static struct __inited_objects {
+    __inited_objects() {
+        console->debug("Registering objects");
+        registerAllObjectTypes();
+    }
+} __inited;
 
 ObjectManager::ObjectManager(
     std::shared_ptr<ModelRegistry> _model_registry,
@@ -147,14 +164,14 @@ void ObjectManager::loadObject(std::string room_name, std::string mesh_name, nlo
 
     console->info("Load from room={} node={} type={}", room_name, mesh_name, type);
     // TODO: need an anonymous loader for sanity of architecture
-    if (type == "option")
-    {
-        nlohmann::json *parameters = nullptr;
-        if (root.contains("parameters"))
+    nlohmann::json *parameters = nullptr;
+    if (root.contains("parameters"))
         {
             parameters = &(root["parameters"]);
         }
-        auto obj = make_shared<ObjectOption>(model_registry.get(), library.get(), parameters);
+    if (objectTypeRegistry.count(type)) {
+        console->info("Request to create option");
+        auto obj = objectTypeRegistry[type](model_registry.get(), library.get(), parameters);
         insertObject(obj, pov);
     }
     else

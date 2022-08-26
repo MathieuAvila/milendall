@@ -129,6 +129,8 @@ add_library(game_lib STATIC
   game/src/objects/object_option.cxx
   game/src/objects/model_registry.hxx
   game/src/objects/model_registry.cxx
+  game/src/objects/object_type_register.hxx
+  game/src/objects/object_type_register.cxx
   game/src/point_of_view.hxx
   game/src/point_of_view.cxx
 )

@@ -7,6 +7,8 @@
 #include "viewable_object.hxx"
 #include "object_option.hxx"
 
+#include "object_type_register.hxx"
+
 // To animate option.
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -14,6 +16,8 @@
 #include <chrono>
 
 #include "object_exception.hxx"
+
+#include "static_block.hxx"
 
 static auto console = getConsole("object_option");
 
