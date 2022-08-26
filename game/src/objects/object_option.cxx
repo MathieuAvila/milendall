@@ -17,8 +17,6 @@
 
 #include "object_exception.hxx"
 
-#include "static_block.hxx"
-
 static auto console = getConsole("object_option");
 
 class ObjectOptionViewable : public ViewableObject

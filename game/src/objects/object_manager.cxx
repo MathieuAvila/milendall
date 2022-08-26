@@ -31,15 +31,16 @@ void ObjectManager::setReferences(
     viewables_registrar = _viewables_registrar;
 }
 
-static std::map<std::string, ObjectTypeRegisterMethod> objectTypeRegistry;
+std::map<std::string, ObjectTypeRegisterMethod>* objectTypeRegistry = nullptr;
 
 void registerObjectType(
     std::string type_name,
     ObjectTypeRegisterMethod method
     )
 {
-    console->debug("Register object type {}", type_name);
-    objectTypeRegistry.insert(std::pair<std::string, ObjectTypeRegisterMethod>(type_name, method));
+    static std::map<std::string, ObjectTypeRegisterMethod> _objectTypeRegistry = {};
+    objectTypeRegistry = &_objectTypeRegistry;
+    _objectTypeRegistry.insert(std::pair<std::string, ObjectTypeRegisterMethod>(type_name, method));
 }
 
 static struct __inited_objects {
@@ -169,9 +170,9 @@ void ObjectManager::loadObject(std::string room_name, std::string mesh_name, nlo
         {
             parameters = &(root["parameters"]);
         }
-    if (objectTypeRegistry.count(type)) {
+    if (objectTypeRegistry->count(type)) {
         console->info("Request to create option");
-        auto obj = objectTypeRegistry[type](model_registry.get(), library.get(), parameters);
+        auto obj = (*objectTypeRegistry)[type](model_registry.get(), library.get(), parameters);
         insertObject(obj, pov);
     }
     else

@@ -5,10 +5,13 @@
 #include <iostream>
 #include <memory>
 
+
 #include "common.hxx"
 #include "managed_object_instance.hxx"
 #include "object_manager.hxx"
 #include "gravity_provider.hxx"
+
+#include "object_type_register.hxx"
 
 #include <glm/gtx/string_cast.hpp>
 
@@ -66,6 +69,34 @@ class FakeObject_ForObjectManager: public ManagedObject
     }
 
 };
+
+// Initialize a few object types to test object loading
+static struct __inited_objects {
+
+    public:
+
+    std::vector<std::shared_ptr<FakeObject_ForObjectManager>> inited_objs;
+
+    __inited_objects() {
+        console->debug("Registering objects");
+        registerObjectType("test_type_1",
+            [this](ModelRegistry* registry, FileLibrary* library, nlohmann::json* root) {
+                auto id = (*root)["id"].get<int>();
+                console->info("Found id={}, type=test_type_1", id);
+                auto obj = std::make_shared<FakeObject_ForObjectManager>(id, true);
+                inited_objs.push_back(obj);
+                return obj;
+        });
+        registerObjectType("test_type_2",
+            [this](ModelRegistry* registry, FileLibrary* library, nlohmann::json* root) {
+                auto id = (*root)["id"].get<int>() + 1000;
+                console->info("Found id={}, type=test_type_2", id);
+                auto obj = std::make_shared<FakeObject_ForObjectManager>(id, true);
+                inited_objs.push_back(obj);
+                return obj;
+        });
+    }
+} __inited;
 
 class ObjectManagerTestClass : public ObjectManager
 {
@@ -198,5 +229,18 @@ TEST_F(ObjectManagerTest, update__interact_low_interact) {
     ASSERT_EQ(object4->interact_count, 0);
 }
 
+TEST_F(ObjectManagerTest, loadObject) {
+    auto om = getObjectManager();
+    nlohmann::json block1 = "{ \"type\" : \"test_type_1\", \"parameters\" : { \"id\" : 1 }, \"position\": [0.0, 0.0, 0.0] }"_json;
+    om->loadObject("room1", "mesh_1_1", block1);
+    nlohmann::json block2 = "{ \"type\" : \"test_type_2\", \"parameters\" : { \"id\" : 2 }, \"position\": [0.0, 0.0, 0.0] }"_json;
+    om->loadObject("room2", "mesh_1_2", block2);
 
+    auto objs = om->get_managed_objects();
+    ASSERT_EQ(objs->size(), 2);
+    auto obj1 = __inited.inited_objs[0];
+    ASSERT_EQ(obj1->id, 1);
+    auto obj2 = __inited.inited_objs[1];
+    ASSERT_EQ(obj2->id, 1002);
 
+}
