@@ -68,7 +68,7 @@ class ObjectManager: public IObjectLoader
         /** @brief manadatory due to fwd decslaration */
         virtual ~ObjectManager();
 
-    private:
+    protected: // it's protected so that it can explored through derivation.
 
         std::shared_ptr<ModelRegistry> model_registry;
         std::shared_ptr<FileLibrary> library;

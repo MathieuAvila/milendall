@@ -17,16 +17,15 @@ static auto console = getConsole("object_manager");
 
 ObjectManager::ObjectManager(
     std::shared_ptr<ModelRegistry> _model_registry,
-    std::shared_ptr<FileLibrary> _library):
-        model_registry(_model_registry),
-        library(_library)
+    std::shared_ptr<FileLibrary> _library) : model_registry(_model_registry),
+                                             library(_library)
 {
 }
 
 void ObjectManager::setReferences(
-            SpaceResolver* _spaceResolver,
-            GravityProvider* _gravityProvider,
-            ViewablesRegistrar* _viewables_registrar)
+    SpaceResolver *_spaceResolver,
+    GravityProvider *_gravityProvider,
+    ViewablesRegistrar *_viewables_registrar)
 {
     spaceResolver = _spaceResolver;
     gravityProvider = _gravityProvider;
@@ -38,34 +37,33 @@ ObjectManager::ObjectManager(
     std::shared_ptr<FileLibrary> _library,
     SpaceResolver *_spaceResolver,
     GravityProvider *_gravityProvider,
-    ViewablesRegistrar* _viewables_registrar) :
-        model_registry(_model_registry),
-        library(_library)
+    ViewablesRegistrar *_viewables_registrar) : model_registry(_model_registry),
+                                                library(_library)
 {
     setReferences(
-            _spaceResolver,
-            _gravityProvider,
-            _viewables_registrar);
+        _spaceResolver,
+        _gravityProvider,
+        _viewables_registrar);
 }
 
 ObjectManager::ObjectUid ObjectManager::insertObject(
     std::shared_ptr<ManagedObject> object,
     PointOfView pos,
-    std::string mesh_name )
+    std::string mesh_name)
 {
     static ObjectUid ID = 0;
     managed_objects.insert(
         std::pair<
             ObjectUid,
             std::unique_ptr<ManagedObjectInstance>>(
-                ++ID,
-                std::make_unique<ManagedObjectInstance>(
-                    object,
-                    pos,
-                    mesh_name,
-                    spaceResolver,
-                    gravityProvider,
-                    viewables_registrar)));
+            ++ID,
+            std::make_unique<ManagedObjectInstance>(
+                object,
+                pos,
+                mesh_name,
+                spaceResolver,
+                gravityProvider,
+                viewables_registrar)));
     return ID;
 }
 
@@ -76,6 +74,55 @@ void ObjectManager::update(float total_time)
         auto p = _obj.second.get();
         p->computeNextPosition(total_time);
         p->updateViewable();
+    }
+    // compute interaction
+    // TODO: check per room based on computed object list in a room.
+    for (auto &obj : managed_objects)
+    {
+        float radius;
+        MovableObjectDefinition::InteractionLevel level;
+        PointOfView pos;
+        obj.second->getInteractionParameters(radius, level, pos);
+        if (level == MovableObjectDefinition::InteractionLevel::ALL)
+        {
+            for (auto &second_obj : managed_objects)
+            {
+                float second_radius;
+                MovableObjectDefinition::InteractionLevel second_level;
+                PointOfView second_pos;
+                second_obj.second->getInteractionParameters(second_radius, second_level, second_pos);
+                if ((obj.first != second_obj.first) && (second_level >= MovableObjectDefinition::InteractionLevel::LOW))
+                {
+                    if (second_pos.room == pos.room)
+                    {
+                        float delta = glm::distance(second_pos.position, pos.position) - radius - second_radius;
+                        if (delta < 0.0f)
+                        {
+                            console->info("Interaction {} {}", obj.first, second_obj.first);
+                            // interact on each other.
+                            second_obj.second->interact(obj.second.get());
+                            obj.second->interact(second_obj.second.get());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // remove dead objects
+    auto finish = false;
+    while (!finish)
+    {
+        finish = true;
+        for (auto &obj : managed_objects)
+        {
+            if (obj.second->checkEol())
+            {
+                managed_objects.erase(obj.first);
+                finish = false;
+                break;
+            }
+        }
     }
 }
 
@@ -102,8 +149,9 @@ void ObjectManager::loadObject(std::string room_name, std::string mesh_name, nlo
     // TODO: need an anonymous loader for sanity of architecture
     if (type == "option")
     {
-        nlohmann::json* parameters = nullptr;
-        if (root.contains("parameters")) {
+        nlohmann::json *parameters = nullptr;
+        if (root.contains("parameters"))
+        {
             parameters = &(root["parameters"]);
         }
         auto obj = make_shared<ObjectOption>(model_registry.get(), library.get(), parameters);
