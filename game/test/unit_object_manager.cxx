@@ -231,16 +231,24 @@ TEST_F(ObjectManagerTest, update__interact_low_interact) {
 
 TEST_F(ObjectManagerTest, loadObject) {
     auto om = getObjectManager();
-    nlohmann::json block1 = "{ \"type\" : \"test_type_1\", \"parameters\" : { \"id\" : 1 }, \"position\": [0.0, 0.0, 0.0] }"_json;
+    nlohmann::json block1 = "{ \"type\" : \"test_type_1\", \"parameters\" : { \"id\" : 1 }, \"position\": [1.0, 0.0, 0.0] }"_json;
     om->loadObject("room1", "mesh_1_1", block1);
-    nlohmann::json block2 = "{ \"type\" : \"test_type_2\", \"parameters\" : { \"id\" : 2 }, \"position\": [0.0, 0.0, 0.0] }"_json;
+    nlohmann::json block2 = "{ \"type\" : \"test_type_2\", \"parameters\" : { \"id\" : 2 }, \"position\": [2.0, 0.0, 0.0] }"_json;
     om->loadObject("room2", "mesh_1_2", block2);
 
+    // check managed_object_instance
     auto objs = om->get_managed_objects();
     ASSERT_EQ(objs->size(), 2);
+    auto& managed_obj1 = objs->at(1); // XXX this is dependent on implementation, should be avoided.
+    ASSERT_EQ(managed_obj1->getObjectPosition().room, "room1");
+    ASSERT_EQ(managed_obj1->getObjectPosition().position.x, 1.0f);
+    auto& managed_obj2 = objs->at(2);
+    ASSERT_EQ(managed_obj2->getObjectPosition().room, "room2");
+    ASSERT_EQ(managed_obj2->getObjectPosition().position.x, 2.0f);
+
+    // check created objects
     auto obj1 = __inited.inited_objs[0];
     ASSERT_EQ(obj1->id, 1);
     auto obj2 = __inited.inited_objs[1];
     ASSERT_EQ(obj2->id, 1002);
-
 }
