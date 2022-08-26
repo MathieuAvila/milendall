@@ -189,21 +189,21 @@ target_link_libraries(milendall
 add_library(glmock SHARED game/test/glmock/glmock.cpp)
 
 add_executable(unit_test
-game/test/unit_main.cpp
-game/test/test_common.hpp
-game/test/unit_file_library.cpp
-game/test/unit_level.cpp
-game/test/unit_room.cpp
-game/test/unit_gltf_material_accessor.cpp
-game/test/unit_gltf_table_accessor.cpp
-game/test/unit_gltf_data_accessor.cpp
+game/test/unit_main.cxx
+game/test/test_common.hxx
+game/test/unit_file_library.cxx
+game/test/unit_level.cxx
+game/test/unit_room.cxx
+game/test/unit_gltf_material_accessor.cxx
+game/test/unit_gltf_table_accessor.cxx
+game/test/unit_gltf_data_accessor.cxx
 game/test/unit_gltf_animation.cxx
-game/test/unit_json_helper_math.cpp
-game/test/unit_helper_math.cpp
-game/test/unit_clipping_planes.cpp
+game/test/unit_json_helper_math.cxx
+game/test/unit_helper_math.cxx
+game/test/unit_clipping_planes.cxx
 game/test/unit_gltf_model.cxx
 game/test/unit_gltf_node.cxx
-game/test/unit_face_list.cpp
+game/test/unit_face_list.cxx
 game/test/unit_point_of_view.cxx
 game/test/unit_managed_object_instance.cxx
 game/test/unit_script.cxx

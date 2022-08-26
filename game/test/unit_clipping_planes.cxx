@@ -4,7 +4,7 @@
 #include "clipping_planes.hxx"
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/epsilon.hpp>
-#include "test_common.hpp"
+#include "test_common.hxx"
 #include <glm/gtc/matrix_transform.hpp>
 
 static auto console = getConsole("unit_clipping_planes");

@@ -14,7 +14,7 @@
 
 #include <glm/gtx/string_cast.hpp>
 
-#include "test_common.hpp"
+#include "test_common.hxx"
 
 using namespace std;
 

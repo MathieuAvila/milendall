@@ -8,7 +8,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/epsilon.hpp>
 
-#include "test_common.hpp"
+#include "test_common.hxx"
 
 float currentMetallicFactor;
 float currentRoughnessFactor;

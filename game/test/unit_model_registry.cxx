@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "common.hxx"
-#include "test_common.hpp"
+#include "test_common.hxx"
 #include "glmock.hpp"
 #include "filesystem"
 

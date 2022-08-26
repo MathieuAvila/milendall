@@ -8,7 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/epsilon.hpp>
 #include "helper_math.hxx"
-#include "test_common.hpp"
+#include "test_common.hxx"
 
 static auto console = getConsole("ut_pov");
 

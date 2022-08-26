@@ -8,7 +8,7 @@
 #include "gltf_exception.hxx"
 #include "glmock.hpp"
 
-#include "test_common.hpp"
+#include "test_common.hxx"
 
 using namespace nlohmann;
 using namespace std;
