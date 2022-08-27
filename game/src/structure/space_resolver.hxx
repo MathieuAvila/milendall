@@ -62,6 +62,9 @@ class SpaceResolver
             const STRUCTURE_OBJECT_TYPE object_type,
             const bool activated) const = 0;
 
+        /** @brief Get the position matrix of a givne room / mesh_name */
+        virtual glm::mat4 getRoomMeshMatrix(std::string room, std::string mesh_name) const = 0;
+
         virtual ~SpaceResolver() = default;
 };
 

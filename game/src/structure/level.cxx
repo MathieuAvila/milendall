@@ -254,3 +254,9 @@ void Level::applyTrigger(
             object_type,
             activated);
 }
+
+glm::mat4 Level::getRoomMeshMatrix(std::string room_name, std::string mesh_name) const
+{
+    auto room = room_resolver->getRoom(room_name);
+    return room->getMeshMatrix(mesh_name);
+}

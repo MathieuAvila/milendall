@@ -431,3 +431,21 @@ TEST_F(LevelTest, isWallReached_6_border_hit)
     ASSERT_EQ(endPoint.room, "room2");
     ASSERT_TRUE(glm::length(normal - glm::vec3(0.0f, 0.0f, 1.0f)) < 0.01f);
 }
+
+
+TEST_F(LevelTest, getRoomMeshMatrix)
+{
+    InSequence s;
+    GLMock mock;
+    auto level = loadLevel("2_rooms_1_gate");
+
+    glm::mat4 mat = level->getRoomMeshMatrix("room1", "b0_root_door0");
+    console->debug("mat = {}", mat4x4_to_string(mat));
+    ASSERT_EQ(mat,
+        glm::mat4(
+            1.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 1.0f, 0.0f,
+            -4.0f, 0.0f, 0.0f, 1.0f));
+}
+

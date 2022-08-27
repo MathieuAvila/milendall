@@ -538,12 +538,11 @@ TEST_F(RoomTest, solve_mesh_position)
         nullptr,
         nullptr);
     auto mat = room->getMeshMatrix("b0_root_door0");
+    console->debug("mat = {}", mat4x4_to_string(mat));
     ASSERT_EQ(mat,
         glm::mat4(
             1.0f, 0.0f, 0.0f, 0.0f,
             0.0f, 1.0f, 0.0f, 0.0f,
             0.0f, 0.0f, 1.0f, 0.0f,
             -4.0f, 0.0f, 0.0f, 1.0f));
-
-    console->debug("mat = {}", mat4x4_to_string(mat));
 }

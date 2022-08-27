@@ -99,6 +99,9 @@ class Level : public SpaceResolver, public GravityProvider
             const STRUCTURE_OBJECT_TYPE object_type,
             const bool activated) const override;
 
+        /** @brief From SpaceResolver */
+        virtual glm::mat4 getRoomMeshMatrix(std::string room, std::string mesh_name) const override;
+
     private:
 
         /** Pass RoomResolver to rooms */
