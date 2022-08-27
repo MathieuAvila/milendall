@@ -174,7 +174,7 @@ void ObjectManager::loadObject(std::string room_name, std::string mesh_name, nlo
     if (objectTypeRegistry->count(type)) {
         console->info("Request to create option");
         auto obj = (*objectTypeRegistry)[type](model_registry.get(), library.get(), parameters);
-        insertObject(obj, pov);
+        insertObject(obj, pov, mesh_name);
     }
     else
     {
