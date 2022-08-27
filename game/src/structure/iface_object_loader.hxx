@@ -15,7 +15,7 @@ class IObjectLoader
     virtual void setReferences(
             SpaceResolver* _spaceResolver,
             GravityProvider* _gravityProvider,
-            ViewablesRegistrar* _viewables_registrar) = 0;
+            std::shared_ptr<ViewablesRegistrar> _viewables_registrar) = 0;
 
     /** @brief When a new object is read from room */
     virtual void loadObject(std::string room_name, std::string mesh_name, nlohmann::json& root) = 0;

@@ -64,7 +64,7 @@ class Room : private RoomScriptLoader, public GltfModel
         IRoomNodePortalRegister* portal_register;
 
         /** @brief Holds viewables provider. Provided by Level */
-        ViewablesRegistrar* viewables_registrar;
+        std::shared_ptr<ViewablesRegistrar> viewables_registrar;
 
         /** @brief List of animation code specific to the room. It relies on
          * the animations defined by the model and specific application data
@@ -105,7 +105,7 @@ class Room : private RoomScriptLoader, public GltfModel
             FileLibrary::UriReference& ref,
             IRoomNodePortalRegister* portal_register = nullptr,
             StatesList* _states_list = nullptr,
-            ViewablesRegistrar* _viewables_registrar = nullptr,
+            std::shared_ptr<ViewablesRegistrar> _viewables_registrar = nullptr,
             IObjectLoader* object_loader = nullptr);
 
         /** @brief full draw entry point

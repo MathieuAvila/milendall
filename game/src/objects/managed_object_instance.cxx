@@ -12,7 +12,7 @@ ManagedObjectInstance::ManagedObjectInstance(
     std::string _mesh_name,
     SpaceResolver *_spaceResolver,
     GravityProvider *_gravityProvider,
-    ViewablesRegistrar *_viewables_registrar) : object(_object),
+    std::shared_ptr<ViewablesRegistrar> _viewables_registrar) : object(_object),
                                                 mainPosition(_mainPosition),
                                                 mesh_name(_mesh_name),
                                                 wall_adherence(false),

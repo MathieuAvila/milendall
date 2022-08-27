@@ -49,7 +49,7 @@ class ManagedObjectInstance
         GravityProvider* gravityProvider;
 
         /**@brief needed to output viewables objects */
-        ViewablesRegistrar* viewables_registrar;
+        std::shared_ptr<ViewablesRegistrar> viewables_registrar;
 
         /** @brief Absolute time of validity of gravity and up */
         float gravity_validity;
@@ -77,7 +77,7 @@ class ManagedObjectInstance
             std::string _mesh_name,
             SpaceResolver* _spaceResolver,
             GravityProvider* _gravityProvider,
-            ViewablesRegistrar* _viewables_registrar
+            std::shared_ptr<ViewablesRegistrar> _viewables_registrar
             );
 
         /** @brief Return the corrent POV */

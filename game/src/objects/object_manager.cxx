@@ -24,7 +24,7 @@ ObjectManager::ObjectManager(
 void ObjectManager::setReferences(
     SpaceResolver *_spaceResolver,
     GravityProvider *_gravityProvider,
-    ViewablesRegistrar *_viewables_registrar)
+    std::shared_ptr<ViewablesRegistrar> _viewables_registrar)
 {
     spaceResolver = _spaceResolver;
     gravityProvider = _gravityProvider;
@@ -55,8 +55,9 @@ ObjectManager::ObjectManager(
     std::shared_ptr<FileLibrary> _library,
     SpaceResolver *_spaceResolver,
     GravityProvider *_gravityProvider,
-    ViewablesRegistrar *_viewables_registrar) : model_registry(_model_registry),
-                                                library(_library)
+    std::shared_ptr<ViewablesRegistrar> _viewables_registrar) :
+        model_registry(_model_registry),
+        library(_library)
 {
     setReferences(
         _spaceResolver,

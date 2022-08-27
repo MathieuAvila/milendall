@@ -12,6 +12,7 @@
 #include "states_list.hxx"
 #include "impl_room_node_portal_register.hxx"
 #include "iface_object_loader.hxx"
+#include "viewables_registrar_impl.hxx"
 
 static auto console = getConsole("level");
 
@@ -28,12 +29,24 @@ struct LevelRoomResolver : public RoomResolver
     virtual ~LevelRoomResolver() {};
 };
 
+class ViewablesRegistrarLevel : public ViewablesRegistrarImpl
+{
+       public:
+        /** @brief From ViewablesRegistrarImpl
+         */
+        virtual std::list<PointOfView> solvePosition(PointOfView mainPos) const override
+        {
+            return { mainPos };
+        }
+};
+
 RoomResolver* Level::getRoomResolver()
 {
     return room_resolver.get();
 }
 
-Level::Level(FileLibrary::UriReference ref, IObjectLoader* object_loader)
+Level::Level(FileLibrary::UriReference ref, IObjectLoader* object_loader) :
+    viewables_registrar(std::make_shared<ViewablesRegistrarLevel>())
 {
     console->info("Load level: {}", ref.getPath());
     json j_level = json::parse(ref.readStringContent());
@@ -42,7 +55,7 @@ Level::Level(FileLibrary::UriReference ref, IObjectLoader* object_loader)
     GltfMaterialLibraryIfacePtr materialLibrary = GltfMaterialLibraryIface::getMaterialLibray();
     states_list = make_unique<StatesList>();
     if (object_loader)
-        object_loader->setReferences(this, this, this);
+        object_loader->setReferences(this, this, viewables_registrar);
     for(auto room_it : jsonGetElementByName(j_level, "rooms")) {
             auto room_id = jsonGetElementByName(room_it, "room_id").get<string>();
             console->info("Found room_id: {}", room_id);
@@ -53,7 +66,7 @@ Level::Level(FileLibrary::UriReference ref, IObjectLoader* object_loader)
                 ref_room,
                 portal_register.get(),
                 states_list.get(),
-                this,
+                viewables_registrar,
                 object_loader);
             rooms.insert({room_id, room});
     }
@@ -240,9 +253,4 @@ void Level::applyTrigger(
             next_position,
             object_type,
             activated);
-}
-
-std::list<PointOfView> Level::solvePosition(PointOfView mainPos) const
-{
-   return { mainPos };
 }

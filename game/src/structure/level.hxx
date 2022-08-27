@@ -7,13 +7,13 @@
 #include "level_exception.hxx"
 #include "space_resolver.hxx"
 #include "gravity_provider.hxx"
-#include "viewables_registrar_impl.hxx"
+#include "viewables_registrar.hxx"
 
 struct LevelRoomResolver;
 class StatesList;
 struct ImplRoomNodePortalRegister;
 
-class Level : public SpaceResolver, public GravityProvider, public ViewablesRegistrarImpl
+class Level : public SpaceResolver, public GravityProvider
 {
     public:
 
@@ -99,10 +99,6 @@ class Level : public SpaceResolver, public GravityProvider, public ViewablesRegi
             const STRUCTURE_OBJECT_TYPE object_type,
             const bool activated) const override;
 
-        /** @brief From ViewablesRegistrarImpl
-         */
-        virtual std::list<PointOfView> solvePosition(PointOfView mainPos) const override;
-
     private:
 
         /** Pass RoomResolver to rooms */
@@ -122,5 +118,8 @@ class Level : public SpaceResolver, public GravityProvider, public ViewablesRegi
 
         /** Global registry of all gates */
         std::unique_ptr<ImplRoomNodePortalRegister> portal_register;
+
+        /** Registrar. External definition in order to be passed down */
+        std::shared_ptr<ViewablesRegistrar> viewables_registrar;
 };
 

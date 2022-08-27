@@ -74,7 +74,7 @@ std::tuple<
     std::shared_ptr<ImplRoomNodePortalRegister>>
 loadRoomFull(
     std::string roomPath,
-    ViewablesRegistrar *viewables_registrar = nullptr,
+    std::shared_ptr<ViewablesRegistrar> viewables_registrar = nullptr,
     IObjectLoader *object_loader = nullptr)
 {
     auto materialLibrary = GltfMaterialLibraryIface::getMaterialLibray();
@@ -496,7 +496,7 @@ public:
     virtual void setReferences(
             SpaceResolver* _spaceResolver,
             GravityProvider* _gravityProvider,
-            ViewablesRegistrar* _viewables_registrar) override
+            std::shared_ptr<ViewablesRegistrar> _viewables_registrar) override
     {
 
     }

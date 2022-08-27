@@ -106,7 +106,7 @@ class ObjectManagerTestClass : public ObjectManager
             std::shared_ptr<FileLibrary> _library,
             SpaceResolver* _spaceResolver,
             GravityProvider* _gravityProvider,
-            ViewablesRegistrar* _viewables_registrar = nullptr
+            std::shared_ptr<ViewablesRegistrar> _viewables_registrar = nullptr
             ) :
             ObjectManager(_model_registry, _library, _spaceResolver, _gravityProvider, _viewables_registrar)
         {};

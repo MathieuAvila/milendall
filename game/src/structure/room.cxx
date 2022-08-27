@@ -50,7 +50,7 @@ Room::Room(
     FileLibrary::UriReference& ref,
     IRoomNodePortalRegister* _portal_register,
     StatesList* _states_list,
-    ViewablesRegistrar* _viewables_registrar,
+    std::shared_ptr<ViewablesRegistrar> _viewables_registrar,
     IObjectLoader* _object_loader)
     :
     RoomScriptLoader(ref),

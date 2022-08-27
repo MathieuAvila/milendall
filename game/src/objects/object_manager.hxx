@@ -27,7 +27,7 @@ class ObjectManager: public IObjectLoader
             std::shared_ptr<FileLibrary> _library,
             SpaceResolver* _spaceResolver,
             GravityProvider* _gravityProvider,
-            ViewablesRegistrar* _viewables_registrar = nullptr
+            std::shared_ptr<ViewablesRegistrar> _viewables_registrar = nullptr
             );
 
         /** @brief partial initialization, real world use,
@@ -38,7 +38,7 @@ class ObjectManager: public IObjectLoader
         virtual void setReferences(
             SpaceResolver* _spaceResolver,
             GravityProvider* _gravityProvider,
-            ViewablesRegistrar* _viewables_registrar = nullptr) override;
+            std::shared_ptr<ViewablesRegistrar> _viewables_registrar = nullptr) override;
 
         /** @brief Insert any object in the list of managed objects.
          * @param obj The bject to insert
@@ -75,7 +75,7 @@ class ObjectManager: public IObjectLoader
 
         SpaceResolver* spaceResolver;
         GravityProvider* gravityProvider;
-        ViewablesRegistrar* viewables_registrar;
+        std::shared_ptr<ViewablesRegistrar> viewables_registrar;
 
         /** mapping unique ID to objects */
         std::map<ObjectUid, std::unique_ptr<ManagedObjectInstance>> managed_objects;
