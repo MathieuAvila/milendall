@@ -29,6 +29,7 @@ class RoomTest : public ::testing::Test
 protected:
     void SetUp() override
     {
+        spdlog::get("ut_room")->set_level(spdlog::level::debug);
         spdlog::get("unit_states_list")->set_level(spdlog::level::debug);
         spdlog::get("states_list")->set_level(spdlog::level::debug);
     }
@@ -468,7 +469,7 @@ TEST_F(RoomTest, animations)
 
 TEST_F(RoomTest, objects_with_no_loader)
 {
-    // testing loading animations and applying
+    // testing loading objects without a provided loader
     InSequence s;
     GLMock mock;
     auto [states, room, portal_register] = loadRoomFull("/1_room_4_objects_different_meshes/room.gltf");
@@ -512,7 +513,7 @@ public:
 
 TEST_F(RoomTest, objects_with_loader)
 {
-    // testing loading animations and applying
+    // testing loading objects through loader
     InSequence s;
     GLMock mock;
     auto object_loader = make_unique<TestObjectLoader>();
@@ -525,4 +526,24 @@ TEST_F(RoomTest, objects_with_loader)
     ASSERT_EQ(object_loader->objs[1], (TestObjectLoader::obj{ "room1", "#0", "object_1"}));
     ASSERT_EQ(object_loader->objs[2], (TestObjectLoader::obj{ "room1", "objects_objects", "object_2"}));
     ASSERT_EQ(object_loader->objs[3], (TestObjectLoader::obj{ "room1", "objects_objects", "object_3"}));
+}
+
+TEST_F(RoomTest, solve_mesh_position)
+{
+    // testing solving positions inside mesh
+    InSequence s;
+    GLMock mock;
+    auto [states, room, portal_register] = loadRoomFull(
+        "/2_rooms_1_gate/room1/room.gltf",
+        nullptr,
+        nullptr);
+    auto mat = room->getMeshMatrix("b0_root_door0");
+    ASSERT_EQ(mat,
+        glm::mat4(
+            1.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 1.0f, 0.0f,
+            -4.0f, 0.0f, 0.0f, 1.0f));
+
+    console->debug("mat = {}", mat4x4_to_string(mat));
 }

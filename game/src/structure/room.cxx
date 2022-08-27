@@ -292,3 +292,17 @@ void Room::applyTrigger(
         roomNode->applyTrigger(local_previous, local_next, object_type, activated);
     }
 }
+
+glm::mat4 Room::getMeshMatrix(std::string mesh_name) const
+{
+    for (auto i = 0; i < nodeTable.size(); i++) {
+        RoomNode* roomNode = dynamic_cast<RoomNode*>(nodeTable[i].get());
+        if (roomNode->name == mesh_name) {
+            GltfNodeInstanceIface* roomNodeInstance = dynamic_cast<GltfNodeInstanceIface*>(instance->getNode(i));
+            return roomNodeInstance->getInvertedNodeMatrix();
+        }
+    }
+    // not found
+    console->warn("room={} mesh node found name={}", room_name, mesh_name);
+    return glm::mat4(1.0f);
+}

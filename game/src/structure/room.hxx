@@ -175,6 +175,10 @@ class Room : private RoomScriptLoader, public GltfModel
             const STRUCTURE_OBJECT_TYPE object_type,
             const bool activated) const;
 
+        /** @brief Get matrix from a given mesh. Used by objects to get
+         * their final place */
+        glm::mat4 getMeshMatrix(std::string mesh_name) const;
+
         virtual ~Room() = default;
 
         friend struct RoomNode;
