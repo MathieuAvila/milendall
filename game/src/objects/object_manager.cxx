@@ -17,7 +17,8 @@ static auto console = getConsole("object_manager");
 ObjectManager::ObjectManager(
     std::shared_ptr<ModelRegistry> _model_registry,
     std::shared_ptr<FileLibrary> _library) : model_registry(_model_registry),
-                                             library(_library)
+                                             library(_library),
+                                             currentID(0)
 {
 }
 
@@ -57,7 +58,8 @@ ObjectManager::ObjectManager(
     GravityProvider *_gravityProvider,
     std::shared_ptr<ViewablesRegistrar> _viewables_registrar) :
         model_registry(_model_registry),
-        library(_library)
+        library(_library),
+        currentID(0)
 {
     setReferences(
         _spaceResolver,
@@ -70,12 +72,11 @@ ObjectManager::ObjectUid ObjectManager::insertObject(
     PointOfView pos,
     std::string mesh_name)
 {
-    static ObjectUid ID = 0;
     managed_objects.insert(
         std::pair<
             ObjectUid,
             std::unique_ptr<ManagedObjectInstance>>(
-            ++ID,
+            ++currentID,
             std::make_unique<ManagedObjectInstance>(
                 object,
                 pos,
@@ -83,7 +84,7 @@ ObjectManager::ObjectUid ObjectManager::insertObject(
                 spaceResolver,
                 gravityProvider,
                 viewables_registrar)));
-    return ID;
+    return currentID;
 }
 
 void ObjectManager::update(float total_time)

@@ -80,5 +80,6 @@ class ObjectManager: public IObjectLoader
         /** mapping unique ID to objects */
         std::map<ObjectUid, std::unique_ptr<ManagedObjectInstance>> managed_objects;
 
+        ObjectUid currentID;
 };
 
