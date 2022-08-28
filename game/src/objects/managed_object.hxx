@@ -45,6 +45,9 @@ class ManagedObject
         /** @brief Interact with me. Does nothing by default */
         virtual void interact(ManagedObject* second_object);
 
+        /** @brief Do your stuff. Nothing by default */
+        virtual void manage(float diff_time);
+
         /** @brief to be derived */
         ManagedObject() = default;
 

@@ -13,3 +13,7 @@ bool ManagedObject::addTime(float time)
 void ManagedObject::interact(ManagedObject* second_object)
 {
 }
+
+void ManagedObject::manage(float diff_time)
+{
+}

@@ -446,6 +446,6 @@ TEST_F(LevelTest, getRoomMeshMatrix)
             1.0f, 0.0f, 0.0f, 0.0f,
             0.0f, 1.0f, 0.0f, 0.0f,
             0.0f, 0.0f, 1.0f, 0.0f,
-            -4.0f, 0.0f, 0.0f, 1.0f));
+            4.0f, 0.0f, 0.0f, 1.0f));
 }
 

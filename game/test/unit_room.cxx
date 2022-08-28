@@ -544,5 +544,5 @@ TEST_F(RoomTest, solve_mesh_position)
             1.0f, 0.0f, 0.0f, 0.0f,
             0.0f, 1.0f, 0.0f, 0.0f,
             0.0f, 0.0f, 1.0f, 0.0f,
-            -4.0f, 0.0f, 0.0f, 1.0f));
+            4.0f, 0.0f, 0.0f, 1.0f));
 }
