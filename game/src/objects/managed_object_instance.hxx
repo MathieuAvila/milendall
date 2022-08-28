@@ -22,7 +22,8 @@ class ManagedObjectInstance
         /** @brief This is the real position of the center of the object*/
         PointOfView mainPosition;
 
-        /** @brief The mesh it is linked to; "" means none. */
+        /** @brief The mesh it is linked to; "" means none.
+         * Solved at first update call. After that, position is updated and it is set to "". */
         std::string mesh_name;
 
         /** @brief This is other positions that the object crosses */

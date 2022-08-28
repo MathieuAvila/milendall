@@ -101,6 +101,7 @@ int main(int argc, char* argv[])
     auto player_id = object_manager ->insertObject(player,
         PointOfView(currentPov.position, currentPov.local_reference, currentPov.room)
     );
+    player->addTime( level->getDefinition().recommended_time);
     auto fontRegular = fl.getRoot().getSubPath("/common/fonts/fredoka-one.one-regular.ttf");
     auto fontCandy = fl.getRoot().getSubPath("/common/fonts/emilyscandy/EmilysCandy-Regular.ttf");
     fontLoadFont("regular", fontRegular);
@@ -147,9 +148,10 @@ int main(int argc, char* argv[])
         fpsCounter.update();
 
         fontRenderTextBorder("regular", player_position.room, 25.0f, 720.0f,  1.0f,  2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
+        fontRenderTextBorder("regular", std::string("Temps restant: ") + std::to_string(player->getLeftTime()), 550.0f, 720.0f,  1.0f,  2, glm::vec3(0.9, 0.7f, 0.3f), glm::vec3(0.1, 0.1f, 0.1f));
 
         fontRenderTextBorder("regular", vec3_to_string(player_position.position), 25.0f, 50.0f,  0.5f,  2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
-        fontRenderTextBorder("regular", player_position.room, 25.0f, 25.0f,  0.5f,  2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
+
 
 		// Swap buffers
 		glfwSwapBuffers(window);

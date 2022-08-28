@@ -9,9 +9,9 @@
  */
 class Player : public ManagedObject
 {
-    public:
-
-    struct ActionSet {
+public:
+    struct ActionSet
+    {
         bool forward;
         bool backward;
         bool right;
@@ -23,7 +23,7 @@ class Player : public ManagedObject
         float verticalAngle;
     };
 
-    virtual const MovableObjectDefinition& getObjectDefinition() const override;
+    virtual const MovableObjectDefinition &getObjectDefinition() const override;
     virtual MovementWish getRequestedMovement() const override;
     virtual bool checkEol() const override;
     virtual glm::mat4x4 getOwnMatrix() const override;
@@ -35,9 +35,13 @@ class Player : public ManagedObject
     Player();
     virtual ~Player();
 
-    private:
+    /** in order to check game play and print on screen */
+    int getLeftTime();
 
+    void manage(float diff_time) override;
+
+private:
     MovableObjectDefinition movable_definition;
     ActionSet currentActions;
-
+    float time_left;
 };

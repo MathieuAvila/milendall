@@ -36,6 +36,19 @@ PointOfView ManagedObjectInstance::getObjectPosition()
 void ManagedObjectInstance::computeNextPosition(float total_time)
 {
     float delta_time = total_time - last_update;
+
+    // If there is a mesh, then it must be solved at first call.
+    if (spaceResolver && (mesh_name != "")) {
+        auto mat = spaceResolver->getRoomMeshMatrix(mainPosition.room, mesh_name);
+        console->warn("POSITION WAS={}", vec3_to_string(mainPosition.position));
+        console->warn("MAT IS={}", mat4x4_to_string(mat));
+        mainPosition = mainPosition.changeCoordinateSystem(mainPosition.room, mat);
+        console->warn("POSITION IS={}", vec3_to_string(mainPosition.position));
+        mesh_name = "";
+        updateViewable();
+    }
+
+    object.get()->manage(delta_time);
     updateGravity(total_time, delta_time);
     if (object.get()->getObjectDefinition().can_move)
     {

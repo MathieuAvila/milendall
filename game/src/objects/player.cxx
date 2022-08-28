@@ -60,5 +60,16 @@ void Player::setActionSet(ActionSet actions)
 bool Player::addTime(float time)
 {
     console->info("Received time {}", time);
+    time_left += time;
     return true;
+}
+
+void Player::manage(float diff_time)
+{
+    time_left -= diff_time;
+}
+
+int Player::getLeftTime()
+{
+    return time_left;
 }
