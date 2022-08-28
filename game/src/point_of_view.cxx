@@ -17,6 +17,18 @@ PointOfView PointOfView::changeCoordinateSystem(std::string newRoom, const glm::
     );
 }
 
+PointOfView PointOfView::changePositionAndCoordinateSystem(const glm::mat4& newMatrix) const
+{
+    auto new_pos = newMatrix * positionToVec4(position);
+    glm::mat3x3 no_trans(newMatrix);
+
+    return PointOfView(
+        new_pos,
+        no_trans * local_reference,
+        room
+    );
+}
+
 PointOfView PointOfView::prependCoordinateSystem(const glm::mat3& newMatrix) const
 {
     glm::mat3x3 no_trans(newMatrix);

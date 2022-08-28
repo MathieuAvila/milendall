@@ -35,8 +35,11 @@ struct PointOfView
 
     bool operator==(const PointOfView&) const;
 
-    /** @brief Build a new PoV when a change of room occurs */
+    /** @brief Build a new PoV when a change of room occurs. Position is not changed */
     PointOfView changeCoordinateSystem(std::string newRoom, const glm::mat4& newMatrix) const;
+
+    /** @brief Build a new PoV, included translation. Position is changed. Room is unchanged */
+    PointOfView changePositionAndCoordinateSystem(const glm::mat4& newMatrix) const;
 
     /** @brief Build a new PoV where matrix is premultipled by another frame of reference */
     PointOfView prependCoordinateSystem(const glm::mat3& newMatrix) const;
