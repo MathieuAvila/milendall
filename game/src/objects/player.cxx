@@ -6,7 +6,7 @@
 
 static auto console = getConsole("player");
 
-Player::Player() : movable_definition(MovableObjectDefinition(0.7f, 1.0f, 1.0f, 0.3f))
+Player::Player() : movable_definition(MovableObjectDefinition(0.7f, 1.0f, 1.0f, 0.3f)), time_left(0.0f)
 {
 
 }
