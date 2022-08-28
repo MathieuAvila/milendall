@@ -127,12 +127,12 @@ class GltfMaterialAccessorImpl : public GltfMaterialAccessorIFace {
                     mat.colors[0] = baseColorMaterial[0];
                     mat.colors[1] = baseColorMaterial[1];
                     mat.colors[2] = baseColorMaterial[2];
-                    console->info("material {} is using color with RGB={},{},{}",
+                    console->debug("material {} is using color with RGB={},{},{}",
                                     node_index, mat.colors[0], mat.colors[1], mat.colors[2]);
                 });
                 materialList.push_back(mat);
             });
-            console->info("found material:{} with name '{}' with texture ID={}", to_string(node_index), name, mat.textureIndex);
+            console->debug("found material:{} with name '{}' with texture ID={}", to_string(node_index), name, mat.textureIndex);
     });
     }
 
@@ -222,7 +222,7 @@ GltfTextureReference::GltfTextureReference(PGltfMaterialLibraryImpl _lib, const 
     bool result = img.loadFromMemory(mem);
     if (!result)
         throw GltfException(string("Error loading texture file: ") + f_path);
-    console->info("Load texture {} returned {} size {}x{}, image type={}, BPP={}", f_path, result,
+    console->debug("Load texture {} returned {} size {}x{}, image type={}, BPP={}", f_path, result,
         img.getWidth(), img.getHeight(), img.getImageType(), img.getBitsPerPixel());
     switch (img.getBitsPerPixel())
     {

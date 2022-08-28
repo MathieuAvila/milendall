@@ -33,7 +33,7 @@ GltfNode::GltfNode(json& json): default_transform(identity)
     }
     /* get all children nodes */
     jsonExecuteAllIfElement(json, "children", [this](nlohmann::json& child, int node_index) {
-        console->info("found child:{}", to_string(child));
+        console->debug("found child:{}", to_string(child));
         children.push_back(child.get<int>());
     });
     /* read default raw matrix */
@@ -127,7 +127,7 @@ GltfModel::GltfModel(GltfMaterialLibraryIfacePtr materialLibrary, const FileLibr
                 char data;
             } __attribute__((packed))* head_data = (struct header_data*)end;
 
-            console->info("Data type={:x}, length={}",
+            console->debug("Data type={:x}, length={}",
                         head_data->type, head_data->length);
 
             if (head_data->type != 0x004E4942)
@@ -169,13 +169,13 @@ GltfModel::GltfModel(GltfMaterialLibraryIfacePtr materialLibrary, const FileLibr
     materialAccessor = materialLibrary->getMaterialAccessor(ref.getDirPath(), file_json);
     // Load all meshes, whether used or not
     jsonExecuteAllIfElement(file_json, "meshes", [this, &data_accessor](nlohmann::json& child, int node_index) {
-        console->info("Load mesh: {}", node_index);
+        console->debug("Load mesh: {}", node_index);
         meshTable.push_back(make_shared<GltfMesh>(child, data_accessor.get(), materialAccessor));
     });
 
     // Load all nodes, whether used or not
     jsonExecuteAllIfElement(file_json, "nodes", [this, &nodeProvider, &data_accessor](nlohmann::json& child, int node_index) {
-        console->info("Load node: {}", node_index);
+        console->debug("Load node: {}", node_index);
         // Force name if none is provided
         if (!child.contains("name") || child["name"].get<std::string>() == "") {
             child["name"] = std::string("#") + std::to_string(node_index);
@@ -185,7 +185,7 @@ GltfModel::GltfModel(GltfMaterialLibraryIfacePtr materialLibrary, const FileLibr
 
     // Load all animations, it's up to the application to use them
     jsonExecuteAllIfElement(file_json, "animations", [this, &data_accessor](nlohmann::json& child, int index) {
-        console->info("Load animation: {}", index);
+        console->debug("Load animation: {}", index);
         auto animation = make_shared<GltfAnimation>(child, data_accessor.get());
         animationMap.insert(std::pair<std::string, std::shared_ptr<GltfAnimation>>(animation->getName(), animation));
     });

@@ -59,7 +59,7 @@ GltfMesh::GltfPrimitive::GltfPrimitive(
     store_if_contains(NORMAL, attributes, "NORMAL");
     store_if_contains(POSITION, attributes, "POSITION");
     store_if_contains(TEXCOORD_0, attributes, "TEXCOORD_0");
-    console->info(
+    console->debug(
         "load primitive indices={}, mode={}, "
         "material={}, NORMAL={}, POSITION={}, TEXCOORD_0={}",
         indices, mode, material, NORMAL, POSITION, TEXCOORD_0);
@@ -136,16 +136,16 @@ GltfMesh::GltfPrimitive::GltfPrimitive(
     indicesCount = indicesbuffer->count;
 
 
-    console->info(
+    console->debug(
         "vertexbuffer={} - stride={} - format={}",
         vertexbuffer.buffer,vertexbuffer.stride, vertexbuffer.glformat);
-    console->info(
+    console->debug(
         "uvbuffer={} - stride={} - format={}",
         uvbuffer.buffer,uvbuffer.stride, uvbuffer.glformat);
-    console->info(
+    console->debug(
         "elementbuffer={} - stride={} - format={}",
         elementbuffer.buffer,elementbuffer.stride, elementbuffer.glformat);
-    console->info(
+    console->debug(
         "normalbuffer={} - stride={} - format={}",
         normalbuffer.buffer,normalbuffer.stride, normalbuffer.glformat);
 }
@@ -161,7 +161,7 @@ GltfMesh::GltfMesh(
     });
     if (j_mesh.contains("name")) {
         auto name = j_mesh["name"].get<string>();
-        console->info("Mesh has name {}", name);
+        console->debug("Mesh has name {}", name);
     }
 }
 

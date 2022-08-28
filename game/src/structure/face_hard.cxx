@@ -8,5 +8,5 @@ FaceHard::FaceHard(
     std::unique_ptr<GltfDataAccessorIFace::DataBlock> accessor,
     nlohmann::json& json) : face(points, move(accessor))
 {
-    console->info("Hard walls");
+    console->debug("Hard walls");
 }

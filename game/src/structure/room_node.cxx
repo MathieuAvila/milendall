@@ -53,7 +53,7 @@ RoomNode::FacePortal::FacePortal(
     portal_triangles = make_unique<TrianglesBufferInfo>(
         std::span<glm::vec3>(const_cast<glm::vec3 *>(&p[0]), p.size()),
         std::span<unsigned short>(&triangles[0], triangles.size()));
-    console->info("Portal {} connect {}", gate.gate, gate.connect);
+    console->debug("Portal {} connect {}", gate.gate, gate.connect);
 }
 
 RoomNode::RoomNode(
@@ -74,7 +74,7 @@ RoomNode::RoomNode(
         if (extras.contains("points"))
         {
             auto accessor_points = jsonGetElementByName(extras, "points").get<int>();
-            console->info("Found application data (extras) for RoomNode, points are {}", accessor_points);
+            console->debug("Found application data (extras) for RoomNode, points are {}", accessor_points);
             auto points_accessor = data_accessor->accessId(accessor_points);
             points = make_shared<PointsBlock>(move(points_accessor));
 
@@ -83,7 +83,7 @@ RoomNode::RoomNode(
             auto data = jsonGetElementByName(phys, "data");
             auto type = jsonGetElementByName(data, "type").get<string>();
             auto accessor = jsonGetElementByName(phys, "accessor").get<int>();
-            console->info("found phys_face:{} with accessor={}, type is {}", to_string(data), accessor, type);
+            console->debug("found phys_face:{} with accessor={}, type is {}", to_string(data), accessor, type);
             auto faces_data = data_accessor->accessId(accessor);
             if (type == "portal") {
                 portals.push_back(FacePortal(points, move(faces_data), data, room_name));
@@ -97,7 +97,7 @@ RoomNode::RoomNode(
 
         jsonExecuteAllIfElement(extras, "triggers", [this, _states_list](nlohmann::json &trigger, int node_index)
                                 {
-            console->info("found trigger :{}", node_index);
+            console->debug("found trigger :{}", node_index);
             triggers.push_back(Trigger(trigger, _states_list)); });
 
         jsonExecuteIfElement(extras, "gravity", [this](nlohmann::json &json_gravity)
@@ -266,7 +266,7 @@ bool RoomNode::checkPortalCrossing(
                     dstRoom = target_room_node->room_name;
                     dstNodeInstance = target_room_node->node_instance;
                     result = true;
-                    console->info("Portal {} was crossed, going to room {}", gate.gate, dstRoom);
+                    console->debug("Portal {} was crossed, going to room {}", gate.gate, dstRoom);
                 }
             }
         }

@@ -48,7 +48,7 @@ GravityInformation::GravityInformation(std::list<GravityInformation> sources)
         }
         // take minimum, whatever current values. This means that there some space requiring more frequent computations.
         validity = current_validity;
-        console->info("total_weight {} up {} gravity {} validity {}",
+        console->debug("total_weight {} up {} gravity {} validity {}",
                 total_weight, vec3_to_string(up), vec3_to_string(gravity), validity);
     } else{
         gravity = glm::vec3(0.0f, -1.0f, 0.0f);

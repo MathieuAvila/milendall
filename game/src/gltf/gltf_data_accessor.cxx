@@ -66,7 +66,7 @@ std::unique_ptr<GltfDataAccessor::DataBlock> GltfDataAccessor::accessId(uint32_t
 
    FileContentPtr& buffPtr = loaded_buffers[bufferview_buffer];
 
-   console->info("Accessing index {} - stride {} - buferView offset={} accessor offset={} count={}",
+   console->debug("Accessing index {} - stride {} - buferView offset={} accessor offset={} count={}",
                 index, bufferview_stride, bufferview_byteOffset, byteOffset, count);
 
    auto endIndex = bufferview_byteOffset + byteOffset + bufferview_byteLength;
