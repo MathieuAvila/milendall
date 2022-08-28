@@ -102,25 +102,8 @@ void Room::updateRoom(float delta_time)
     }
 }
 
-void Room::draw(DrawContext& draw_context)
+void Room::drawObjects(DrawContext& draw_context)
 {
-    //console->info("Room draw: {} - level={}", room_name, draw_context.recurse_level);
-    setActiveFbo(&draw_context.fbo);
-    setViewMatrix(draw_context.pov.getViewMatrix(), draw_context.pov.position);
-    GltfModel::draw(instance.get(), &draw_context);
-}
-
-void Room::draw(PointOfView pov)
-{
-    struct DrawContext drawContext {
-        pov,
-        portal_register, // TODO
-        0,
-        FboIndex{0,0}
-    };
-    setViewMatrix(pov.getViewMatrix(), pov.position);
-    GltfModel::draw(instance.get(), &drawContext);
-
     // Draw included objects
     if (viewables_registrar) {
         auto objects = viewables_registrar->getViewables(room_name);
@@ -132,6 +115,28 @@ void Room::draw(PointOfView pov)
             }
         }
     }
+}
+
+void Room::draw(DrawContext& draw_context)
+{
+    //console->info("Room draw: {} - level={}", room_name, draw_context.recurse_level);
+    setActiveFbo(&draw_context.fbo);
+    setViewMatrix(draw_context.pov.getViewMatrix(), draw_context.pov.position);
+    GltfModel::draw(instance.get(), &draw_context);
+    drawObjects(draw_context);
+}
+
+void Room::draw(PointOfView pov)
+{
+    struct DrawContext draw_context {
+        pov,
+        portal_register, // TODO
+        0,
+        FboIndex{0,0}
+    };
+    setViewMatrix(pov.getViewMatrix(), pov.position);
+    GltfModel::draw(instance.get(), &draw_context);
+    drawObjects(draw_context);
 }
 
 void Room::draw(GltfInstance* instance, int index, void* context)
@@ -299,7 +304,7 @@ glm::mat4 Room::getMeshMatrix(std::string mesh_name) const
         RoomNode* roomNode = dynamic_cast<RoomNode*>(nodeTable[i].get());
         if (roomNode->name == mesh_name) {
             GltfNodeInstanceIface* roomNodeInstance = dynamic_cast<GltfNodeInstanceIface*>(instance->getNode(i));
-            return roomNodeInstance->getInvertedNodeMatrix();
+            return roomNodeInstance->getNodeMatrix();
         }
     }
     // not found

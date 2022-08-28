@@ -73,6 +73,11 @@ class Room : private RoomScriptLoader, public GltfModel
          * is a wrapper*/
         std::list<std::unique_ptr<RoomAnimation>> room_animations;
 
+        /** @brief Internal method to draw objects.
+         * This one is called in 2 different contexts: at root, and later.
+         */
+        void drawObjects(DrawContext& context);
+
         /** @brief inherited from GltfModel to load specific data */
         virtual void parseApplicationData(nlohmann::json& json) override;
 
