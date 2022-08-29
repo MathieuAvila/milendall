@@ -40,10 +40,10 @@ void ManagedObjectInstance::computeNextPosition(float total_time)
     // If there is a mesh, then it must be solved at first call.
     if (spaceResolver && (mesh_name != "")) {
         auto mat = spaceResolver->getRoomMeshMatrix(mainPosition.room, mesh_name);
-        console->warn("POSITION WAS={}", vec3_to_string(mainPosition.position));
-        console->warn("MAT IS={}", mat4x4_to_string(mat));
+        console->debug("POSITION WAS={}", vec3_to_string(mainPosition.position));
+        console->debug("MAT IS={}", mat4x4_to_string(mat));
         mainPosition = mainPosition.changeCoordinateSystem(mainPosition.room, mat);
-        console->warn("POSITION IS={}", vec3_to_string(mainPosition.position));
+        console->debug("POSITION IS={}", vec3_to_string(mainPosition.position));
         mesh_name = "";
         updateViewable();
     }
