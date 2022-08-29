@@ -100,6 +100,6 @@ glm::mat4x4 PointOfView::getViewMatrix() const
 glm::mat4x4 PointOfView::getPosMatrix() const
 {
     glm::mat4x4 ref4 = glm::mat4(local_reference);
-    return glm::translate(ref4, position);
+    return glm::translate(glm::mat4(1.0f), position) * ref4;
     //return glm::mat4(1.0);
 }
