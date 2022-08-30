@@ -31,12 +31,12 @@ class DressingBasic(Dressing):
         """ force set values:
         - set default values to dressing"""
         dressing_parameters = self._element.values.parameters.dressing_parameters
-        my_default = {
+        my_default = { "textures": {
                 concrete_room.Node.HINT_GROUND : "/common/basic/ground.jpg",
                 concrete_room.Node.HINT_WALL : "/common/basic/wall.jpg",
                 concrete_room.Node.HINT_CEILING : "/common/basic/ceiling.jpg",
                 concrete_room.Node.HINT_DOOR : "/common/basic/door.jpg"
-        }
+        }}
         self._element.values.parameters.dressing_private = merge( my_default, dressing_parameters)
 
 
@@ -47,15 +47,15 @@ class DressingBasic(Dressing):
 
             # get each kind of walls and associate a texture.
 
-            axes_map = { concrete_room.Node.HINT_GROUND:  [["x"], ["z"]] ,
+            axes_map = {concrete_room.Node.HINT_GROUND:  [["x"], ["z"]] ,
                 concrete_room.Node.HINT_WALL:  [["x","z"], ["y"]] ,
                 concrete_room.Node.HINT_CEILING: [["x"], ["z"]] ,
                 concrete_room.Node.HINT_DOOR: [["x"], ["z"]]  }
 
             private = self._element.values.parameters.dressing_private
 
-            for kind_texture in private.keys():
-                texture = private[kind_texture]
+            for kind_texture in private["textures"].keys():
+                texture = private["textures"][kind_texture]
                 axes = axes_map[kind_texture]
                 list_faces = obj.get_visual_face([kind_texture])
                 logger.debug("kind: %s, texture:%s , len:%i",
