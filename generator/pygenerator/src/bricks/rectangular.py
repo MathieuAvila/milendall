@@ -160,16 +160,25 @@ class BrickRectangular(BrickStructure):
                         local_pad_mat = local_pad_mat * cgtypes.mat4.translation(cgtypes.vec3(o[0], o[1], 0.0))
 
                         trans_face = [ local_pad_mat * p for p in face]
-                        logger.info("trans_face %i %s " %( d["border"], trans_face))
+                        logger.debug("trans_face %i %s " %( d["border"], trans_face))
                         faces.hole(trans_face)
                         # add pad
                         child_object = concrete.add_child("parent", pad.pad_id, wall_mat* local_pad_mat)
 
             holed = faces.get_points_faces()
 
-            transformed_points = [ wall_mat * (cgtypes.vec4(p.x, p.y, p.z, 1.0))  for p in holed[0]]
-            transformed_points_vec3 = [ cgtypes.vec3(p.x, p.y, p.z) for p in transformed_points]
-            logger.info(transformed_points_vec3)
+            #transformed_points = [ wall_mat * (cgtypes.vec4(p.x, p.y, p.z, 1.0))  for p in holed[0]]
+            #transformed_points_vec3 = [ cgtypes.vec3(p.x, p.y, p.z) for p in transformed_points]
+            transformed_points_vec3 = []
+            for p in holed[0]:
+                cp = wall_mat * (cgtypes.vec4(p.x, p.y, p.z, 1.0))
+                cp2 = cgtypes.vec3(cp.x, cp.y, cp.z)
+                cp2.u = p.x
+                cp2.v = p.y
+                cp2.has_tex = True
+                transformed_points_vec3.append(cp2)
+
+            logger.debug(transformed_points_vec3)
             index_face = parent.add_structure_points(transformed_points_vec3)
             parent.add_structure_faces(
                 index_face,

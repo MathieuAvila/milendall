@@ -50,6 +50,12 @@ def get_texture_definition_function_simple_mapper(filename, scale_x=1.0, scale_y
     my_context = { "scale_x": scale_x, "scale_y": scale_y}
 
     def mapper(points, face, context, my_points):
+        # if possible, use provided coords
+        if hasattr(my_points[0], "has_tex") == True:
+            logging.info("HAS TEXTURES COORDS")
+            return
+        logging.error(f"p {points[0].__dict__}")
+
         # checks
         if len(my_points) < 3:
             logging.error("Face has {} points, must have at least 3.", len(my_points))
