@@ -119,7 +119,12 @@
                 }
             ],
             "parameters": {
-                "structure_class": "simple_door"
+                "structure_class": "simple_door",
+                "dressing_parameters": {
+                    "textures": {
+                        "wall": "/common/basic/wall_variant/wall_1_1_0.jpg"
+                    }
+                }
             }
         },
         {
@@ -135,7 +140,12 @@
                 }
             ],
             "parameters": {
-                "structure_class": "simple_door"
+                "structure_class": "simple_door",
+                "dressing_parameters": {
+                    "textures": {
+                        "wall": "/common/basic/wall_variant/wall_1_1_0.jpg"
+                    }
+                }
             }
         },
         {
@@ -151,7 +161,12 @@
                 }
             ],
             "parameters": {
-                "structure_class": "simple_door"
+                "structure_class": "simple_door",
+                "dressing_parameters": {
+                    "textures": {
+                        "wall": "/common/basic/wall_variant/wall_0_1_2.jpg"
+                    }
+                }
             }
         },
         {
@@ -167,7 +182,12 @@
                 }
             ],
             "parameters": {
-                "structure_class": "simple_door"
+                "structure_class": "simple_door",
+                "dressing_parameters": {
+                    "textures": {
+                        "wall": "/common/basic/wall_variant/wall_0_1_2.jpg"
+                    }
+                }
             }
         },
         {
@@ -183,7 +203,12 @@
                 }
             ],
             "parameters": {
-                "structure_class": "simple_door"
+                "structure_class": "simple_door",
+                "dressing_parameters": {
+                    "textures": {
+                        "wall": "/common/basic/wall_variant/wall_2_1_1.jpg"
+                    }
+                }
             }
         },
         {
@@ -199,7 +224,12 @@
                 }
             ],
             "parameters": {
-                "structure_class": "simple_door"
+                "structure_class": "simple_door",
+                "dressing_parameters": {
+                    "textures": {
+                        "wall": "/common/basic/wall_variant/wall_2_1_1.jpg"
+                    }
+                }
             }
         },
         {
@@ -223,8 +253,48 @@
                     "nr_steps": 15,
                     "y_base_start": -0.3,
                     "y_base_end": 1.7
+                },
+                "dressing_parameters": {
+                    "textures": {
+                        "wall": "/common/basic/wall_variant/wall_1_1_0.jpg"
+                    }
                 }
-            }
+            },
+            "objects": [
+                {
+                    "type": "option",
+                    "position": [
+                        0.0,
+                        0.5,
+                        0.7
+                    ],
+                    "parameters": {
+                        "subtype": "time_+1"
+                    }
+                },
+                {
+                    "type": "option",
+                    "position": [
+                        2.75,
+                        1.5,
+                        0.7
+                    ],
+                    "parameters": {
+                        "subtype": "time_+1"
+                    }
+                },
+                {
+                    "type": "option",
+                    "position": [
+                        5.5,
+                        2.5,
+                        0.7
+                    ],
+                    "parameters": {
+                        "subtype": "time_+1"
+                    }
+                }
+            ]
         },
         {
             "b_id": "stair-3-4",
@@ -255,6 +325,152 @@
                     "nr_steps": 15,
                     "y_base_start": -0.3,
                     "y_base_end": 2.5
+                }
+            },
+            "objects": [
+                {
+                    "type": "option",
+                    "position": [
+                        0.0,
+                        0.5,
+                        0.7
+                    ],
+                    "parameters": {
+                        "subtype": "time_+2"
+                    }
+                },
+                {
+                    "type": "option",
+                    "position": [
+                        2.75,
+                        1.5,
+                        0.7
+                    ],
+                    "parameters": {
+                        "subtype": "time_+2"
+                    }
+                },
+                {
+                    "type": "option",
+                    "position": [
+                        5.5,
+                        2.5,
+                        0.7
+                    ],
+                    "parameters": {
+                        "subtype": "time_+2"
+                    }
+                }
+            ]
+        },
+        {
+            "b_id": "stair-5-6",
+            "root_pad": {
+                "ref_b_id": "b_room",
+                "ref_pad_id": "root_door5",
+                "rotation": {
+                    "axis": [
+                        0.0,
+                        1.0,
+                        0.0
+                    ],
+                    "angle": -1.5707
+                },
+                "translation": [
+                    1.5,
+                    0.0,
+                    1.0
+                ]
+            },
+            "parameters": {
+                "structure_class": "stair",
+                "structure_parameters": {
+                    "x_pre": 1.0,
+                    "x_post": 1.0,
+                    "x_length": 9.0,
+                    "y_height": 3.0,
+                    "nr_steps": 15,
+                    "y_base_start": -0.3,
+                    "y_base_end": 2.5
+                }
+            },
+            "objects": [
+                {
+                    "type": "option",
+                    "position": [
+                        0.0,
+                        0.5,
+                        0.7
+                    ],
+                    "parameters": {
+                        "subtype": "time_+5"
+                    }
+                },
+                {
+                    "type": "option",
+                    "position": [
+                        2.75,
+                        1.5,
+                        0.7
+                    ],
+                    "parameters": {
+                        "subtype": "time_+5"
+                    }
+                },
+                {
+                    "type": "option",
+                    "position": [
+                        5.5,
+                        2.5,
+                        0.7
+                    ],
+                    "parameters": {
+                        "subtype": "time_+5"
+                    }
+                }
+            ]
+        },
+        {
+            "b_id": "gravity_stair_5_6",
+            "root_pad": {
+                "ref_b_id": "b_room",
+                "ref_pad_id": "root_door5",
+                "rotation": {
+                    "axis": [
+                        0.0,
+                        1.0,
+                        0.0
+                    ],
+                    "angle": -1.5707
+                },
+                "translation": [
+                    1.5,
+                    0.0,
+                    1.0
+                ]
+            },
+            "parameters": {
+                "structure_class": "gravity_sampler",
+                "structure_parameters": {
+                    "segments_nr": 20,
+                    "func": [
+                        "(u)*9.0",
+                        "(u)*3.0+0.7",
+                        "0.5"
+                    ],
+                    "gravity": [
+                        "(function() if u < 0.5 then return 0.0 else return 1.0 end end)()",
+                        "(function() if u < 0.5 then return -1.0 else return 0.0 end end)()",
+                        "0.0"
+                    ],
+                    "up": [
+                        "(function() if u < 0.5 then return 0.0 else return -1.0 end end)()",
+                        "(function() if u < 0.5 then return 1.0 else return 0.0 end end)()",
+                        "0.0"
+                    ],
+                    "mode_up_gravity": "none",
+                    "weight": "(function() if distance < 2.0 then return 1.0 else return 0.0 end end)()",
+                    "frequency": 1.0
                 }
             }
         }

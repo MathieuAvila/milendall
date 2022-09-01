@@ -10,10 +10,10 @@
         "section": "samples",
         "game_type": {
             "single_mode": {
-                "execution_time": 10,
+                "execution_time": 600,
                 "entry_point_room": "room1",
                 "end_point_room": "room1",
-                "entry_point_position": [ 1.5, 1.5, 1.5]
+                "entry_point_position": [6.5, 7.7, 5.18]
             }
         }
     },
