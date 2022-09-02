@@ -256,7 +256,7 @@
                 },
                 "dressing_parameters": {
                     "textures": {
-                        "wall": "/common/basic/wall_variant/wall_1_1_0.jpg"
+                        "wall": "/common/basic/ground_variant/ground_2_1_0.jpg"
                     }
                 }
             },
@@ -325,6 +325,11 @@
                     "nr_steps": 15,
                     "y_base_start": -0.3,
                     "y_base_end": 2.5
+                },
+                "dressing_parameters": {
+                    "textures": {
+                        "wall": "/common/basic/ground_variant/ground_0_1_0.jpg"
+                    }
                 }
             },
             "objects": [
@@ -391,7 +396,14 @@
                     "y_height": 3.0,
                     "nr_steps": 15,
                     "y_base_start": -0.3,
-                    "y_base_end": 2.5
+                    "y_base_end": 2.5,
+                    "z0": 0.05,
+                    "z1": 1.55
+                },
+                "dressing_parameters": {
+                    "textures": {
+                        "wall": "/common/basic/ground_variant/ground_1_0_1.jpg"
+                    }
                 }
             },
             "objects": [
@@ -459,18 +471,18 @@
                         "0.5"
                     ],
                     "gravity": [
-                        "(function() if u < 0.5 then return 0.0 else return 1.0 end end)()",
-                        "(function() if u < 0.5 then return -1.0 else return 0.0 end end)()",
+                        "(function() return 0.0 end)()",
+                        "(function() return -1.0 end)()",
                         "0.0"
                     ],
                     "up": [
-                        "(function() if u < 0.5 then return 0.0 else return -1.0 end end)()",
-                        "(function() if u < 0.5 then return 1.0 else return 0.0 end end)()",
+                        "(function() return 0.0 end)()",
+                        "(function() return 1.0 end)()",
                         "0.0"
                     ],
                     "mode_up_gravity": "none",
                     "weight": "(function() if distance < 2.0 then return 1.0 else return 0.0 end end)()",
-                    "frequency": 1.0
+                    "frequency": 0.1
                 }
             }
         }
