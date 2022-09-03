@@ -60,17 +60,17 @@ class Brick(Element):
         #output.write('"' + dump_prefix + "_" + v.b_id +'" ' + '[ label=< ' + label+ ' > ] ;\n')
 
         #output_room.write('"' + my_name +'" ' + '[ label=< ' + label+ ' > ] ;\n')
-        output_room.write('subgraph cluster_' + my_name +' {\n')
+        output_room.write('subgraph "cluster_' + my_name +'" {\n')
         output_room.write('label=< ' + label+ ' > ;\n')
 
         if v.root_pad is not None:
             r_pad = dump_prefix + "_" + v.root_pad.ref_b_id + "_" + v.root_pad.ref_pad_id
-            output_room.write(my_name + ' -> "' + r_pad + '";\n')
+            output_room.write('"' + my_name + '" -> "' + r_pad + '";\n')
         if v.pads is not None:
             for i in v.pads:
                 i_pad = dump_prefix + "_" + v.b_id + "_" + i.pad_id
-                output_room.write(i_pad + ' -> "' + my_name + '"[constraint=false];\n')
-                output_room.write('"' + i_pad +'" ' + '[ shape=ellipse style="filled,dashed" color=black fillcolor=lightblue border=black style=filled label=< ' + i.pad_id+ ' > ] ;\n')
+                output_room.write('"' + i_pad + '" -> "' + my_name + '"[constraint=false];\n')
+                output_room.write('"' + i_pad + '" ' + '[ shape=ellipse style="filled,dashed" color=black fillcolor=lightblue border=black style=filled label=< ' + i.pad_id+ ' > ] ;\n')
 
         output_room.write('};\n')
 
@@ -78,7 +78,7 @@ class Brick(Element):
             for p in v.portals:
                 i_portal = p.gate_id
                 if p.connect == "A":
-                    output_main.write(my_name + ' -> "' + i_portal + '" [ label="' + p.connect +'"];\n')
+                    output_main.write('"' + my_name + '" -> "' + i_portal + '" [ label="' + p.connect +'"];\n')
                 else:
-                    output_main.write(i_portal + ' -> "' + my_name + '" [ label="' + p.connect +'"];\n')
+                    output_main.write('"' + i_portal + '" -> "' + my_name + '" [ label="' + p.connect +'"];\n')
 

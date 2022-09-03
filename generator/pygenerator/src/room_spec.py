@@ -47,7 +47,7 @@ class RoomSpec():
                 for portal in brick.values.portals:
                     gate_ids.append(portal.gate_id)
         for g in gate_ids:
-            output.write(g + ' [ shape=hexagon style=filled color=yellow ];\n')
+            output.write('"' + g + '" [ shape=hexagon style=filled color=yellow ];\n')
 
         # now you can dump the room
         label = self.values.room_id
@@ -57,7 +57,7 @@ class RoomSpec():
             label += "<BR/><I>S: "+ self.values.structure_class + "</I>"
         if self.values.dressing_class is not None:
             label += "<BR/><I>D: "+ self.values.dressing_class + "</I>"
-        output.write('subgraph cluster_' + self.values.room_id +' {\n')
+        output.write('subgraph "cluster_' + self.values.room_id +'" {\n')
 
         if self.room is None:
             self.room = room.Room(self.level_directory, self.values.room_id, self.selector)
