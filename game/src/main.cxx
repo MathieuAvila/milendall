@@ -71,12 +71,19 @@ tuple<string, vector<string> > readParams(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
+    std::string binpath = std::filesystem::path(argv[0]).parent_path();
+
     set_level(level::debug);
 
     auto [modelPath, libPaths] = readParams(argc, argv);
 
     auto flp = make_shared<FileLibrary>();
     auto& fl = *flp.get();
+
+    /* Add some default directories */
+    fl.addRootFilesystem(binpath + "/../data/");
+    fl.addRootFilesystem(binpath + "/data/");
+    /* Add cmd-line directories */
     for (auto p: libPaths)
         fl.addRootFilesystem(p);
 
