@@ -156,10 +156,6 @@ void FileLibrary::recurseSearchFile(
     std::vector<FileLibrary::UriReference> all = dir.listDirectory();
     for (auto subfile : all)
     {
-        console->error("SEARCH: {}", subfile.getPath());
-        console->error("SEARCH is_directory : {}", subfile.isDirectory());
-        console->error("SEARCH isFile : {}", subfile.isFile());
-        console->error("SEARCH getFileName : {}", subfile.getFileName());
         if (subfile.isDirectory())
         {
             if (inverse_depth)
