@@ -40,29 +40,33 @@ class FileLibrary
 
         std::vector<UriReference> listDirectory() const;
 
-        /** read a binary content */
+        /** @brief read a binary content */
         FileContentPtr readContent() const;
 
-        /** read any content that looks like a string, i.e: a JSON file */
+        /** @brief read any content that looks like a string, i.e: a JSON file */
         std::string readStringContent() const;
 
-        /** from current position, get an object to a sub-path.
+        /** @brief from current position, get an object to a sub-path.
          * If this starts with "/", original path is removed
          */
         UriReference getSubPath(std::string) const;
 
-        /** from current position, get an object to the original directory.
+        /** @brief from current position, get an object to the original directory.
          * basically: remove last path element
          */
         UriReference getDirPath() const;
 
-        /** Check there is a file present with this reference */
+        /** @brief get filename. This is the last element of the path
+         */
+        std::string getFileName() const;
+
+        /** @brief Check there is a file present with this reference */
         bool isFile() const;
 
-        /** Check there is a directory present with this reference */
-        bool is_directory() const;
+        /** @brief Check there is a directory present with this reference */
+        bool isDirectory() const;
 
-        /** for UT and debug only */
+        /** @brief for UT and debug only */
         std::string getPath() const;
 
         bool operator<(const FileLibrary::UriReference& r ) const;
@@ -81,10 +85,23 @@ class FileLibrary
     /* get an instance to root */
     FileLibrary::UriReference getRoot();
 
+    /** @brief Search for a list of files with a given name (Used to seek level.json files)
+     * @param file_name The file name to search
+     * @param depth max dir depth
+    */
+    std::list<FileLibrary::UriReference> searchFile(std::string file_name, int depth = 3);
+
     private:
 
     std::list<std::string> root_list;
 
+    /** @brief recurse function to search for file
+     */
+    void recurseSearchFile(
+        std::string file_name,
+        std::list<FileLibrary::UriReference>& results,
+        FileLibrary::UriReference& dir,
+        int inverse_depth);
 };
 
 using FileLibraryPtr = std::shared_ptr<FileLibrary>;
