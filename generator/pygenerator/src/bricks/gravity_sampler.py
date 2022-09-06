@@ -98,8 +98,8 @@ class BrickGravitySampler(BrickStructure):
             '           dist = l_dist\n' +
             '       end\n' +
             '   end\n' +
-            '   print("c=" .. current)\n'
-            '   print("d=" .. dist)\n'
+            '   -- print("c=" .. current)\n'
+            '   -- print("d=" .. dist)\n'
             '   tab_out["dist"] = dist\n' +
             '   tab_out["u"] = current\n' +
             '   return tab_out\n' +
