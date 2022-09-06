@@ -54,7 +54,7 @@ bool RoomNodeGravity::getGravityInformation(
                     gravity.space_kind = GravityInformation::GROUND;
                     gravity.validity = result["v"];
                     gravity.weight = result["w"];
-                    console->info("weight {} gravity {} up {} validity {}",
+                    console->debug("weight {} gravity {} up {} validity {}",
                         gravity.weight, vec3_to_string(gravity.gravity), vec3_to_string(gravity.up), gravity.validity);
                 }
                 catch (Script::ScriptException e) {
