@@ -6,6 +6,16 @@
 
 #include <gtest/gtest_prod.h>
 
+#include <stdexcept>
+
+/** @brief A single math exception */
+class HelperMathException: public std::runtime_error
+{
+    public:
+
+        HelperMathException(const std::string err): runtime_error(err) {};
+};
+
 /** @brief Helper function to print a matrix */
 std::string mat4x4_to_string(glm::mat4x4);
 
@@ -95,3 +105,9 @@ glm::mat3x3 computeRotatedMatrix(glm::mat3x3 original, glm::vec3 second_vector, 
  * no use outside ClippingPlanes, exposed here for test purposes.
  */
 glm::vec2 plane2DCutPoint(glm::vec3 plane, glm::vec2 p0, glm::vec2 p1);
+
+/**
+ * @brief Convert from base64, insert result in vector.
+ * throws HelperMathException if invalid
+ */
+void decodeBase64(const std::string& input, std::vector<uint8_t>& out);

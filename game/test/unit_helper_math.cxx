@@ -510,3 +510,23 @@ TEST_F(HelperMathTest, 01_plane2DCutPoint) {
     // plane: x = 1
     ASSERT_EQ(plane2DCutPoint(glm::vec3(1.0, 0.0, -1.0), pO, (float)2.0 * (pX+pY) ), glm::vec2(1.0, 1.0));
 }
+
+TEST_F(HelperMathTest, decodeBase64_nominal)
+{
+    std::string input = "Q09VQ09V";
+    std::vector<uint8_t> out;
+    decodeBase64(input, out);
+    string out_s;
+    for (auto o: out)
+    {
+        out_s+=o;
+    }
+    ASSERT_EQ(out_s, "COUCOU");
+}
+
+TEST_F(HelperMathTest, decodeBase64_except)
+{
+    std::string input = "Q09VQ09";
+    std::vector<uint8_t> out;
+    ASSERT_THROW(decodeBase64(input, out), HelperMathException);
+}
