@@ -8,6 +8,7 @@
 class ViewableObject;
 class ModelRegistry;
 class FileLibrary;
+struct OptionDefinition;
 
 /** @brief All options objects */
 class ObjectOption : public ManagedObject
@@ -21,6 +22,9 @@ class ObjectOption : public ManagedObject
 
     /** @brief based on subtype, time to append */
     float time_value;
+
+    /** @brief Internal definition field */
+    const OptionDefinition* def;
 
     public:
 

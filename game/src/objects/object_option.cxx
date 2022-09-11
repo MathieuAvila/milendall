@@ -19,9 +19,23 @@
 
 static auto console = getConsole("object_option");
 
+typedef struct OptionDefinition
+{
+    string ressource;
+    float scale;
+    float time_value;
+} OptionDefinition;
+
+static const std::map<string, OptionDefinition> definitions = {
+    {{"time_+1", {.ressource = "time_plus_1__apple.glb", .scale = 1.0f, .time_value = 1.0f}},
+     {"time_+2", {.ressource = "time_plus_2__broccoli.glb", .scale = 1.0f, .time_value = 2.0f}},
+     {"time_+5", {.ressource = "time_plus_5__banana.glb", .scale = 1.0f, .time_value = 5.0f}},
+     {"time_-1", {.ressource = "time_less_1__candy.glb", .scale = 1.0f, .time_value = -1.0f}},
+     {"time_-2", {.ressource = "time_less_2__sundae.glb", .scale = 1.0f, .time_value = -2.0f}},
+     {"time_-5", {.ressource = "time_less_5__burgercheesedouble.glb", .scale = 1.0f, .time_value = -5.0f}}}};
+
 class ObjectOptionViewable : public ViewableObject
 {
-
     /** @brief own ref to the model */
     std::shared_ptr<GltfModel> model;
 
@@ -31,38 +45,15 @@ class ObjectOptionViewable : public ViewableObject
     // TODO: provide time from elsewhere
     std::chrono::steady_clock::time_point begin;
 
+    const OptionDefinition& def;
+
 public:
     ObjectOptionViewable(
         ModelRegistry *registry,
         FileLibrary *library,
-        std::string type)
+        const OptionDefinition& _def) : def(_def)
     {
-        if (type == "time_+1")
-        {
-            model = registry->getModel(library->getRoot().getSubPath("/common/objects/time_plus_1__apple.glb"));
-        }
-        else if (type == "time_+2")
-        {
-            model = registry->getModel(library->getRoot().getSubPath("/common/objects/time_plus_2__broccoli.glb"));
-        }
-        else if (type == "time_+5")
-        {
-            model = registry->getModel(library->getRoot().getSubPath("/common/objects/time_plus_5__banana.glb"));
-        }
-        else if (type == "time_-1")
-        {
-            model = registry->getModel(library->getRoot().getSubPath("/common/objects/time_less_1__candy.glb"));
-        }
-        else if (type == "time_-2")
-        {
-            model = registry->getModel(library->getRoot().getSubPath("/common/objects/time_less_2__sundae.glb"));
-        }
-        else if (type == "time_-5")
-        {
-            model = registry->getModel(library->getRoot().getSubPath("/common/objects/time_less_5__burgercheesedouble.glb"));
-        }
-        else
-            throw ObjectException("Unknown option type " + type);
+        model = registry->getModel(library->getRoot().getSubPath("/common/objects/" + def.ressource));
         instance = make_unique<GltfInstance>(model->getInstanceParameters());
         begin = std::chrono::steady_clock::now();
     }
@@ -83,8 +74,9 @@ public:
 
         auto rot = glm::rotate(rel_pos, diff_sec * glm::pi<float>() / 4.0f, glm::vec3(0.0f, 1.0f, 0.0f));
         auto final = glm::translate(rot, glm::vec3(0.0f, glm::cos(diff_sec * 2.0f) * 0.1f - 0.2, 0.0f));
+        auto final2 = glm::scale(final, glm::vec3(def.scale, def.scale, def.scale));
 
-        model->applyDefaultTransform(instance.get(), final);
+        model->applyDefaultTransform(instance.get(), final2);
         model->draw(instance.get());
     }
 };
@@ -97,22 +89,15 @@ ObjectOption::ObjectOption(
     end = false;
     auto subtype = jsonGetElementByName(*root, "subtype").get<std::string>();
     console->info("load option, subtype {}", subtype);
-    viewable = std::make_shared<ObjectOptionViewable>(registry, library, subtype);
-
-    if (subtype == "time_+1")
-        time_value = 1.0f;
-    else if (subtype == "time_+2")
-        time_value = 2.0f;
-    else if (subtype == "time_+5")
-        time_value = 5.0f;
-    else if (subtype == "time_-1")
-        time_value = -1.0f;
-    else if (subtype == "time_-2")
-        time_value = -2.0f;
-    else if (subtype == "time_-5")
-        time_value = -5.0f;
-    else
+    if (!definitions.count(subtype))
+    {
         throw ObjectException("Unknown option type " + subtype);
+    }
+    def = &definitions.at(subtype);
+
+    viewable = std::make_shared<ObjectOptionViewable>(registry, library, *def);
+
+    time_value = def->time_value;
 }
 
 bool ObjectOption::checkEol() const
@@ -144,6 +129,6 @@ std::shared_ptr<ViewableObject> ObjectOption::getViewable() const
 
 void ObjectOption::interact(ManagedObject *second_object)
 {
-    console->info("Add time {}", time_value);
-    end = second_object->addTime(time_value);
+    console->info("Add time {} minute", time_value);
+    end = second_object->addTime(time_value* 60.0f);
 }
