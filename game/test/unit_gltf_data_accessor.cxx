@@ -16,12 +16,12 @@ static auto console = getConsole("unit_gltf_data_accessor");
 #define SPECIFIC_FLOAT 3.14f
 #define SPECIFIC_INT 666
 
-static std::unique_ptr<GltfDataAccessor> get_test_accessor()
+static std::unique_ptr<GltfDataAccessor> get_test_accessor(std::string dir = "cube", std::string file = "room_preview.gltf")
 {
     auto fl = FileLibrary();
     std::string pwd = std::filesystem::current_path();
-    fl.addRootFilesystem(pwd + "/../game/test/sample/cube");
-    auto ref = fl.getRoot().getSubPath("room_preview.gltf");
+    fl.addRootFilesystem(pwd + "/../game/test/sample/" + dir);
+    auto ref = fl.getRoot().getSubPath(file);
     auto raw_json = ref.readStringContent();
     auto json_element = json::parse(raw_json.c_str());
     auto elem = std::make_unique<GltfDataAccessor>(json_element, ref.getDirPath());
@@ -216,3 +216,14 @@ TEST(GltfDataAccessor, stride) {
 
 }
 
+TEST(GltfDataAccessor, base64) {
+
+    auto data_accessor = get_test_accessor("accessor_base64", "sample.json");
+    auto data = data_accessor->accessId(0);
+    string out_s;
+    for (unsigned int i = 0; i<data->size; i++)
+    {
+        out_s += data->data[i];
+    }
+    ASSERT_EQ(out_s, "THIS IS A TEST");
+}

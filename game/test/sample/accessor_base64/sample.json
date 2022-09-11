@@ -1,0 +1,35 @@
+{
+    "buffers": [
+     {
+        "uri": "data:application/octet-stream;base64,VEhJUyBJUyBBIFRFU1Q=",
+        "byteLength": 6
+     }
+    ],
+    "bufferViews": [
+     {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 6,
+      "target": 34962
+     }
+    ],
+    "accessors": [
+     {
+      "bufferView": 0,
+      "byteOffset": 0,
+      "componentType": 5123,
+      "count": 10,
+      "type": "SCALAR",
+      "min": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "max": [
+       1.0,
+       1.0,
+       1.0
+      ]
+     }
+    ]
+   }

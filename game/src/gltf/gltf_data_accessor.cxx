@@ -1,6 +1,7 @@
 #include "gltf_data_accessor.hxx"
 #include "json_helper_accessor.hxx"
 #include "gltf_exception.hxx"
+#include "helper_math.hxx"
 
 #include "common.hxx"
 
@@ -15,9 +16,17 @@ GltfDataAccessor::GltfDataAccessor(nlohmann::json& json, const FileLibrary::UriR
         auto buffers_json = json["buffers"];
         for(auto buffer_json: buffers_json) {
                 if (buffer_json.contains("uri")) {
-                    auto buf_ref = ref.getSubPath(buffer_json["uri"]);
-                    //auto content = buf_ref.readContent();
-                    loaded_buffers.push_back(buf_ref.readContent());
+                    auto str = buffer_json["uri"].get<string>();
+                    if (str.rfind("data:application/octet-stream;base64,", 0) == 0) {
+                        auto substr = str.substr(std::string("data:application/octet-stream;base64,").size());
+                        std::vector<uint8_t> b64decoded;
+                        decodeBase64(substr, b64decoded);
+                        FileContentPtr content= std::make_shared<std::vector<uint8_t>>(b64decoded);
+                        loaded_buffers.push_back(content);
+                    } else {
+                        auto buf_ref = ref.getSubPath(buffer_json["uri"]);
+                        loaded_buffers.push_back(buf_ref.readContent());
+                    }
                 } else {
                     loaded_buffers.push_back(content);
                 }
