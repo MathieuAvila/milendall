@@ -50,7 +50,10 @@ std::unique_ptr<GltfDataAccessor::DataBlock> GltfDataAccessor::accessId(uint32_t
    auto accessor = jsonGetIndex(accessors, index);
 
    auto bufferView = jsonGetElementByName(accessor, "bufferView").get<int>();
-   auto byteOffset = jsonGetElementByName(accessor, "byteOffset").get<int>();
+   auto byteOffset = 0;
+   jsonExecuteIfElement(accessor, "byteOffset", [&byteOffset](nlohmann::json& elem) {
+        byteOffset = elem.get<int>();
+    });
    auto componentType_int = jsonGetElementByName(accessor, "componentType").get<int>();
    if (!mapper_component_type.count(componentType_int))
     throw(GltfException(std::string("Unknown accessor component type:") + std::to_string(componentType_int)));
@@ -62,8 +65,10 @@ std::unique_ptr<GltfDataAccessor::DataBlock> GltfDataAccessor::accessId(uint32_t
    auto type = mapper_type[type_str];
 
    auto bufferView_json = jsonGetIndex(bufferViews, bufferView);
-   auto bufferview_byteOffset = jsonGetElementByName(bufferView_json, "byteOffset").get<int>();
-   auto bufferview_byteLength = jsonGetElementByName(bufferView_json, "byteLength").get<int>();
+   int bufferview_byteOffset;
+   jsonExecuteIfElement(bufferView_json, "byteOffset", [&bufferview_byteOffset](nlohmann::json& elem) {
+       bufferview_byteOffset = elem.get<int>();
+   });
    auto bufferview_buffer = jsonGetElementByName(bufferView_json, "buffer").get<int>();
    auto bufferview_stride = bufferView_json.contains("byteStride") ? jsonGetElementByName(bufferView_json, "byteStride").get<int>() : 0;
 
@@ -75,22 +80,19 @@ std::unique_ptr<GltfDataAccessor::DataBlock> GltfDataAccessor::accessId(uint32_t
 
    FileContentPtr& buffPtr = loaded_buffers[bufferview_buffer];
 
-   console->debug("Accessing index {} - stride {} - buferView offset={} accessor offset={} count={}",
+   console->info("Accessing index {} - stride {} - buferView offset={} accessor offset={} count={}",
                 index, bufferview_stride, bufferview_byteOffset, byteOffset, count);
 
-   auto endIndex = bufferview_byteOffset + byteOffset + bufferview_byteLength;
-   if (endIndex > buffPtr->size())
-        throw(GltfException(std::string("Data sizes exceeds buffer length for accessor ")
-        + std::to_string(index)
-        + " . endIndex=" + std::to_string(endIndex)
-        + " . buff=" + std::to_string(buffPtr->size()) ));
+    uint8_t* nptr = (uint8_t*)buffPtr->data() + bufferview_byteOffset + byteOffset;
+    unsigned long long size = buffPtr->size() - bufferview_byteOffset + byteOffset;
 
-   uint8_t* nptr = (uint8_t*)buffPtr->data() + bufferview_byteOffset + byteOffset;
-
-   return make_unique<GltfDataAccessor::DataBlock>(
+    return make_unique<GltfDataAccessor::DataBlock>(
         type,
         componentType,
-        count, bufferview_stride, nptr);
+        count,
+        bufferview_stride,
+        size,
+        vector<uint8_t>(nptr, nptr + size));
 }
 
 GltfDataAccessor::~GltfDataAccessor()

@@ -59,7 +59,7 @@ GltfMesh::GltfPrimitive::GltfPrimitive(
     store_if_contains(NORMAL, attributes, "NORMAL");
     store_if_contains(POSITION, attributes, "POSITION");
     store_if_contains(TEXCOORD_0, attributes, "TEXCOORD_0");
-    console->debug(
+    console->info(
         "load primitive indices={}, mode={}, "
         "material={}, NORMAL={}, POSITION={}, TEXCOORD_0={}",
         indices, mode, material, NORMAL, POSITION, TEXCOORD_0);
@@ -90,6 +90,7 @@ GltfMesh::GltfPrimitive::GltfPrimitive(
     std::unique_ptr<GltfDataAccessorIFace::DataBlock> indexed_normal;
     if (NORMAL != -1) {
         indexed_normal = data_accessor->accessId(NORMAL);
+        normalbuffer.stride = indexed_normal->stride;
     }
     auto indicesbuffer = data_accessor->accessId(indices);
 
@@ -115,37 +116,37 @@ GltfMesh::GltfPrimitive::GltfPrimitive(
 
     glGenBuffers(1, &vertexbuffer.buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer.buffer);
-	glBufferData(GL_ARRAY_BUFFER, indexed_vertices->count * sizeof(glm::vec3), indexed_vertices->data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, indexed_vertices->size, indexed_vertices->data.data(), GL_STATIC_DRAW);
 
     glGenBuffers(1, &uvbuffer.buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer.buffer);
-	glBufferData(GL_ARRAY_BUFFER, indexed_uvs->count * sizeof(glm::vec2), indexed_uvs->data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, indexed_uvs->size, indexed_uvs->data.data(), GL_STATIC_DRAW);
 
     normalbuffer.buffer = 0;
     if (NORMAL != -1) {
         normalbuffer.glformat = mapper_gl_type[indexed_normal->unit_type];
         glGenBuffers(1, &normalbuffer.buffer);
 	    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer.buffer);
-	    glBufferData(GL_ARRAY_BUFFER, indexed_normal->count * sizeof(glm::vec3), indexed_normal->data, GL_STATIC_DRAW);
+	    glBufferData(GL_ARRAY_BUFFER, indexed_normal->size, indexed_normal->data.data(), GL_STATIC_DRAW);
     }
 
     glGenBuffers(1, &elementbuffer.buffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer.buffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, (unsigned long)(indicesbuffer->count) * mapper_gl_size[indicesbuffer->unit_type], indicesbuffer->data , GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesbuffer->size, indicesbuffer->data.data() , GL_STATIC_DRAW);
 
     indicesCount = indicesbuffer->count;
 
 
-    console->debug(
+    console->info(
         "vertexbuffer={} - stride={} - format={}",
         vertexbuffer.buffer,vertexbuffer.stride, vertexbuffer.glformat);
-    console->debug(
+    console->info(
         "uvbuffer={} - stride={} - format={}",
         uvbuffer.buffer,uvbuffer.stride, uvbuffer.glformat);
-    console->debug(
+    console->info(
         "elementbuffer={} - stride={} - format={}",
         elementbuffer.buffer,elementbuffer.stride, elementbuffer.glformat);
-    console->debug(
+    console->info(
         "normalbuffer={} - stride={} - format={}",
         normalbuffer.buffer,normalbuffer.stride, normalbuffer.glformat);
 }
@@ -168,7 +169,8 @@ GltfMesh::GltfMesh(
 void GltfMesh::GltfPrimitive::draw()
 {
     //console->info("Draw prim {}, {}, {}, {}", vertexbuffer, uvbuffer, elementbuffer, indicesCount);
-    material_accessor->loadId(material);
+    if (material != -1)
+        material_accessor->loadId(material);
 
     // 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);
@@ -200,7 +202,7 @@ void GltfMesh::GltfPrimitive::draw()
 			2,                                // attribute
 			3,                                // size
 			normalbuffer.glformat,            // type
-			GL_FALSE,                         // normalized?
+			GL_TRUE,                         // normalized?
 			normalbuffer.stride,              // stride
 			(void*)0                          // array buffer offset
 		);

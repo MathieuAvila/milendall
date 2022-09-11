@@ -16,7 +16,7 @@ PointsBlock::PointsBlock(std::unique_ptr<GltfDataAccessorIFace::DataBlock> data)
         throw GltfException("invalid data type, expect float");
     if (data->vec_type != data->VEC3)
         throw GltfException("invalid unit type, expect VEC3 for points");
-    float* raw_data = (float*)(data->data);
+    float* raw_data = (float*)(data->data.data());
     for (auto i = 0; i < data->count; i++)
     {
         console->debug("point {}, [ {} {} {} ]", i, raw_data[i*3], raw_data[i*3 + 1], raw_data[i*3 + 2]);
@@ -76,7 +76,7 @@ FaceList::FaceList(std::shared_ptr<PointsBlock> _points, std::unique_ptr<GltfDat
         throw GltfException("invalid data type, expect short");
     if (data->vec_type != data->SCALAR)
         throw GltfException("invalid unit type, expect SCALAR for faces");
-    unsigned short * raw_data = (unsigned short*)(data->data);
+    unsigned short * raw_data = (unsigned short*)(data->data.data());
     auto index = 0;
     while (index < data->count) {
         auto p_count = raw_data[index];

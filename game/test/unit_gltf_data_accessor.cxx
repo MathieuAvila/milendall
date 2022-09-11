@@ -57,7 +57,7 @@ TEST(GltfDataAccessor, getVec3) {
     EXPECT_TRUE(data->unit_type == GltfDataAccessorIFace::DataBlock::FLOAT);
     EXPECT_TRUE(data->vec_type == GltfDataAccessorIFace::DataBlock::VEC3);
     EXPECT_TRUE(data->count == 8);
-    float* data_float = (float*)(data->data);
+    float* data_float = (float*)(data->data.data());
     EXPECT_TRUE(data_float[0] == 0.0);
     EXPECT_TRUE(data_float[1] == 0.0);
     EXPECT_TRUE(data_float[2] == 0.0);
@@ -99,7 +99,7 @@ TEST(GltfDataAccessor, getScalar) {
     EXPECT_TRUE(data->unit_type == GltfDataAccessorIFace::DataBlock::UNSIGNED_SHORT);
     EXPECT_TRUE(data->vec_type == GltfDataAccessorIFace::DataBlock::SCALAR);
     EXPECT_TRUE(data->count == 12);
-    unsigned short* data_int = (unsigned short*)(data->data);
+    unsigned short* data_int = (unsigned short*)(data->data.data());
     EXPECT_TRUE(data_int[0] == 5);
     EXPECT_TRUE(data_int[1] == 6);
     EXPECT_TRUE(data_int[2] == 2);
@@ -122,7 +122,7 @@ TEST(GltfDataAccessor, getVec2) {
     EXPECT_TRUE(data->unit_type == GltfDataAccessorIFace::DataBlock::FLOAT);
     EXPECT_TRUE(data->vec_type == GltfDataAccessorIFace::DataBlock::VEC2);
     EXPECT_TRUE(data->count == 8);
-    float* data_float = (float*)(data->data);
+    float* data_float = (float*)(data->data.data());
     EXPECT_TRUE(data_float[0] == 0);
     EXPECT_TRUE(data_float[1] == 0);
 
@@ -170,12 +170,12 @@ TEST(GltfDataAccessor, data_blob) {
     auto block0 = data_accessor->accessId(0);
     EXPECT_NE(block0, nullptr);
     EXPECT_EQ(block0->count, 10);
-    EXPECT_EQ(block0->data[0], 0); // 1st in blob
+    EXPECT_EQ(block0->data.data()[0], 0); // 1st in blob
 
     auto block1 = data_accessor->accessId(1);
     EXPECT_NE(block1, nullptr);
     EXPECT_EQ(block1->count, 10);
-    EXPECT_EQ(block1->data[0], 10); // offset in blob
+    EXPECT_EQ(block1->data.data()[0], 10); // offset in blob
 }
 
 TEST(GltfDataAccessor, getTypes) {
@@ -187,20 +187,20 @@ TEST(GltfDataAccessor, getTypes) {
     EXPECT_NE(block0, nullptr);
     EXPECT_EQ(block0->unit_type, GltfDataAccessorIFace::DataBlock::UNSIGNED_SHORT);
     EXPECT_EQ(block0->count, 10);
-    EXPECT_EQ(block0->data[0], 0);
+    EXPECT_EQ(block0->data.data()[0], 0);
 
     auto block1 = data_accessor->accessId(1);
     EXPECT_NE(block1, nullptr);
     EXPECT_EQ(block1->unit_type, GltfDataAccessorIFace::DataBlock::UNSIGNED_INT);
     EXPECT_EQ(block1->count, 10);
-    unsigned int* d = (unsigned int*)(&block1->data[0]);
+    unsigned int* d = (unsigned int*)(&block1->data.data()[0]);
     EXPECT_EQ(*d, SPECIFIC_INT);
 
     auto block2 = data_accessor->accessId(2);
     EXPECT_NE(block2, nullptr);
     EXPECT_EQ(block2->unit_type, GltfDataAccessorIFace::DataBlock::FLOAT);
     EXPECT_EQ(block2->count, 10);
-    float* d_float = (float*)(&block2->data[0]);
+    float* d_float = (float*)(&block2->data.data()[0]);
     EXPECT_EQ(*d_float, SPECIFIC_FLOAT); // offset in blob
 }
 
@@ -223,7 +223,7 @@ TEST(GltfDataAccessor, base64) {
     string out_s;
     for (unsigned int i = 0; i<data->size; i++)
     {
-        out_s += data->data[i];
+        out_s += data->data.data()[i];
     }
     ASSERT_EQ(out_s, "THIS IS A TEST");
 }
