@@ -127,6 +127,8 @@ add_library(game_lib STATIC
   game/src/objects/player.cxx
   game/src/objects/object_option.hxx
   game/src/objects/object_option.cxx
+  game/src/objects/object_exit.hxx
+  game/src/objects/object_exit.cxx
   game/src/objects/model_registry.hxx
   game/src/objects/model_registry.cxx
   game/src/objects/object_type_register.hxx

@@ -1,0 +1,28 @@
+{
+    "$schema": "../../../../generator/schema/file_room_bricks.json",
+    "bricks": [
+        {
+            "b_id": "rect",
+            "parameters": {
+                "structure_class": "rectangular",
+                "structure_parameters": {
+                    "size": [
+                        10.0,
+                        5.0,
+                        8.0
+                    ]
+                }
+            },
+            "objects": [
+                {
+                    "type": "exit",
+                    "position": [
+                        1.0,
+                        0.3,
+                        5.0
+                    ]
+                }
+            ]
+        }
+    ]
+}
