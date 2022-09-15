@@ -58,8 +58,8 @@ public:
         float rot_y = -diff_sec * glm::pi<float>() / 8.0f;
         auto rot1 = glm::rotate(rel_pos, rot_z, glm::vec3(0.0f, 0.0f, 1.0f));
         auto rot2 = glm::rotate(rot1, rot_y, glm::vec3(0.0f, 1.0f, 0.0f));
-        auto final = glm::translate(rot2, glm::vec3(0.0f, glm::cos(diff_sec * 2.0f) * 0.1f - 0.2, 0.0f));
-        auto final2 = glm::scale(final, glm::vec3(1.0/35.0f, 1.0/35.0f, 1.0/35.0f));
+        auto final = glm::translate(rot2, glm::vec3(0.0f, glm::cos(diff_sec * 2.0f) * 0.1f - 0.1, 0.0f));
+        auto final2 = glm::scale(final, glm::vec3(1.0/40.0f, 1.0/40.0f, 1.0/40.0f));
 
         model->applyDefaultTransform(instance.get(), final2);
         model->draw(instance.get());
