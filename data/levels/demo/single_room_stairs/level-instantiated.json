@@ -12,7 +12,7 @@
             "single_mode": {
                 "execution_time": 600,
                 "entry_point_room": "room1",
-                "end_point_room": "room1",
+                "end_point_room": "room2",
                 "entry_point_position": [6.5, 7.7, 5.18]
             }
         }
@@ -22,8 +22,17 @@
             "room_id": "room1",
             "name": [
                 {
-                    "lang": "en",
-                    "value": "room1"
+                    "lang": "fr",
+                    "value": "C'est port'nawak"
+                }
+            ]
+        },
+        {
+            "room_id": "room2",
+            "name": [
+                {
+                    "lang": "fr",
+                    "value": "Tout est bien qui finit bien"
                 }
             ]
         }

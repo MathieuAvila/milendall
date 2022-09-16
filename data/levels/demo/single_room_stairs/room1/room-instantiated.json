@@ -93,6 +93,21 @@
                         "face": 3,
                         "border": 2
                     }
+                },
+                {
+                    "pad_id": "root_door6",
+                    "definition": {
+                        "origin": [
+                            4.5,
+                            6.0
+                        ],
+                        "size": [
+                            1.5,
+                            1.5
+                        ],
+                        "face": 2,
+                        "border": 2
+                    }
                 }
             ],
             "parameters": {
@@ -233,6 +248,27 @@
             }
         },
         {
+            "b_id": "door6",
+            "root_pad": {
+                "ref_b_id": "b_room",
+                "ref_pad_id": "root_door6"
+            },
+            "portals": [
+                {
+                    "gate_id": "6-room2",
+                    "connect": "A"
+                }
+            ],
+            "parameters": {
+                "structure_class": "simple_door",
+                "dressing_parameters": {
+                    "textures": {
+                        "wall": "/common/basic/door_variant/door_2_2_1.jpg"
+                    }
+                }
+            }
+        },
+        {
             "b_id": "stair-1-2",
             "root_pad": {
                 "ref_b_id": "b_room",
@@ -269,7 +305,7 @@
                         0.7
                     ],
                     "parameters": {
-                        "subtype": "time_+1"
+                        "subtype": "time_-5"
                     }
                 },
                 {
