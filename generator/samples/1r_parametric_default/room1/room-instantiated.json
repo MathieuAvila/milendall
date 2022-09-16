@@ -1,0 +1,11 @@
+{
+    "$schema": "../../../../generator/schema/file_room_bricks.json",
+    "bricks": [
+        {
+            "b_id": "b1",
+            "parameters": {
+                "structure_class": "parametric"
+            }
+        }
+    ]
+}
