@@ -8,6 +8,7 @@ import concrete_room
 import cgtypes.vec3
 import cgtypes.mat4
 import functools
+import math
 
 from .register import register_brick_type
 
@@ -53,7 +54,7 @@ class BrickParametric(BrickStructure):
                 "segments_nr_s": 5,                                 # 5 segments
                 "segments_nr_t": 5,                                 # 5 segments
                 "func": [
-                    "[",
+                    "values = [",
                     "s * 10.0, 0.0, t * 10.0, s, t",  # p(s,t) : x,y,z,u,v
                     "]" ]}
         }
@@ -75,15 +76,18 @@ class BrickParametric(BrickStructure):
         nr_s = setup["segments_nr_s"]
         nr_t = setup["segments_nr_t"]
         func_array = setup["func"]
-        func = functools.reduce(lambda a, b: a + b, func_array )
-
+        func = functools.reduce(lambda a, b: a + "\n" + b, func_array )
+        print(func)
 
         for i in range(0, nr_s):
             s = float(i) / float(nr_s)
             index_raw = []
             for j in range(0, nr_t):
                 t = float(j) / float(nr_s)
-                values = eval(func)
+                locals={"s":s, "t":t, "values":[]}
+                globals={"math":math}
+                exec(func, globals, locals)
+                values=locals["values"]
                 if len(values) != 5:
                     raise "func must return a table of 5"
                 segment = []
