@@ -50,3 +50,8 @@ logs
 .Trash-1000
 build_local.sh
 build_remote.sh
+.unotes
+Testing
+
+# generated data
+data/common/basic/*variant
