@@ -50,6 +50,3 @@ logs
 .Trash-1000
 build_local.sh
 build_remote.sh
-
-generator/samples/*/level-instance.json
-generator/samples/*/level.json
