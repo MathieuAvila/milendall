@@ -5,9 +5,6 @@ Additional brick that brings only gravity on a parametric function
 import logging
 from brick_structure import BrickStructure
 import concrete_room
-import cgtypes.vec3
-import cgtypes.mat4
-import math
 
 from .register import register_brick_type
 
