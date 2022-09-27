@@ -10,6 +10,7 @@
                         "segments_nr_s": 40,
                         "segments_nr_t": 50,
                         "func": [
+                            "# this is python code",
                             "# build a torus, r = small radius, R = big radius",
                             "# s builds small rotation around Z",
                             "# t builds rotation around Y",
@@ -36,12 +37,14 @@
                 "structure_parameters": {
                     "segments_nr": 100,
                     "func": [
+                        "-- this is lua code",
                         "R = 30.0",
                         "x = math.cos(u * math.pi * 2.0) * R",
                         "y =0.0",
                         "z = math.sin(u * math.pi * 2.0) * R"
                     ],
                     "compute": [
+                        "-- this is lua code",
                         "R = 1.0",
                         "g0_x = (x0 - x)",
                         "g0_y = (y0 - y)",

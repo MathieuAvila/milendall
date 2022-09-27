@@ -13,7 +13,7 @@
                 "execution_time": 10,
                 "entry_point_room": "room1",
                 "end_point_room": "room1",
-                "entry_point_position": [ 48.0, 0.0, 0.0]
+                "entry_point_position": [ 12.0, 1.0, 1.0]
             }
         }
     },
