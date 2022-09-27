@@ -1,0 +1,73 @@
+{
+    "$schema": "../../../../generator/schema/file_room_bricks.json",
+    "bricks": [
+        {
+            "b_id": "b1",
+            "parameters": {
+                "structure_class": "parametric",
+                "structure_parameters": {
+                    "setup": {
+                        "segments_nr_s": 40,
+                        "segments_nr_t": 50,
+                        "func": [
+                            "# build a torus, r = small radius, R = big radius",
+                            "# s builds small rotation around Z",
+                            "# t builds rotation around Y",
+                            "R = 30.0",
+                            "r = 15.0",
+                            "s_angle = -s * math.pi * 2.0 ",
+                            "t_angle = t * math.pi * 2.0",
+                            "small_x = math.cos(s_angle) * r",
+                            "small_y = math.sin(s_angle) * r",
+                            "big_x = small_x + R",
+                            "big_y = small_y",
+                            "values = [",
+                            "math.cos(t_angle) * big_x, big_y, math.sin(t_angle) * big_x, s * r, t * R",
+                            "]"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "b_id": "gravity_brick",
+            "parameters": {
+                "structure_class": "gravity_sampler_func",
+                "structure_parameters": {
+                    "segments_nr": 100,
+                    "func": [
+                        "R = 30.0",
+                        "x = math.cos(u * math.pi * 2.0) * R",
+                        "y =0.0",
+                        "z = math.sin(u * math.pi * 2.0) * R"
+                    ],
+                    "compute": [
+                        "R = 1.0",
+                        "g0_x = (x0 - x)",
+                        "g0_y = (y0 - y)",
+                        "g0_z = (z0 - z)",
+                        "norm = math.sqrt(g0_x ^ 2 + g0_y ^ 2 + g0_z ^ 2)",
+                        "g_x = g0_x / norm / 10.0",
+                        "g_y = g0_y / norm / 10.0",
+                        "g_z = g0_z / norm / 10.0",
+                        "u_x = -g0_x / norm",
+                        "u_y = -g0_y / norm",
+                        "u_z = -g0_z / norm",
+                        "w = 100.0",
+                        "-- print('u=' .. u)",
+                        "-- print('x0=' .. x0)",
+                        "-- print('y0=' .. y0)",
+                        "-- print('z0=' .. z0)",
+                        "-- print('x=' .. x)",
+                        "-- print('y=' .. y)",
+                        "-- print('z=' .. z)",
+                        "-- print('g_x=' .. g_x)",
+                        "-- print('g_y=' .. g_y)",
+                        "-- print('g_z=' .. g_z)"
+                    ],
+                    "frequency": 0.02
+                }
+            }
+        }
+    ]
+}
