@@ -79,11 +79,11 @@ class BrickParametric(BrickStructure):
         func = functools.reduce(lambda a, b: a + "\n" + b, func_array )
         print(func)
 
-        for i in range(0, nr_s):
+        for i in range(0, nr_s + 1):
             s = float(i) / float(nr_s)
             index_raw = []
-            for j in range(0, nr_t):
-                t = float(j) / float(nr_s)
+            for j in range(0, nr_t + 1):
+                t = float(j) / float(nr_t)
                 locals={"s":s, "t":t, "values":[]}
                 globals={"math":math}
                 exec(func, globals, locals)
@@ -106,10 +106,9 @@ class BrickParametric(BrickStructure):
 
         table = []
 
-        for i in range(0, nr_s -1):
-            s = float(i) / float(nr_s)
+        for i in range(0, nr_s):
             points_raw = []
-            for j in range(0, nr_t -1 ):
+            for j in range(0, nr_t):
                 table.append([
                     indexes[i]   [j+1],
                     indexes[i+1] [j+1],
