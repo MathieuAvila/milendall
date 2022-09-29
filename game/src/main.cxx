@@ -22,6 +22,8 @@
 #include "helper_math.hxx"
 #include "fps_counter.hxx"
 
+#include "menu.hxx"
+
 using namespace std;
 
 static auto console = getConsole("Milendall");
@@ -37,34 +39,34 @@ void help()
     exit(1);
 }
 
-tuple<string, vector<string> > readParams(int argc, char* argv[])
+tuple<string, vector<string>> readParams(int argc, char *argv[])
 {
     string modelPath;
     vector<string> libPaths;
 
     int c;
-    while ((c = getopt (argc, argv, "f:d:h")) != -1)
+    while ((c = getopt(argc, argv, "f:d:h")) != -1)
     {
         switch (c)
-            {
-            case 'f':
-                modelPath = optarg;
-                break;
-            case 'd':
-                libPaths.push_back(optarg);
-                break;
-            case 'h':
-                help();
-                break;
-            default:
-                console->error("Unknown option {}", char(c));
-                help();
-            }
+        {
+        case 'f':
+            modelPath = optarg;
+            break;
+        case 'd':
+            libPaths.push_back(optarg);
+            break;
+        case 'h':
+            help();
+            break;
+        default:
+            console->error("Unknown option {}", char(c));
+            help();
+        }
     }
     return tuple{modelPath, libPaths};
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     std::string binpath = std::filesystem::path(argv[0]).parent_path();
 
@@ -73,16 +75,13 @@ int main(int argc, char* argv[])
     auto [modelPath, libPaths] = readParams(argc, argv);
 
     auto flp = make_shared<FileLibrary>();
-    auto& fl = *flp.get();
-
-    bool menu_mode = true;
-    bool running_game = false;
+    auto &fl = *flp.get();
 
     /* Add some default directories */
     fl.addRootFilesystem(binpath + "/../data/");
     fl.addRootFilesystem(binpath + "/data/");
     /* Add cmd-line directories */
-    for (auto p: libPaths)
+    for (auto p : libPaths)
         fl.addRootFilesystem(p);
 
     milendall_gl_init(fl);
@@ -106,14 +105,19 @@ int main(int argc, char* argv[])
     std::unique_ptr<Level> level;
     std::unique_ptr<ObjectManager> object_manager;
 
-	do{
+    unique_ptr<Menu> menu = make_unique<Menu>(model_registry, flp);
+
+    bool running_game = false;
+    bool menu_mode = true;
+
+    do
+    {
         unlockAllFbo();
 
-		// Use our shader
-		activateDefaultDrawingProgram();
+        // Use our shader
+        activateDefaultDrawingProgram();
 
-
-        if (! modelPath.empty())
+        if (!modelPath.empty())
         {
             console->info("Start level ... {}", modelPath);
 
@@ -129,13 +133,13 @@ int main(int argc, char* argv[])
             console->info("Set current room to {}", currentPov.room);
 
             player = make_shared<Player>();
-            player_id = object_manager ->insertObject(player,
-                PointOfView(currentPov.position, currentPov.local_reference, currentPov.room)
-            );
-            player->addTime( level->getDefinition().recommended_time);
+            player_id = object_manager->insertObject(player,
+                                                     PointOfView(currentPov.position, currentPov.local_reference, currentPov.room));
+            player->addTime(level->getDefinition().recommended_time);
 
-            menu_mode = false;
             running_game = true;
+            menu_mode = false;
+            menu->setStatus(running_game);
             modelPath = "";
         }
 
@@ -162,28 +166,37 @@ int main(int argc, char* argv[])
             level.get()->draw(player_position);
 
             auto new_time = std::chrono::steady_clock::now();
-            auto elapsed = float(std::chrono::duration_cast<std::chrono::microseconds>(new_time - current_time).count())
-                /(1000.0f*1000.0f);
+            auto elapsed = float(std::chrono::duration_cast<std::chrono::microseconds>(new_time - current_time).count()) / (1000.0f * 1000.0f);
             total_time += elapsed;
             object_manager->update(total_time);
             level->update(elapsed);
             current_time = new_time;
 
-            fontRenderTextBorder("regular", player_position.room, 25.0f, 720.0f,  1.0f,  2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
-            fontRenderTextBorder("regular", std::string("Temps restant: ") + std::to_string(player->getLeftTime()), 550.0f, 720.0f,  1.0f,  2, glm::vec3(0.9, 0.7f, 0.3f), glm::vec3(0.1, 0.1f, 0.1f));
-            fontRenderTextBorder("regular", vec3_to_string(player_position.position), 25.0f, 50.0f,  0.5f,  2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
+            fontRenderTextBorder("regular", player_position.room, 25.0f, 720.0f, 1.0f, 2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
+            fontRenderTextBorder("regular", std::string("Temps restant: ") + std::to_string(player->getLeftTime()), 550.0f, 720.0f, 1.0f, 2, glm::vec3(0.9, 0.7f, 0.3f), glm::vec3(0.1, 0.1f, 0.1f));
+            fontRenderTextBorder("regular", vec3_to_string(player_position.position), 25.0f, 50.0f, 0.5f, 2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
         }
-        fpsCounter.update();
-		// Swap buffers
-		glfwSwapBuffers(window);
-		glfwPollEvents();
 
-	} // Check if the ESC key was pressed or the window was closed
-	while( glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
-		   glfwWindowShouldClose(window) == 0 );
+        if (menu_mode)
+        {
+            menu->printMenu();
+            FileLibrary::UriReference ref = flp->getRoot();
+            if (menu->get_selected_level(ref))
+            {
+                modelPath = ref.getPath();
+            }
+        }
+
+        fpsCounter.update();
+        // Swap buffers
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+
+    } // Check if the ESC key was pressed or the window was closed
+    while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
+           glfwWindowShouldClose(window) == 0);
 
     milendall_gl_close();
 
-	return 0;
+    return 0;
 }
-

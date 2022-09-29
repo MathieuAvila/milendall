@@ -141,6 +141,8 @@ add_library(real_gl STATIC
     game/src/helpers/gl_init.cxx
     game/src/helpers/fps_counter.hxx
     game/src/helpers/fps_counter.cxx
+    game/src/menu.hxx
+    game/src/menu.cxx
 )
 
 set(core_lib
