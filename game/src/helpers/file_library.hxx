@@ -35,6 +35,7 @@ class FileLibrary
 
         UriReference(FileLibrary*, std::string);
         UriReference(UriReference&& ref);
+        UriReference operator=(UriReference& ref);
         UriReference(const UriReference&) = default;
         UriReference();
 

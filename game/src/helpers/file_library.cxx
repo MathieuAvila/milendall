@@ -29,6 +29,13 @@ FileLibrary::UriReference::UriReference(FileLibrary *fl, std::string _path)
     console->debug("Create path: {}", path);
 }
 
+FileLibrary::UriReference FileLibrary::UriReference::operator=(UriReference& ref)
+{
+    master = ref.master;
+    path = ref.path;
+    return *this;
+}
+
 FileLibrary::UriReference FileLibrary::UriReference::getDirPath() const
 {
     auto ppath = std::filesystem::path(path).parent_path();
@@ -45,12 +52,18 @@ std::vector<FileLibrary::UriReference> FileLibrary::UriReference::listDirectory(
     std::vector<FileLibrary::UriReference> result;
     for (auto dir_path : master->root_list)
     {
-        for (const auto &entry : std::filesystem::directory_iterator(dir_path + "/" + path))
+        try
         {
-            std::string file_path = entry.path();
-            auto final_path = file_path.substr(dir_path.length());
-            result.push_back(UriReference(master, final_path));
+            for (const auto &entry : std::filesystem::directory_iterator(dir_path + "/" + path))
+            {
+                std::string file_path = entry.path();
+                auto final_path = file_path.substr(dir_path.length());
+                result.push_back(UriReference(master, final_path));
+            }
         }
+        catch (std::filesystem::filesystem_error e)
+        {
+        } // silently ignore.
     }
     /** todo: add ZIP contents */
     return result;
