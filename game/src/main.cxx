@@ -173,8 +173,8 @@ int main(int argc, char *argv[])
             current_time = new_time;
 
             fontRenderTextBorder("regular", player_position.room, 25.0f, 720.0f, 1.0f, 2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
-            fontRenderTextBorder("regular", std::string("Temps restant: ") + std::to_string(player->getLeftTime()), 550.0f, 720.0f, 1.0f, 2, glm::vec3(0.9, 0.7f, 0.3f), glm::vec3(0.1, 0.1f, 0.1f));
-            fontRenderTextBorder("regular", vec3_to_string(player_position.position), 25.0f, 50.0f, 0.5f, 2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
+            fontRenderTextBorder("regular", std::string("Temps:") + std::to_string(player->getLeftTime()), 550.0f, 720.0f, 1.0f, 2, glm::vec3(0.9, 0.7f, 0.3f), glm::vec3(0.1, 0.1f, 0.1f));
+            //fontRenderTextBorder("regular", vec3_to_string(player_position.position), 25.0f, 50.0f, 0.5f, 2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
         }
 
         if (menu_mode)

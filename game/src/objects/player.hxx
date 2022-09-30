@@ -3,6 +3,8 @@
 #include "managed_object.hxx"
 #include "movable_object.hxx"
 
+#include <gtest/gtest_prod.h>
+
 /** @brief interface object that represents an object.
  * however it can be just used as a message for computing a more complex
  * position/speed
@@ -12,15 +14,15 @@ class Player : public ManagedObject
 public:
     struct ActionSet
     {
-        bool forward;
-        bool backward;
-        bool right;
-        bool left;
-        bool jump;
-        bool action;
-        bool fire;
-        float horizontalAngle;
-        float verticalAngle;
+        bool forward = false;
+        bool backward = false;
+        bool right = false;
+        bool left = false;
+        bool jump = false;
+        bool action = false;
+        bool fire = false;
+        float horizontalAngle = 0.0f;
+        float verticalAngle = 0.0f;
     };
 
     virtual const MovableObjectDefinition &getObjectDefinition() const override;
@@ -43,5 +45,9 @@ public:
 private:
     MovableObjectDefinition movable_definition;
     ActionSet currentActions;
-    float time_left;
+    float time_left = 0.0f;
+    float previous_vertical_angle; // needed to cap v angle.
+
+
+    FRIEND_TEST(PlayerTest, set_actions);
 };

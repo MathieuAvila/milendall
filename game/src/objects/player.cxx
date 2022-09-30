@@ -8,7 +8,7 @@ static auto console = getConsole("player");
 
 Player::Player() : movable_definition(MovableObjectDefinition(0.7f, 1.0f, 1.0f, 0.3f)), time_left(0.0f)
 {
-
+    previous_vertical_angle = 0.0f;
 }
 
 Player::~Player()
@@ -54,7 +54,15 @@ bool Player::checkEol() const
 
 void Player::setActionSet(ActionSet actions)
 {
+    // cap vertical angle
+    float v_diff = actions.verticalAngle - previous_vertical_angle;
+    previous_vertical_angle = actions.verticalAngle;
+    float curr_vangle = currentActions.verticalAngle;
+    curr_vangle += v_diff;
+    curr_vangle = min<float>(curr_vangle, 3.14 * 3.5 / 10.0);
+    curr_vangle = max<float>(curr_vangle, -3.14 * 3.5 / 10.0);
     currentActions = actions;
+    currentActions.verticalAngle = curr_vangle;
 }
 
 bool Player::addTime(float time)

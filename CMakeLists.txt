@@ -226,6 +226,7 @@ game/test/unit_impl_room_node_portal_register.cxx
 game/test/unit_viewables_registrar_impl.cxx
 game/test/unit_model_registry.cxx
 game/test/unit_object_manager.cxx
+game/test/unit_player.cxx
 )
 
 enable_testing()
