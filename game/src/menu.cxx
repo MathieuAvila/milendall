@@ -35,9 +35,9 @@ Menu::Menu(std::shared_ptr<ModelRegistry> _model_registry, std::shared_ptr<FileL
     sub_menu = MenuType::MENU_LEVEL;
 
     auto levels_ref = file_library->searchFile("level.json");
-    levels_ref_array = std::vector<FileLibrary::UriReference>(levels_ref.begin(), levels_ref.end());
-    for (auto ref : levels_ref_array)
+    for (auto ref : levels_ref)
     {
+        levels_ref_array.push_back(LevelInfo(ref));
         console->info("Found level {}", ref.getPath());
     }
 }
@@ -72,10 +72,13 @@ void Menu::printMenu()
             {
                 auto level_def = levels_ref_array[index];
                 //console->info("Level {}, {}", index, levels_ref_array.size());
-                fontRenderTextBorder("regular", level_def.getPath(), 80.0f, 500.0f - i * 50, 1.0f, 2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
+                fontRenderTextBorder("regular", level_def.section,                          50.0f, 500.0f - i * 50, 0.5f, 2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
+                fontRenderTextBorder("regular", std::to_string(level_def.recommended_time), 150.0f, 500.0f - i * 50, 0.5f, 2, glm::vec3(0.1, 0.9f, 0.0f), glm::vec3(0.1, 0.1f, 0.1f));
+                fontRenderTextBorder("regular", level_def.name,                             200.0f, 500.0f - i * 50, 0.5f, 2, glm::vec3(0.8, 0.7f, 0.3f), glm::vec3(0.1, 0.1f, 0.1f));
+                fontRenderTextBorder("regular", level_def.ref.getPath(),                    700.0f, 500.0f - i * 50, 0.5f, 2, glm::vec3(0.1, 0.9f, 0.0f), glm::vec3(0.1, 0.1f, 0.1f));
             }
         }
-        fontRenderTextBorder("regular", ">", 25.0f, 500.0f - menu_pos * 50, 1.0f, 2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
+        fontRenderTextBorder("regular", ">", 20.0f, 500.0f - menu_pos * 50, 0.5f, 2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
         if (key_up) {
             if (menu_pos > 0)
                 menu_pos--;
@@ -103,7 +106,7 @@ bool Menu::get_selected_level(FileLibrary::UriReference& ref)
 {
     if (has_selected_level) {
         has_selected_level = false;
-        ref = levels_ref_array[selected_level];
+        ref = levels_ref_array[selected_level].ref;
         return true;
     }
     return false;

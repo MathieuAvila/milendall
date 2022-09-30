@@ -1,9 +1,11 @@
 #pragma once
 
-#include "file_library.hxx"
-#include "objects/model_registry.hxx"
 #include <vector>
 #include <memory>
+
+#include "file_library.hxx"
+#include "objects/model_registry.hxx"
+#include "level_info.hxx"
 
 class Menu
 {
@@ -24,7 +26,7 @@ class Menu
     bool was_key_down;
 
     std::shared_ptr<FileLibrary> file_library;
-    std::vector<FileLibrary::UriReference> levels_ref_array;
+    std::vector<LevelInfo> levels_ref_array;
     std::shared_ptr<ModelRegistry> model_registry;
 
     int selected_level;
