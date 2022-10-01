@@ -43,5 +43,4 @@ TEST_F(PlayerTest, set_actions) {
     actions.verticalAngle = 10.0;
     player->setActionSet(actions);
     ASSERT_FLOAT_EQ(player->currentActions.verticalAngle, 3.14f * 3.5f / 10.0f); // check cap
-
 }
