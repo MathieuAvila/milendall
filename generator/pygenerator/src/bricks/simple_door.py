@@ -60,23 +60,23 @@ class SimpleDoorBrick(BrickStructure):
             "margin":[ 1.0, 1.0],
             "floor":["x0"]}
         my_default["shift"]= {
-                "x_floor_start_ext": -0.3,
-                "x_floor_start_int": 0.0,
-                "x_floor_end_int": 1.5,
-                "x_floor_end_ext": 1.8,
+                "x_floor_start_ext": -0.2,
+                "x_floor_start_int": 0.1,
+                "x_floor_end_int": 1.6,
+                "x_floor_end_ext": 1.9,
 
-                "x_up_start_ext": -0.3,
-                "x_up_start_int": 0.0,
-                "x_up_end_int": 1.5,
-                "x_up_end_ext": 1.8,
+                "x_up_start_ext": -0.2,
+                "x_up_start_int": 0.1,
+                "x_up_end_int": 1.6,
+                "x_up_end_ext": 1.9,
 
-                "y_up_start_ext": 1.6,
-                "y_up_start_int": 1.5,
-                "y_up_end_ext": 1.6,
-                "y_up_end_int": 1.5,
+                "y_up_start_ext": 1.8,
+                "y_up_start_int": 1.55,
+                "y_up_end_ext": 1.8,
+                "y_up_end_int": 1.55,
 
-                "w_in" : 0.2,
-                "w_out" : -0.2,
+                "w_in" : 0.3,
+                "w_out" : -0.3,
 
                 "wd_in" : 0.1,
                 "wd_out" : -0.1
