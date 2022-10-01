@@ -199,35 +199,35 @@ add_library(glmock SHARED game/test/glmock/glmock.cpp)
 add_executable(unit_test
 game/test/unit_main.cxx
 game/test/test_common.hxx
-game/test/unit_file_library.cxx
-game/test/unit_level.cxx
-game/test/unit_room.cxx
-game/test/unit_gltf_material_accessor.cxx
-game/test/unit_gltf_table_accessor.cxx
-game/test/unit_gltf_data_accessor.cxx
-game/test/unit_gltf_animation.cxx
-game/test/unit_json_helper_math.cxx
-game/test/unit_helper_math.cxx
-game/test/unit_clipping_planes.cxx
-game/test/unit_gltf_model.cxx
-game/test/unit_gltf_node.cxx
-game/test/unit_face_list.cxx
-game/test/unit_point_of_view.cxx
-game/test/unit_managed_object_instance.cxx
-game/test/unit_script.cxx
-game/test/unit_min_max_box.cxx
-game/test/unit_room_node_gravity.cxx
-game/test/unit_gravity_information.cxx
-game/test/unit_states_list.cxx
-game/test/unit_room_animation.cxx
-game/test/unit_trigger.cxx
-game/test/unit_gate_id.cxx
-game/test/unit_impl_room_node_portal_register.cxx
-game/test/unit_viewables_registrar_impl.cxx
-game/test/unit_model_registry.cxx
-game/test/unit_object_manager.cxx
-game/test/unit_player.cxx
-game/test/unit_level_info.cxx
+game/test/structure/unit_level.cxx
+game/test/structure/unit_room.cxx
+game/test/structure/unit_room_node_gravity.cxx
+game/test/structure/unit_gravity_information.cxx
+game/test/structure/unit_states_list.cxx
+game/test/structure/unit_room_animation.cxx
+game/test/structure/unit_trigger.cxx
+game/test/structure/unit_gate_id.cxx
+game/test/structure/unit_impl_room_node_portal_register.cxx
+game/test/structure/unit_viewables_registrar_impl.cxx
+game/test/structure/unit_level_info.cxx
+game/test/structure/unit_face_list.cxx
+game/test/gltf/unit_gltf_material_accessor.cxx
+game/test/gltf/unit_gltf_table_accessor.cxx
+game/test/gltf/unit_gltf_data_accessor.cxx
+game/test/gltf/unit_gltf_animation.cxx
+game/test/gltf/unit_gltf_model.cxx
+game/test/gltf/unit_gltf_node.cxx
+game/test/helpers/unit_json_helper_math.cxx
+game/test/helpers/unit_helper_math.cxx
+game/test/helpers/unit_clipping_planes.cxx
+game/test/helpers/unit_file_library.cxx
+game/test/helpers/unit_point_of_view.cxx
+game/test/helpers/unit_script.cxx
+game/test/helpers/unit_min_max_box.cxx
+game/test/objects/unit_model_registry.cxx
+game/test/objects/unit_object_manager.cxx
+game/test/objects/unit_player.cxx
+game/test/objects/unit_managed_object_instance.cxx
 )
 
 enable_testing()
@@ -236,7 +236,7 @@ target_link_libraries(unit_test
     glmock
     gtest gtest_main gmock pthread
 )
-target_include_directories(unit_test PRIVATE game/test/glmock/ )
+target_include_directories(unit_test PRIVATE game/test/glmock/ game/test/)
 
 include(GoogleTest)
 gtest_discover_tests(unit_test)
