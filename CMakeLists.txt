@@ -81,6 +81,8 @@ add_library(game_lib STATIC
   game/src/structure/viewables_registrar_impl.hxx
   game/src/structure/viewables_registrar_impl.cxx
   game/src/structure/viewable_object.hxx
+  game/src/structure/level_info.hxx
+  game/src/structure/level_info.cxx
   game/src/gltf/gltf_mesh.hxx
   game/src/gltf/gltf_mesh.cxx
   game/src/gltf/gltf_model.hxx
@@ -141,10 +143,6 @@ add_library(real_gl STATIC
     game/src/helpers/gl_init.cxx
     game/src/helpers/fps_counter.hxx
     game/src/helpers/fps_counter.cxx
-    game/src/menu.hxx
-    game/src/menu.cxx
-    game/src/structure/level_info.hxx
-    game/src/structure/level_info.cxx
 )
 
 set(core_lib
@@ -186,6 +184,8 @@ target_link_libraries(preview_object
 
 # add the game executable
 add_executable(milendall
+    game/src/menu.hxx
+    game/src/menu.cxx
     game/src/main.cxx
     )
 
@@ -227,6 +227,7 @@ game/test/unit_viewables_registrar_impl.cxx
 game/test/unit_model_registry.cxx
 game/test/unit_object_manager.cxx
 game/test/unit_player.cxx
+game/test/unit_level_info.cxx
 )
 
 enable_testing()
