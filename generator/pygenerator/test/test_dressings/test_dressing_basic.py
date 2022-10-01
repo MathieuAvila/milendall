@@ -5,6 +5,8 @@ test rectangular room
 import logging
 import sys
 import pathlib
+from types import NoneType
+from munch import DefaultMunch
 
 import unittest
 
@@ -15,6 +17,12 @@ import concrete_room
 
 logger = logging.getLogger("TestDressingBasic")
 logger.setLevel(logging.INFO)
+
+class FakeElement():
+
+    def __init__(self):
+        self.values = DefaultMunch.fromDict({ "values" : { "parameters"}})
+        self.values.parameters = DefaultMunch.fromDict({ "dressing_parameters": { "A" : 0} })
 
 class TestDressingBasic(unittest.TestCase):
 
@@ -44,8 +52,10 @@ class TestDressingBasic(unittest.TestCase):
             [ [2,3,0] ],
             [concrete_room.Node.CAT_PHYS_VIS], [concrete_room.Node.HINT_WALL], [ 0 ] )
 
-        basic1 = basic.DressingBasic()
+        elem = FakeElement()
+        basic1 = basic.DressingBasic(elem)
 
+        basic1.instantiate(None)
         basic1.generate(concrete)
         print(parent.dressing)
 
