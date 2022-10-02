@@ -91,7 +91,7 @@ jobs:
         continue-on-error: true
         run: |
           sudo pip install pytest munch jsonmerge
-          export PYTHONPATH=$PYTHONPATH:$PWD/generator/pygenerator/src:$PWD/generator/pygenerator/test/ ; ( cd ./generator/pygenerator/test ;  pytest -s . --junit-xml=../../../build/python-test.xml ; echo continue)
+          export PYTHONPATH=$PYTHONPATH:$PWD/generator/pygenerator/src:$PWD/generator/pygenerator/test/ ; ( cd ./generator/pygenerator/test ;  pytest -s . --junit-xml=../../../build/python-test.xml ; echo $? > ../../../pytest.result ; echo continue)
 
       - name: Run GTest
         continue-on-error: true
@@ -100,6 +100,7 @@ jobs:
           sudo apt install -y cmake nlohmann-json3-dev libboost-all-dev libspdlog-dev libspdlog1 libglm-dev libfreeimageplus-dev googletest libgmock-dev libgl-dev libopengl-dev libglew-dev libglfw3-dev libglfw3 libfreetype-dev libfreetype6-dev liblua5.1-dev
           cd ./build
           ctest -C Debug --output-on-failure --verbose --output-junit test_result.xml
+          echo $? > ../gtest.result
           echo continue
 
       - name: Publish Test Results
@@ -107,3 +108,14 @@ jobs:
         if: always()
         with:
           files: "./build/*.xml"
+
+      - name: Check output
+        if: always()
+        run: |
+          gtest=$(cat pytest.result)
+          pytest=$(cat pytest.result)
+          rtest=$(( gtest + pytest))
+          echo "pytest: $pytest"
+          echo "gtest: $gtest"
+          echo "rtest: $rtest"
+          exit $rtest
