@@ -116,14 +116,14 @@ TEST(FILE_LIBRARY, Get_file_content_ok_simple_file)
     auto no_file = fl.getRoot().getSubPath("/toto/file.txt");
     auto content = no_file.readContent();
 
-    EXPECT_TRUE(content.get() != nullptr);
-    EXPECT_TRUE(content.get()->data() != nullptr);
-    EXPECT_TRUE(content.get()->size() == 5);
-    EXPECT_TRUE(((char *)(content.get()->data()))[0] == 'a');
-    EXPECT_TRUE(((char *)(content.get()->data()))[1] == 'b');
-    EXPECT_TRUE(((char *)(content.get()->data()))[2] == 'c');
-    EXPECT_TRUE(((char *)(content.get()->data()))[3] == 'd');
-    EXPECT_TRUE(((char *)(content.get()->data()))[4] == '\n');
+    EXPECT_NE(content.get(), nullptr);
+    EXPECT_NE(content.get()->data(), nullptr);
+    EXPECT_EQ(content.get()->size(), 5);
+    EXPECT_EQ(((char *)(content.get()->data()))[0], 'a');
+    EXPECT_EQ(((char *)(content.get()->data()))[1], 'b');
+    EXPECT_EQ(((char *)(content.get()->data()))[2], 'c');
+    EXPECT_EQ(((char *)(content.get()->data()))[3], 'd');
+    EXPECT_EQ(((char *)(content.get()->data()))[4], '\n');
 }
 
 TEST(FILE_LIBRARY, File_content_in_2_dirs)
@@ -141,26 +141,26 @@ TEST(FILE_LIBRARY, File_content_in_2_dirs)
     auto file1 = fl.getRoot().getSubPath("/toto/file1.txt");
     auto content = file1.readContent();
 
-    EXPECT_TRUE(content.get() != nullptr);
-    EXPECT_TRUE(content.get()->data() != nullptr);
-    EXPECT_TRUE(content.get()->size() == 5);
-    EXPECT_TRUE(((char *)(content.get()->data()))[0] == 'a');
-    EXPECT_TRUE(((char *)(content.get()->data()))[1] == 'b');
-    EXPECT_TRUE(((char *)(content.get()->data()))[2] == 'c');
-    EXPECT_TRUE(((char *)(content.get()->data()))[3] == 'd');
-    EXPECT_TRUE(((char *)(content.get()->data()))[4] == '\n');
+    EXPECT_NE(content.get(), nullptr);
+    EXPECT_NE(content.get()->data(), nullptr);
+    EXPECT_EQ(content.get()->size(), 5);
+    EXPECT_EQ(((char *)(content.get()->data()))[0], 'a');
+    EXPECT_EQ(((char *)(content.get()->data()))[1], 'b');
+    EXPECT_EQ(((char *)(content.get()->data()))[2], 'c');
+    EXPECT_EQ(((char *)(content.get()->data()))[3], 'd');
+    EXPECT_EQ(((char *)(content.get()->data()))[4], '\n');
 
     auto file2 = fl.getRoot().getSubPath("/toto/file2.txt");
     content = file2.readContent();
 
-    EXPECT_TRUE(content.get() != nullptr);
-    EXPECT_TRUE(content.get()->data() != nullptr);
-    EXPECT_TRUE(content.get()->size() == 5);
-    EXPECT_TRUE(((char *)(content.get()->data()))[0] == '0');
-    EXPECT_TRUE(((char *)(content.get()->data()))[1] == '1');
-    EXPECT_TRUE(((char *)(content.get()->data()))[2] == '2');
-    EXPECT_TRUE(((char *)(content.get()->data()))[3] == '3');
-    EXPECT_TRUE(((char *)(content.get()->data()))[4] == '\n');
+    EXPECT_NE(content.get(), nullptr);
+    EXPECT_NE(content.get()->data(), nullptr);
+    EXPECT_EQ(content.get()->size(), 5);
+    EXPECT_EQ(((char *)(content.get()->data()))[0], '0');
+    EXPECT_EQ(((char *)(content.get()->data()))[1], '1');
+    EXPECT_EQ(((char *)(content.get()->data()))[2], '2');
+    EXPECT_EQ(((char *)(content.get()->data()))[3], '3');
+    EXPECT_EQ(((char *)(content.get()->data()))[4], '\n');
 }
 
 TEST(FILE_LIBRARY, File_content_conflict_in_2_dirs)
@@ -178,14 +178,14 @@ TEST(FILE_LIBRARY, File_content_conflict_in_2_dirs)
     auto no_file = fl.getRoot().getSubPath("/toto/file.txt");
     auto content = no_file.readContent();
 
-    EXPECT_TRUE(content.get() != nullptr);
-    EXPECT_TRUE(content.get()->data() != nullptr);
-    EXPECT_TRUE(content.get()->size() == 5);
-    EXPECT_TRUE(((char *)(content.get()->data()))[0] == 'a');
-    EXPECT_TRUE(((char *)(content.get()->data()))[1] == 'b');
-    EXPECT_TRUE(((char *)(content.get()->data()))[2] == 'c');
-    EXPECT_TRUE(((char *)(content.get()->data()))[3] == 'd');
-    EXPECT_TRUE(((char *)(content.get()->data()))[4] == '\n');
+    EXPECT_NE(content.get(), nullptr);
+    EXPECT_EQ(content.get()->data(), nullptr);
+    EXPECT_EQ(content.get()->size(), 5);
+    EXPECT_EQ(((char *)(content.get()->data()))[0], 'a');
+    EXPECT_EQ(((char *)(content.get()->data()))[1], 'b');
+    EXPECT_EQ(((char *)(content.get()->data()))[2], 'c');
+    EXPECT_EQ(((char *)(content.get()->data()))[3], 'd');
+    EXPECT_EQ(((char *)(content.get()->data()))[4], '\n');
 }
 
 TEST(FILE_LIBRARY, List_directory_1_dir)
@@ -198,11 +198,13 @@ TEST(FILE_LIBRARY, List_directory_1_dir)
         "mkdir -p /tmp/test_file_library/d1/toto ;"
         "echo abcd > /tmp/test_file_library/d1/toto/file1.txt ; "
         "echo 0123 > /tmp/test_file_library/d1/toto/file2.txt");
+    system(
+        "find /tmp/test_file_library"); // for debug purposes
     auto dir1 = fl.getRoot().getSubPath("/d1/toto");
     auto content = dir1.listDirectory();
-    EXPECT_TRUE(content.size() == 2);
-    EXPECT_TRUE(content[0].getPath() == "/d1/toto/file1.txt");
-    EXPECT_TRUE(content[1].getPath() == "/d1/toto/file2.txt");
+    EXPECT_EQ(content.size(), 2);
+    EXPECT_EQ(content[0].getPath(), "/d1/toto/file1.txt");
+    EXPECT_EQ(content[1].getPath(), "/d1/toto/file2.txt");
 }
 
 TEST(FILE_LIBRARY, List_directory_2_dirs)
@@ -249,7 +251,7 @@ TEST(FILE_LIBRARY, Get_string_file_content_ok_simple_content)
     auto no_file = fl.getRoot().getSubPath("/toto/file.txt");
     auto content = no_file.readStringContent();
 
-    EXPECT_TRUE(content == "abcd\n");
+    EXPECT_EQ(content, "abcd\n");
 }
 
 TEST(FILE_LIBRARY, search_file_1_in_root)
@@ -265,8 +267,8 @@ TEST(FILE_LIBRARY, search_file_1_in_root)
         "echo 0123 > /tmp/test_file_library/file4.txt ; ");
     fl.addRootFilesystem("/tmp/test_file_library");
     auto results = fl.searchFile("file2.txt");
-    EXPECT_TRUE(results.size() == 1);
-    EXPECT_TRUE(results.begin()->getPath() == "/file2.txt");
+    EXPECT_EQ(results.size(), 1);
+    EXPECT_EQ(results.begin()->getPath(), "/file2.txt");
 }
 
 TEST(FILE_LIBRARY, search_file_2_in_2_dirs)
