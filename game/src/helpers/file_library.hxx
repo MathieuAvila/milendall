@@ -35,8 +35,9 @@ class FileLibrary
 
         UriReference(FileLibrary*, std::string);
         UriReference(UriReference&& ref);
-        UriReference operator=(UriReference& ref);
+        UriReference operator=(UriReference ref);
         UriReference(const UriReference&) = default;
+        bool operator<(UriReference& ref);
         UriReference();
 
         std::vector<UriReference> listDirectory() const;

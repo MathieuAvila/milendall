@@ -29,11 +29,16 @@ FileLibrary::UriReference::UriReference(FileLibrary *fl, std::string _path)
     console->debug("Create path: {}", path);
 }
 
-FileLibrary::UriReference FileLibrary::UriReference::operator=(UriReference& ref)
+FileLibrary::UriReference FileLibrary::UriReference::operator=(UriReference ref)
 {
     master = ref.master;
     path = ref.path;
     return *this;
+}
+
+bool FileLibrary::UriReference::operator<(UriReference& ref)
+{
+    return (master < ref.master) || (path < ref.path);
 }
 
 FileLibrary::UriReference FileLibrary::UriReference::getDirPath() const

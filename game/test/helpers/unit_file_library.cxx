@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
 #include "file_library.hxx"
+#include <functional>
+#include <algorithm>
 
 TEST(FILE_LIBRARY, GET_ROOT_INSTANCE)
 {
@@ -91,6 +93,7 @@ TEST(FILE_LIBRARY, List_directory)
         "echo abcd > /tmp/test_file_library/toto/file.txt");
     auto file_list = fl.getRoot().getSubPath("/toto").listDirectory();
     EXPECT_EQ(file_list.size(), 2);
+    std::sort(file_list.begin(), file_list.end());
     EXPECT_EQ(file_list[0].getFileName(), "file.txt");
     EXPECT_EQ(file_list[1].getFileName(), "sbdir");
 }
@@ -165,7 +168,6 @@ TEST(FILE_LIBRARY, File_content_in_2_dirs)
 
 TEST(FILE_LIBRARY, File_content_conflict_in_2_dirs)
 {
-
     auto fl = FileLibrary();
     fl.addRootFilesystem("/tmp/test_file_library/d1");
     fl.addRootFilesystem("/tmp/test_file_library/d2");
@@ -179,7 +181,7 @@ TEST(FILE_LIBRARY, File_content_conflict_in_2_dirs)
     auto content = no_file.readContent();
 
     EXPECT_NE(content.get(), nullptr);
-    EXPECT_EQ(content.get()->data(), nullptr);
+    EXPECT_NE(content.get()->data(), nullptr);
     EXPECT_EQ(content.get()->size(), 5);
     EXPECT_EQ(((char *)(content.get()->data()))[0], 'a');
     EXPECT_EQ(((char *)(content.get()->data()))[1], 'b');
@@ -203,6 +205,7 @@ TEST(FILE_LIBRARY, List_directory_1_dir)
     auto dir1 = fl.getRoot().getSubPath("/d1/toto");
     auto content = dir1.listDirectory();
     EXPECT_EQ(content.size(), 2);
+    std::sort(content.begin(), content.end());
     EXPECT_EQ(content[0].getPath(), "/d1/toto/file1.txt");
     EXPECT_EQ(content[1].getPath(), "/d1/toto/file2.txt");
 }
@@ -224,6 +227,7 @@ TEST(FILE_LIBRARY, List_directory_2_dirs)
     auto dir1 = fl.getRoot().getSubPath("/toto");
     auto content = dir1.listDirectory();
     EXPECT_TRUE(content.size() == 4);
+    std::sort(content.begin(), content.end());
     EXPECT_TRUE(content[0].getPath() == "/toto/file1.txt");
     EXPECT_TRUE(content[1].getPath() == "/toto/file2.txt");
     EXPECT_TRUE(content[2].getPath() == "/toto/file3.txt");
