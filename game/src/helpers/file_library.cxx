@@ -71,6 +71,7 @@ std::vector<FileLibrary::UriReference> FileLibrary::UriReference::listDirectory(
         } // silently ignore.
     }
     /** todo: add ZIP contents */
+    std::sort(result.begin(), result.end());
     return result;
 }
 
@@ -157,17 +158,18 @@ FileLibrary::UriReference FileLibrary::getRoot()
     return FileLibrary::UriReference(this, "/");
 };
 
-std::list<FileLibrary::UriReference> FileLibrary::searchFile(std::string file_name, int depth)
+std::vector<FileLibrary::UriReference> FileLibrary::searchFile(std::string file_name, int depth)
 {
-    std::list<FileLibrary::UriReference> results;
+    std::vector<FileLibrary::UriReference> results;
     FileLibrary::UriReference dir = getRoot();
     recurseSearchFile(file_name, results, dir, depth);
+    std::sort(results.begin(), results.end());
     return results;
 }
 
 void FileLibrary::recurseSearchFile(
     std::string file_name,
-    std::list<FileLibrary::UriReference> &results,
+    std::vector<FileLibrary::UriReference> &results,
     FileLibrary::UriReference &dir,
     int inverse_depth)
 {

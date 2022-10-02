@@ -1,8 +1,6 @@
 #include <gtest/gtest.h>
 
 #include "file_library.hxx"
-#include <functional>
-#include <algorithm>
 
 TEST(FILE_LIBRARY, GET_ROOT_INSTANCE)
 {
@@ -92,10 +90,10 @@ TEST(FILE_LIBRARY, List_directory)
         "mkdir -p /tmp/test_file_library/toto/sbdir; "
         "echo abcd > /tmp/test_file_library/toto/file.txt");
     auto file_list = fl.getRoot().getSubPath("/toto").listDirectory();
-    EXPECT_EQ(file_list.size(), 2);
-    std::sort(file_list.begin(), file_list.end());
-    EXPECT_EQ(file_list[0].getFileName(), "file.txt");
-    EXPECT_EQ(file_list[1].getFileName(), "sbdir");
+    std::vector<FileLibrary::UriReference> content_vect(file_list.begin(), file_list.end());
+    EXPECT_EQ(content_vect.size(), 2);
+    EXPECT_EQ(content_vect[0].getFileName(), "file.txt");
+    EXPECT_EQ(content_vect[1].getFileName(), "sbdir");
 }
 
 TEST(FILE_LIBRARY, Get_file_content_does_not_exist)
@@ -205,9 +203,9 @@ TEST(FILE_LIBRARY, List_directory_1_dir)
     auto dir1 = fl.getRoot().getSubPath("/d1/toto");
     auto content = dir1.listDirectory();
     EXPECT_EQ(content.size(), 2);
-    std::sort(content.begin(), content.end());
-    EXPECT_EQ(content[0].getPath(), "/d1/toto/file1.txt");
-    EXPECT_EQ(content[1].getPath(), "/d1/toto/file2.txt");
+    std::vector<FileLibrary::UriReference> content_vect(content.begin(), content.end());
+    EXPECT_EQ(content_vect[0].getPath(), "/d1/toto/file1.txt");
+    EXPECT_EQ(content_vect[1].getPath(), "/d1/toto/file2.txt");
 }
 
 TEST(FILE_LIBRARY, List_directory_2_dirs)
@@ -226,12 +224,12 @@ TEST(FILE_LIBRARY, List_directory_2_dirs)
         "echo 0123 > /tmp/test_file_library/d2/toto/file4.txt ; ");
     auto dir1 = fl.getRoot().getSubPath("/toto");
     auto content = dir1.listDirectory();
-    EXPECT_TRUE(content.size() == 4);
-    std::sort(content.begin(), content.end());
-    EXPECT_TRUE(content[0].getPath() == "/toto/file1.txt");
-    EXPECT_TRUE(content[1].getPath() == "/toto/file2.txt");
-    EXPECT_TRUE(content[2].getPath() == "/toto/file3.txt");
-    EXPECT_TRUE(content[3].getPath() == "/toto/file4.txt");
+    std::vector<FileLibrary::UriReference> content_vect(content.begin(), content.end());
+    EXPECT_TRUE(content_vect.size() == 4);
+    EXPECT_TRUE(content_vect[0].getPath() == "/toto/file1.txt");
+    EXPECT_TRUE(content_vect[1].getPath() == "/toto/file2.txt");
+    EXPECT_TRUE(content_vect[2].getPath() == "/toto/file3.txt");
+    EXPECT_TRUE(content_vect[3].getPath() == "/toto/file4.txt");
 }
 
 TEST(FILE_LIBRARY, Get_string_file_content_does_not_exist)
@@ -292,11 +290,8 @@ TEST(FILE_LIBRARY, search_file_2_in_2_dirs)
     fl.addRootFilesystem("/tmp/test_file_library");
     auto results = fl.searchFile("match.txt");
     EXPECT_EQ(results.size(), 2);
-    auto first = results.begin();
-    auto second = first;
-    second++;
-    EXPECT_EQ(first->getPath(), "/dir2/match.txt");
-    EXPECT_EQ(second->getPath(), "/dir1/match.txt");
+    EXPECT_EQ(results[0].getPath(), "/dir1/match.txt");
+    EXPECT_EQ(results[1].getPath(), "/dir2/match.txt");
 }
 
 TEST(FILE_LIBRARY, search_file_max_depth)
@@ -314,12 +309,7 @@ TEST(FILE_LIBRARY, search_file_max_depth)
     fl.addRootFilesystem("/tmp/test_file_library");
     auto results = fl.searchFile("match.txt", 3);
     EXPECT_EQ(results.size(), 3);
-    auto first = results.begin();
-    auto second = first;
-    second++;
-    auto third = second;
-    third++;
-    EXPECT_EQ(first->getPath(), "/dir1/match.txt");
-    EXPECT_EQ(second->getPath(), "/dir1/dir2/dir3/match.txt");
-    EXPECT_EQ(third->getPath(), "/dir1/dir2/match.txt");
+    EXPECT_EQ(results[0].getPath(), "/dir1/dir2/dir3/match.txt");
+    EXPECT_EQ(results[1].getPath(), "/dir1/dir2/match.txt");
+    EXPECT_EQ(results[2].getPath(), "/dir1/match.txt");
 }

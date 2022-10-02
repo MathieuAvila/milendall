@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <vector>
 #include <list>
 #include <vector>
 #include <memory>
@@ -91,7 +90,7 @@ class FileLibrary
      * @param file_name The file name to search
      * @param depth max dir depth
     */
-    std::list<FileLibrary::UriReference> searchFile(std::string file_name, int depth = 3);
+    std::vector<FileLibrary::UriReference> searchFile(std::string file_name, int depth = 3);
 
     private:
 
@@ -101,7 +100,7 @@ class FileLibrary
      */
     void recurseSearchFile(
         std::string file_name,
-        std::list<FileLibrary::UriReference>& results,
+        std::vector<FileLibrary::UriReference>& results,
         FileLibrary::UriReference& dir,
         int inverse_depth);
 };
