@@ -5,7 +5,6 @@ test rectangular room
 import logging
 import sys
 import pathlib
-from types import NoneType
 from munch import DefaultMunch
 
 import unittest
