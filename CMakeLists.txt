@@ -187,6 +187,8 @@ add_executable(milendall
     game/src/menu.hxx
     game/src/menu.cxx
     game/src/main.cxx
+    game/src/game.hxx
+    game/src/game.cxx
     )
 
 target_link_libraries(milendall

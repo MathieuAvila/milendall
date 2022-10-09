@@ -8,21 +8,18 @@
 #include <filesystem>
 
 #include "common.hxx"
-#include "level.hxx"
 #include "gl_init.hxx"
 #include "fonts.hxx"
 
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "objects/player.hxx"
-#include "objects/object_manager.hxx"
-#include "objects/model_registry.hxx"
-
-#include "helper_math.hxx"
-#include "fps_counter.hxx"
-
 #include "menu.hxx"
+#include "game.hxx"
+
+#include "gltf_material_accessor_library_iface.hxx"
+#include "model_registry.hxx"
+#include "fps_counter.hxx"
 
 using namespace std;
 
@@ -95,19 +92,11 @@ int main(int argc, char *argv[])
     fontLoadFont("regular", fontRegular);
     fontLoadFont("candy", fontCandy);
 
-    auto current_time = std::chrono::steady_clock::now();
-    auto total_time = 0.0f;
-
     FpsCounter fpsCounter;
 
-    std::shared_ptr<Player> player;
-    ObjectManager::ObjectUid player_id;
-    std::unique_ptr<Level> level;
-    std::unique_ptr<ObjectManager> object_manager;
-
     unique_ptr<Menu> menu = make_unique<Menu>(model_registry, flp);
+    unique_ptr<Game> game = nullptr;
 
-    bool running_game = false;
     bool menu_mode = true;
 
     do
@@ -122,59 +111,19 @@ int main(int argc, char *argv[])
             console->info("Start level ... {}", modelPath);
 
             auto ref = fl.getRoot().getSubPath(modelPath);
-            object_manager = make_unique<ObjectManager>(model_registry, flp);
-            level = make_unique<Level>(ref, object_manager.get());
-            auto room_ids = level.get()->getRoomNames();
-            level.get()->update(0.0);
-            PointOfView currentPov{
-                level->getDefinition().start_position,
-                mat4(1.0f),
-                *room_ids.begin()};
-            console->info("Set current room to {}", currentPov.room);
+            game = std::make_unique<Game>(model_registry, flp, ref);
 
-            player = make_shared<Player>();
-            player_id = object_manager->insertObject(player,
-                                                     PointOfView(currentPov.position, currentPov.local_reference, currentPov.room));
-            player->addTime(level->getDefinition().recommended_time);
-
-            running_game = true;
             menu_mode = false;
-            menu->setStatus(running_game);
+            menu->setStatus(true);
             modelPath = "";
         }
 
-        if (running_game)
+        if (game.get())
         {
             if (!menu_mode)
                 updatePlayerInputs();
 
-            PointOfView player_position;
-            Player::ActionSet actionSet;
-            actionSet.horizontalAngle = horizontalAngle;
-            actionSet.verticalAngle = verticalAngle;
-            actionSet.forward = glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS;
-            actionSet.backward = glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS;
-            actionSet.left = glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS;
-            actionSet.right = glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS;
-            actionSet.jump = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
-            player->setActionSet(actionSet);
-
-            bool found = object_manager->getObjectPosition(player_id, player_position);
-            if (found == false)
-                throw system_error();
-
-            level.get()->draw(player_position);
-
-            auto new_time = std::chrono::steady_clock::now();
-            auto elapsed = float(std::chrono::duration_cast<std::chrono::microseconds>(new_time - current_time).count()) / (1000.0f * 1000.0f);
-            total_time += elapsed;
-            object_manager->update(total_time);
-            level->update(elapsed);
-            current_time = new_time;
-
-            fontRenderTextBorder("regular", player_position.room, 25.0f, 720.0f, 1.0f, 2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
-            fontRenderTextBorder("regular", std::string("Temps:") + std::to_string(player->getLeftTime()), 550.0f, 720.0f, 1.0f, 2, glm::vec3(0.9, 0.7f, 0.3f), glm::vec3(0.1, 0.1f, 0.1f));
-            //fontRenderTextBorder("regular", vec3_to_string(player_position.position), 25.0f, 50.0f, 0.5f, 2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
+            game->manageGame(menu_mode);
         }
 
         if (menu_mode)
