@@ -179,23 +179,23 @@ class TestConcreteRoomImpl(unittest.TestCase):
         )
         # check points
         data_points = self.get_data_from_accessor(obj, 0, path_gen)
-        self.assertEquals(len(data_points), 8)
-        self.assertEquals(data_points[0], cgtypes.vec3(0))
-        self.assertEquals(data_points[1], cgtypes.vec3(1))
-        self.assertEquals(data_points[2], cgtypes.vec3(2))
-        self.assertEquals(data_points[3], cgtypes.vec3(3))
-        self.assertEquals(data_points[4], cgtypes.vec3(4))
-        self.assertEquals(data_points[5], cgtypes.vec3(5))
-        self.assertEquals(data_points[6], cgtypes.vec3(6))
-        self.assertEquals(data_points[7], cgtypes.vec3(7))
+        self.assertEqual(len(data_points), 8)
+        self.assertEqual(data_points[0], cgtypes.vec3(0))
+        self.assertEqual(data_points[1], cgtypes.vec3(1))
+        self.assertEqual(data_points[2], cgtypes.vec3(2))
+        self.assertEqual(data_points[3], cgtypes.vec3(3))
+        self.assertEqual(data_points[4], cgtypes.vec3(4))
+        self.assertEqual(data_points[5], cgtypes.vec3(5))
+        self.assertEqual(data_points[6], cgtypes.vec3(6))
+        self.assertEqual(data_points[7], cgtypes.vec3(7))
         # check 1st row of indexes
         data_points = self.get_data_from_accessor(obj, 1, path_gen)
-        self.assertEquals(len(data_points), 10)
-        self.assertEquals(data_points, [4, 0, 1, 2, 3, 4, 4, 5, 6, 7])
+        self.assertEqual(len(data_points), 10)
+        self.assertEqual(data_points, [4, 0, 1, 2, 3, 4, 4, 5, 6, 7])
         # check 2nd row of indexes
         data_points = self.get_data_from_accessor(obj, 2, path_gen)
-        self.assertEquals(len(data_points), 4)
-        self.assertEquals(data_points, [3, 0, 2, 4])
+        self.assertEqual(len(data_points), 4)
+        self.assertEqual(data_points, [3, 0, 2, 4])
 
 
 
@@ -756,7 +756,7 @@ class TestConcreteRoomImpl(unittest.TestCase):
         self.assertTrue("triggers" in extras)
         triggers = extras["triggers"]
         print(triggers)
-        self.assertEquals(triggers,
+        self.assertEqual(triggers,
             [
                 {
                     'box': [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]],

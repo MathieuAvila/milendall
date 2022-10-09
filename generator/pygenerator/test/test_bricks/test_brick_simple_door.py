@@ -49,16 +49,16 @@ class TestBrick_SimpleDoor(unittest.TestCase):
 
         # check that it contains an object with expected parent
         objects = concrete.get_objects()
-        self.assertEquals(len(objects), 1)
+        self.assertEqual(len(objects), 1)
         object = objects[0]
-        self.assertEquals(object.parent, None)
+        self.assertEqual(object.parent, None)
 
         # check there is a portal to an outer world (sounds nice, he ?)
         phys_faces = object.get_physical_faces()
         portal_faces = [ faces for faces in phys_faces if object.PHYS_TYPE_PORTAL == faces["physics"]["type"] ]
-        self.assertEquals(len(portal_faces), 1)
+        self.assertEqual(len(portal_faces), 1)
         portal_face = portal_faces[0]
-        self.assertEquals(portal_face["physics"], {'type': 'portal', 'connect': 'A', 'gate' : 'gate0'})
+        self.assertEqual(portal_face["physics"], {'type': 'portal', 'connect': 'A', 'gate' : 'gate0'})
 
         # won't check face itself, left to visual QC
 

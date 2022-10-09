@@ -75,7 +75,7 @@ class TestBrick_SimplePad(unittest.TestCase):
         concrete = self.generate()
 
         objects = concrete.get_objects()
-        self.assertEquals(len(objects), 4)
+        self.assertEqual(len(objects), 4)
 
     def test_void_pad(self):
         stream_handler = logging.StreamHandler(sys.stdout)

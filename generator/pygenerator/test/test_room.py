@@ -193,13 +193,13 @@ class TestRoom(unittest.TestCase):
             obj_p[o.name] = o.parent
             if o.name == "b0_pad0_root_b1":
                 special = o
-        self.assertEquals(obj_p, {
+        self.assertEqual(obj_p, {
             "b0_parent": None,
             "b0_pad0": "b0_parent",
             "b0_pad0_root_b1": "b0_pad0",
             "b1_parent": "b0_pad0_root_b1"})
         self.assertIsNotNone(special)
-        self.assertEquals(special.matrix, cgtypes.mat4.translation(
+        self.assertEqual(special.matrix, cgtypes.mat4.translation(
             cgtypes.vec3(1.0, 2.0, 3.0)))
 
     def test_06_finalize_brick_rotation(self):
@@ -225,7 +225,7 @@ class TestRoom(unittest.TestCase):
             obj_p[o.name] = o.parent
             if o.name == "b0_pad0_root_b1":
                 special = o
-        self.assertEquals(obj_p, {
+        self.assertEqual(obj_p, {
             "b0_parent": None,
             "b0_pad0": "b0_parent",
             "b0_pad0_root_b1": "b0_pad0",
@@ -262,7 +262,7 @@ class TestRoom(unittest.TestCase):
             obj_p[o.name] = o.parent
             if o.name == "b0_pad0_root_b1":
                 special = o
-        self.assertEquals(obj_p, {
+        self.assertEqual(obj_p, {
             "b0_parent": None,
             "b0_pad0": "b0_parent",
             "b0_pad0_root_b1": "b0_pad0",
@@ -302,11 +302,11 @@ class TestRoom(unittest.TestCase):
             obj_p[o.name] = o
             if o.name == "b0_objects":
                 special = o
-        self.assertEquals(obj_p.keys(), {"b0_parent", "b0_objects"})
+        self.assertEqual(obj_p.keys(), {"b0_parent", "b0_objects"})
         with open(my_test_dir + "/room1/room.gltf") as f:
             j = json.load(f)
         r = j["nodes"][1]["extras"]["objects"]
-        self.assertEquals(r, [
+        self.assertEqual(r, [
             {
                 "type": "tomate",
                 "position": [
