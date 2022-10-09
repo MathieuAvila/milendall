@@ -42,17 +42,18 @@ Menu::Menu(std::shared_ptr<ModelRegistry> _model_registry, std::shared_ptr<FileL
     }
 }
 
+static bool computeHoldKey(int key, bool &was_key)
+{
+    bool result = (glfwGetKey(window, key) == GLFW_PRESS) && !was_key;
+    was_key = (glfwGetKey(window, key) != GLFW_RELEASE);
+    return result;
+}
+
 void Menu::printMenu()
 {
-    bool key_back = (glfwGetKey(window, GLFW_KEY_BACKSPACE) == GLFW_PRESS) && !was_key_back;
-    bool key_enter = (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) && !was_key_enter;
-    bool key_up = (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) && !was_key_up;
-    bool key_down = (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) && !was_key_down;
-
-    was_key_back = (glfwGetKey(window, GLFW_KEY_BACKSPACE) != GLFW_RELEASE);
-    was_key_enter = (glfwGetKey(window, GLFW_KEY_ENTER) != GLFW_RELEASE);
-    was_key_up = (glfwGetKey(window, GLFW_KEY_UP) != GLFW_RELEASE);
-    was_key_down = (glfwGetKey(window, GLFW_KEY_DOWN) != GLFW_RELEASE);
+    bool key_enter = computeHoldKey(GLFW_KEY_ENTER, was_key_enter);
+    bool key_up = computeHoldKey(GLFW_KEY_UP, was_key_up);
+    bool key_down = computeHoldKey(GLFW_KEY_DOWN, was_key_down);
 
     switch (sub_menu)
     {
