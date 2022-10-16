@@ -242,3 +242,29 @@ target_include_directories(unit_test PRIVATE game/test/glmock/ game/test/)
 
 include(GoogleTest)
 gtest_discover_tests(unit_test)
+
+
+
+FILE(GLOB SAMPLES "generator/samples/*")
+SET(outFiles)
+FOREACH(SRC ${SAMPLES})
+    get_filename_component(SAMPLE_DIR ${SRC} NAME)
+    SET(OUTPUT_FILE_DIR "${CMAKE_CURRENT_BINARY_DIR}/build_sample/${SAMPLE_DIR}/")
+    SET(OUTPUT_FILE_NAME "${OUTPUT_FILE_DIR}/level.json")
+    SET(OUTPUT_DEPENDS_NAME "${OUTPUT_FILE_DIR}/depends.txt")
+    SET(SRC_FULL "${CMAKE_CURRENT_BINARY_DIR}/../generator/samples/${SAMPLE_DIR}")
+    execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/get_file_list_one_liner.sh ${SRC} ${OUTPUT_FILE_DIR} OUTPUT_VARIABLE SRC_LIST)
+    message(STATUS "print_all_variables--- ${SRC_LIST}")
+    message(STATUS "outFiles--- ${outFiles}")
+
+    ADD_CUSTOM_COMMAND(
+      OUTPUT "${OUTPUT_FILE_NAME}"
+      COMMAND  ../generator/build_sample.sh ${SRC_FULL} ${OUTPUT_DEPENDS_NAME}
+      DEPFILE ${OUTPUT_DEPENDS_NAME})
+    #ADD_DEPENDENCIES(${OUTPUT_FILE_NAME} copy_bar.ini)
+
+    SET(outFiles ${outFiles} "${OUTPUT_FILE_NAME}")
+ENDFOREACH(SRC)
+message(STATUS "outFiles end --- ${outFiles}")
+
+ADD_CUSTOM_TARGET(rule_sample ALL DEPENDS ${outFiles})
