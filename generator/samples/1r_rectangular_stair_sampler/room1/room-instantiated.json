@@ -1,0 +1,149 @@
+{
+    "$schema": "../../../../generator/schema/file_room_bricks.json",
+    "bricks": [
+        {
+            "b_id": "base",
+            "parameters": {
+                "structure_class": "rectangular",
+                "structure_parameters": {
+                    "size": [
+                        20.0,
+                        10.0,
+                        35.0
+                    ]
+                }
+            }
+        },
+        {
+            "b_id": "1_default",
+            "parameters": {
+                "structure_class": "stair_sampler",
+                "structure_parameters": {}
+            }
+        },
+        {
+            "b_id": "2_nr_sampler_x1_x2_h",
+            "parameters": {
+                "structure_class": "stair_sampler",
+                "structure_parameters": {
+                    "nr_steps": 20,
+                    "default_u": [
+                        0.0,
+                        1.0,
+                        0.0
+                    ],
+                    "default_v": [
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "func": [
+                        "h = t*5 + 0.5",
+                        "x1 = math.cos(t*50.0/6.28) + 1.5",
+                        "x2 = -math.cos(t*50.0/6.28) + 1.5",
+                        "p = [ t * 20.0, t * 5.0, 5.0 ]"
+                    ]
+                }
+            }
+        },
+        {
+            "b_id": "3_nr_sampler",
+            "parameters": {
+                "structure_class": "stair_sampler",
+                "structure_parameters": {
+                    "nr_steps": 20,
+                    "default_u": [
+                        0.0,
+                        1.0,
+                        0.0
+                    ],
+                    "default_v": [
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "func": [
+                        "r = t * 3.14 / 2.0",
+                        "u = [ -math.sin(r - 0.4), math.cos(r - 0.4), 0.0] ",
+                        "p = [ math.sin(r) * 10.0, 10.0 - math.cos(r) * 10.0, 10.0 ]"
+                    ]
+                }
+            }
+        },
+        {
+            "b_id": "4_nr_sampler_u",
+            "parameters": {
+                "structure_class": "stair_sampler",
+                "structure_parameters": {
+                    "nr_steps": 20,
+                    "default_u": [
+                        0.0,
+                        1.0,
+                        0.0
+                    ],
+                    "default_v": [
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "func": [
+                        "h = 1.5",
+                        "r = t * 3.14 / 2.0",
+                        "u = [ math.cos(r), math.sin(r)] ",
+                        "p = [ t * 20.0, t * 5.0, 15.0 ]"
+                    ]
+                }
+            }
+        },
+        {
+            "b_id": "5_nr_sampler_v",
+            "parameters": {
+                "structure_class": "stair_sampler",
+                "structure_parameters": {
+                    "nr_steps": 20,
+                    "default_u": [
+                        0.0,
+                        1.0,
+                        0.0
+                    ],
+                    "default_v": [
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "func": [
+                        "h = t*5 + 0.5",
+                        "r = t * 6.28",
+                        "v = [ math.cos(r), math.sin(r), 2.0] ",
+                        "p = [ t * 20.0,  t * 5.0 , 20.0 + math.cos(r) ]"
+                    ]
+                }
+            }
+        },
+        {
+            "b_id": "6_rotating",
+            "parameters": {
+                "structure_class": "stair_sampler",
+                "structure_parameters": {
+                    "nr_steps": 100,
+                    "default_u": [
+                        0.0,
+                        1.0,
+                        0.0
+                    ],
+                    "default_v": [
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "func": [
+                        "h = 0.5",
+                        "r = t * 6.28 * 4",
+                        "#v = [ math.cos(r), math.sin(r), 2.0] ",
+                        "p = [ math.cos(r)*2.0 + 10.0, t*12 , 25.0 + math.sin(r)*2.0 ]"
+                    ]
+                }
+            }
+        }
+    ]
+}
