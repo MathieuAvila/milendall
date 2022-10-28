@@ -33,11 +33,13 @@ Game::Game(
         glm::mat4(1.0f),
         *room_ids.begin()};
     console->info("Set current room to {}", currentPov.room);
+    console->info("Set current position to {}", vec3_to_string(level->getDefinition().start_position));
 
     player = make_shared<Player>();
     player_id = object_manager->insertObject(player,
                                              PointOfView(currentPov.position, currentPov.local_reference, currentPov.room));
     player->addTime(level->getDefinition().recommended_time);
+    current_time = std::chrono::steady_clock::now();
 }
 
 void Game::manageGame(bool inMenu)
@@ -68,7 +70,9 @@ void Game::manageGame(bool inMenu)
 
     fontRenderTextBorder("regular", player_position.room, 25.0f, 720.0f, 1.0f, 2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
     fontRenderTextBorder("regular", std::string("Temps:") + std::to_string(player->getLeftTime()), 550.0f, 720.0f, 1.0f, 2, glm::vec3(0.9, 0.7f, 0.3f), glm::vec3(0.1, 0.1f, 0.1f));
-}
+
+    //fontRenderTextBorder("regular", vec3_to_string(player_position.position), 80.0f, 550.0f, 1.0f, 2, glm::vec3(1.0, 0.8f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
+    }
 
 Game::~Game()
 {
