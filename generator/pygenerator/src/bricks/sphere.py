@@ -42,26 +42,17 @@ class BrickSphere(BrickStructure):
 
     def instantiate(self, selector):
         """ force set values:
-        - set values to brick size
-        - set values for gates"""
+        - set values to brick size"""
 
         structure_parameters = self._element.values.parameters.structure_parameters
         my_default = {
             "setup": {
-                "radius": 20,
-                "radius_sky": 200,
+                "radius": 40,
                 "lats" : 50,
-                "longs" : 50
-            },
-            "gates" : {}
+                "longs" : 50,
+                "internal" : True # by default, build a sky sphere.
+            }
         }
-        counter = 0
-        #for gate in self._element.gates:
-        #    v_angle = pi/4 * counter
-        #    h_angle = pi/4 * ( counter % 8 )
-        #    my_default["gates"][gate.get_id()]= { "v_angle":v_angle, "h_angle":h_angle}
-        #    counter = counter + 1
-
         self._element.values.parameters.structure_private = merge( my_default, structure_parameters)
         logger.info("setup: %s", str(self._element.values.parameters.structure_private["setup"]))
 
@@ -71,19 +62,16 @@ class BrickSphere(BrickStructure):
 
 
         setup = structure_private["setup"]
-        #child_object = concrete.add_child("parent", gate_id, gate_mat)
 
         self.lats = setup["lats"]
         self.longs = setup["longs"]
         R = setup["radius"]
-        R_sky = setup["radius_sky"]
+        internal = -1.0 if setup["internal"] else 1.0
 
         parent = concrete.add_child(None, "parent")
 
         points = []
         points_index = []
-        points_sky = []
-        points_index_sky = []
         index = 0
 
         for i in range(0, self.lats + 1):
@@ -92,28 +80,21 @@ class BrickSphere(BrickStructure):
             zr1 = cos(lat)
 
             line = []
-            line_sky = []
 
             for j in range(0, self.longs + 1 ):
                 lng = 2 * pi * float(float(j+1) / float(self.longs))
                 x = cos(lng)
                 y = sin(lng)
 
-                point = cgtypes.vec3(x * zr1 * R, y * zr1 * R , z1 * R)
+                point = cgtypes.vec3(x * zr1 * R, y * zr1 * R , internal * z1 * R)
                 points.append(point)
                 line.append(index)
-
-                point_sky = cgtypes.vec3(x * zr1 * R_sky, y * zr1 * R_sky , z1 * R_sky)
-                points_sky.append(point_sky)
-                line_sky.append(index)
 
                 index = index + 1
 
             points_index.append(line)
-            points_index_sky.append(line_sky)
 
         index_wall = parent.add_structure_points(points)
-        index_sky = parent.add_structure_points(points_sky)
 
         table = []
         table_sky = []
@@ -125,77 +106,23 @@ class BrickSphere(BrickStructure):
                     points_index[i+1][j+1],
                     points_index[i+1][j]]
                 )
-                table_sky.append([
-                    points_index_sky[i+1][j],
-                    points_index_sky[i+1][j+1],
-                    points_index_sky[i][j+1],
-                    points_index_sky[i][j]]
-                )
         elem0 = []
         elemN = []
-        elem0_sky = []
-        elemN_sky = []
         for j in range(0, self.longs):
                 elem0.append(
                     points_index[self.lats -1][j])
                 elemN.append(
                     points_index[1][self.longs - j]
                 )
-                elem0_sky.append(
-                    points_index_sky[self.lats -1][self.longs - j])
-                elemN_sky.append(
-                    points_index_sky[1][j]
-                )
+
         table.append(elem0)
         table.append(elemN)
-        table_sky.append(elem0_sky)
-        table_sky.append(elemN_sky)
-        parent.set_gravity({})
-        parent.set_gravity_script(
-            '   local grav_factor\n'
-            '   grav_factor = 30 * %s\n'
-            '   tab_out["g_x"] = -tab_in["x"] / grav_factor \n'
-            '   tab_out["g_y"] = -tab_in["y"] / grav_factor \n'
-            '   tab_out["g_z"] = -tab_in["z"] / grav_factor \n'
-            '   tab_out["u_x"] = tab_in["x"]\n'
-            '   tab_out["u_y"] = tab_in["y"]\n'
-            '   tab_out["u_z"] = tab_in["z"]\n'
-            '   tab_out["v"] = 0.01\n' % R , [ concrete_room.Node.GRAVITY_SIMPLE ])
         parent.add_structure_faces(
                     index_wall,
                     table,
                     concrete_room.Node.CAT_PHYS_VIS,
                     [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
                     {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
-        parent.add_structure_faces(
-                    index_sky,
-                    table_sky,
-                    concrete_room.Node.CAT_VIS,
-                    [concrete_room.Node.HINT_CEILING],
-                    {} )
-
-        #for gate in self._element.gates:
-        #    gate_id = gate.get_id()
-            # compute rotation argument depending on brick is gate in or out.
-            # This rotates locally gate sub object in order to present correct face.
-        #    is_in = 1
-        #    dims = gate.get_dimensions()
-        #    if gate.values.connect[0] == self._element.values.brick_id:
-        #        is_in = -1
-        #    logger.info("Adding gate child, gate %s, connect %s - is_in %s",
-        #        gate.values.gate_id, gate.values.connect, is_in)
-        #   # create gate object
-        #    def_gate = structure_private["gates"][gate_id]
-        #    gate_mat = cgtypes.mat4.rotation(
-        #        def_gate["h_angle"], [0,0,1]) * cgtypes.mat4.rotation(
-         #           def_gate["v_angle"], [1,0,0]) * cgtypes.mat4(
-        #                1.0, 0.0, 0.0, -( dims["portal"][0]) / 2.0,
-        #                0.0, 1.0, 0.0, R - 0.1,
-        #                0.0, 0.0, 1.0, 0.0,
-        #                0.0, 0.0, 0.0, 1.0
-        #                )
-        #    child_object = concrete.add_child("parent", gate_id, gate_mat)
-
 
 
 
