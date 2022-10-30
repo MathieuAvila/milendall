@@ -50,7 +50,8 @@ class BrickSphere(BrickStructure):
                 "radius": 40,
                 "lats" : 50,
                 "longs" : 50,
-                "internal" : True # by default, build a sky sphere.
+                "internal" : True, # by default, build a sky sphere.
+                "hard" : False # If this needs to be walkable
             }
         }
         self._element.values.parameters.structure_private = merge( my_default, structure_parameters)
@@ -67,6 +68,7 @@ class BrickSphere(BrickStructure):
         self.longs = setup["longs"]
         R = setup["radius"]
         internal = -1.0 if setup["internal"] else 1.0
+        phys = {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} if setup["hard"] else {}
 
         parent = concrete.add_child(None, "parent")
 
@@ -122,7 +124,7 @@ class BrickSphere(BrickStructure):
                     table,
                     concrete_room.Node.CAT_PHYS_VIS,
                     [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
-                    {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
+                    phys )
 
 
 
