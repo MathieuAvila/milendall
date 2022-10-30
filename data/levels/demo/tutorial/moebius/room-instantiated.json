@@ -1,0 +1,37 @@
+{
+    "$schema": "../../../../../generator/schema/file_room_bricks.json",
+    "bricks": [
+        {
+            "b_id": "b1",
+            "parameters": {
+                "structure_class": "parametric",
+                "structure_parameters": {
+                    "setup": {
+                        "segments_nr_s": 40,
+                        "segments_nr_t": 50,
+                        "func": [
+                            "# build a torus, r = small radius, R = big radius",
+                            "# s builds small rotation around Z",
+                            "# t builds rotation around Y",
+                            "u = (s - 0.5) * 2.0",
+                            "r = 5.0",
+                            "v = t * math.pi * 2.0",
+                            "values = [",
+                            "(r + u * math.cos(v)) * math.cos(2.0 * v), ",
+                            "(r + u * math.cos(v)) * math.sin(2.0 * v), ",
+                            "u * math.sin(v),",
+                            "s, t]"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "b_id": "sky",
+            "parameters": {
+                "structure_class": "sphere",
+                "structure_parameters": {}
+            }
+        }
+    ]
+}

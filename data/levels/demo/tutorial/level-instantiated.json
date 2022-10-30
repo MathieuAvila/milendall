@@ -35,6 +35,15 @@
                     "value": "Tout est bien qui finit bien"
                 }
             ]
+        },
+        {
+            "room_id": "moebius",
+            "name": [
+                {
+                    "lang": "fr",
+                    "value": "Sens dessus dessous"
+                }
+            ]
         }
     ],
     "gates": []
