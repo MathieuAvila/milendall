@@ -13,7 +13,6 @@ class SelectorRegular(Selector):
 
     def __init__(self):
         self.classes["structure"]["brick"] = room_register.brickTypes
-        # todo: differentiate gates and rooms dressing
         self.classes["dressing"]["brick"] = dressing_register.dressingTypes
 
         #logger.info("Room structure list is: %s", " ".join(self.classes["structure"]["brick"]) )

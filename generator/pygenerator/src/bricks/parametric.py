@@ -32,20 +32,19 @@ class BrickParametric(BrickStructure):
         return BrickParametric(room)
 
     def check_fit(self):
-        """ Pass the Room, and list of gates, check it can be applied. """
-        logger.info("checking if parametric fits: only if exactly 2 gates")
+        """ Pass the Room, check it can be applied. """
+        logger.info("checking if parametric fits: always")
         return 100
 
     def check_structure(self):
         """check everything is as expected.
         """
-        logger.info("checking if tubular is ok. Only if 2 gates")
-        return len(self._element.gates) == 2
+        logger.info("checking if parametric is ok.")
+        return True
 
     def instantiate(self, selector):
         """ force set values:
-        - set values to room size
-        - set values for gates"""
+        - set values to room size"""
 
         structure_parameters = self._element.values.parameters.structure_parameters
 

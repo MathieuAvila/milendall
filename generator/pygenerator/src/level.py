@@ -9,7 +9,6 @@ import json
 import json_helper
 
 import room_spec
-import gate
 import concrete_room
 import state
 
@@ -24,8 +23,8 @@ def decode_level(level_directory, state, selector):
 
         if 'room_id' in dct:
             return room_spec.RoomSpec(dct, level_directory, state, selector)
-        if 'gate_id' in dct:
-            return gate.Gate(dct, level_directory, state, selector)
+        #if 'gate_id' in dct:
+        #    return gate.Gate(dct, level_directory, state, selector)
         return dct
 
     return _decode_level
@@ -70,7 +69,7 @@ class Level:
         logger.info(self.status_to_filename[load_state])
         obj = json_helper.load_and_validate_json(
             directory + "/" + self.status_to_filename[load_state],
-            "file_rooms_logic.json",
+            "file_final_level.json",
             decode_hook=decode_level(directory, self.status, self.selector))
         self.status = load_state
         self.values = DefaultMunch.fromDict(obj)
@@ -128,17 +127,6 @@ class Level:
             3. Check it is allowed by the room type
             4. Request room structure coherency"""
         logger.debug("Structure check coherency")
-        for _gate in self.values.gates:
-            logger.debug("Check gate: %s", _gate.values.gate_id)
-
-            # TODO check gates appear in exactly 2 rooms
-
-            if _gate.values.structure_class is not None:
-                _gate.structure = self.selector.get_structure_from_name(
-                    _gate.values.structure_class,
-                    _gate)
-                _gate.structure.check_structure()
-
         for _room in self.values.rooms:
             logger.debug("Check room: %s", _room.values.room_id)
             if _room.values.structure_class is not None:
@@ -151,14 +139,6 @@ class Level:
         """ Sanity check that content is viable, at the structure level
             Thing can get insane if user has messed up with content in-between"""
         logger.info("Dressing check coherency")
-        for _gate in self.values.gates:
-            logger.debug("Check gate: %s", _gate.values.gate_id)
-
-            if _gate.values.dressing_class is not None:
-                _gate.dressing = self.selector.get_dressing_from_name(
-                    _gate.values.dressing_class,
-                    _gate)
-
         for _room in self.values.rooms:
             logger.debug("Check room: %s", _room.values.room_id)
             if _room.values.dressing_class is not None:
@@ -169,7 +149,7 @@ class Level:
     def structure_personalization(self):
         """ 1. For each gate, choose gate format if not already done
             2. Instantiate each room if not already done"""
-        for _element in self.values.gates + self.values.rooms:
+        for _element in self.values.rooms:
             _element.structure_personalization()
         self.state.add_state(state.LevelState.Personalized)
         self.status = state.LevelState.Personalized
@@ -183,7 +163,7 @@ class Level:
     def dressing_instantiation(self):
         """ 1. For each gate, choose gate format if not already done
             2. Instantiate each room if not already done"""
-        for _element in self.values.gates + self.values.rooms:
+        for _element in self.values.rooms:
             _element.dressing_instantiation()
         self.state.add_state(state.LevelState.DressingInstantiated)
         self.status = state.LevelState.DressingInstantiated
@@ -191,7 +171,7 @@ class Level:
     def dressing_personalization(self):
         """ 1. For each gate, choose gate format if not already done
             2. Instantiate each room if not already done"""
-        for _element in self.values.gates + self.values.rooms:
+        for _element in self.values.rooms:
             _element.dressing_personalization()
         self.state.add_state(state.LevelState.DressingPersonalized)
         self.status = state.LevelState.DressingPersonalized

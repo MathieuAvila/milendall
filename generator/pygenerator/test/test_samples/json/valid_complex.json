@@ -1,5 +1,6 @@
 {
     "$schema": "../../../../schema/file_rooms_logic.json",
+    "version": "1",
     "declarations": {
         "name": [
             {

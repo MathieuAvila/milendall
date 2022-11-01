@@ -5,73 +5,11 @@ import cgtypes
 
 from selector import Selector
 from brick_structure import BrickStructure
-from gate_structure import GateStructure
 from dressing import Dressing
 import concrete_room
 
 logger = logging.getLogger("fake")
 logger.setLevel(logging.INFO)
-
-class GateStructureFake1(GateStructure):
-
-    _name = "gate_structure_1"
-
-    def __init__(self, gate=None):
-        """ init gate """
-        super().__init__(gate)
-        self.gate = gate
-
-    def get_instance(self, gate:None):
-        """ return a self instance of this gate"""
-        return GateStructureFake1(gate)
-
-    def instantiate(self, selector):
-        """ force set values:
-        - set values to gate size"""
-        self.gate.values.structure_private={}
-        self.gate.values.structure_private["private1"] = True
-
-    def check_structure(self):
-        """same as main"""
-        logger.debug("Check structure gate: %s", self.gate.values.gate_id)
-
-    def check_fit(self):
-        """same as main"""
-        logger.debug("Check fit gate: %s", self.gate.values.gate_id)
-        return 100
-
-    def generate(self, concrete):
-        """generate 1 structure triangle to be able to check validity"""
-        logger.info("Called generate")
-        parent = concrete.add_child(self.gate.values.gate_id, self.gate.values.gate_id + "_impl")
-        index0 = parent.add_structure_points([ cgtypes.vec3(3), cgtypes.vec3(4), cgtypes.vec3(5) ])
-        parent.add_structure_faces(
-            index0,
-            [ [0,1,2], [3,4,5], [6,7,8] ],
-            [concrete_room.Node.CATEGORY_PHYSICS], [concrete_room.Node.HINT_BUILDING], [ 0 ] )
-
-class GateDressingFake1(Dressing):
-    _name = "gate_dressing_1"
-
-    def __init__(self, element=None):
-        """ nothing"""
-        self._element = element
-
-    def get_instance(self, element=None):
-        """ Return instance for a given gate """
-        return GateDressingFake1(element)
-
-    def instantiate(self, selector):
-        """ performs parameters selection. Parameters should be enough to generate specific file"""
-        return True
-
-    def generate(self, concrete):
-        """Instantiate only 1 triangle to pass validity check"""
-        parent = concrete.get_node(self._element.values.gate_id + "_impl")
-        parent.add_dressing_faces(
-            [ cgtypes.vec3(3), cgtypes.vec3(4), cgtypes.vec3(5) ],
-            [ [0,1,2] ],
-            concrete_room.get_texture_definition("../texture.png"))
 
 class RoomDressingFake1(Dressing):
     _name = "room_dressing_1"
@@ -96,15 +34,6 @@ class RoomDressingFake1(Dressing):
             [ [0,1,2] ],
             concrete_room.get_texture_definition("../texture.png"))
 
-class GateStructureFake2(GateStructureFake1):
-
-    _name = "gate_structure_2"
-
-    def __init__(self, gate=None):
-        """ init gate """
-        super().__init__(gate)
-        self.gate = gate
-
 class BrickStructureFake1(BrickStructure):
 
     _name = "brick_structure_1"
@@ -120,8 +49,7 @@ class BrickStructureFake1(BrickStructure):
 
     def instantiate(self, selector):
         """ force set values:
-        - set values to room size
-        - set values for gates"""
+        - set values to room size"""
         self.room.values.parameters.structure_private={}
         self.room.values.parameters.structure_private["size"] = [10.0,10.0,2.5]
 
@@ -165,11 +93,8 @@ class SelectorFake(Selector):
 
         self.classes["structure"]["brick"][BrickStructureFake1().get_name()] = BrickStructureFake1()
         self.classes["structure"]["brick"][BrickStructureFake2().get_name()] = BrickStructureFake2()
-        self.classes["structure"]["gate"][GateStructureFake1().get_name()] = GateStructureFake1()
-        self.classes["structure"]["gate"][GateStructureFake2().get_name()] = GateStructureFake2()
 
         self.classes["dressing"]["brick"][RoomDressingFake1().get_name()] = RoomDressingFake1()
-        self.classes["dressing"]["gate"][GateDressingFake1().get_name()] = GateDressingFake1()
 
         self.choice_selector = []
         self.choice_counter = 0

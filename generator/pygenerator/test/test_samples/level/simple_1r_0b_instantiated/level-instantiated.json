@@ -1,5 +1,6 @@
 {
-    "$schema": "../../../../../schema/file_rooms_logic.json",
+    "$schema": "../../../../../schema/file_final_level.json",
+    "version": "1",
     "declarations": {
         "name": [
             {
@@ -27,6 +28,5 @@
                 }
             ]
         }
-    ],
-    "gates": []
+    ]
 }

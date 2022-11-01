@@ -32,7 +32,7 @@ class Element():
         self.structure.instantiate(self.selector)
 
     def dressing_instantiation(self):
-        """ 1. Sort element types that matches constraints: list of gates with format of each.
+        """ 1. Sort element types that matches constraints
             Note: it's up to the element type to check criterias
             2. Associate weights for each
             3. Random selection of one type"""
@@ -77,7 +77,7 @@ class Element():
 
     def finalize(self, concrete):
         """ Perform final generate and dressing on one room. This is specific to a room
-        and builds all intermediate gates when needed."""
+        and builds all intermediate portals when needed."""
 
         logger.info("Called generate for: %s", self.get_id())
         self.structure = self.selector.get_structure_from_name(

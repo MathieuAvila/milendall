@@ -34,8 +34,9 @@ class TestLevel(unittest.TestCase):
             has_error = True
         self.assertTrue(has_error)
 
-    def test_01_load_save_simple(self):
-        """ test loading and saving a level"""
+    def INVALID_test_01_load_save_simple(self):
+        """ test loading and saving a level
+        MARKED INVALID as it writes back the gates property"""
         selector = selector_fake.SelectorFake()
         loaded_level = level.Level(selector)
         loaded_level.load("../test/test_samples/level/simple/", state.LevelState.Instantiated)

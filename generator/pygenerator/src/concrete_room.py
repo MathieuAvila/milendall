@@ -1,12 +1,11 @@
 """
 A Concrete Room is a full description of a single room. Its goal is to be converted
 to a gltf scene file once everything is defined. So it's an intermediate representation
-of a gltf, easier to manipulate during construction by the room itself and the
-associated gates.
+of a gltf, easier to manipulate during construction by the room itself.
 
-Note that it is not reconstructed from a file, because all parameters from gates/rooms/objects
+Note that it is not reconstructed from a file, because all parameters from rooms/objects
 should be sufficient to reconstruct a full one.
-However, it can be dumped to a file to ease debugging of rooms/gates/objects
+However, it can be dumped to a file to ease debugging of rooms/objects
 """
 
 import logging
@@ -80,7 +79,7 @@ class Node:
 
     # for physical, metadata types
     PHYS_TYPE        = "type"     # key for types
-    PHYS_TYPE_PORTAL = "portal"   # for portals, only to be used by gates, with 1 face
+    PHYS_TYPE_PORTAL = "portal"   # for portals
     PHYS_TYPE_HARD   = "hard"     # can be used for walls or ground
     PORTAL_CONNECT   = "connect"
     GATE_ID          = "gate"

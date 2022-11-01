@@ -42,8 +42,7 @@ class BrickStairSampler(BrickStructure):
 
     def instantiate(self, selector):
         """ force set values:
-        - set values to brick size
-        - set values for gates"""
+        - set values to brick size"""
         structure_parameters = self._element.values.parameters.structure_parameters
 
         my_default= {

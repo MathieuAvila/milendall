@@ -17,8 +17,6 @@
             "room_id" : "room1",
             "name" : [ { "lang": "en", "value" : "room1"}  ]
         }
-    ],
-    "gates" : [
     ]
 }
 

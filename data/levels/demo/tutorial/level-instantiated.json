@@ -1,5 +1,6 @@
 {
-    "$schema": "../../../../generator/schema/file_rooms_logic.json",
+    "$schema": "../../../../generator/schema/file_final_level.json",
+    "version": "1",
     "declarations": {
         "name": [
             {
@@ -37,14 +38,13 @@
             ]
         },
         {
-            "room_id": "moebius",
+            "room_id": "double_torus",
             "name": [
                 {
                     "lang": "fr",
-                    "value": "Sens dessus dessous"
+                    "value": "Attendez un peu que la chance tourne..."
                 }
             ]
         }
-    ],
-    "gates": []
+    ]
 }

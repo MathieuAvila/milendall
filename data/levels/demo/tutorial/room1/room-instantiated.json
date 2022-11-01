@@ -213,8 +213,8 @@
             },
             "portals": [
                 {
-                    "gate_id": "4-5",
-                    "connect": "A"
+                    "gate_id": "internal_torus_door",
+                    "connect": "B"
                 }
             ],
             "parameters": {
@@ -234,7 +234,7 @@
             },
             "portals": [
                 {
-                    "gate_id": "4-5",
+                    "gate_id": "external_torus_door",
                     "connect": "B"
                 }
             ],

@@ -6,6 +6,10 @@
         "declarations": {
             "$ref": "level_declaration.json"
         },
+        "version": {
+            "type": "string",
+            "description": "compatibility version number"
+        },
         "gates": {
             "type": "array",
             "items": {
@@ -112,6 +116,7 @@
     },
     "required": [
         "declarations",
+        "version",
         "rooms",
         "gates",
         "$schema"

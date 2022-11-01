@@ -30,7 +30,7 @@ class BrickGravitySamplerFunc(BrickStructure):
         return BrickGravitySamplerFunc(room)
 
     def check_fit(self):
-        """ Pass the Room, and list of gates, check it can be applied. """
+        """ Pass the Room, check it can be applied. """
         logger.info("checking if gravity_sampler fits")
 
     def check_structure(self):
