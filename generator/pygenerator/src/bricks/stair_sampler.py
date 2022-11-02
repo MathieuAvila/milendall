@@ -20,7 +20,7 @@ from .register import register_brick_type
 from jsonmerge import merge
 
 logger = logging.getLogger("stair_sampler")
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 class BrickStairSampler(BrickStructure):
 
