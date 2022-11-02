@@ -1,0 +1,53 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://milendall.com/schemas/bricks/rectangular/structure_parameters.json",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "segments_nr": {
+            "type": "number"
+        },
+        "func": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "minItems": 3,
+            "maxItems": 3
+        },
+        "gravity": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "minItems": 3,
+            "maxItems": 3
+        },
+        "up": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "minItems": 3,
+            "maxItems": 3
+        },
+        "mode_up_gravity": {
+            "type": "string"
+        },
+        "weight": {
+            "type": "string"
+        },
+        "frequency": {
+            "type": "number"
+        }
+    },
+    "required": [
+        "segments_nr",
+        "func",
+        "gravity",
+        "up",
+        "mode_up_gravity",
+        "weight",
+        "frequency"
+    ]
+}

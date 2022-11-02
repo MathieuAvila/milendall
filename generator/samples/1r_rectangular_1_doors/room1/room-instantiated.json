@@ -75,7 +75,46 @@
                 }
             ],
             "parameters": {
-                "structure_class": "simple_door"
+                "structure_class": "simple_door",
+                "structure_parameters": {
+                    "geometry": {
+                        "portal": [
+                            1.5,
+                            1.5
+                        ],
+                        "margin": [
+                            1.0,
+                            1.0
+                        ],
+                        "floor": [
+                            "x0"
+                        ]
+                    },
+                    "shift": {
+                        "x_floor_start_ext": -0.2,
+                        "x_floor_start_int": 0.1,
+                        "x_floor_end_int": 1.6,
+                        "x_floor_end_ext": 1.9,
+                        "x_up_start_ext": -0.2,
+                        "x_up_start_int": 0.1,
+                        "x_up_end_int": 1.6,
+                        "x_up_end_ext": 1.9,
+                        "y_up_start_ext": 1.8,
+                        "y_up_start_int": 1.55,
+                        "y_up_end_ext": 1.8,
+                        "y_up_end_int": 1.55,
+                        "w_in": 0.3,
+                        "w_out": -0.3,
+                        "wd_in": 0.1,
+                        "wd_out": -0.1
+                    },
+                    "door": {
+                        "event": "",
+                        "default_open": true,
+                        "timing": 1.0,
+                        "auto_open": false
+                    }
+                }
             }
         }
     ]

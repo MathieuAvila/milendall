@@ -56,7 +56,7 @@
                         "u_x = -g0_x / norm",
                         "u_y = -g0_y / norm",
                         "u_z = -g0_z / norm",
-                        "w = 100.0",
+                        "w = 100.0"
                     ],
                     "frequency": 0.02
                 }

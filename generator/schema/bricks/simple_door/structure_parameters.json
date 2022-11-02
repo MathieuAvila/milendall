@@ -1,0 +1,97 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://milendall.com/schemas/bricks/simple_door/structure_parameters.json",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "geometry": {
+            "portal": {
+                "type": "array",
+                "items": {
+                    "type": "number"
+                },
+                "minItems": 3,
+                "maxItem": 3
+            },
+            "margin": {
+                "type": "array",
+                "items": {
+                    "type": "number"
+                },
+                "minItems": 3,
+                "maxItem": 2
+            },
+            "floor": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "shift": {
+            "x_floor_start_ext": {
+                "type": "number"
+            },
+            "x_floor_start_int": {
+                "type": "number"
+            },
+            "x_floor_end_int": {
+                "type": "number"
+            },
+            "x_floor_end_ext": {
+                "type": "number"
+            },
+            "x_up_start_ext": {
+                "type": "number"
+            },
+            "x_up_start_int": {
+                "type": "number"
+            },
+            "x_up_end_int": {
+                "type": "number"
+            },
+            "x_up_end_ext": {
+                "type": "number"
+            },
+            "y_up_start_ext": {
+                "type": "number"
+            },
+            "y_up_start_int": {
+                "type": "number"
+            },
+            "y_up_end_ext": {
+                "type": "number"
+            },
+            "y_up_end_int": {
+                "type": "number"
+            },
+            "w_in": {
+                "type": "number"
+            },
+            "w_out": {
+                "type": "number"
+            },
+            "wd_in": {
+                "type": "number"
+            },
+            "wd_out": {
+                "type": "number"
+            }
+        },
+        "door": {
+            "event": {
+                "type": "string"
+            },
+            "default_open": {
+                "type": "boolean"
+            },
+            "timing": {
+                "type": "number"
+            },
+            "auto_open": {
+                "type": "boolean"
+            }
+        }
+    },
+    "required": []
+}

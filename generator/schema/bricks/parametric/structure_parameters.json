@@ -1,0 +1,23 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://milendall.com/schemas/bricks/rectangular/structure_parameters.json",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "setup": {
+            "segments_nr_s": {
+                "type": "number"
+            },
+            "segments_nr_t": {
+                "type": "number"
+            },
+            "func": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "required": []
+}
