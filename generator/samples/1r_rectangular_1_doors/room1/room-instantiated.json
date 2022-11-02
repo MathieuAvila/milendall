@@ -59,7 +59,15 @@
                 }
             ],
             "parameters": {
-                "structure_class": "simple_door"
+                "structure_class": "simple_door",
+                "structure_parameters": {
+                    "door": {
+                        "event": "my_event",
+                        "default_open": true,
+                        "timing": 1.0,
+                        "auto_open": true
+                    }
+                }
             }
         },
         {
@@ -109,10 +117,10 @@
                         "wd_out": -0.1
                     },
                     "door": {
-                        "event": "",
+                        "event": "my_event",
                         "default_open": true,
                         "timing": 1.0,
-                        "auto_open": false
+                        "auto_open": true
                     }
                 }
             }

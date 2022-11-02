@@ -32,6 +32,10 @@ class Animation:
         """
         self.action_list.append({"node":node_name, "action": action, "table": key_table})
 
+    def append_prefix(self, prefix):
+        for anim in self.action_list:
+            anim["node"] = prefix + anim["node"]
+
     def generate_gltf(self, gltf, data_file, node_provider):
         animation = {
             "name" : self.name,

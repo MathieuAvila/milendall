@@ -377,7 +377,8 @@ class ConcreteRoom:
             if o.parent != None:
                 o.parent = "%s%s" % (prefix, o.parent)
             logger.debug(" => %s parent %s", o.name, o.parent)
-
+        for animation in self.animations:
+            animation.append_prefix(prefix)
 
     def set_root(self, root_id):
         """For every object that has a void parent, set its parent to root_id"""

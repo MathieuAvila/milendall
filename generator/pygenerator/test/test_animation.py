@@ -190,9 +190,33 @@ class TestAnimation(unittest.TestCase):
 
 
 
+    def test_append_prefix(self):
+        """Test updating animations node with 1 prefix"""
+        cube = self.create_cube()
+        anim0 = animation.Animation("test_anim", 0.0, 1.0, "my_event")
+        anim0.append_action("node1", anim0.ACTION_TRANSLATION, [
+            { "time":1.0, "value": [0.0, 0.0 ,0.0] },
+            { "time":2.0, "value": [3.0, 0.0 ,0.0] },
+            ])
+        anim0.append_action("node2", anim0.ACTION_ROTATION, [
+            { "time":1.0, "value": [1.0, 0.0 ,0.0, 0.0] },
+            { "time":2.0, "value": [0.0, 1.0 ,0.0, 0.0] },            ])
+        cube.add_animation(anim0)
 
-
-
-
-if __name__ == '__main__':
-    unittest.main()
+        anim0.append_prefix("pref_")
+        self.assertEquals(anim0.action_list, [
+            {
+                'action': 'translation',
+                'node': 'pref_node1',
+                'table': [
+                    {'time': 1.0, 'value': [0.0, 0.0, 0.0]},
+                    {'time': 2.0, 'value': [3.0, 0.0, 0.0]}]
+            },
+            {
+                'action': 'rotation',
+                'node': 'pref_node2',
+                'table': [
+                    {'time': 1.0, 'value': [1.0, 0.0, 0.0, 0.0]},
+                    {'time': 2.0, 'value': [0.0, 1.0, 0.0, 0.0]}
+                ]
+            }])
