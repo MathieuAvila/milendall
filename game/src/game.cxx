@@ -31,7 +31,7 @@ Game::Game(
     PointOfView currentPov{
         level->getDefinition().start_position,
         glm::mat4(1.0f),
-        *room_ids.begin()};
+        level->getDefinition().start_room};
     console->info("Set current room to {}", currentPov.room);
     console->info("Set current position to {}", vec3_to_string(level->getDefinition().start_position));
 
