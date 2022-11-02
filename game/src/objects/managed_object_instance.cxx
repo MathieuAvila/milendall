@@ -70,7 +70,7 @@ void ManagedObjectInstance::updateViewable()
         if (viewable.get() != nullptr)
         {
             viewable_id = viewables_registrar->appendViewable(viewable);
-            console->info("Found viewable and inserted with ID={}", viewable_id);
+            console->debug("Found viewable and inserted with ID={}", viewable_id);
         }
     }
     // update if any
@@ -212,7 +212,7 @@ void ManagedObjectInstance::move(glm::vec3 newPos, float time_delta)
     if (portalCrossedGlobal)
     {
         gravity_validity = 0.0f;
-        console->info("portal crossed {} => {}, re-init gravity", original_previous_position.room, mainPosition.room);
+        console->debug("portal crossed {} => {}, re-init gravity", original_previous_position.room, mainPosition.room);
     }
 
     // Once this is done, advertize to the space

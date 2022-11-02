@@ -71,7 +71,7 @@ ObjectExit::ObjectExit(
     FileLibrary *library,
     nlohmann::json *root)
 {
-    console->info("load exit");
+    console->debug("load exit");
 
     viewable = std::make_shared<ObjectExitViewable>(registry, library);
 }

@@ -83,7 +83,7 @@ Room::Room(
     auto raw_json = ref.readStringContent();
     auto file_json = json::parse(raw_json.c_str());
     jsonExecuteIfElement(file_json, "extras", [this](nlohmann::json& extras) {
-        console->info("Found room extras");
+        console->debug("Found room extras");
         jsonExecuteAllIfElement(extras, "animations", [this](nlohmann::json& child, int node_index) {
             console->info("Load room animation: {}", node_index);
             room_animations.push_back(make_unique<RoomAnimation>(child, this, instance.get(), states_list));

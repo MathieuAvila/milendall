@@ -213,7 +213,7 @@ GltfTextureReference::GltfTextureReference(PGltfMaterialLibraryImpl _lib, const 
         ref(_ref), lib(_lib)
 {
     string f_path = ref.getPath().c_str();
-    console->info("Load texture {}", f_path);
+    console->debug("Load texture {}", f_path);
     FileContentPtr textureContent = ref.readContent();
     fipImage img;
     int format;

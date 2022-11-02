@@ -58,7 +58,7 @@ Level::Level(FileLibrary::UriReference ref, IObjectLoader* object_loader) :
         object_loader->setReferences(this, this, viewables_registrar);
     for(auto room_it : jsonGetElementByName(j_level, "rooms")) {
             auto room_id = jsonGetElementByName(room_it, "room_id").get<string>();
-            console->info("Found room_id: {}", room_id);
+            console->debug("Found room_id: {}", room_id);
             auto ref_room = ref.getDirPath().getSubPath(room_id+ "/room.gltf");
             auto room = std::make_shared<Room>(
                 room_id,

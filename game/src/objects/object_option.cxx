@@ -88,7 +88,7 @@ ObjectOption::ObjectOption(
 {
     end = false;
     auto subtype = jsonGetElementByName(*root, "subtype").get<std::string>();
-    console->info("load option, subtype {}", subtype);
+    console->debug("load option, subtype {}", subtype);
     if (!definitions.count(subtype))
     {
         throw ObjectException("Unknown option type " + subtype);

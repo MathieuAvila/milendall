@@ -80,7 +80,7 @@ std::unique_ptr<GltfDataAccessor::DataBlock> GltfDataAccessor::accessId(uint32_t
 
    FileContentPtr& buffPtr = loaded_buffers[bufferview_buffer];
 
-   console->info("Accessing index {} - stride {} - buferView offset={} accessor offset={} count={}",
+   console->debug("Accessing index {} - stride {} - buferView offset={} accessor offset={} count={}",
                 index, bufferview_stride, bufferview_byteOffset, byteOffset, count);
 
     uint8_t* nptr = (uint8_t*)buffPtr->data() + bufferview_byteOffset + byteOffset;

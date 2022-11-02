@@ -29,7 +29,7 @@ GltfNode::GltfNode(json& json): default_transform(identity)
     }
     if (json.contains("name")) {
         name = jsonGetElementByName(json, "name").get<string>();
-        console->info("Node name is {}", name);
+        console->debug("Node name is {}", name);
     }
     /* get all children nodes */
     jsonExecuteAllIfElement(json, "children", [this](nlohmann::json& child, int node_index) {
@@ -202,7 +202,7 @@ GltfModel::GltfModel(GltfMaterialLibraryIfacePtr materialLibrary, const FileLibr
         root_nodes.push_back(i);
         output += to_string(i) + " ";
     }
-    console->info("scene ID={} (amongst {}), has children count:{}, root_nodes is:{}",
+    console->debug("scene ID={} (amongst {}), has children count:{}, root_nodes is:{}",
     my_scene, j_scenes.size(), scene_child_count, output);
 }
 

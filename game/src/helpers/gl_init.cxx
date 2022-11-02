@@ -107,7 +107,7 @@ GLuint LoadShaders(FileLibrary& library, std::string vertex_file_path, std::stri
 	int InfoLogLength;
 
 	// Compile Vertex Shader
-	console->info("Compiling shader : {}", vertex_file_path);
+	console->debug("Compiling shader : {}", vertex_file_path);
 	char const * VertexSourcePointer = VertexShaderCode.c_str();
 	glShaderSource(VertexShaderID, 1, &VertexSourcePointer , NULL);
 	glCompileShader(VertexShaderID);
@@ -122,7 +122,7 @@ GLuint LoadShaders(FileLibrary& library, std::string vertex_file_path, std::stri
 	}
 
 	// Compile Fragment Shader
-	console->info("Compiling shader : {}", fragment_file_path);
+	console->debug("Compiling shader : {}", fragment_file_path);
 	char const * FragmentSourcePointer = FragmentShaderCode.c_str();
 	glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer , NULL);
 	glCompileShader(FragmentShaderID);
@@ -137,7 +137,7 @@ GLuint LoadShaders(FileLibrary& library, std::string vertex_file_path, std::stri
 	}
 
 	// Link the program
-	console->info("Linking program");
+	console->debug("Linking program");
 	GLuint ProgramID = glCreateProgram();
 	glAttachShader(ProgramID, VertexShaderID);
 	glAttachShader(ProgramID, FragmentShaderID);
@@ -512,7 +512,7 @@ TrianglesBufferInfo::TrianglesBufferInfo(
 
     indicesCount = indices.size();
 
-    console->info("TrianglesBufferInfo p={} uv={} i={} - indices={}",
+    console->debug("TrianglesBufferInfo p={} uv={} i={} - indices={}",
                 vertexBuffer, uvbuffer, elementbuffer, indicesCount);
 }
 
@@ -535,7 +535,7 @@ TrianglesBufferInfo::TrianglesBufferInfo(
 
     indicesCount = indices.size();
 
-    console->info("TrianglesBufferInfo p={} uv={} i={} - indices={}",
+    console->debug("TrianglesBufferInfo p={} uv={} i={} - indices={}",
                 vertexBuffer, uvbuffer, elementbuffer, indicesCount);
 }
 

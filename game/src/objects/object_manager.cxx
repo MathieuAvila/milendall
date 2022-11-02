@@ -118,7 +118,7 @@ void ObjectManager::update(float total_time)
                         float delta = glm::distance(second_pos.position, pos.position) - radius - second_radius;
                         if (delta < 0.0f)
                         {
-                            console->info("Interaction {} {}", obj.first, second_obj.first);
+                            console->debug("Interaction {} {}", obj.first, second_obj.first);
                             // interact on each other.
                             second_obj.second->interact(obj.second.get());
                             obj.second->interact(second_obj.second.get());
@@ -165,7 +165,7 @@ void ObjectManager::loadObject(std::string room_name, std::string mesh_name, nlo
 
     PointOfView pov(jsonGetVec3(jsonGetElementByName(root, "position")), glm::mat3x3(1.0), room_name);
 
-    console->info("Load from room={} node={} type={}", room_name, mesh_name, type);
+    console->debug("Load from room={} node={} type={}", room_name, mesh_name, type);
     // TODO: need an anonymous loader for sanity of architecture
     nlohmann::json *parameters = nullptr;
     if (root.contains("parameters"))
@@ -173,7 +173,7 @@ void ObjectManager::loadObject(std::string room_name, std::string mesh_name, nlo
             parameters = &(root["parameters"]);
         }
     if (objectTypeRegistry->count(type)) {
-        console->info("Request to create option");
+        console->debug("Request to create option");
         auto obj = (*objectTypeRegistry)[type](model_registry.get(), library.get(), parameters);
         insertObject(obj, pov, mesh_name);
     }

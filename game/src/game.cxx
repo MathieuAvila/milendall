@@ -32,8 +32,8 @@ Game::Game(
         level->getDefinition().start_position,
         glm::mat4(1.0f),
         level->getDefinition().start_room};
-    console->info("Set current room to {}", currentPov.room);
-    console->info("Set current position to {}", vec3_to_string(level->getDefinition().start_position));
+    console->info("Set start room to {}", currentPov.room);
+    console->info("Set start position to {}", vec3_to_string(level->getDefinition().start_position));
 
     player = make_shared<Player>();
     player_id = object_manager->insertObject(player,
