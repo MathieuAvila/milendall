@@ -11,6 +11,9 @@ import jsonschema
 
 SCHEMA_LOCATION = "../../schema/"
 
+logger = logging.getLogger("json_helper")
+logger.setLevel(logging.INFO)
+
 def _handler(path):
         if not path.startswith('http://'):
             raise Exception('Not a http URL: {}'.format(path))
@@ -47,6 +50,7 @@ def check_json_fragment(fragment, schema_name):
         with open(real_path, "r") as read_schema_file:
             schema = json.load(read_schema_file)
     except Exception as e:
+        logger.warn("Schema does not exist: %s",real_path)
         return
     schemaurl = "file://" + real_path
     resolver = jsonschema.RefResolver(schemaurl, referrer=schema, handlers = { 'http': _handler , "file": _handler} )
