@@ -66,7 +66,6 @@ class Level:
         logger.info("Saved states are: %s" % self.state)
         if not self.state.has_state(load_state):
             raise Exception("Level has no saved state %s" % load_state)
-        logger.info(self.status_to_filename[load_state])
         obj = json_helper.load_and_validate_json(
             directory + "/" + self.status_to_filename[load_state],
             "file_final_level.json",
@@ -107,7 +106,7 @@ class Level:
 
     def _check_parameter_presence(self, element, structure_type, parameter_name):
         """Check a parameter is present"""
-        logger.info("Check %s: %s", structure_type, element.values.gate_id)
+        logger.debug("Check %s: %s", structure_type, element.values.gate_id)
         if element.values[parameter_name] is None:
             raise Exception ("%s has no %s parameter." % (structure_type, parameter_name))
 

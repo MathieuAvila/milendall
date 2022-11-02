@@ -15,8 +15,8 @@ class SelectorRegular(Selector):
         self.classes["structure"]["brick"] = room_register.brickTypes
         self.classes["dressing"]["brick"] = dressing_register.dressingTypes
 
-        #logger.info("Room structure list is: %s", " ".join(self.classes["structure"]["brick"]) )
-        #logger.info("Room dressing list is: %s", " ".join(self.classes["dressing"]["brick"]) )
+        #logger.debug("Room structure list is: %s", " ".join(self.classes["structure"]["brick"]) )
+        #logger.debug("Room dressing list is: %s", " ".join(self.classes["dressing"]["brick"]) )
 
     def get_random_choice(self, l):
         return random.choice(l)

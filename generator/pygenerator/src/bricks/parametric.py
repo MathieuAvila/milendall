@@ -33,13 +33,13 @@ class BrickParametric(BrickStructure):
 
     def check_fit(self):
         """ Pass the Room, check it can be applied. """
-        logger.info("checking if parametric fits: always")
+        logger.debug("checking if parametric fits: always")
         return 100
 
     def check_structure(self):
         """check everything is as expected.
         """
-        logger.info("checking if parametric is ok.")
+        logger.debug("checking if parametric is ok.")
         return True
 
     def instantiate(self, selector):
@@ -59,7 +59,7 @@ class BrickParametric(BrickStructure):
         }
 
         self._element.values.parameters.structure_private = merge( my_default, structure_parameters)
-        logger.info("setup: %s", str(self._element.values.parameters.structure_private))
+        logger.debug("setup: %s", str(self._element.values.parameters.structure_private))
 
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""
@@ -76,7 +76,6 @@ class BrickParametric(BrickStructure):
         nr_t = setup["segments_nr_t"]
         func_array = setup["func"]
         func = functools.reduce(lambda a, b: a + "\n" + b, func_array )
-        print(func)
 
         for i in range(0, nr_s + 1):
             s = float(i) / float(nr_s)
@@ -90,12 +89,10 @@ class BrickParametric(BrickStructure):
                 if len(values) != 5:
                     raise "func must return a table of 5"
                 segment = []
-                print(values)
                 p = cgtypes.vec3(values[0], values[1], values[2])
                 p.u = values[3]
                 p.v = values[4]
                 p.has_tex = True
-                print(p)
                 index_raw.append(counter)
                 points.append(p)
                 counter = counter + 1

@@ -35,7 +35,7 @@ class BrickStair(BrickStructure):
     def check_structure(self):
         """check everything is as expected.
         """
-        logger.info("checking if stair is ok")
+        logger.debug("checking if stair is ok")
         return True
 
     def instantiate(self, selector):

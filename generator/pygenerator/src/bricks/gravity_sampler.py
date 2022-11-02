@@ -29,12 +29,12 @@ class BrickGravitySampler(BrickStructure):
 
     def check_fit(self):
         """ Pass the Room, check it can be applied. """
-        logger.info("checking if gravity_sampler fits")
+        logger.debug("checking if gravity_sampler fits")
 
     def check_structure(self):
         """check everything is as expected.
         """
-        logger.info("checking if gravity_sampler is ok.")
+        logger.debug("checking if gravity_sampler is ok.")
         return True
 
     def instantiate(self, selector):
@@ -61,7 +61,7 @@ class BrickGravitySampler(BrickStructure):
             "frequency" : 1.0
         }
         self._element.values.parameters.structure_private = merge( my_default, structure_parameters)
-        logger.info("setup: %s", str(self._element.values.parameters.structure_private))
+        logger.debug("setup: %s", str(self._element.values.parameters.structure_private))
 
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""
@@ -95,8 +95,6 @@ class BrickGravitySampler(BrickStructure):
             '           dist = l_dist\n' +
             '       end\n' +
             '   end\n' +
-            '   -- print("c=" .. current)\n'
-            '   -- print("d=" .. dist)\n'
             '   tab_out["dist"] = dist\n' +
             '   tab_out["u"] = current\n' +
             '   return tab_out\n' +

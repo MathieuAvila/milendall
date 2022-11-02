@@ -31,12 +31,12 @@ class BrickGravitySamplerFunc(BrickStructure):
 
     def check_fit(self):
         """ Pass the Room, check it can be applied. """
-        logger.info("checking if gravity_sampler fits")
+        logger.debug("checking if gravity_sampler fits")
 
     def check_structure(self):
         """check everything is as expected.
         """
-        logger.info("checking if gravity_sampler is ok.")
+        logger.debug("checking if gravity_sampler is ok.")
         return True
 
     def instantiate(self, selector):
@@ -63,7 +63,7 @@ class BrickGravitySamplerFunc(BrickStructure):
             "frequency" : 1.0
         }
         self._element.values.parameters.structure_private = merge( my_default, structure_parameters)
-        logger.info("setup: %s", str(self._element.values.parameters.structure_private))
+        logger.debug("setup: %s", str(self._element.values.parameters.structure_private))
 
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""
@@ -74,11 +74,9 @@ class BrickGravitySamplerFunc(BrickStructure):
 
         func_array = setup["func"]
         func = functools.reduce(lambda a, b: a + "\n" + b, func_array )
-        print(func)
 
         compute_array = setup["compute"]
         compute = functools.reduce(lambda a, b: a + "\n" + b, compute_array )
-        print(compute)
 
         parent.set_gravity_script(
             'function optimize_gravity(x1, y1, z1, t, start, finish, count)\n' +

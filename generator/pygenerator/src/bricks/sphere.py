@@ -31,13 +31,13 @@ class BrickSphere(BrickStructure):
 
     def check_fit(self):
         """ Pass the brick, and list of gates, check it can be applied. """
-        logger.info("checking if sphere fits: always ! rectangular rules the world !")
+        logger.debug("checking if sphere fits: always ! rectangular rules the world !")
         return 100
 
     def check_structure(self):
         """check everything is as expected.
         """
-        logger.info("checking if sphere is ok: always ! sphere rules the world !")
+        logger.debug("checking if sphere is ok: always ! sphere rules the world !")
         return True
 
     def instantiate(self, selector):
@@ -55,7 +55,7 @@ class BrickSphere(BrickStructure):
             }
         }
         self._element.values.parameters.structure_private = merge( my_default, structure_parameters)
-        logger.info("setup: %s", str(self._element.values.parameters.structure_private["setup"]))
+        logger.debug("setup: %s", str(self._element.values.parameters.structure_private["setup"]))
 
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""

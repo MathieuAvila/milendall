@@ -37,7 +37,7 @@ class BrickStairSampler(BrickStructure):
     def check_structure(self):
         """check everything is as expected.
         """
-        logger.info("checking if stair is ok")
+        logger.debug("checking if stair is ok")
         return True
 
     def instantiate(self, selector):
@@ -108,7 +108,7 @@ class BrickStairSampler(BrickStructure):
                 diff = value_next["p"] - value["p"]
                 diff_vec3 = diff.normalize()
                 value["v"] = (diff_vec3.cross(value['u'])).normalize()
-                logger.info(f'diff {diff_vec3} v={value["v"]}')
+                logger.debug(f'diff {diff_vec3} v={value["v"]}')
 
             value["v"] = value["v"].normalize()
 

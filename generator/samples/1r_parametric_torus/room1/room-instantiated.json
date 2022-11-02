@@ -57,16 +57,6 @@
                         "u_y = -g0_y / norm",
                         "u_z = -g0_z / norm",
                         "w = 100.0",
-                        "-- print('u=' .. u)",
-                        "-- print('x0=' .. x0)",
-                        "-- print('y0=' .. y0)",
-                        "-- print('z0=' .. z0)",
-                        "-- print('x=' .. x)",
-                        "-- print('y=' .. y)",
-                        "-- print('z=' .. z)",
-                        "-- print('g_x=' .. g_x)",
-                        "-- print('g_y=' .. g_y)",
-                        "-- print('g_z=' .. g_z)"
                     ],
                     "frequency": 0.02
                 }

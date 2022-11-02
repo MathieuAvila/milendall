@@ -186,9 +186,9 @@ class Faces():
         while index < len(face):
             new_plane = Plane(face[index], face[(index+1) % len(face)], face[index] + normal)
             new_list = cut_faces_by_plane(check_list, new_plane)
-            logger.info("new_list %s" % new_list)
+            logger.debug("new_list %s" % new_list)
             keep_list.extend(new_list[0])
             check_list = new_list[1]
             index = index + 1
-        logger.info("keep_list %s" % keep_list)
+        logger.debug("keep_list %s" % keep_list)
         self.faces = keep_list

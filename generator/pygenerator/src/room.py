@@ -49,32 +49,34 @@ class Room(Element):
         self.state = state
         logger.info("Load room %s from: %s, state: %s" % (self.name, self.level_directory, self.state))
         file_name = self.level_directory + "/" + self.name + "/" + self.filename_map[state]
-        logger.info("Load room from: %s, state: %s" % (file_name, self.state))
         values = json_helper.load_and_validate_json(
                 file_name,
                 "file_room_bricks.json",
                 decode_hook=self.decode_room())
-        logger.info("Has read: %s", values)
+        logger.debug("Has read: %s", values)
         self.values = DefaultMunch.fromDict(values)
-        logger.info("Has values: %s", self.values)
+        logger.debug("Has values: %s", self.values)
 
     def add_brick(self, brick):
         self.values["bricks"].append(brick)
 
     def structure_personalization(self):
         '''Instantiate everything'''
+        logger.info("Personalization room %s " % (self.name))
         self.state = state.LevelState.Personalized
         for brick in self.values["bricks"]:
             brick.structure_personalization()
 
     def dressing_instantiation(self):
         '''Instantiate everything'''
+        logger.info("Dressing instantiation room %s " % (self.name))
         self.state = state.LevelState.DressingInstantiated
         for brick in self.values["bricks"]:
             brick.dressing_instantiation()
 
     def dressing_personalization(self):
         '''Instantiate everything'''
+        logger.info("Dressing personalization room %s " % (self.name))
         self.state = state.LevelState.DressingPersonalized
         for brick in self.values["bricks"]:
             brick.dressing_personalization()
@@ -100,12 +102,13 @@ class Room(Element):
         label = self.name
         logger.info("Dump room %s" % (self.name))
         for brick in self.values["bricks"]:
-            logger.info("Dump brick %s" % (self.name))
             brick.dump_graph(output_room, output_main, self.name)
         #output.write('"' + self.name +'" ' + '[ label=< ' + label+ ' > ] ;\n')
 
     def finalize(self, level_directory=None, preview=False, concrete_test_param = None):
         """ Perform final generate and dressing on one room."""
+
+        logger.info("finalize room %s " % (self.name))
 
         if concrete_test_param is not None:
             concrete = concrete_test_param
@@ -113,7 +116,7 @@ class Room(Element):
             concrete = concrete_room.ConcreteRoom()
 
         for brick in self.values["bricks"]:
-            logger.info("in brick %s" % brick.values.b_id)
+            logger.debug("in brick %s" % brick.values.b_id)
             concrete_brick = concrete_room.ConcreteRoom()
             brick.finalize(concrete_brick)
             concrete_brick.append_prefix(brick.values.b_id + "_")
@@ -121,7 +124,7 @@ class Room(Element):
                 root_pad = brick.values.root_pad
                 root_id = root_pad.ref_b_id + "_" + root_pad.ref_pad_id
                 parent_root_id = root_id
-                logger.info("set root pad to: %s", root_id)
+                logger.debug("set root pad to: %s", root_id)
                 if "translation" in root_pad or "rotation" in root_pad:
                     mat = cgtypes.mat4(1.0)
                     if "rotation" in root_pad:

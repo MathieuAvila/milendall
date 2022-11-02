@@ -35,7 +35,7 @@ class BrickRectangular(BrickStructure):
     def check_structure(self):
         """check everything is as expected.
         """
-        logger.info("checking if rectangular is ok: always ! rectangular rules the world !")
+        logger.debug("checking if rectangular is ok: always ! rectangular rules the world !")
         return True
 
     def instantiate(self, selector):
@@ -50,7 +50,7 @@ class BrickRectangular(BrickStructure):
         self._element.values.parameters.structure_private = merge( my_default, structure_parameters)
         structure_private = self._element.values.parameters.structure_private
 
-        logger.info("private: %s", str(structure_private))
+        logger.debug("private: %s", str(structure_private))
 
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""

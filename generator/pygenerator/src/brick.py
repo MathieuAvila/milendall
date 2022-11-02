@@ -20,17 +20,17 @@ class Brick(Element):
 
         # check subparts against schema, if they exist
         v = self.values
-        logger.info("Some schema checking for %s" % v.parameters.structure_class)
+        logger.debug("Some schema checking for %s" % v.parameters.structure_class)
         if "pads" in v:
             for f in v.pads:
                 if "definition" in f:
                     schema = "bricks/" + v.parameters.structure_class + "/pad.json"
-                    logger.info("Check pad fragment against %s" % schema)
+                    logger.debug("Check pad fragment against %s" % schema)
                     json_helper.check_json_fragment(f.definition, schema)
         if "parameters" in v:
             if "structure_parameters" in v.parameters:
                 schema = "bricks/" + v.parameters.structure_class + "/structure_parameters.json"
-                logger.info("Check structure_parameters fragment against %s" % schema)
+                logger.debug("Check structure_parameters fragment against %s" % schema)
                 json_helper.check_json_fragment(v.parameters.structure_parameters, schema)
 
 
@@ -47,6 +47,7 @@ class Brick(Element):
         dump a graphviz repr of a brick
         """
 
+        logger.debug("Dump brick %s" % (self.values["b_id"]))
         label = self.values.b_id
         v = self.values
         p = v.parameters

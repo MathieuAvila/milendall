@@ -43,7 +43,7 @@ class DressingBasic(Dressing):
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""
         for obj in concrete.get_objects():
-            logger.info("treating object: %s", obj.name)
+            logger.debug("treating object: %s", obj.name)
 
             # get each kind of walls and associate a texture.
 

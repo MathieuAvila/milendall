@@ -31,14 +31,14 @@ class RoomSpec():
         self.state = state
         self.room = None
         self.selector = selector
-        logger.info("New room_spec %s from %s" % (self.values.room_id, self.level_directory) )
+        logger.debug("New room_spec %s from %s" % (self.values.room_id, self.level_directory) )
 
     def dump_graph(self, output):
         """
         dump a graphviz repr of a room, only spec part
         """
 
-        logger.info("Dump room_spec %s" % (self.values.name))
+        logger.debug("Dump room_spec %s" % (self.values.name))
 
         # collect portals and write them out
         gate_ids = []
@@ -65,7 +65,7 @@ class RoomSpec():
         output_room = WriteableString()
         output_main = WriteableString()
 
-        logger.info("Go to dump room %s" % (self.values.name))
+        logger.debug("Go to dump room %s" % (self.values.name))
         self.room.dump_graph(output_room, output_main)
 
         output.write(output_room.content)

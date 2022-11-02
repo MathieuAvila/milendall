@@ -211,7 +211,6 @@ class Node:
                 projected_uv = texture["proj"] * cgtypes.vec4(old_point.x, old_point.y, old_point.z, 1.0)
             elif "map_method" in texture:
                 projected_uv = texture["map_method"](old_point)
-                #print(projected_uv)
             else:
                 raise "No method to map texture"
             new_point = copy.deepcopy(old_point)
@@ -373,23 +372,23 @@ class ConcreteRoom:
     def append_prefix(self, prefix):
         """For every object, set a prefix to its name"""
         for o in self.objects:
-            logger.info("append_prefix : %s,  %s ", o.name, o.parent)
+            logger.debug("append_prefix : %s,  %s ", o.name, o.parent)
             o.name = "%s%s" % (prefix, o.name)
             if o.parent != None:
                 o.parent = "%s%s" % (prefix, o.parent)
-            logger.info(" => %s parent %s", o.name, o.parent)
+            logger.debug(" => %s parent %s", o.name, o.parent)
 
 
     def set_root(self, root_id):
         """For every object that has a void parent, set its parent to root_id"""
         for o in self.objects:
-            logger.info("manage %s with parent %s", o.name, o.parent)
+            logger.debug("manage %s with parent %s", o.name, o.parent)
             if o.parent is None:
                 o.parent = root_id
-                logger.info("%s has new root %s", o.name, o.parent)
+                logger.debug("%s has new root %s", o.name, o.parent)
             else:
                 o.parent = root_id + o.parent
-                logger.info("%s new parent %s", o.name, o.parent)
+                logger.debug("%s new parent %s", o.name, o.parent)
 
 
     def generate_gravity(self, gravity_list, directory):
@@ -464,7 +463,7 @@ class ConcreteRoom:
         # determine children of each node
 
         for o in self.objects:
-            logger.info("DUMP NODE: '%s' with parent '%s'", o.name, o.parent)
+            logger.debug("Dump node: '%s' with parent '%s'", o.name, o.parent)
 
         for node in self.objects:
             node.children=[ count+1 for count, value in enumerate(self.objects)

@@ -151,11 +151,8 @@ class TestAnimation(unittest.TestCase):
 
         path_gen = "/tmp/test_animation/output"
         pathlib.Path(path_gen).mkdir(parents=True, exist_ok=True)
-        #try:
         cube.generate_gltf(path_gen)
         concrete_room.preview(path_gen + "/room.gltf", path_gen + "/room_preview.gltf")
-        #except:
-        #    print("Unexpected error:", sys.exc_info())
 
 
     def test_insert_2_animation_2_keys(self):

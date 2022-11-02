@@ -19,9 +19,7 @@ from gltf_helper import get_texture_definition_with_function
 
 def my_helper_mapper(points, face, context, my_points):
     # need to fill my_points
-    print(my_points)
     for p in my_points:
-        print(p)
         p.u = p.x + 1.0
         p.v = p.y + 1.0
 
@@ -82,7 +80,6 @@ class TestConcreteRoomImpl(unittest.TestCase):
         self.assertIsNotNone(child2_2)
 
         j = room.dump_to_json()
-        print(j)
 
     def test_structure_faces(self):
         """Test creating a simple impl with 1 node with multiple points and faces
@@ -281,7 +278,6 @@ class TestConcreteRoomImpl(unittest.TestCase):
             concrete_room.get_texture_definition("myfilename"))
         j = json.loads(room.dump_to_json())
         faces = j["objects"][0]["dressing"]
-        print(faces)
         self.assertEqual(faces, {
             'myfilename': {
                 'points': [
@@ -318,7 +314,6 @@ class TestConcreteRoomImpl(unittest.TestCase):
             concrete_room.get_texture_definition("myfilename2"))
         j = json.loads(room.dump_to_json())
         faces = j["objects"][0]["dressing"]
-        print(faces)
         self.assertEqual(faces, {
             'myfilename': {
                 'points': [

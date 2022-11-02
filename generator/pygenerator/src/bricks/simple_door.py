@@ -31,7 +31,7 @@ class SimpleDoorBrick(BrickStructure):
 
     def check_fit(self):
         """ Pass the brick, check it can be applied. """
-        logger.info("checking if door fits: always ! door rules the world !")
+        logger.debug("checking if door fits: always ! door rules the world !")
         return 100
 
     def check_structure(self):
@@ -46,7 +46,7 @@ class SimpleDoorBrick(BrickStructure):
         if "connect" not in p:
             raise Exception("simple_door '%s' needs a connect field" % self._element.get_id())
 
-        logger.info("checking if door is ok: always ! door rules the world !")
+        logger.debug("checking if door is ok: always ! door rules the world !")
         return True
 
     def instantiate(self, selector):

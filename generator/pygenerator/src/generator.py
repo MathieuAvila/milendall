@@ -103,7 +103,7 @@ def main(argv):
             logger.debug("Set verbose to debug")
 
     if len(args) != 1:
-        print("Error, expected level directory. See --help for info.")
+        logger.error("Error, expected level directory. See --help for info.")
         sys.exit(1)
     directory = args[0]
     if output_dir is None:
@@ -114,27 +114,27 @@ def main(argv):
     try:
         states = my_level.read_state_list(directory)
     except Exception as e:
-        print("Invalid directory or unreadable level state. ERROR=%s" % str(e))
+        logger.error("Invalid directory or unreadable level state. ERROR=%s" % str(e))
         sys.exit(1)
-    print("Level has states: %s" % states)
+    logger.info("Level has states: %s" % states)
 
     if start_step is None:
         start_step = max(states.current)
     if end_step is None:
         end_step = state.LevelState.Finalize
-    print("Need to open at step:%s and generate up to:%s" % (start_step, end_step))
+    logger.info("Need to open at step:%s and generate up to:%s" % (start_step, end_step))
 
     try:
         my_level.load(directory, start_step)
     except Exception as e:
-        print("Unable to load level at this step. ERROR=%s" % str(e))
+        logger.error("Unable to load level at this step. ERROR=%s" % str(e))
         sys.exit(1)
 
     for step in state.LevelState:
         if step > start_step and step <= end_step:
-            print("Apply step: %s" % step.name)
+            logger.info("Apply step: %s" % step.name)
             if states.has_state(step) and not force:
-                print("Step is already generated, and force is not set. Will exit.")
+                logger.warn("Step is already generated, and force is not set. Will exit.")
                 sys.exit(1)
             if not only_preview:
                 my_level.run_step(step)

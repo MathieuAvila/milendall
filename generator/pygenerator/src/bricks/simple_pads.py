@@ -30,7 +30,7 @@ class BrickSimplePadProvider(BrickStructure):
     def check_structure(self):
         """check everything is as expected.
         """
-        logger.info("checking is ok")
+        logger.debug("checking is ok")
         return True
 
     def instantiate(self, selector):
@@ -39,7 +39,7 @@ class BrickSimplePadProvider(BrickStructure):
         my_default= {}
         self._element.values.parameters.structure_private = merge( my_default, structure_parameters)
         structure_private = self._element.values.parameters.structure_private
-        logger.info("private: %s", str(structure_private))
+        logger.debug("private: %s", str(structure_private))
 
     def generate(self, concrete):
         """Perform instantiation on concrete_room"""
