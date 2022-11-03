@@ -50,7 +50,7 @@ class TestBrickRectangular(unittest.TestCase):
         self.assertEqual(custom_brick.values.parameters ,
                          {
                             'structure_class': 'rectangular',
-                            'structure_private': {'size': [5.0, 2.5, 5.0]},
+                            'structure_private': {'size': [5.0, 2.5, 5.0], 'reverse' : False},
                             'structure_parameters': {}
                         })
         custom_brick.dressing_instantiation()
@@ -71,7 +71,7 @@ class TestBrickRectangular(unittest.TestCase):
         custom_brick.structure_personalization()
         logger.info(custom_brick.values.parameters)
         self.assertEqual(custom_brick.values.parameters.structure_private ,
-                         {'size': [1.0, 2.0, 3.0]})
+                         {'size': [1.0, 2.0, 3.0], 'reverse' : False})
         custom_brick.dressing_instantiation()
         custom_brick.dressing_personalization()
         concrete = concrete_room.ConcreteRoom()
