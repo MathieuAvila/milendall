@@ -173,6 +173,50 @@
                     }
                 }
             }
+        },
+        {
+            "b_id": "objline_1",
+            "parameters": {
+                "structure_class": "object_sampler",
+                "structure_parameters": {
+                    "func": [
+                        "R = 20.0",
+                        "r = 6.0",
+                        "s_angle = n * math.pi / 20.0",
+                        "p = [ ",
+                        "math.cos(s_angle) * R,",
+                        "r + 0.5,",
+                        "math.sin(s_angle) * R",
+                        "]",
+                        "u = [ 0.0, 1.0, 0.0]",
+                        "o = {'subtype' : 'time_+1'}",
+                        "t = 'option'"
+                    ],
+                    "nr": 20
+                }
+            }
+        },
+        {
+            "b_id": "objline_2",
+            "parameters": {
+                "structure_class": "object_sampler",
+                "structure_parameters": {
+                    "func": [
+                        "R = 20.0",
+                        "r = 6.0",
+                        "s_angle = n * math.pi / 5.0",
+                        "p = [ ",
+                        "math.sin(s_angle) * (r + 0.5)  - R,",
+                        "-math.cos(s_angle) * (r + 0.5),",
+                        "0.0",
+                        "]",
+                        "u = [ 0.0, 1.0, 0.0]",
+                        "o = {'subtype' : 'time_+1'}",
+                        "t = 'option'"
+                    ],
+                    "nr": 5
+                }
+            }
         }
     ]
 }
