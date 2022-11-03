@@ -8,7 +8,6 @@ import os
 import yaml
 import json
 import jsonschema
-from sympy import true
 
 SCHEMA_LOCATION = "../../schema/"
 
