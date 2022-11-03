@@ -1,0 +1,178 @@
+{
+    "$schema": "../../../../../generator/schema/file_room_bricks.json",
+    "bricks": [
+        {
+            "b_id": "internal_torus",
+            "parameters": {
+                "structure_class": "parametric",
+                "structure_parameters": {
+                    "setup": {
+                        "segments_nr_s": 40,
+                        "segments_nr_t": 50,
+                        "func": [
+                            "# this is python code",
+                            "# build a torus, r = small radius, R = big radius",
+                            "# s builds small rotation around Z",
+                            "# t builds rotation around Y",
+                            "R = 20.0",
+                            "r = 6.0",
+                            "s_angle = -s * math.pi * 2.0 ",
+                            "t_angle = t * math.pi * 2.0",
+                            "small_x = math.cos(s_angle) * r",
+                            "small_y = math.sin(s_angle) * r",
+                            "big_x = small_x + R",
+                            "big_y = small_y",
+                            "values = [",
+                            "math.cos(t_angle) * big_x, big_y, math.sin(t_angle) * big_x, s * r, t * R",
+                            "]"
+                        ]
+                    }
+                },
+                "dressing_parameters": {
+                    "textures": {
+                        "ground": "/common/basic/ground_variant/ground_0_1_0.jpg"
+                    }
+                }
+            }
+        },
+        {
+            "b_id": "gravity_brick",
+            "parameters": {
+                "structure_class": "gravity_sampler_func",
+                "structure_parameters": {
+                    "segments_nr": 100,
+                    "func": [
+                        "-- this is lua code",
+                        "R = 20.0",
+                        "x = math.cos(u * math.pi * 2.0) * R",
+                        "y =0.0",
+                        "z = math.sin(u * math.pi * 2.0) * R"
+                    ],
+                    "compute": [
+                        "-- this is lua code",
+                        "R = 1.0",
+                        "g0_x = (x0 - x)",
+                        "g0_y = (y0 - y)",
+                        "g0_z = (z0 - z)",
+                        "freq_time = 10.0",
+                        "seq_int = math.floor(math.mod(t / freq_time, 2.0))",
+                        "seq = (seq_int - 0.5) * 2.0",
+                        "norm = math.sqrt(g0_x ^ 2 + g0_y ^ 2 + g0_z ^ 2)",
+                        "g_x = g0_x / norm / 4.0 * seq",
+                        "g_y = g0_y / norm / 4.0 * seq",
+                        "g_z = g0_z / norm / 4.0 * seq",
+                        "u_x = -g0_x / norm * seq",
+                        "u_y = -g0_y / norm * seq",
+                        "u_z = -g0_z / norm * seq",
+                        "w = 100.0"
+                    ],
+                    "frequency": 0.02
+                }
+            }
+        },
+        {
+            "b_id": "door_pads",
+            "pads": [
+                {
+                    "pad_id": "internal_root_pad",
+                    "definition": {
+                        "translation": [
+                            19.0,
+                            6.0,
+                            0.0
+                        ]
+                    }
+                },
+                {
+                    "pad_id": "external_root_pad",
+                    "definition": {
+                        "translation": [
+                            -19.0,
+                            -15.0,
+                            0.0
+                        ]
+                    }
+                }
+            ],
+            "parameters": {
+                "structure_class": "simple_pad_provider"
+            }
+        },
+        {
+            "b_id": "internal_door",
+            "root_pad": {
+                "ref_b_id": "door_pads",
+                "ref_pad_id": "internal_root_pad"
+            },
+            "portals": [
+                {
+                    "gate_id": "internal_torus_door",
+                    "connect": "A"
+                }
+            ],
+            "parameters": {
+                "structure_class": "simple_door",
+                "dressing_parameters": {
+                    "textures": {
+                        "wall": "/common/basic/wall_variant/wall_2_0_2.jpg"
+                    }
+                }
+            }
+        },
+        {
+            "b_id": "external_torus",
+            "parameters": {
+                "structure_class": "parametric",
+                "structure_parameters": {
+                    "setup": {
+                        "segments_nr_s": 40,
+                        "segments_nr_t": 50,
+                        "func": [
+                            "# this is python code",
+                            "# build a torus, r = small radius, R = big radius",
+                            "# s builds small rotation around Z",
+                            "# t builds rotation around Y",
+                            "R = 20.0",
+                            "r = 15.0",
+                            "s_angle = -s * math.pi * 2.0 ",
+                            "t_angle = t * math.pi * 2.0",
+                            "small_x = math.cos(s_angle) * r",
+                            "small_y = math.sin(s_angle) * r",
+                            "big_x = small_x + R",
+                            "big_y = -small_y",
+                            "values = [",
+                            "math.cos(t_angle) * big_x, big_y, math.sin(t_angle) * big_x, s * r, t * R",
+                            "]"
+                        ]
+                    }
+                },
+                "dressing_parameters": {
+                    "textures": {
+                        "ground": "/common/basic/ground_variant/ground_2_0_1.jpg"
+                    }
+                }
+            }
+        },
+        {
+            "b_id": "external_door",
+            "root_pad": {
+                "ref_b_id": "door_pads",
+                "ref_pad_id": "external_root_pad"
+            },
+            "portals": [
+                {
+                    "gate_id": "external_torus_door",
+                    "connect": "A"
+                }
+            ],
+            "parameters": {
+                "structure_class": "simple_door",
+                "dressing_parameters": {
+                    "textures": {
+                        "wall": "/common/basic/wall_variant/wall_0_2_0.jpg"
+                    }
+                }
+            }
+        }
+    ]
+}
