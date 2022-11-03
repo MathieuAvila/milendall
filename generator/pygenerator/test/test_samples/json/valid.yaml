@@ -1,0 +1,5 @@
+action: ""
+direction: ""
+on_property: "" # with a comment
+on_trigger: "plop"
+to_value: "plip"

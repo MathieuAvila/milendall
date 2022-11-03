@@ -5,9 +5,10 @@ Helpers to load and validate JSON file
 import logging
 import pathlib
 import os
-
+import yaml
 import json
 import jsonschema
+from sympy import true
 
 SCHEMA_LOCATION = "../../schema/"
 
@@ -25,6 +26,21 @@ def _handler(path):
             j = json.load(f)
             return j
 
+def _load_json_or_yaml(json_path, object_hook=None):
+    try_yaml = False
+    try:
+        with open(json_path, "r") as read_file:
+            obj = json.load(read_file, object_hook=object_hook)
+    except:
+        try_yaml = True
+    if try_yaml:
+        yaml_path = os.path.splitext(json_path)[0] + '.yaml'
+        with open(yaml_path, "r") as read_file:
+            obj_yaml = yaml.load(read_file)
+        obj = json.loads(json.dumps(obj_yaml), object_hook=object_hook)
+
+    return obj
+
 def load_and_validate_json(json_path, schema_name, decode_hook=None):
     schema_path = SCHEMA_LOCATION + schema_name
     real_path = os.path.realpath(schema_path)
@@ -34,13 +50,11 @@ def load_and_validate_json(json_path, schema_name, decode_hook=None):
     resolver = jsonschema.RefResolver(schemaurl, referrer=schema, handlers = { 'http': _handler , "file": _handler} )
     #resolver = jsonschema.RefResolver.from_schema(schema)
 
-    with open(json_path, "r") as read_file:
-        obj = json.load(read_file)
-        jsonschema.validate(instance=obj, resolver=resolver, schema=schema)
+    obj = _load_json_or_yaml(json_path)
+    jsonschema.validate(instance=obj, resolver=resolver, schema=schema)
 
-    with open(json_path, "r") as read_file:
-        obj = json.load(read_file, object_hook=decode_hook)
-        return obj
+    obj = _load_json_or_yaml(json_path, object_hook=decode_hook)
+    return obj
 
 def check_json_fragment(fragment, schema_name):
     '''If such schema exists, check against it. Otherwise keep going'''
