@@ -1,0 +1,98 @@
+{
+    "$schema": "../../../../generator/schema/file_room_bricks.json",
+    "bricks": [
+        {
+            "b_id": "external",
+            "pads": [
+                {
+                    "pad_id": "root_door_external",
+                    "definition": {
+                        "origin": [
+                            2.0,
+                            0.0
+                        ],
+                        "size": [
+                            1.5,
+                            1.5
+                        ],
+                        "face": 1,
+                        "border": 0
+                    }
+                }
+            ],
+            "parameters": {
+                "structure_class": "rectangular",
+                "structure_parameters": {
+                    "size": [
+                        10.0,
+                        5.0,
+                        8.0
+                    ]
+                }
+            }
+        },
+        {
+            "b_id": "internal",
+            "pads": [
+                {
+                    "pad_id": "root_door_internal",
+                    "definition": {
+                        "origin": [
+                            1.0,
+                            0.0
+                        ],
+                        "size": [
+                            1.5,
+                            1.5
+                        ],
+                        "face": 1,
+                        "border": 0
+                    }
+                }
+            ],
+            "parameters": {
+                "structure_class": "rectangular",
+                "structure_parameters": {
+                    "size": [
+                        3.0,
+                        2.5,
+                        3.0
+                    ],
+                    "reverse": true
+                }
+            }
+        },
+        {
+            "b_id": "door_external",
+            "root_pad": {
+                "ref_b_id": "external",
+                "ref_pad_id": "root_door_external"
+            },
+            "portals": [
+                {
+                    "gate_id": "my_door",
+                    "connect": "A"
+                }
+            ],
+            "parameters": {
+                "structure_class": "simple_door"
+            }
+        },
+        {
+            "b_id": "door_internal",
+            "root_pad": {
+                "ref_b_id": "internal",
+                "ref_pad_id": "root_door_internal"
+            },
+            "portals": [
+                {
+                    "gate_id": "my_door",
+                    "connect": "B"
+                }
+            ],
+            "parameters": {
+                "structure_class": "simple_door"
+            }
+        }
+    ]
+}

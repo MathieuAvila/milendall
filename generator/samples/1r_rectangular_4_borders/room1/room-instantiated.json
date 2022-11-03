@@ -38,7 +38,7 @@
                     "pad_id": "root_door2",
                     "definition": {
                         "origin": [
-                            0.5,
+                            -0.5,
                             0.0
                         ],
                         "size": [
@@ -53,7 +53,7 @@
                     "pad_id": "root_door3",
                     "definition": {
                         "origin": [
-                            0.5,
+                            -0.5,
                             0.0
                         ],
                         "size": [

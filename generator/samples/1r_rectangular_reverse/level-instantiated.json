@@ -1,0 +1,32 @@
+{
+    "$schema": "../../../generator/schema/file_final_level.json",
+    "version": "1",
+    "declarations": {
+        "name": [
+            {
+                "lang": "en",
+                "value": "Simple Level"
+            }
+        ],
+        "section": "samples",
+        "game_type": {
+            "single_mode": {
+                "execution_time": 10,
+                "entry_point_room": "room1",
+                "end_point_room": "room1",
+                "entry_point_position": [ 1.5, 1.5, 5.5]
+            }
+        }
+    },
+    "rooms": [
+        {
+            "room_id": "room1",
+            "name": [
+                {
+                    "lang": "en",
+                    "value": "room1"
+                }
+            ]
+        }
+    ]
+}
