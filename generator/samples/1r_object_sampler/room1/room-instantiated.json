@@ -1,0 +1,32 @@
+{
+    "$schema": "../../../../generator/schema/file_room_bricks.json",
+    "bricks": [
+        {
+            "b_id": "b1",
+            "parameters": {
+                "structure_class": "rectangular"
+            }
+        },
+        {
+            "b_id": "objects_default",
+            "parameters": {
+                "structure_class": "object_sampler"
+            }
+        },
+        {
+            "b_id": "objects_param",
+            "parameters": {
+                "structure_class": "object_sampler",
+                "structure_parameters": {
+                    "func": [
+                        "p = [ n * 1.0, 0.5, 2.5 ]",
+                        "u = [ 0.0, 1.0, 0.0]",
+                        "o = {'subtype' : 'time_+5'}",
+                        "t = 'option'"
+                    ],
+                    "nr": 5
+                }
+            }
+        }
+    ]
+}
