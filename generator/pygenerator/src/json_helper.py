@@ -42,7 +42,9 @@ def _load_json_or_yaml(json_path, object_hook=None):
                 obj_jsonc = json5.load(read_file)
                 obj = json.loads(json.dumps(obj_jsonc), object_hook=object_hook)
                 return obj
-        except:
+        except jsonschema.exceptions.ValidationError as e:
+            raise
+        except Exception as e:
             try_yaml = True
     if try_yaml:
         yaml_path = os.path.splitext(json_path)[0] + '.yaml'
