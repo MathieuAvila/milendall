@@ -84,5 +84,16 @@ class TestJsonHelper(unittest.TestCase):
         self.assertFalse(has_error)
         self.assertEquals(obj, {"action": "", "direction": "", "on_property": "", "on_trigger": "plop", "to_value": "plip"})
 
+    def test_jsonc(self):
+        """ test fallback to jsonc"""
+        has_error = False
+        try:
+            obj = json_helper.load_and_validate_json("../test/test_samples/json/valid_jsonc.json", "event.json") # valid yaml
+        except jsonschema.exceptions.ValidationError as e:
+            print("EXCEPTION %s" % repr(e))
+            has_error = True
+        self.assertFalse(has_error)
+        self.assertEquals(obj, {"action": "", "direction": "", "on_property": "", "on_trigger": "", "to_value": ""})
+
 if __name__ == '__main__':
     unittest.main()

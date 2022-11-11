@@ -32,6 +32,9 @@ jobs:
         if: contains(matrix.os, 'ubuntu')
         with:
           python-version: 3.8
+      - name: install python deps
+        run: |
+          pip install json5
       - name: Tar files
         run: tar -cvf build.tar .
 

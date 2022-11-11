@@ -8,6 +8,7 @@ import os
 import yaml
 import json
 import jsonschema
+import json5
 
 SCHEMA_LOCATION = "../../schema/"
 
@@ -27,11 +28,22 @@ def _handler(path):
 
 def _load_json_or_yaml(json_path, object_hook=None):
     try_yaml = False
+    try_jsonc = False
     try:
         with open(json_path, "r") as read_file:
             obj = json.load(read_file, object_hook=object_hook)
+            return obj
     except:
-        try_yaml = True
+        try_jsonc = True
+    if try_jsonc:
+        try:
+            jsonc_path = os.path.splitext(json_path)[0] + '.jsonc'
+            with open(jsonc_path, "r") as read_file:
+                obj_jsonc = json5.load(read_file)
+                obj = json.loads(json.dumps(obj_jsonc), object_hook=object_hook)
+                return obj
+        except:
+            try_yaml = True
     if try_yaml:
         yaml_path = os.path.splitext(json_path)[0] + '.yaml'
         with open(yaml_path, "r") as read_file:
