@@ -1,0 +1,21 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://milendall.com/schemas/bricks/rectangular/structure_parameters.json",
+    "type": "object",
+    "additionalProperties": false,
+    "description": "A list of objects created by a python function",
+    "properties": {
+        "nr": {
+            "description": "Number of objects",
+            "type": "number"
+        },
+        "func": {
+            "description" : "Python lines of code to place the objects \n input: 'n' for number \n output 'p' for position, 'u' for up vector, 'o': parameters, 't' for type",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    },
+    "required": []
+}
