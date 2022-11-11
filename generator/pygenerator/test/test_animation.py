@@ -204,7 +204,7 @@ class TestAnimation(unittest.TestCase):
         cube.add_animation(anim0)
 
         anim0.append_prefix("pref_")
-        self.assertEquals(anim0.action_list, [
+        self.assertEqual(anim0.action_list, [
             {
                 'action': 'translation',
                 'node': 'pref_node1',

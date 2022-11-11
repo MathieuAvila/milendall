@@ -134,7 +134,7 @@ def main(argv):
         if step > start_step and step <= end_step:
             logger.info("Apply step: %s" % step.name)
             if states.has_state(step) and not force:
-                logger.warn("Step is already generated, and force is not set. Will exit.")
+                logger.warning("Step is already generated, and force is not set. Will exit.")
                 sys.exit(1)
             if not only_preview:
                 my_level.run_step(step)

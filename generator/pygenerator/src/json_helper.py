@@ -75,7 +75,7 @@ def check_json_fragment(fragment, schema_name):
         with open(real_path, "r") as read_schema_file:
             schema = json.load(read_schema_file)
     except Exception as e:
-        logger.warn("Schema does not exist: %s",real_path)
+        logger.warning("Schema does not exist: %s",real_path)
         return
     schemaurl = "file://" + real_path
     resolver = jsonschema.RefResolver(schemaurl, referrer=schema, handlers = { 'http': _handler , "file": _handler} )

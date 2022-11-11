@@ -82,7 +82,7 @@ class TestJsonHelper(unittest.TestCase):
             print("EXCEPTION %s" % repr(e))
             has_error = True
         self.assertFalse(has_error)
-        self.assertEquals(obj, {"action": "", "direction": "", "on_property": "", "on_trigger": "plop", "to_value": "plip"})
+        self.assertEqual(obj, {"action": "", "direction": "", "on_property": "", "on_trigger": "plop", "to_value": "plip"})
 
     def test_jsonc(self):
         """ test fallback to jsonc"""
@@ -93,7 +93,7 @@ class TestJsonHelper(unittest.TestCase):
             print("EXCEPTION %s" % repr(e))
             has_error = True
         self.assertFalse(has_error)
-        self.assertEquals(obj, {"action": "", "direction": "", "on_property": "", "on_trigger": "", "to_value": ""})
+        self.assertEqual(obj, {"action": "", "direction": "", "on_property": "", "on_trigger": "", "to_value": ""})
 
 if __name__ == '__main__':
     unittest.main()
