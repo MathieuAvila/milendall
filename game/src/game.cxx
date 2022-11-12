@@ -22,7 +22,8 @@ Game::Game(
     std::shared_ptr<ModelRegistry> _model_registry,
     std::shared_ptr<FileLibrary> _file_library,
     FileLibrary::UriReference &levelRef):
-    file_library(_file_library), model_registry(_model_registry)
+    file_library(_file_library), model_registry(_model_registry),
+    exit_enter_pressed(false)
 {
     object_manager = make_unique<ObjectManager>(model_registry, _file_library);
     level = make_unique<Level>(levelRef, object_manager.get());
@@ -42,17 +43,35 @@ Game::Game(
     current_time = std::chrono::steady_clock::now();
 }
 
-void Game::manageGame(bool inMenu)
+bool Game::manageGame(bool inMenu)
 {
     PointOfView player_position;
     Player::ActionSet actionSet;
+
+    int time_left;
+    bool exited;
+    bool exit_game = false;
+    player->getGameStatus(time_left, exited);
     actionSet.horizontalAngle = horizontalAngle;
     actionSet.verticalAngle = verticalAngle;
-    actionSet.forward = glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS;
-    actionSet.backward = glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS;
-    actionSet.left = glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS;
-    actionSet.right = glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS;
-    actionSet.jump = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
+    if (!exited) {
+        actionSet.forward = glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS;
+        actionSet.backward = glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS;
+        actionSet.left = glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS;
+        actionSet.right = glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS;
+        actionSet.jump = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
+    }
+    else
+    {
+        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+            exit_enter_pressed = true;
+            console->debug("End game, enter was pressed");
+        }
+        if ((exit_enter_pressed)&&(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE)) {
+            console->debug("End game, enter was pressed and released");
+            exit_game = true;
+        }
+    }
     player->setActionSet(actionSet);
 
     bool found = object_manager->getObjectPosition(player_id, player_position);
@@ -69,10 +88,23 @@ void Game::manageGame(bool inMenu)
     current_time = new_time;
 
     fontRenderTextBorder("regular", player_position.room, 25.0f, 720.0f, 1.0f, 2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
-    fontRenderTextBorder("regular", std::string("Temps:") + std::to_string(player->getLeftTime()), 550.0f, 720.0f, 1.0f, 2, glm::vec3(0.9, 0.7f, 0.3f), glm::vec3(0.1, 0.1f, 0.1f));
-
-    //fontRenderTextBorder("regular", vec3_to_string(player_position.position), 80.0f, 550.0f, 1.0f, 2, glm::vec3(1.0, 0.8f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
+    if (!exited) {
+        fontRenderTextBorder("regular", std::string("Temps:") + std::to_string(time_left), 550.0f, 720.0f, 1.0f, 2, glm::vec3(0.9, 0.7f, 0.3f), glm::vec3(0.1, 0.1f, 0.1f));
     }
+    else {
+        fontRenderTextBorder(
+            "candy",
+            std::string("Gagne !"),
+            300.0f, 350.0f, 3.0f, 2, glm::vec3(0.2, 0.7f, 0.2f), glm::vec3(0.8, 0.8f, 0.8f)
+        );
+        fontRenderTextBorder(
+            "candy",
+            std::string("Temps restant: ") + std::to_string(time_left),
+            200.0f, 200.0f, 1.5f, 2, glm::vec3(0.5, 0.7f, 0.5f), glm::vec3(0.5, 0.5f, 0.5f)
+        );
+    }
+    return exit_game;
+}
 
 Game::~Game()
 {

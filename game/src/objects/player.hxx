@@ -31,14 +31,17 @@ public:
     virtual glm::mat4x4 getOwnMatrix() const override;
 
     virtual bool addTime(float time) override;
+    virtual void interactExit() override;
 
     void setActionSet(ActionSet actions);
 
     Player();
     virtual ~Player();
 
-    /** in order to check game play and print on screen */
-    int getLeftTime();
+    /** in order to check game play and print on screen.
+     * @returns left time & exit status
+     */
+    void getGameStatus(int& time, bool& _exited);
 
     void manage(float diff_time) override;
 
@@ -46,6 +49,7 @@ private:
     MovableObjectDefinition movable_definition;
     ActionSet currentActions;
     float time_left = 0.0f;
+    bool exited = false;
     float previous_vertical_angle; // needed to cap v angle.
 
 

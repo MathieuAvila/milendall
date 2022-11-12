@@ -105,5 +105,5 @@ std::shared_ptr<ViewableObject> ObjectExit::getViewable() const
 
 void ObjectExit::interact(ManagedObject *second_object)
 {
-    console->info("Touched exit");
+    second_object->interactExit();
 }

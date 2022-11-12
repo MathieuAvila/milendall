@@ -6,14 +6,16 @@
 
 static auto console = getConsole("player");
 
-Player::Player() : movable_definition(MovableObjectDefinition(0.7f, 1.0f, 1.0f, 1.0f)), time_left(0.0f)
+Player::Player() :
+    movable_definition(MovableObjectDefinition(0.7f, 1.0f, 1.0f, 1.0f)),
+    time_left(0.0f),
+    exited(false)
 {
     previous_vertical_angle = 0.0f;
 }
 
 Player::~Player()
 {
-
 }
 
 const MovableObjectDefinition& Player::getObjectDefinition() const
@@ -72,12 +74,19 @@ bool Player::addTime(float time)
     return true;
 }
 
-void Player::manage(float diff_time)
+void Player::interactExit()
 {
-    time_left -= diff_time;
+    exited = true;
 }
 
-int Player::getLeftTime()
+void Player::manage(float diff_time)
 {
-    return time_left;
+    if (!exited)
+        time_left -= diff_time;
+}
+
+void Player::getGameStatus(int& _time_left, bool& _exited)
+{
+    _time_left = time_left;
+    _exited = exited;
 }

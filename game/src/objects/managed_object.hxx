@@ -42,6 +42,10 @@ class ManagedObject
          * @return True if done something with it, false otherwise */
         virtual bool addTime(float time);
 
+        /** @brief In case of interaction with na exit
+         * By default, this does nothing, only player should implement it. */
+        virtual void interactExit();
+
         /** @brief Interact with me. Does nothing by default */
         virtual void interact(ManagedObject* second_object);
 

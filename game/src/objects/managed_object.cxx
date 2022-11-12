@@ -10,6 +10,10 @@ bool ManagedObject::addTime(float time)
     return false;
 }
 
+void ManagedObject::interactExit()
+{
+}
+
 void ManagedObject::interact(ManagedObject* second_object)
 {
 }

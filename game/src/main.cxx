@@ -123,7 +123,13 @@ int main(int argc, char *argv[])
             if (!menu_mode)
                 updatePlayerInputs();
 
-            game->manageGame(menu_mode);
+            if (game->manageGame(menu_mode)) // exited
+            {
+                console->info("Finished game");
+                game = nullptr;
+                menu_mode = true;
+                menu->setStatus(true);
+            }
         }
 
         if (menu_mode)
