@@ -29,7 +29,18 @@
                         3.0
                     ]
                 }
-            }
+            },
+            "objects": [
+                {
+                    "type": "exit",
+                    "position": [
+                        1.5,
+                        0.5,
+                        1.5
+                    ],
+                    "parameters": {}
+                }
+            ]
         },
         {
             "b_id": "door0",
