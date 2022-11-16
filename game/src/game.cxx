@@ -13,6 +13,7 @@
 #include "level.hxx"
 #include "player.hxx"
 #include "fonts.hxx"
+#include "keyboard.hxx"
 
 using namespace std;
 
@@ -22,8 +23,7 @@ Game::Game(
     std::shared_ptr<ModelRegistry> _model_registry,
     std::shared_ptr<FileLibrary> _file_library,
     FileLibrary::UriReference &levelRef):
-    file_library(_file_library), model_registry(_model_registry),
-    exit_enter_pressed(false)
+    file_library(_file_library), model_registry(_model_registry)
 {
     object_manager = make_unique<ObjectManager>(model_registry, _file_library);
     level = make_unique<Level>(levelRef, object_manager.get());
@@ -63,12 +63,8 @@ bool Game::manageGame(bool inMenu)
     }
     else
     {
-        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-            exit_enter_pressed = true;
+        if (getKeyPressedOnce(GLFW_KEY_SPACE)) {
             console->debug("End game, enter was pressed");
-        }
-        if ((exit_enter_pressed)&&(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE)) {
-            console->debug("End game, enter was pressed and released");
             exit_game = true;
         }
     }

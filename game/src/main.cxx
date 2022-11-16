@@ -10,6 +10,7 @@
 #include "common.hxx"
 #include "gl_init.hxx"
 #include "fonts.hxx"
+#include "keyboard.hxx"
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -105,6 +106,8 @@ int main(int argc, char *argv[])
 
         // Use our shader
         activateDefaultDrawingProgram();
+
+        manageKeyboard();
 
         if (!modelPath.empty())
         {

@@ -8,6 +8,7 @@
 #include "common.hxx"
 #include "gl_init.hxx"
 #include "fonts.hxx"
+#include "keyboard.hxx"
 
 #include "menu.hxx"
 
@@ -42,18 +43,11 @@ Menu::Menu(std::shared_ptr<ModelRegistry> _model_registry, std::shared_ptr<FileL
     }
 }
 
-static bool computeHoldKey(int key, bool &was_key)
-{
-    bool result = (glfwGetKey(window, key) == GLFW_PRESS) && !was_key;
-    was_key = (glfwGetKey(window, key) != GLFW_RELEASE);
-    return result;
-}
-
 void Menu::printMenu()
 {
-    bool key_enter = computeHoldKey(GLFW_KEY_ENTER, was_key_enter);
-    bool key_up = computeHoldKey(GLFW_KEY_UP, was_key_up);
-    bool key_down = computeHoldKey(GLFW_KEY_DOWN, was_key_down);
+    bool key_enter = getKeyPressedOnce(GLFW_KEY_ENTER);
+    bool key_up = getKeyPressedOnce(GLFW_KEY_UP);
+    bool key_down = getKeyPressedOnce(GLFW_KEY_DOWN);
 
     switch (sub_menu)
     {

@@ -20,9 +20,6 @@ class Menu
 
     int menu_index = 0; // in multi entry sub-menu, start. Eg: level list
     int menu_pos = 0;   // in simple sub-menu, position
-    bool was_key_enter;
-    bool was_key_up;
-    bool was_key_down;
 
     std::shared_ptr<FileLibrary> file_library;
     std::vector<LevelInfo> levels_ref_array;

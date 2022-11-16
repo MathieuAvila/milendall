@@ -21,7 +21,6 @@ class Game
     std::unique_ptr<ObjectManager> object_manager;
     std::chrono::_V2::steady_clock::time_point current_time;
     float total_time = 0.0f;
-    bool exit_enter_pressed; // when finished, mark that enter is pressed. wait release before exit.
 
     public:
 

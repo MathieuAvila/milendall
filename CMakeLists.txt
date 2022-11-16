@@ -189,6 +189,8 @@ add_executable(milendall
     game/src/main.cxx
     game/src/game.hxx
     game/src/game.cxx
+    game/src/keyboard.hxx
+    game/src/keyboard.cxx
     )
 
 target_link_libraries(milendall
