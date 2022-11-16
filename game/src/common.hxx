@@ -10,4 +10,4 @@ using namespace spdlog;
 using namespace nlohmann;
 
 std::shared_ptr<spdlog::logger> getConsole(std::string name);
-
+void setDebugConsole();

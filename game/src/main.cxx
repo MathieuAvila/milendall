@@ -24,7 +24,7 @@
 
 using namespace std;
 
-static auto console = getConsole("Milendall");
+static auto console = getConsole("milendall");
 
 // Include GLM
 #include <glm/glm.hpp>
@@ -33,17 +33,18 @@ using namespace glm;
 
 void help()
 {
-    console->info("preview_room [-h] -f model_file [-d path ...]");
+    console->info("preview_room [-D] [-h] -f model_file [-d path ...]");
     exit(1);
 }
 
-tuple<string, vector<string>> readParams(int argc, char *argv[])
+tuple<string, vector<string>, bool> readParams(int argc, char *argv[])
 {
     string modelPath;
     vector<string> libPaths;
+    bool debug = false;
 
     int c;
-    while ((c = getopt(argc, argv, "f:d:h")) != -1)
+    while ((c = getopt(argc, argv, "f:d:hD")) != -1)
     {
         switch (c)
         {
@@ -56,12 +57,15 @@ tuple<string, vector<string>> readParams(int argc, char *argv[])
         case 'h':
             help();
             break;
+        case 'D':
+            debug = true;
+            break;
         default:
             console->error("Unknown option {}", char(c));
             help();
         }
     }
-    return tuple{modelPath, libPaths};
+    return tuple{modelPath, libPaths, debug};
 }
 
 int main(int argc, char *argv[])
@@ -70,7 +74,11 @@ int main(int argc, char *argv[])
 
     set_level(level::debug);
 
-    auto [modelPath, libPaths] = readParams(argc, argv);
+    auto [modelPath, libPaths, debug] = readParams(argc, argv);
+
+    if (debug) {
+        setDebugConsole();
+    }
 
     auto flp = make_shared<FileLibrary>();
     auto &fl = *flp.get();
@@ -114,7 +122,7 @@ int main(int argc, char *argv[])
             console->info("Start level ... {}", modelPath);
 
             auto ref = fl.getRoot().getSubPath(modelPath);
-            game = std::make_unique<Game>(model_registry, flp, ref);
+            game = std::make_unique<Game>(model_registry, flp, ref, debug);
 
             menu_mode = false;
             menu->setStatus(true);

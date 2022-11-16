@@ -21,10 +21,11 @@ class Game
     std::unique_ptr<ObjectManager> object_manager;
     std::chrono::_V2::steady_clock::time_point current_time;
     float total_time = 0.0f;
+    bool debug = false;
 
     public:
 
-    Game(std::shared_ptr<ModelRegistry> _model_registry, std::shared_ptr<FileLibrary> _file_library, FileLibrary::UriReference& levelRef);
+    Game(std::shared_ptr<ModelRegistry> _model_registry, std::shared_ptr<FileLibrary> _file_library, FileLibrary::UriReference& levelRef, bool _debug);
 
     void setStatus(bool _running_game);
     bool manageGame(bool inMenu);

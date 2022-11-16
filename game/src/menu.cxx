@@ -77,12 +77,12 @@ void Menu::printMenu()
         if (key_up) {
             if (menu_pos > 0)
                 menu_pos--;
-            console->info("Up {}", menu_pos);
+            console->debug("Up {}", menu_pos);
         }
         if (key_down) {
             if (menu_pos < levels_ref_array.size() -1)
                 menu_pos++;
-            console->info("Down {}", menu_pos);
+            console->debug("Down {}", menu_pos);
         }
         if (key_enter) {
             selected_level = menu_pos;

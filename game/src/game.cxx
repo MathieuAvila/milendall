@@ -22,8 +22,9 @@ static auto console = getConsole("game");
 Game::Game(
     std::shared_ptr<ModelRegistry> _model_registry,
     std::shared_ptr<FileLibrary> _file_library,
-    FileLibrary::UriReference &levelRef):
-    file_library(_file_library), model_registry(_model_registry)
+    FileLibrary::UriReference &levelRef,
+    bool _debug):
+    file_library(_file_library), model_registry(_model_registry), debug(_debug)
 {
     object_manager = make_unique<ObjectManager>(model_registry, _file_library);
     level = make_unique<Level>(levelRef, object_manager.get());
@@ -83,7 +84,9 @@ bool Game::manageGame(bool inMenu)
     level->update(elapsed);
     current_time = new_time;
 
-    fontRenderTextBorder("regular", player_position.room, 25.0f, 720.0f, 1.0f, 2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
+    if (debug) {
+        fontRenderTextBorder("regular", player_position.room, 25.0f, 720.0f, 1.0f, 2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
+    }
     if (!exited) {
         fontRenderTextBorder("regular", std::string("Temps:") + std::to_string(time_left), 550.0f, 720.0f, 1.0f, 2, glm::vec3(0.9, 0.7f, 0.3f), glm::vec3(0.1, 0.1f, 0.1f));
     }
