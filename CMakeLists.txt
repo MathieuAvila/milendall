@@ -117,6 +117,8 @@ add_library(game_lib STATIC
   game/src/helpers/script.cxx
   game/src/helpers/min_max_box.hxx
   game/src/helpers/min_max_box.cxx
+  game/src/helpers/i18n_string.hxx
+  game/src/helpers/i18n_string.cxx
   game/src/span.hxx
   game/src/objects/movable_object.hxx
   game/src/objects/object_manager.cxx
@@ -228,6 +230,7 @@ game/test/helpers/unit_file_library.cxx
 game/test/helpers/unit_point_of_view.cxx
 game/test/helpers/unit_script.cxx
 game/test/helpers/unit_min_max_box.cxx
+game/test/helpers/unit_i18n_string.cxx
 game/test/objects/unit_model_registry.cxx
 game/test/objects/unit_object_manager.cxx
 game/test/objects/unit_player.cxx
