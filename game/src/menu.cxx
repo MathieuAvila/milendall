@@ -69,7 +69,7 @@ void Menu::printMenu()
                 //console->info("Level {}, {}", index, levels_ref_array.size());
                 fontRenderTextBorder("regular", level_def.section,                          50.0f, 500.0f - i * 50, 0.5f, 2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
                 fontRenderTextBorder("regular", std::to_string(level_def.recommended_time), 150.0f, 500.0f - i * 50, 0.5f, 2, glm::vec3(0.1, 0.9f, 0.0f), glm::vec3(0.1, 0.1f, 0.1f));
-                fontRenderTextBorder("regular", level_def.name,                             200.0f, 500.0f - i * 50, 0.5f, 2, glm::vec3(0.8, 0.7f, 0.3f), glm::vec3(0.1, 0.1f, 0.1f));
+                fontRenderTextBorder("regular", level_def.name.getString("fr", "en"),                             200.0f, 500.0f - i * 50, 0.5f, 2, glm::vec3(0.8, 0.7f, 0.3f), glm::vec3(0.1, 0.1f, 0.1f));
                 fontRenderTextBorder("regular", level_def.ref.getPath(),                    700.0f, 500.0f - i * 50, 0.5f, 2, glm::vec3(0.1, 0.9f, 0.0f), glm::vec3(0.1, 0.1f, 0.1f));
             }
         }

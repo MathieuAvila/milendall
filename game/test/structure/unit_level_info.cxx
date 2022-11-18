@@ -20,9 +20,6 @@ class LevelInfoTest : public ::testing::Test
 protected:
     void SetUp() override
     {
-        // spdlog::get("math")->set_level(spdlog::level::debug);
-        // spdlog::get("face_list")->set_level(spdlog::level::debug);
-        // spdlog::get("room_node")->set_level(spdlog::level::debug);
         spdlog::get("level_info")->set_level(spdlog::level::debug);
         spdlog::get("ut_level_info")->set_level(spdlog::level::debug);
     }
@@ -37,6 +34,6 @@ TEST_F(LevelInfoTest, LoadLevelOneRoom)
     fl.addRootFilesystem(std::filesystem::current_path().c_str() + std::string("/../game/test/sample/"));
     auto level_info = make_unique<LevelInfo>(fl.getRoot().getSubPath("/level_info/level.json"));
     EXPECT_EQ(level_info->recommended_time, 10);
-    EXPECT_EQ(level_info->name, "mon nom");
+    EXPECT_EQ(level_info->name.getString("fr", "fr"), "mon nom");
     EXPECT_EQ(level_info->section, "samples");
 }

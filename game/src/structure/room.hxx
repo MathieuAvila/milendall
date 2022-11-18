@@ -13,6 +13,7 @@
 #include "room_animation.hxx"
 #include "structure_object_type.hxx"
 #include "gate_id.hxx"
+#include "i18n_string.hxx"
 
 #include <gtest/gtest_prod.h>
 

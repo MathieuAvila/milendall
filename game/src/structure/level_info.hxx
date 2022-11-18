@@ -1,6 +1,7 @@
 #pragma once
 
 #include "file_library.hxx"
+#include "i18n_string.hxx"
 
 /** @brief Just load a few fields */
 class LevelInfo
@@ -8,7 +9,7 @@ class LevelInfo
     public:
 
         unsigned recommended_time;
-        std::string name;
+        I18NString name;
         std::string section;
         FileLibrary::UriReference ref;
 

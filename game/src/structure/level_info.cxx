@@ -12,6 +12,6 @@ LevelInfo::LevelInfo(FileLibrary::UriReference _ref) : ref(_ref)
     auto game_type = jsonGetElementByName(declarations, "game_type");
     auto single_mode = jsonGetElementByName(game_type, "single_mode");
     recommended_time = jsonGetElementByName(single_mode, "execution_time").get<float>();
-    name = jsonGetElementByName(jsonGetElementByIndex(declarations, "name", 0), "value").get<string>();
+    name = I18NString(declarations, "name");
     section = jsonGetElementByName(declarations, "section").get<string>();
 }

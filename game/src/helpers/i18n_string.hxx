@@ -19,6 +19,9 @@ class I18NString
      */
     I18NString(nlohmann::json& root, std::string name);
 
+    /** @brief default for auto ctor */
+    I18NString() = default;
+
     ~I18NString() = default;
 
     /** @brief Get a localized string in order:
