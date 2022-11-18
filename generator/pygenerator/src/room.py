@@ -138,7 +138,8 @@ class Room(Element):
                     concrete.add_child(root_id, parent_root_id, mat)
                 concrete_brick.set_root(parent_root_id)
             concrete.merge(concrete_brick)
-
+        if self.values["human_name"]:
+            concrete.add_private_data({"human_name":self.values["human_name"]})
         if level_directory == None:
             level_directory = self.level_directory
         room_path = level_directory + "/" + self.name

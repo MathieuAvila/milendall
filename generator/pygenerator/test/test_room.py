@@ -339,6 +339,25 @@ class TestRoom(unittest.TestCase):
         ]
         )
 
+    def test_06_finalize_human_name(self):
+        """Test the finalize with a human_name"""
+        selector = selector_fake.SelectorFake()
+        my_test_dir = "/tmp/test_06_finalize_human_name"
+        self.remake_dest(my_test_dir)
+        loaded_room = room.Room(
+            "../test/test_samples/room/room_0b/", "room_human_name", selector)
+        self.assertIsNotNone(loaded_room)
+        loaded_room.load(state.LevelState.Instantiated)
+        loaded_room.structure_personalization()
+        loaded_room.dressing_instantiation()
+        loaded_room.dressing_personalization()
+        loaded_room.save(my_test_dir)
+        loaded_room.finalize(my_test_dir)
+        with open(my_test_dir + "/room_human_name/room.gltf") as f:
+            j = json.load(f)
+        r = j["extras"]["human_name"]
+        self.assertEqual(r, [{'lang': 'fr', 'value': 'ducon'}, {'lang': 'en', 'value': 'me'}])
+
 
 if __name__ == '__main__':
     unittest.main()
