@@ -324,6 +324,7 @@ class ConcreteRoom:
         self.objects = []
         self.gravity = None
         self.animations = []
+        self.private_data = []
 
     def get_objects(self):
         """return direct references to the list of objects included in the room
@@ -351,6 +352,9 @@ class ConcreteRoom:
 
     def add_animation(self, animation):
         self.animations.append(animation)
+
+    def add_private_data(self, data):
+        self.private_data.append(copy.deepcopy(data))
 
     def setup_gravity_info(self, gravity):
         """
@@ -551,6 +555,9 @@ class ConcreteRoom:
         # generate each animation associated to this room
         for animation in self.animations:
             animation.generate_gltf(gltf, data_file, self)
+
+        for data in self.private_data:
+            gltf["extras"] = gltf["extras"] | data
 
         gltf["buffers"][0]["byteLength"] = data_file.tell()
 

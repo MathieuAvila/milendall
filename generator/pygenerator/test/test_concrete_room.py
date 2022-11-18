@@ -798,6 +798,29 @@ class TestConcreteRoomImpl(unittest.TestCase):
         self.assertEqual(room.objects[3].name, "prefix:child2_2")
 
 
+    def test_private_data(self):
+        """Test add private data"""
+        room = concrete_room.ConcreteRoom()
+
+
+        room.add_private_data({"private_data_0": {"data":0}})
+        room.add_private_data({"private_data_1": {"data":1}})
+
+        PATH = "/tmp/private_data"
+        pathlib.Path(PATH).mkdir(parents=True, exist_ok=True)
+        room.generate_gltf(PATH)
+
+        with open("/tmp/private_data/room.gltf", "r") as room_file:
+            obj = json.load(room_file)
+        print(json.dumps(obj, indent=1))
+
+        self.assertTrue("extras" in obj)
+        extras = obj["extras"]
+        self.assertEqual(extras,
+            {
+                "private_data_0": {"data": 0},
+                "private_data_1": {"data": 1}
+            })
 
 
 if __name__ == '__main__':
