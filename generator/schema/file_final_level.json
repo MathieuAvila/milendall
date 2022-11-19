@@ -28,9 +28,8 @@
                  },
                 "additionalProperties": false,
                 "required": [
-                    "room_id",
-                    "name"
-                ]
+                    "room_id"
+               ]
             }
         }
     },
