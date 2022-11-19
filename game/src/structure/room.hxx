@@ -52,6 +52,9 @@ class Room : private RoomScriptLoader, public GltfModel
         /** @brief My name, as defined by Level */
         std::string room_name;
 
+        /** @brief Name printed on screen, as defined by Json */
+        I18NString human_name;
+
         /** @brief my very own instance */
         std::unique_ptr<GltfInstance> instance;
 
@@ -184,6 +187,9 @@ class Room : private RoomScriptLoader, public GltfModel
         /** @brief Get matrix from a given mesh. Used by objects to get
          * their final place */
         glm::mat4 getMeshMatrix(std::string mesh_name) const;
+
+        /** @brief Return human name */
+        const I18NString& getHumanName();
 
         virtual ~Room() = default;
 

@@ -1,0 +1,14 @@
+{
+ "$schema": "../../../schema/file_room_bricks.json",
+ "bricks": [],
+ "human_name": [
+  {
+   "lang": "fr",
+   "value": "ma salle"
+  },
+  {
+   "lang": "en",
+   "value": "my room"
+  }
+ ]
+}

@@ -546,3 +546,15 @@ TEST_F(RoomTest, solve_mesh_position)
             0.0f, 0.0f, 1.0f, 0.0f,
             4.0f, 0.0f, 0.0f, 1.0f));
 }
+
+TEST_F(RoomTest, get_human_name)
+{
+    InSequence s;
+    GLMock mock;
+    auto [states, room, portal_register] = loadRoomFull(
+        "/1r_description/room1/room.gltf",
+        nullptr,
+        nullptr);
+    auto& human_name = room->getHumanName();
+    ASSERT_EQ(human_name.getString("fr", "fr"), "ma salle");
+}

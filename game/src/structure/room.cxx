@@ -84,6 +84,7 @@ Room::Room(
     auto file_json = json::parse(raw_json.c_str());
     jsonExecuteIfElement(file_json, "extras", [this](nlohmann::json& extras) {
         console->debug("Found room extras");
+        human_name = I18NString(extras, "human_name");
         jsonExecuteAllIfElement(extras, "animations", [this](nlohmann::json& child, int node_index) {
             console->info("Load room animation: {}", node_index);
             room_animations.push_back(make_unique<RoomAnimation>(child, this, instance.get(), states_list));
@@ -310,4 +311,9 @@ glm::mat4 Room::getMeshMatrix(std::string mesh_name) const
     // not found
     console->warn("room={} mesh node found name={}", room_name, mesh_name);
     return glm::mat4(1.0f);
+}
+
+const I18NString& Room::getHumanName()
+{
+    return human_name;
 }
