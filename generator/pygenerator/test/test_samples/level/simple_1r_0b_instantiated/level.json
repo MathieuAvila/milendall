@@ -3,13 +3,7 @@
  "version": "1.0",
  "rooms": [
   {
-   "room_id": "room1",
-   "name": [
-    {
-     "lang": "en",
-     "value": "nightmare"
-    }
-   ]
+   "room_id": "room1"
   }
  ],
  "declarations": {

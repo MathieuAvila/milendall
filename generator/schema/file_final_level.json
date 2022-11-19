@@ -21,9 +21,6 @@
                     "room_id": {
                         "type": "string",
                         "description": "Unique ID of the room. It is mapped to a directory name"
-                    },
-                    "name": {
-                        "$ref": "name.json"
                     }
                  },
                 "additionalProperties": false,

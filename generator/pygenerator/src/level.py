@@ -217,7 +217,7 @@ class Level:
         }
         level_content["declarations"] = self.values.declarations
         for room in self.values.rooms:
-            level_content["rooms"].append({"room_id": room.values.room_id, "name": room.values.name})
+            level_content["rooms"].append({"room_id": room.values.room_id})
             room.finalize(output_directory, preview)
         level_json = json.dumps(level_content, indent=1)
         with open(level_file, "w") as output_file:

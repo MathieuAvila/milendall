@@ -24,22 +24,10 @@
     },
     "rooms": [
         {
-            "room_id": "room1",
-            "name": [
-                {
-                    "lang": "en",
-                    "value": "room1"
-                }
-            ]
+            "room_id": "room1"
         },
         {
-            "room_id": "room2",
-            "name": [
-                {
-                    "lang": "en",
-                    "value": "room2"
-                }
-            ]
+            "room_id": "room2"
         }
     ]
 }
