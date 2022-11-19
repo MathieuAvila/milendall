@@ -16,12 +16,12 @@ I18NString::I18NString(nlohmann::json& text, std::string name)
     }
 }
 
-std::string I18NString::getString(std::string locale, std::string default_locale)
+std::string I18NString::getString(const std::string locale, const std::string default_locale) const
 {
     if (values.count(locale))
-        return values[locale];
+        return values.at(locale);
     if (values.count(default_locale))
-        return values[default_locale];
+        return values.at(default_locale);
     if (values.size())
         return values.rbegin()->second;
     return "";

@@ -30,5 +30,5 @@ class I18NString
      * - the first available
      * - otherwise return the void string
      */
-    std::string getString(std::string locale, std::string default_locale);
+    std::string getString(const std::string locale, const std::string default_locale) const;
 };
