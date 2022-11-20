@@ -1,5 +1,6 @@
 {
     "$schema": "../../../../../generator/schema/file_room_bricks.json",
+    "human_name": [{"lang": "fr", "value": "En route pour l'aventure"}],
     "bricks": [
         {
             "b_id": "b_room",

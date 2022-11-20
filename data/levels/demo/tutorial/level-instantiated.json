@@ -20,31 +20,13 @@
     },
     "rooms": [
         {
-            "room_id": "room1",
-            "name": [
-                {
-                    "lang": "fr",
-                    "value": "C'est port'nawak"
-                }
-            ]
+            "room_id": "room1"
         },
         {
-            "room_id": "room2",
-            "name": [
-                {
-                    "lang": "fr",
-                    "value": "Tout est bien qui finit bien"
-                }
-            ]
+            "room_id": "room2"
         },
         {
-            "room_id": "double_torus",
-            "name": [
-                {
-                    "lang": "fr",
-                    "value": "Attendez un peu que la chance tourne..."
-                }
-            ]
+            "room_id": "double_torus"
         }
     ]
 }
