@@ -14,6 +14,7 @@
 #include "player.hxx"
 #include "fonts.hxx"
 #include "keyboard.hxx"
+#include "room_resolver.hxx"
 
 using namespace std;
 
@@ -87,8 +88,10 @@ bool Game::manageGame(bool inMenu)
     if (debug) {
         fontRenderTextBorder("regular", player_position.room, 25.0f, 720.0f, 1.0f, 2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
     }
+    auto human_name = level->getRoomResolver()->getRoom(player_position.room)->getHumanName().getString("fr", "fr");
+    fontRenderTextBorder("candy", human_name, 25.0f, 720.0f, 1.0f, 2, glm::vec3(0.3, 0.7f, 0.9f), glm::vec3(0.1, 0.1f, 0.1f));
     if (!exited) {
-        fontRenderTextBorder("regular", std::string("Temps:") + std::to_string(time_left), 550.0f, 720.0f, 1.0f, 2, glm::vec3(0.9, 0.7f, 0.3f), glm::vec3(0.1, 0.1f, 0.1f));
+        fontRenderTextBorder("regular", std::string("Temps:") + std::to_string(time_left), 750.0f, 720.0f, 1.0f, 2, glm::vec3(0.9, 0.7f, 0.3f), glm::vec3(0.1, 0.1f, 0.1f));
     }
     else {
         fontRenderTextBorder(

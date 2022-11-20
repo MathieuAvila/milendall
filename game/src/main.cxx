@@ -153,7 +153,8 @@ int main(int argc, char *argv[])
             }
         }
 
-        fpsCounter.update();
+        if (debug)
+            fpsCounter.update();
         // Swap buffers
         glfwSwapBuffers(window);
         glfwPollEvents();
