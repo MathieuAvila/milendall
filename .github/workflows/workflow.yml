@@ -1,5 +1,5 @@
 ---
-name: "Build, Analysis, Test"
+name: "Build, Analyze, Test"
 
 on:
   push:
@@ -11,13 +11,18 @@ on:
     - cron: '30 14 * * 4'
 
 jobs:
-  build:
-    name: Build
+  build_and_analyze:
+    name: Build and Analyze
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: ${{ matrix.language }}
 
       - name: Build
         run: |
@@ -35,38 +40,6 @@ jobs:
         with:
           name: build
           path: build.tar
-
-  analyze:
-    needs: build
-    name: Analyze
-    runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        language: ['cpp', 'python']
-    steps:
-
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
-        with:
-          languages: ${{ matrix.language }}
-
-      - uses: actions/download-artifact@v3
-        with:
-          name: build
-
-      - name: Untar
-        run: |
-          tar xvf build.tar
-          sudo apt update
-          sudo apt install -y clang-11 nlohmann-json3-dev libboost-all-dev libspdlog-dev libspdlog1 libglm-dev libfreeimageplus-dev googletest libgmock-dev libgl-dev libopengl-dev libglew-dev libglfw3-dev libglfw3 libfreetype-dev libfreetype6-dev liblua5.1-dev ninja-build
-          cmake -G Ninja -S $PWD -B $PWD/build
-          cd $PWD/build
-          ninja all
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
