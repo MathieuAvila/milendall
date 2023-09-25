@@ -6,7 +6,7 @@ SCRIPT_DIR=$(dirname $PWD/$0 )
 
 
 cd $SCRIPT_DIR/../../generator/pygenerator/src
-python ./generator.py -p -o /tmp/$SAMPLE_DIR $SAMPLE
+python3 ./generator.py -p -o /tmp/$SAMPLE_DIR $SAMPLE
 if [ "$?" != "0" ]
 then
     exit 1
