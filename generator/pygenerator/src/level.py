@@ -11,6 +11,7 @@ import room_spec
 import state
 
 from munch import DefaultMunch
+import level_instantiation
 
 logger = logging.getLogger("level")
 logger.setLevel(logging.INFO)
@@ -31,12 +32,26 @@ class Level:
 
     FILENAME_INSTANTIATED = "level-instantiated.json"
     FILENAME_PERSONALIZED = "level-personalized.json"
+    FILENAME_STORY = "level-story.json"
 
     status_to_filename = {
+        state.LevelState.Story : FILENAME_STORY,
         state.LevelState.Personalized : FILENAME_PERSONALIZED,
         state.LevelState.Instantiated : FILENAME_INSTANTIATED,
         state.LevelState.DressingInstantiated : FILENAME_INSTANTIATED,
         state.LevelState.DressingPersonalized : FILENAME_INSTANTIATED,
+    }
+
+    SCHEMA_STORY = "file_schema_level_story.json"
+    SCHEMA_PERSONALIZED = "file_final_level.json"
+    SCHEMA_INSTANTIATED = "file_final_level.json"
+
+    status_to_schema = {
+        state.LevelState.Story : SCHEMA_STORY,
+        state.LevelState.Personalized : SCHEMA_PERSONALIZED,
+        state.LevelState.Instantiated : SCHEMA_INSTANTIATED,
+        state.LevelState.DressingInstantiated : SCHEMA_INSTANTIATED,
+        state.LevelState.DressingPersonalized : SCHEMA_INSTANTIATED,
     }
 
     DUMP_INSTANTIATED = "dump-instantiated.graph"
@@ -66,11 +81,12 @@ class Level:
             raise Exception("Level has no saved state %s" % load_state)
         obj = json_helper.load_and_validate_json(
             directory + "/" + self.status_to_filename[load_state],
-            "file_final_level.json",
+            self.status_to_schema[load_state],
             decode_hook=decode_level(directory, self.status, self.selector))
         self.status = load_state
         self.values = DefaultMunch.fromDict(obj)
-        self.structure_check_coherency()
+        if self.status > state.LevelState.Story:
+            self.structure_check_coherency()
 
     def save(self, directory):
         """save to a file"""
@@ -143,6 +159,9 @@ class Level:
                     _room.values.dressing_class,
                     _room)
 
+    def instantiate(self):
+        level_instantiation.instantiate()
+
     def structure_personalization(self):
         """ 1. For each gate, choose gate format if not already done
             2. Instantiate each room if not already done"""
@@ -178,6 +197,8 @@ class Level:
             raise("Invalid state to run from %s" % self.status)
         if to_state == state.LevelState.Personalized:
             self.structure_personalization()
+        elif to_state == state.LevelState.Instantiated:
+            self.instantiate()
         elif to_state == state.LevelState.DressingInstantiated:
             self.dressing_instantiation()
         elif to_state == state.LevelState.DressingPersonalized:

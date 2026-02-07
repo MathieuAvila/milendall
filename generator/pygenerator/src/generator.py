@@ -127,7 +127,7 @@ def main(argv):
     try:
         my_level.load(directory, start_step)
     except Exception as e:
-        logger.error("Unable to load level at this step. ERROR=%s" % str(e))
+        logger.error("Unable to load level at this step. ERROR=%s" % str(e), exc_info=True)
         sys.exit(1)
 
     for step in state.LevelState:

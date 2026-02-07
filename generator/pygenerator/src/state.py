@@ -2,11 +2,12 @@ from enum import IntEnum
 
 class LevelState(IntEnum):
     New = 0
-    Instantiated = 1
-    Personalized = 2
-    DressingInstantiated = 3
-    DressingPersonalized = 4
-    Finalize = 5
+    Story = 1
+    Instantiated = 2
+    Personalized = 3
+    DressingInstantiated = 4
+    DressingPersonalized = 5
+    Finalize = 6
 
 class StateList():
 

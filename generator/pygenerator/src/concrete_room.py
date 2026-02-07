@@ -314,6 +314,8 @@ def get_texture_id(gltf, texture_list, texture):
                     },
                     "metallicFactor": 0.0
                 },
+                # Show both sides to avoid back-face culling when winding varies
+                "doubleSided": True,
             })
         texture_list[texture] = len(gltf_materials)-1
     return texture_list[texture]
