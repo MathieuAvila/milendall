@@ -16,17 +16,17 @@ class StateList():
         self.current = []
         if filename != None:
             with open(filename, "r") as input_file:
-                word_list = input_file.readline()
-            self.current = [ LevelState.__members__[letter] for letter in word_list.split(" ")  if letter != ""]
+                word_list = input_file.readline().strip()
+            self.current = [LevelState.__members__[name] for name in word_list.split() if name]
 
     def save(self, filename):
         '''Save to a file'''
         with open(filename, "w") as output_file:
-            my_str = " ".join([ str(i)[len("LevelState."):] for i in self.current])
+            my_str = " ".join([i.name for i in self.current])
             output_file.write(my_str)
 
     def __repr__(self):
-        return " ".join([ str(i)[len("LevelState."):] for i in self.current])
+        return " ".join([i.name for i in self.current])
 
     def has_state(self, state):
         return state in self.current

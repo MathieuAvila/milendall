@@ -49,7 +49,7 @@ def _load_json_or_yaml(json_path, object_hook=None):
     if try_yaml:
         yaml_path = os.path.splitext(json_path)[0] + '.yaml'
         with open(yaml_path, "r") as read_file:
-            obj_yaml = yaml.load(read_file)
+            obj_yaml = yaml.safe_load(read_file)
         obj = json.loads(json.dumps(obj_yaml), object_hook=object_hook)
 
     return obj

@@ -20,7 +20,7 @@
         "-p",
         "*test*.py"
     ],
-    "python.analysis.extraPaths" : ["${workspaceFolder}/generator/pygenerator/src"],
+    
     "python.testing.pytestEnabled": false,
     "python.testing.nosetestsEnabled": false,
     "python.testing.cwd": "./generator/pygenerator/src",
@@ -95,5 +95,12 @@
         "valarray": "cpp",
         "variant": "cpp"
     },
-    "C_Cpp.errorSquiggles": "Enabled"
+    "C_Cpp.errorSquiggles": "enabled",
+
+    "python.defaultInterpreterPath": "/home/mathieu/milendall/.venv/bin/python",
+    "python.venvPath": "/home/mathieu/milendall/.venv",
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/generator/pygenerator/src",
+        "/home/mathieu/milendall"
+    ]
 }

@@ -1,0 +1,83 @@
+# Copilot — "milendall" repository instructions
+
+These rules guide Copilot (Chat, Inline, PR) when working in this repository. They cover response style, code conventions, tooling, build/test flows, and project specifics.
+
+## Scope and technologies
+
+- Primary languages:
+  - C++ (CMake/Ninja) in `game/src`, binaries and libraries under `build/`.
+  - Python in `generator/pygenerator` (generator, tests, tools).
+- Data and rendering: glTF, textures, levels under `data/` and `levels/`.
+- OS: Linux; default shell: bash.
+
+## Response style
+
+- Tone: very concise; avoid verbosity.
+
+## Code editing rules
+
+- Prefer minimal changes that satisfy the request.
+- Preserve existing style and public APIs; avoid unrelated reformatting.
+- For notebooks, use notebook editing tools (no terminal commands to edit).
+- Add new files in appropriate locations (see conventions below).
+
+## Build and execution
+
+- C++:
+
+- Python:
+  - Use the repo venv: `.venv`; interpreter is `./.venv/bin/python`.
+  - Dependency management via `pyproject.toml` + `pip-tools` (`pip-compile`) to generate a pinned `requirements.txt`.
+
+## Tests
+
+- Python (unittest):
+  - Tests under `generator/pygenerator/test/`.
+  - Ensure `PYTHONPATH` includes `generator/pygenerator/src`.
+- C++: ctest/Ninja under `build/` (if applicable).
+- After substantive changes, run a minimal test (happy path + 1–2 edges) and fix before concluding.
+
+### Python tests prerequisites and how to run
+
+```bash
+. ./.venv/bin/activate
+cd generator/pygenerator/test
+PYTHONPATH=../src/:./ pytest .
+```
+
+- Then run tests from the repo root:
+
+  ```bash
+  PYTHONPATH=/home/mathieu/milendall/generator/pygenerator/src \
+  /home/mathieu/milendall/.venv/bin/python -m unittest discover -s \
+  /home/mathieu/milendall/generator/pygenerator/test -p 'test_*.py'
+  ```
+
+- If you cannot set the symlinks, run a subset that doesn’t rely on `/data` or `/home/schema` (e.g., bricks):
+
+  ```bash
+  PYTHONPATH=/home/mathieu/milendall/generator/pygenerator/src \
+  /home/mathieu/milendall/.venv/bin/python \
+  /home/mathieu/milendall/generator/pygenerator/test/test_bricks/test_brick_pont.py
+  ```
+
+## Quality and validations
+
+- Quality gates before finishing:
+  - Build: PASS/FAIL.
+  - Lint/Typecheck (if configured): PASS/FAIL.
+  - Unit tests: PASS/FAIL (with key outputs).
+  - Small smoke test when relevant.
+- Report only deltas (what was executed and the essential results).
+
+## Writing Python dependencies
+
+- Add/update in `generator/pygenerator/pyproject.toml`.
+- Regenerate `requirements.txt` with `pip-compile` (pinned), and install into `.venv`.
+- Keep extras (e.g., `ollama`) minimal if only one backend is desired.
+
+## Small proactive improvements
+
+- After satisfying the request, add small, low-risk improvements (extra tests, brief docs, types) if they add clear value.
+- List larger follow-ups as “next steps” without implementing them directly.
+
