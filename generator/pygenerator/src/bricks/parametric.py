@@ -2,19 +2,21 @@
 structure definition for a fully parametric brick
 """
 
+from __future__ import annotations
+
+import functools
 import logging
+import math
+
 from brick_structure import BrickStructure
 import concrete_room
 import cgtypes.vec3
 import cgtypes.mat4
-import functools
-import math
 
 from .register import register_brick_type
 
-from math import *
-
 from jsonmerge import merge
+from typing_defs import ElementWithValues, SelectorLike
 
 logger = logging.getLogger("parametric")
 logger.setLevel(logging.INFO)
@@ -23,29 +25,32 @@ class BrickParametric(BrickStructure):
 
     _name = "parametric"
 
-    def __init__(self, _element=None):
+    _element: ElementWithValues | None
+
+    def __init__(self, _element: ElementWithValues | None = None) -> None:
         """ init room """
         self._element = _element
 
-    def get_instance(self, room:None):
+    def get_instance(self, room: ElementWithValues) -> BrickParametric:
         """Return an instante"""
         return BrickParametric(room)
 
-    def check_fit(self):
+    def check_fit(self) -> int:
         """ Pass the Room, check it can be applied. """
         logger.debug("checking if parametric fits: always")
         return 100
 
-    def check_structure(self):
+    def check_structure(self) -> bool:
         """check everything is as expected.
         """
         logger.debug("checking if parametric is ok.")
         return True
 
-    def instantiate(self, selector):
+    def instantiate(self, selector: SelectorLike) -> None:
         """ force set values:
         - set values to room size"""
-
+        if self._element is None:
+            raise RuntimeError("BrickParametric requires an element to instantiate")
         structure_parameters = self._element.values.parameters.structure_parameters
 
         my_default = {
@@ -61,8 +66,10 @@ class BrickParametric(BrickStructure):
         self._element.values.parameters.structure_private = merge( my_default, structure_parameters)
         logger.debug("setup: %s", str(self._element.values.parameters.structure_private))
 
-    def generate(self, concrete):
+    def generate(self, concrete: concrete_room.ConcreteRoom) -> None:
         """Perform instantiation on concrete_room"""
+        if self._element is None:
+            raise RuntimeError("BrickParametric requires an element to generate")
         structure_private = self._element.values.parameters.structure_private
 
         setup = structure_private["setup"]

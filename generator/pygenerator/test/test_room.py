@@ -2,6 +2,8 @@
 test room
 """
 
+from __future__ import annotations
+
 import logging
 
 import unittest
@@ -22,12 +24,12 @@ logger.setLevel(logging.INFO)
 
 class TestRoom(unittest.TestCase):
 
-    def remake_dest(self, dir):
+    def remake_dest(self, dir: str) -> None:
         pathlib.Path(dir).mkdir(parents=True, exist_ok=True)
         shutil.rmtree(dir)
         pathlib.Path(dir).mkdir(parents=True, exist_ok=True)
 
-    def test_01_load_save_void(self):
+    def test_01_load_save_void(self) -> None:
         """ test loading and saving a void room"""
         selector = selector_fake.SelectorFake()
         loaded_room = room.Room(
@@ -51,7 +53,7 @@ class TestRoom(unittest.TestCase):
         self.assertIsNotNone(reloaded_room.values.bricks)
         self.assertEqual(len(reloaded_room.values.bricks), 0)
 
-    def test_01_load_save_2b(self):
+    def test_01_load_save_2b(self) -> None:
         """ test loading and saving a void room"""
         selector = selector_fake.SelectorFake()
         loaded_room = room.Room(
@@ -76,7 +78,7 @@ class TestRoom(unittest.TestCase):
         self.assertIsNotNone(reloaded_room.values.bricks)
         self.assertEqual(len(reloaded_room.values.bricks), 2)
 
-    def test_01_load_save_objects(self):
+    def test_01_load_save_objects(self) -> None:
         """ test loading and saving a 1 brick room with 3 objects"""
         selector = selector_fake.SelectorFake()
         loaded_room = room.Room(
@@ -99,7 +101,7 @@ class TestRoom(unittest.TestCase):
 
         self.assertEqual(len(loaded_room.values.bricks[0].values.objects), 3)
 
-    def test_02_structure_personalization(self):
+    def test_02_structure_personalization(self) -> None:
         """Test the personalization algo using a fake selector"""
         my_test_dir = "/tmp/test_01_structure_personalization"
         self.remake_dest(my_test_dir)
@@ -111,7 +113,7 @@ class TestRoom(unittest.TestCase):
         loaded_room.structure_personalization()
         loaded_room.save(my_test_dir)
 
-    def test_03_dressing_instantiation(self):
+    def test_03_dressing_instantiation(self) -> None:
         """Test the dressing instantiation algo using a fake selector"""
         my_test_dir = "/tmp/test_01_dressing_instantiation"
         self.remake_dest(my_test_dir)
@@ -124,7 +126,7 @@ class TestRoom(unittest.TestCase):
         loaded_room.dressing_instantiation()
         loaded_room.save(my_test_dir)
 
-    def test_04_dressing_personalization(self):
+    def test_04_dressing_personalization(self) -> None:
         """Test the dressing personalization algo using a fake selector"""
         selector = selector_fake.SelectorFake()
         my_test_dir = "/tmp/test_01_dressing_personalization"
@@ -138,7 +140,7 @@ class TestRoom(unittest.TestCase):
         loaded_room.dressing_personalization()
         loaded_room.save(my_test_dir)
 
-    def test_05_finalize_01_2b(self):
+    def test_05_finalize_01_2b(self) -> None:
         """Test the finalize"""
         """Test the dressing personalization algo using a fake selector"""
         selector = selector_fake.SelectorFake()
@@ -154,7 +156,7 @@ class TestRoom(unittest.TestCase):
         loaded_room.save(my_test_dir)
         loaded_room.finalize(my_test_dir)
 
-    def test_05_finalize_01_2b_linked(self):
+    def test_05_finalize_01_2b_linked(self) -> None:
         """Test the finalize"""
         """Test the dressing personalization algo using a fake selector"""
         selector = selector_fake.SelectorFake()
@@ -170,7 +172,7 @@ class TestRoom(unittest.TestCase):
         loaded_room.save(my_test_dir)
         loaded_room.finalize(my_test_dir)
 
-    def test_06_finalize_brick_translation(self):
+    def test_06_finalize_brick_translation(self) -> None:
         """Test a brick root pad with translation"""
         selector = selector_fake.SelectorFake()
         my_test_dir = "/tmp/test_06_finalize_brick_translation"
@@ -202,7 +204,7 @@ class TestRoom(unittest.TestCase):
         self.assertEqual(special.matrix, cgtypes.mat4.translation(
             cgtypes.vec3(1.0, 2.0, 3.0)))
 
-    def test_06_finalize_brick_rotation(self):
+    def test_06_finalize_brick_rotation(self) -> None:
         """Test a brick root pad with rotation"""
         selector = selector_fake.SelectorFake()
         my_test_dir = "/tmp/test_06_finalize_brick_rotation"

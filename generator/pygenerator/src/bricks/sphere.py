@@ -2,7 +2,11 @@
 structure definition for a simple sphere brick
 """
 
+from __future__ import annotations
+
 import logging
+from math import cos, pi, sin
+
 from brick_structure import BrickStructure
 import concrete_room
 import cgtypes.vec3
@@ -10,9 +14,8 @@ import cgtypes.mat4
 
 from .register import register_brick_type
 
-from math import *
-
 from jsonmerge import merge
+from typing_defs import ElementWithValues, SelectorLike
 
 logger = logging.getLogger("sphere")
 logger.setLevel(logging.INFO)
@@ -21,29 +24,32 @@ class BrickSphere(BrickStructure):
 
     _name = "sphere"
 
-    def __init__(self, _element=None):
+    _element: ElementWithValues | None
+
+    def __init__(self, _element: ElementWithValues | None = None) -> None:
         """ init brick """
         self._element = _element
 
-    def get_instance(self, brick:None):
+    def get_instance(self, brick: ElementWithValues) -> BrickSphere:
         """Return an instante"""
         return BrickSphere(brick)
 
-    def check_fit(self):
+    def check_fit(self) -> int:
         """ Pass the brick, and list of gates, check it can be applied. """
         logger.debug("checking if sphere fits: always ! rectangular rules the world !")
         return 100
 
-    def check_structure(self):
+    def check_structure(self) -> bool:
         """check everything is as expected.
         """
         logger.debug("checking if sphere is ok: always ! sphere rules the world !")
         return True
 
-    def instantiate(self, selector):
+    def instantiate(self, selector: SelectorLike) -> None:
         """ force set values:
         - set values to brick size"""
-
+        if self._element is None:
+            raise RuntimeError("BrickSphere requires an element to instantiate")
         structure_parameters = self._element.values.parameters.structure_parameters
         my_default = {
             "setup": {
@@ -57,8 +63,10 @@ class BrickSphere(BrickStructure):
         self._element.values.parameters.structure_private = merge( my_default, structure_parameters)
         logger.debug("setup: %s", str(self._element.values.parameters.structure_private["setup"]))
 
-    def generate(self, concrete):
+    def generate(self, concrete: concrete_room.ConcreteRoom) -> None:
         """Perform instantiation on concrete_room"""
+        if self._element is None:
+            raise RuntimeError("BrickSphere requires an element to generate")
         structure_private = self._element.values.parameters.structure_private
 
 

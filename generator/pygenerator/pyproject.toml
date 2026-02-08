@@ -1,0 +1,82 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pygenerator"
+version = "0.1.0"
+description = "Milendall level/object Python generator tools"
+authors = [{ name = "Mathieu Avila" }]
+license = { file = "../../LICENSE" }
+readme = "../doc.rst"
+requires-python = ">=3.10"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+
+# Runtime deps for the generator (derived from imports across the project)
+dependencies = [
+  "munch",
+  "clang",
+  "PyYAML",
+  "jsonschema",
+  "json5",
+  "jsonmerge",
+  "langchain",
+  "langgraph"
+]
+
+# development dependencies (testing, linting, formatting)
+
+[project.optional-dependencies]
+# Choose one local Llama backend. Ollama is simplest to run; llama-cpp-python works without daemon.
+ollama = [
+  "langchain-community",
+  "ollama>=0.3.0",
+  "langchain-ollama>=0.1.0",
+]
+llamacpp = [
+  "langchain-community",
+  "llama-cpp-python>=0.2.0",
+]
+dev = [
+  "pytest>=7.0",
+  "pytest-cov",
+  "mypy",
+  "black",
+  "isort",
+  "flake8",
+  "pip-tools",
+  "pre-commit",
+  "types-PyYAML",
+  "types-jsonschema",
+]
+
+
+# Include langchain-community in core dependencies so editor resolves community LLMs imports.
+[tool.pip-tools]
+extra = ["ollama", "llamacpp"]
+
+[project.urls]
+Homepage = "https://github.com/MathieuAvila/milendall"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["test", "build"]
+
+[tool.mypy]
+exclude = ".*cgtypes/.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["cgtypes.*", "concrete_room", "gltf_helper", "milendall_math", "animation"]
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = ["bricks.*"]
+ignore_errors = true

@@ -2,11 +2,17 @@
 interface definition of a real brick
 """
 
+from __future__ import annotations
+
+from typing import Mapping
+
 from munch import DefaultMunch
 import logging
 
+
 from element import Element
 import json_helper
+from typing_defs import BrickValues, SelectorLike, TextWriter
 
 logging.basicConfig()
 logger = logging.getLogger("brick")
@@ -14,35 +20,42 @@ logger.setLevel(logging.INFO)
 
 class Brick(Element):
 
-    def __init__(self, values, selector):
-        self.values = DefaultMunch.fromDict(values)
+    values: BrickValues
+    selector: SelectorLike
+
+    def __init__(self, values: Mapping[str, object], selector: SelectorLike) -> None:
+        self.values = DefaultMunch.fromDict(values)  # type: ignore[assignment]
         self.selector = selector
 
         # check subparts against schema, if they exist
         v = self.values
         logger.debug("Some schema checking for %s" % v.parameters.structure_class)
-        if "pads" in v:
+        if v.pads is not None:
+            if v.parameters.structure_class is None:
+                raise RuntimeError("Brick requires a structure class for pad validation")
             for f in v.pads:
-                if "definition" in f:
+                if getattr(f, "definition", None) is not None:
                     schema = "bricks/" + v.parameters.structure_class + "/pad.json"
                     logger.debug("Check pad fragment against %s" % schema)
                     json_helper.check_json_fragment(f.definition, schema)
-        if "parameters" in v:
-            if "structure_parameters" in v.parameters:
-                schema = "bricks/" + v.parameters.structure_class + "/structure_parameters.json"
-                logger.debug("Check structure_parameters fragment against %s" % schema)
-                json_helper.check_json_fragment(v.parameters.structure_parameters, schema)
+        if v.parameters.structure_parameters is not None:
+            if v.parameters.structure_class is None:
+                raise RuntimeError("Brick requires a structure class for parameter validation")
+            schema = "bricks/" + v.parameters.structure_class + "/structure_parameters.json"
+            logger.debug("Check structure_parameters fragment against %s" % schema)
+            json_helper.check_json_fragment(v.parameters.structure_parameters, schema)
 
 
-    def get_class(self):
+    def get_class(self) -> str:
         """ get my class for selector"""
         return "brick"
 
-    def get_id(self):
+    def get_id(self) -> str:
         """ return ID depending on type"""
         return self.values.b_id
 
-    def dump_graph(self, output_room, output_main, dump_prefix):
+
+    def dump_graph(self, output_room: TextWriter, output_main: TextWriter, dump_prefix: str) -> None:
         """
         dump a graphviz repr of a brick
         """
@@ -50,14 +63,15 @@ class Brick(Element):
         logger.debug("Dump brick %s" % (self.values["b_id"]))
         label = self.values.b_id
         v = self.values
-        p = v.parameters
+        params = v.parameters
         my_name = dump_prefix + "_" + v.b_id
-        if self.values.triggers is not None:
-            label += "<BR/><B>".join(["\n"] + [t.trigger_id for t in v.triggers])+"</B>"
-        if p.structure_class is not None:
-            label += "<BR/><I>S: "+ p.structure_class + "</I>"
-        if p.dressing_class is not None:
-            label += "<BR/><I>D: "+ p.dressing_class + "</I>"
+        triggers = v.triggers
+        if triggers is not None:
+            label += "<BR/><B>".join(["\n"] + [t.trigger_id for t in triggers])+"</B>"
+        if params.structure_class is not None:
+            label += "<BR/><I>S: "+ params.structure_class + "</I>"
+        if params.dressing_class is not None:
+            label += "<BR/><I>D: "+ params.dressing_class + "</I>"
         #output.write('"' + dump_prefix + "_" + v.b_id +'" ' + '[ label=< ' + label+ ' > ] ;\n')
 
         #output_room.write('"' + my_name +'" ' + '[ label=< ' + label+ ' > ] ;\n')
@@ -76,10 +90,10 @@ class Brick(Element):
         output_room.write('};\n')
 
         if v.portals is not None:
-            for p in v.portals:
-                i_portal = p.gate_id
-                if p.connect == "A":
-                    output_main.write('"' + my_name + '" -> "' + i_portal + '" [ label="' + p.connect +'"];\n')
+            for portal in v.portals:
+                i_portal = portal.gate_id
+                if portal.connect == "A":
+                    output_main.write('"' + my_name + '" -> "' + i_portal + '" [ label="' + portal.connect +'" ];\n')
                 else:
-                    output_main.write('"' + i_portal + '" -> "' + my_name + '" [ label="' + p.connect +'"];\n')
+                    output_main.write('"' + i_portal + '" -> "' + my_name + '" [ label="' + portal.connect +'" ];\n')
 

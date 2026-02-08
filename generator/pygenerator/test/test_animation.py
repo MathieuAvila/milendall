@@ -2,11 +2,14 @@
 test level
 """
 
+from __future__ import annotations
+
 import logging
 import json
 import pathlib
 import struct
 import sys
+from typing import Any
 
 import unittest
 import concrete_room
@@ -19,7 +22,8 @@ logger.setLevel(logging.INFO)
 
 class TestAnimation(unittest.TestCase):
 
-    def get_data_from_accessor(self, json_content, index, root_path):
+    def get_data_from_accessor(self, json_content: dict[str, Any], index: int,
+                               root_path: str) -> list[Any]:
         """return accessor data in table, format depends on type"""
         accessor = json_content["accessors"][index]
         data_type = accessor["type"]
@@ -57,7 +61,7 @@ class TestAnimation(unittest.TestCase):
                 result.append(read_p[0])
             return result
 
-    def create_cube(self):
+    def create_cube(self) -> concrete_room.ConcreteRoom:
         """ create a cube for future use """
         room = concrete_room.ConcreteRoom()
         parent = room.add_child(None, "parent")
@@ -111,7 +115,7 @@ class TestAnimation(unittest.TestCase):
                 scale=1.0 ))
         return room
 
-    def test_insert_1_animation(self):
+    def test_insert_1_animation(self) -> None:
         """Test generation of 1 animation in GLTF file"""
         cube = self.create_cube()
         anim0 = animation.Animation("test_anim", 0.0, 1.0, "my_event")
@@ -136,7 +140,7 @@ class TestAnimation(unittest.TestCase):
         self.assertEqual(animations[0], {'name': 'test_anim', 'false': 0.0, 'true': 1.0, 'event': 'my_event'})
 
 
-    def test_insert_1_animation_2_keys(self):
+    def test_insert_1_animation_2_keys(self) -> None:
         """Test generation of 1 animation in GLTF file"""
         cube = self.create_cube()
         anim0 = animation.Animation("test_anim", 0.0, 1.0, "my_event")
@@ -155,7 +159,7 @@ class TestAnimation(unittest.TestCase):
         concrete_room.preview(path_gen + "/room.gltf", path_gen + "/room_preview.gltf")
 
 
-    def test_insert_2_animation_2_keys(self):
+    def test_insert_2_animation_2_keys(self) -> None:
         """Test generation of 1 animation in GLTF file"""
         cube = self.create_cube()
 
@@ -190,7 +194,7 @@ class TestAnimation(unittest.TestCase):
 
 
 
-    def test_append_prefix(self):
+    def test_append_prefix(self) -> None:
         """Test updating animations node with 1 prefix"""
         cube = self.create_cube()
         anim0 = animation.Animation("test_anim", 0.0, 1.0, "my_event")

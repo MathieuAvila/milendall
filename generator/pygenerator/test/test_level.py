@@ -2,6 +2,8 @@
 test level
 """
 
+from __future__ import annotations
+
 import logging
 
 import unittest
@@ -18,12 +20,12 @@ logger.level = logging.DEBUG
 
 class TestLevel(unittest.TestCase):
 
-    def remake_dest(self, dir):
+    def remake_dest(self, dir: str) -> None:
         pathlib.Path(dir).mkdir(parents=True, exist_ok=True)
         shutil.rmtree(dir)
         pathlib.Path(dir).mkdir(parents=True, exist_ok=True)
 
-    def test_01_load_invalid_level(self):
+    def test_01_load_invalid_level(self) -> None:
         """ test loading an invalid level"""
         selector = selector_fake.SelectorFake()
         loaded_level = level.Level(selector)
@@ -34,7 +36,7 @@ class TestLevel(unittest.TestCase):
             has_error = True
         self.assertTrue(has_error)
 
-    def INVALID_test_01_load_save_simple(self):
+    def INVALID_test_01_load_save_simple(self) -> None:
         """ test loading and saving a level
         MARKED INVALID as it writes back the gates property"""
         selector = selector_fake.SelectorFake()
@@ -61,14 +63,14 @@ class TestLevel(unittest.TestCase):
         self.assertIsNotNone(reloaded_level.values.rooms)
         self.assertEqual(len(reloaded_level.values.rooms), 3)
 
-    def test_02_load_save_1r(self):
+    def test_02_load_save_1r(self) -> None:
         """ test loading and saving a level with 1 room"""
         selector = selector_fake.SelectorFake()
         loaded_level = level.Level(selector)
         loaded_level.load("../test/test_samples/level/simple_1r_0b_instantiated", state.LevelState.Instantiated)
         self.assertIsNotNone(loaded_level)
 
-    def test_03_structure_personalization(self):
+    def test_03_structure_personalization(self) -> None:
         """Test the instantiation algo using a fake selector"""
         selector = selector_fake.SelectorFake()
         loaded_level = level.Level(selector)
@@ -79,7 +81,7 @@ class TestLevel(unittest.TestCase):
         self.remake_dest(output)
         loaded_level.save(output)
 
-    def test_04_dressing_instantiation(self):
+    def test_04_dressing_instantiation(self) -> None:
         """Test the dressing instantiation"""
         selector = selector_fake.SelectorFake()
         loaded_level = level.Level(selector)
@@ -91,7 +93,7 @@ class TestLevel(unittest.TestCase):
         self.remake_dest(output)
         loaded_level.save(output)
 
-    def test_05_dressing_personalization(self):
+    def test_05_dressing_personalization(self) -> None:
         """Test the dressng personalization algo"""
         selector = selector_fake.SelectorFake()
         loaded_level = level.Level(selector)
@@ -104,7 +106,7 @@ class TestLevel(unittest.TestCase):
         self.remake_dest(output)
         loaded_level.save(output)
 
-    def test_06_finalize(self):
+    def test_06_finalize(self) -> None:
         """Test the finalize"""
         selector = selector_fake.SelectorFake()
         loaded_level = level.Level(selector)

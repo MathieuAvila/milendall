@@ -2,11 +2,31 @@
 Helpers to create an animation in a room
 """
 
+from __future__ import annotations
+
+from typing import Protocol, TypedDict
+
 from gltf_helper import create_accessor
+
+
+class NodeProvider(Protocol):
+    def get_node_rank(self, node_name: str) -> int:
+        """Return the node index for a given name."""
+
+
+class ActionKey(TypedDict):
+    time: float
+    value: list[float]
 
 class Animation:
 
-    def __init__(self, name, at_false, at_true, event):
+    name: str
+    action_list: list[dict[str, object]]
+    at_false: float
+    at_true: float
+    event: str
+
+    def __init__(self, name: str, at_false: float, at_true: float, event: str) -> None:
         """
         name -- This is the name of the animation as it is refefenced in the final file
         at_false -- is intended to be at this timestamp when event is FALSE
@@ -23,7 +43,7 @@ class Animation:
     ACTION_ROTATION = "rotation"
     ACTION_SCALE = "scale"
 
-    def append_action(self, node_name, action, key_table):
+    def append_action(self, node_name: str, action: str, key_table: list[ActionKey]) -> None:
         """
         append an action table to a node
         node_name -- the node to which the action applies
@@ -32,11 +52,12 @@ class Animation:
         """
         self.action_list.append({"node":node_name, "action": action, "table": key_table})
 
-    def append_prefix(self, prefix):
+    def append_prefix(self, prefix: str) -> None:
         for anim in self.action_list:
             anim["node"] = prefix + anim["node"]
 
-    def generate_gltf(self, gltf, data_file, node_provider):
+    def generate_gltf(self, gltf: dict[str, object], data_file: object,
+                      node_provider: NodeProvider) -> None:
         animation = {
             "name" : self.name,
             "channels" : [],

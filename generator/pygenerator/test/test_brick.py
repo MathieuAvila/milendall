@@ -2,6 +2,8 @@
 test brick
 """
 
+from __future__ import annotations
+
 import logging
 
 import unittest
@@ -54,26 +56,26 @@ def_scheme_invalid_dressing_class = {
 
 class TestBrick(unittest.TestCase):
 
-    def test_01_load_invalid_pad(self):
+    def test_01_load_invalid_pad(self) -> None:
         """ test loading and saving a brick with a PAD incorrectly defined"""
         selector = selector_regular.SelectorRegular()
         with self.assertRaises(Exception):
             brick.Brick(def_scheme_invalid_pad, selector)
 
-    def test_01_load_invalid_parameters(self):
+    def test_01_load_invalid_parameters(self) -> None:
         """ test loading and saving a brick with incorrect parameters"""
         selector = selector_regular.SelectorRegular()
         with self.assertRaises(Exception):
             brick.Brick(def_scheme_invalid_parameters, selector)
 
-    def test_01_load_invalid_structure_class(self):
+    def test_01_load_invalid_structure_class(self) -> None:
         """ test loading and saving a brick with incorrect structure class"""
         selector = selector_regular.SelectorRegular()
         with self.assertRaises(Exception):
             b = brick.Brick(def_scheme_invalid_structure_class, selector)
             b.structure_personalization()
 
-    def test_01_load_invalid_dressing_class(self):
+    def test_01_load_invalid_dressing_class(self) -> None:
         """ test loading and saving a brick with incorrect dressing class"""
         selector = selector_regular.SelectorRegular()
         with self.assertRaises(Exception):

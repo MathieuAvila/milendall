@@ -17,9 +17,8 @@ These rules guide Copilot (Chat, Inline, PR) when working in this repository. Th
 ## Code editing rules
 
 - Prefer minimal changes that satisfy the request.
-- Preserve existing style and public APIs; avoid unrelated reformatting.
-- For notebooks, use notebook editing tools (no terminal commands to edit).
 - Add new files in appropriate locations (see conventions below).
+- For all changes, iterate until tests pass, or you need to ask a specific requirement that was not provided.
 
 ## Build and execution
 
@@ -39,27 +38,18 @@ These rules guide Copilot (Chat, Inline, PR) when working in this repository. Th
 
 ### Python tests prerequisites and how to run
 
+To run the tests, just run this command at the root directory of the project:
 ```bash
-. ./.venv/bin/activate
-cd generator/pygenerator/test
-PYTHONPATH=../src/:./ pytest .
+make python-test
 ```
 
-- Then run tests from the repo root:
+### Python typing
 
-  ```bash
-  PYTHONPATH=/home/mathieu/milendall/generator/pygenerator/src \
-  /home/mathieu/milendall/.venv/bin/python -m unittest discover -s \
-  /home/mathieu/milendall/generator/pygenerator/test -p 'test_*.py'
-  ```
+To check typing and linting, run this command at the root directory of the project:
+```bash
+make python-check
+```
 
-- If you cannot set the symlinks, run a subset that doesn’t rely on `/data` or `/home/schema` (e.g., bricks):
-
-  ```bash
-  PYTHONPATH=/home/mathieu/milendall/generator/pygenerator/src \
-  /home/mathieu/milendall/.venv/bin/python \
-  /home/mathieu/milendall/generator/pygenerator/test/test_bricks/test_brick_pont.py
-  ```
 
 ## Quality and validations
 

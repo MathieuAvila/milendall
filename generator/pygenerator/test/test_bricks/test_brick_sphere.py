@@ -2,15 +2,17 @@
 test rectangular room
 """
 
+from __future__ import annotations
+
 import logging
 import sys
-
 import unittest
-import bricks.sphere as sphere
+
 import brick
 import concrete_room
 import selector_regular
 
+import bricks.sphere as sphere
 import dressings.basic as basic
 
 logger = logging.getLogger("TestBrickSphere")
@@ -34,7 +36,7 @@ class TestBrickSphere(unittest.TestCase):
 
     selector = selector_regular.SelectorRegular()
 
-    def test_generate_0_pad(self):
+    def test_generate_0_pad(self) -> None:
         """generate one rectangular with no pad"""
         stream_handler = logging.StreamHandler(sys.stdout)
         logger.addHandler(stream_handler)

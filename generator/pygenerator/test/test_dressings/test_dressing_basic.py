@@ -2,30 +2,35 @@
 test rectangular room
 """
 
-import logging
-import sys
-import pathlib
-from munch import DefaultMunch
+from __future__ import annotations
 
+import logging
+import pathlib
+import sys
 import unittest
 
-import cgtypes.mat4
+from munch import DefaultMunch
 
-import dressings.basic as basic
+import cgtypes.mat4
+from cgtypes.vec3 import vec3
+
 import concrete_room
+import dressings.basic as basic
 
 logger = logging.getLogger("TestDressingBasic")
 logger.setLevel(logging.INFO)
 
-class FakeElement():
+class FakeElement:
 
-    def __init__(self):
-        self.values = DefaultMunch.fromDict({ "values" : { "parameters"}})
-        self.values.parameters = DefaultMunch.fromDict({ "dressing_parameters": { "A" : 0} })
+    values: DefaultMunch
+
+    def __init__(self) -> None:
+        self.values = DefaultMunch.fromDict({"values": {"parameters"}})
+        self.values.parameters = DefaultMunch.fromDict({"dressing_parameters": {"A": 0}})
 
 class TestDressingBasic(unittest.TestCase):
 
-    def test_generate_1_physics_1_visual_1_both(self):
+    def test_generate_1_physics_1_visual_1_both(self) -> None:
         """ test generate 1 phys, 1 vis, 1 both"""
         stream_handler = logging.StreamHandler(sys.stdout)
         logger.addHandler(stream_handler)
@@ -33,10 +38,11 @@ class TestDressingBasic(unittest.TestCase):
         concrete = concrete_room.ConcreteRoom()
         parent = concrete.add_child(None, "parent")
         points = [
-            cgtypes.vec3(0.0, 0.0, 0.0),
-            cgtypes.vec3(1.0, 0.0, 0.0),
-            cgtypes.vec3(0.0, 1.0, 0.0),
-            cgtypes.vec3(0.0, 0.0, 1.0) ]
+            vec3(0.0, 0.0, 0.0),
+            vec3(1.0, 0.0, 0.0),
+            vec3(0.0, 1.0, 0.0),
+            vec3(0.0, 0.0, 1.0),
+        ]
         index0 = parent.add_structure_points(points)
         parent.add_structure_faces(
             index0,

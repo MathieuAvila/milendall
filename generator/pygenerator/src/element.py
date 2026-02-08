@@ -2,7 +2,12 @@
 interface definition for room/gate element
 """
 
+from __future__ import annotations
+
 import logging
+
+import concrete_room
+from typing_defs import DressingLike, ElementValues, SelectorLike, StructureLike
 
 logging.basicConfig()
 logger = logging.getLogger("element")
@@ -18,7 +23,20 @@ class Element():
     """
 
 
-    def structure_personalization(self):
+    values: ElementValues
+    selector: SelectorLike
+    structure: StructureLike
+    dressing: DressingLike
+
+    def get_class(self) -> str:
+        """Return the class name for selector lookup."""
+        raise NotImplementedError("subclass me")
+
+    def get_id(self) -> str:
+        """Return the element identifier."""
+        raise NotImplementedError("subclass me")
+
+    def structure_personalization(self) -> None:
 
         logger.info("personalization element: %s", self.get_id())
         self.structure = self.selector.get_structure_from_name(
@@ -31,7 +49,7 @@ class Element():
         logger.debug("Run instantiation structure parameters for element: %s", self.get_id())
         self.structure.instantiate(self.selector)
 
-    def dressing_instantiation(self):
+    def dressing_instantiation(self) -> None:
         """ 1. Sort element types that matches constraints
             Note: it's up to the element type to check criterias
             2. Associate weights for each
@@ -54,7 +72,7 @@ class Element():
         else:
             logger.debug("No need to select dressing  class for element: %s", self.get_id())
 
-    def dressing_personalization(self):
+    def dressing_personalization(self) -> None:
 
         logger.info("dressing personalization for element: %s", self.get_id())
         self.dressing = self.selector.get_dressing_from_name(
@@ -76,9 +94,8 @@ class Element():
         self.dressing.instantiate(self.selector)
 
 
-    def finalize(self, concrete):
-        """ Perform final generate and dressing on one room. This is specific to a room
-        and builds all intermediate portals when needed."""
+    def finalize(self, concrete: concrete_room.ConcreteRoom) -> None:
+        """Perform final generate and dressing on one room."""
 
         logger.info("finalize element: %s", self.get_id())
         self.structure = self.selector.get_structure_from_name(

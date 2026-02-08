@@ -2,17 +2,19 @@
 Additional brick that brings only gravity on a parametric function
 """
 
+from __future__ import annotations
+
+import functools
 import logging
+
 from brick_structure import BrickStructure
 import concrete_room
 import cgtypes.mat4
-import functools
 
 from .register import register_brick_type
 
-from math import *
-
 from jsonmerge import merge
+from typing_defs import ElementWithValues, SelectorLike
 
 logger = logging.getLogger("gravity_sampler_func")
 logger.setLevel(logging.INFO)
@@ -21,27 +23,32 @@ class BrickGravitySamplerFunc(BrickStructure):
 
     _name = "gravity_sampler_func"
 
-    def __init__(self, _element=None):
+    _element: ElementWithValues | None
+
+    def __init__(self, _element: ElementWithValues | None = None) -> None:
         """ init room """
         self._element = _element
 
-    def get_instance(self, room:None):
+    def get_instance(self, room: ElementWithValues) -> BrickGravitySamplerFunc:
         """Return an instante"""
         return BrickGravitySamplerFunc(room)
 
-    def check_fit(self):
+    def check_fit(self) -> int:
         """ Pass the Room, check it can be applied. """
         logger.debug("checking if gravity_sampler fits")
+        return 100
 
-    def check_structure(self):
+    def check_structure(self) -> bool:
         """check everything is as expected.
         """
         logger.debug("checking if gravity_sampler is ok.")
         return True
 
-    def instantiate(self, selector):
+    def instantiate(self, selector: SelectorLike) -> None:
         """ force set values:
         - set values to room size"""
+        if self._element is None:
+            raise RuntimeError("BrickGravitySamplerFunc requires an element to instantiate")
         structure_parameters = self._element.values.parameters.structure_parameters
         if structure_parameters == None:
             self._element.values.parameters.structure_parameters = {}
@@ -65,8 +72,10 @@ class BrickGravitySamplerFunc(BrickStructure):
         self._element.values.parameters.structure_private = merge( my_default, structure_parameters)
         logger.debug("setup: %s", str(self._element.values.parameters.structure_private))
 
-    def generate(self, concrete):
+    def generate(self, concrete: concrete_room.ConcreteRoom) -> None:
         """Perform instantiation on concrete_room"""
+        if self._element is None:
+            raise RuntimeError("BrickGravitySamplerFunc requires an element to generate")
         structure_private = self._element.values.parameters.structure_private
 
         setup = structure_private

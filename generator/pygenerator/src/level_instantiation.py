@@ -1,10 +1,14 @@
 
+from __future__ import annotations
+
+from typing import Any
 
 import logging
 import langchain
 import langgraph
 
 # Only support the Ollama backend
+BACKEND: str | None
 try:
     from langchain_ollama import OllamaLLM
     BACKEND = "ollama"
@@ -16,8 +20,7 @@ logger = logging.getLogger("generator")
 logger.setLevel(logging.INFO)
 
 
-
-def instantiate():
+def instantiate() -> dict[str, Any]:
     """Initialize a local Llama model and return a tiny completion plus versions.
 
     Uses Ollama if available (requires the Ollama daemon and a pulled model, e.g., `llama3`),
@@ -31,7 +34,7 @@ def instantiate():
     logger.info("Langchain version: %s", versions["langchain"])
     logger.info("Langgraph version: %s", versions["langgraph"])
 
-    result = {
+    result: dict[str, Any] = {
         "backend": BACKEND or "none",
         "versions": versions,
         "sample": None,

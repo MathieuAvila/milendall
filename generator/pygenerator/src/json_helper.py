@@ -2,6 +2,10 @@
 Helpers to load and validate JSON file
 """
 
+from __future__ import annotations
+
+from typing import Callable
+
 import logging
 import pathlib
 import os
@@ -15,18 +19,20 @@ SCHEMA_LOCATION = "../../schema/"
 logger = logging.getLogger("json_helper")
 logger.setLevel(logging.INFO)
 
-def _handler(path):
-        if not path.startswith('http://'):
-            raise Exception('Not a http URL: {}'.format(path))
-        path_no_scheme = path[len('http://'):]
-        name = os.path.basename(path_no_scheme)
-        schema_path = SCHEMA_LOCATION + name
-        real_path = os.path.realpath(schema_path)
-        with open(real_path, "r") as f:
-            j = json.load(f)
-            return j
+def _handler(path: str) -> object:
+    if not path.startswith('http://'):
+        raise Exception('Not a http URL: {}'.format(path))
+    path_no_scheme = path[len('http://'):]
+    name = os.path.basename(path_no_scheme)
+    schema_path = SCHEMA_LOCATION + name
+    real_path = os.path.realpath(schema_path)
+    with open(real_path, "r") as f:
+        j = json.load(f)
+        return j
 
-def _load_json_or_yaml(json_path, object_hook=None):
+
+def _load_json_or_yaml(json_path: str,
+                       object_hook: Callable[[dict[str, object]], object] | None = None) -> object:
     try_yaml = False
     try_jsonc = False
     try:
@@ -42,9 +48,9 @@ def _load_json_or_yaml(json_path, object_hook=None):
                 obj_jsonc = json5.load(read_file)
                 obj = json.loads(json.dumps(obj_jsonc), object_hook=object_hook)
                 return obj
-        except jsonschema.exceptions.ValidationError as e:
+        except jsonschema.exceptions.ValidationError:
             raise
-        except Exception as e:
+        except Exception:
             try_yaml = True
     if try_yaml:
         yaml_path = os.path.splitext(json_path)[0] + '.yaml'
@@ -54,13 +60,17 @@ def _load_json_or_yaml(json_path, object_hook=None):
 
     return obj
 
-def load_and_validate_json(json_path, schema_name, decode_hook=None):
+def load_and_validate_json(json_path: str, schema_name: str,
+                           decode_hook: Callable[[dict[str, object]], object] | None = None) -> object:
     schema_path = SCHEMA_LOCATION + schema_name
     real_path = os.path.realpath(schema_path)
     with open(real_path, "r") as read_schema_file:
         schema = json.load(read_schema_file)
     schemaurl = "file://" + real_path
-    resolver = jsonschema.RefResolver(schemaurl, referrer=schema, handlers = { 'http': _handler , "file": _handler} )
+    resolver = jsonschema.RefResolver(schemaurl, referrer=schema, handlers={
+        'http': _handler,
+        "file": _handler,
+    })
     #resolver = jsonschema.RefResolver.from_schema(schema)
 
     obj = _load_json_or_yaml(json_path)
@@ -69,28 +79,31 @@ def load_and_validate_json(json_path, schema_name, decode_hook=None):
     obj = _load_json_or_yaml(json_path, object_hook=decode_hook)
     return obj
 
-def check_json_fragment(fragment, schema_name):
+def check_json_fragment(fragment: object, schema_name: str) -> None:
     '''If such schema exists, check against it. Otherwise keep going'''
     schema_path = SCHEMA_LOCATION + schema_name
     real_path = os.path.realpath(schema_path)
     try:
         with open(real_path, "r") as read_schema_file:
             schema = json.load(read_schema_file)
-    except Exception as e:
+    except Exception:
         logger.warning("Schema does not exist: %s",real_path)
         return
     schemaurl = "file://" + real_path
-    resolver = jsonschema.RefResolver(schemaurl, referrer=schema, handlers = { 'http': _handler , "file": _handler} )
+    resolver = jsonschema.RefResolver(schemaurl, referrer=schema, handlers={
+        'http': _handler,
+        "file": _handler,
+    })
     jsonschema.validate(instance=fragment, resolver=resolver, schema=schema)
 
 class JSONEncoder(json.JSONEncoder):
 
-    def default(self, o):
+    def default(self, o: object) -> object:
         if hasattr(o, "values"):
             return o.values
         else:
             return {}
 
-def dump_json(obj):
+def dump_json(obj: object) -> str:
     """dump internal state for later use"""
     return json.dumps(obj, cls=JSONEncoder, indent=1)

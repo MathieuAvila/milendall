@@ -2,16 +2,20 @@
 structure definition for a simple rectangular room
 """
 
+from __future__ import annotations
+
 import logging
+import math
+
 from brick_structure import BrickStructure
 from .register import register_brick_type
 import cgtypes.vec3
 import cgtypes.mat4
 import concrete_room
 import animation
-import math
 
 from jsonmerge import merge
+from typing_defs import ElementWithValues, SelectorLike
 
 logger = logging.getLogger("simple_door")
 logger.setLevel(logging.INFO)
@@ -20,23 +24,29 @@ class SimpleDoorBrick(BrickStructure):
 
     _name = "simple_door"
 
-    def __init__(self, brick=None):
+    _element: ElementWithValues | None
+    brick: ElementWithValues | None
+
+    def __init__(self, brick: ElementWithValues | None = None) -> None:
         """ init simple door"""
         super().__init__(brick)
         self.brick = brick
+        self._element = brick
 
-    def get_instance(self, brick:None):
+    def get_instance(self, brick: ElementWithValues) -> SimpleDoorBrick:
         """ return a self instance of this brick"""
         return SimpleDoorBrick(brick)
 
-    def check_fit(self):
+    def check_fit(self) -> int:
         """ Pass the brick, check it can be applied. """
         logger.debug("checking if door fits: always ! door rules the world !")
         return 100
 
-    def check_structure(self):
+    def check_structure(self) -> bool:
         """check everything is as expected.
         """
+        if self._element is None:
+            raise RuntimeError("SimpleDoorBrick requires an element to check structure")
         v = self._element.values
         if "portals" not in v:
             raise Exception("simple_door '%s' needs a portals" % self._element.get_id())
@@ -49,9 +59,11 @@ class SimpleDoorBrick(BrickStructure):
         logger.debug("checking if door is ok: always ! door rules the world !")
         return True
 
-    def instantiate(self, selector):
+    def instantiate(self, selector: SelectorLike) -> None:
         """ force set values:
         - set values to brick size"""
+        if self._element is None:
+            raise RuntimeError("SimpleDoorBrick requires an element to instantiate")
         self.check_structure()
         structure_parameters = self._element.values.parameters.structure_parameters
         my_default= {}
@@ -93,8 +105,10 @@ class SimpleDoorBrick(BrickStructure):
         if  p["door"]["auto_open"] == True and p["door"]["event"] == "":
             p["door"]["event"] = self.brick.get_id() + "_event"
 
-    def generate(self, concrete):
+    def generate(self, concrete: concrete_room.ConcreteRoom) -> None:
         """Perform instantiation on concrete_room"""
+        if self._element is None or self.brick is None:
+            raise RuntimeError("SimpleDoorBrick requires an element to generate")
         structure_private = self._element.values.parameters.structure_private
         s = structure_private["shift"]
         portal = self._element.values.portals[0]

@@ -2,17 +2,17 @@
 test rectangular room
 """
 
+from __future__ import annotations
+
 import logging
 import sys
-import pathlib
-
 import unittest
-import bricks.simple_door as simple_door
-import room
+
 import brick
 import concrete_room
 import selector_regular
 
+import bricks.simple_door as simple_door
 import dressings.basic as basic
 
 logger = logging.getLogger("TestBrick_SimpleDoor")
@@ -35,7 +35,7 @@ class TestBrick_SimpleDoor(unittest.TestCase):
 
     selector = selector_regular.SelectorRegular()
 
-    def test_generate(self):
+    def test_generate(self) -> None:
         """generate one simple door with no parameter"""
         stream_handler = logging.StreamHandler(sys.stdout)
         logger.addHandler(stream_handler)
@@ -50,12 +50,15 @@ class TestBrick_SimpleDoor(unittest.TestCase):
         # check that it contains an object with expected parent
         objects = concrete.get_objects()
         self.assertEqual(len(objects), 1)
-        object = objects[0]
-        self.assertEqual(object.parent, None)
+        obj = objects[0]
+        self.assertEqual(obj.parent, None)
 
         # check there is a portal to an outer world (sounds nice, he ?)
-        phys_faces = object.get_physical_faces()
-        portal_faces = [ faces for faces in phys_faces if object.PHYS_TYPE_PORTAL == faces["physics"]["type"] ]
+        phys_faces = obj.get_physical_faces()
+        portal_faces = [
+            faces for faces in phys_faces
+            if obj.PHYS_TYPE_PORTAL == faces["physics"]["type"]
+        ]
         self.assertEqual(len(portal_faces), 1)
         portal_face = portal_faces[0]
         self.assertEqual(portal_face["physics"], {'type': 'portal', 'connect': 'A', 'gate' : 'gate0'})

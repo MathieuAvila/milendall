@@ -2,15 +2,16 @@
 structure definition for a parametric stair brick
 """
 
+from __future__ import annotations
+
+import functools
 import logging
-from threading import local
+import math
+
 from brick_structure import BrickStructure
 import concrete_room
 import cgtypes.vec3
 import cgtypes.mat4
-import math
-import functools
-import json
 
 import milendall_math
 import gltf_helper
@@ -18,6 +19,7 @@ import gltf_helper
 from .register import register_brick_type
 
 from jsonmerge import merge
+from typing_defs import ElementWithValues, SelectorLike
 
 logger = logging.getLogger("object_sampler")
 logger.setLevel(logging.INFO)
@@ -26,23 +28,27 @@ class BrickObjectSampler(BrickStructure):
 
     _name = "object_sampler"
 
-    def __init__(self, _element=None):
+    _element: ElementWithValues | None
+
+    def __init__(self, _element: ElementWithValues | None = None) -> None:
         """ init brick """
         self._element = _element
 
-    def get_instance(self, brick:None):
+    def get_instance(self, brick: ElementWithValues) -> BrickObjectSampler:
         """Return an instance"""
         return BrickObjectSampler(brick)
 
-    def check_structure(self):
+    def check_structure(self) -> bool:
         """check everything is as expected.
         """
         logger.debug("checking if stair is ok")
         return True
 
-    def instantiate(self, selector):
+    def instantiate(self, selector: SelectorLike) -> None:
         """ force set values:
         - set values to brick size"""
+        if self._element is None:
+            raise RuntimeError("BrickObjectSampler requires an element to instantiate")
         structure_parameters = self._element.values.parameters.structure_parameters
 
         my_default= {
@@ -56,8 +62,10 @@ class BrickObjectSampler(BrickStructure):
         }
         self._element.values.parameters.structure_private = merge( my_default, structure_parameters)
 
-    def generate(self, concrete):
+    def generate(self, concrete: concrete_room.ConcreteRoom) -> None:
         """Perform instantiation on concrete_room"""
+        if self._element is None:
+            raise RuntimeError("BrickObjectSampler requires an element to generate")
         structure_private = self._element.values.parameters.structure_private
 
         # create main object

@@ -1,13 +1,16 @@
 """test regular load"""
 
+from __future__ import annotations
+
 import unittest
+
 import selector_regular
 
 from bricks import register as room_register
 
 class TestSelectorRegular(unittest.TestCase):
 
-    def test_get_list_bricks_regular(self):
+    def test_get_list_bricks_regular(self) -> None:
         """ test retrieving list of bricks"""
 
         _s = selector_regular.SelectorRegular()

@@ -2,6 +2,10 @@
 Helpers to create GLTF file
 """
 
+from __future__ import annotations
+
+from typing import Any, BinaryIO, Callable, Iterable, Sequence
+
 import logging
 import json
 import itertools
@@ -10,13 +14,18 @@ import shutil
 import os
 import copy
 
-import cgtypes.vec3
-import cgtypes.mat4
+import cgtypes
 logging.basicConfig()
 
-def get_texture_definition(filename, axes=[ ["x"], [ "y"] ] , scale = 1.0, offset = cgtypes.vec3()):
+def get_texture_definition(filename: str, axes: list[list[str]] | None = None,
+                           scale: float = 1.0,
+                           offset: cgtypes.vec3 | None = None) -> dict[str, Any]:
     """ return an easy to use texture definition based on 4 points (vec3)
     and their textures offset (vec3) with 3rd component being 0."""
+    if axes is None:
+        axes = [["x"], ["y"]]
+    if offset is None:
+        offset = cgtypes.vec3()
     my_def = { "texture": filename }
     transform = cgtypes.mat4(
         0, 0, 0, offset.x,
@@ -34,22 +43,28 @@ def get_texture_definition(filename, axes=[ ["x"], [ "y"] ] , scale = 1.0, offse
     my_def["proj"] = transform
     return my_def
 
-def get_texture_definition_with_map(filename, map_method):
+def get_texture_definition_with_map(filename: str,
+                                    map_method: Callable[[cgtypes.vec3], cgtypes.vec3]) -> dict[str, Any]:
     """ return a texture definition based on a map method to provide."""
     my_def = { "texture": filename , "map_method": map_method }
     return my_def
 
-def get_texture_definition_with_function(filename, function, context):
+def get_texture_definition_with_function(filename: str,
+                                         function: Callable[[Sequence[cgtypes.vec3], Sequence[int],
+                                                            dict[str, Any], Sequence[cgtypes.vec3]], None],
+                                         context: dict[str, Any]) -> dict[str, Any]:
     """ return a texture definition based on a map method to provide."""
     my_def = { "texture": filename , "function": function, "context": context }
     return my_def
 
-def get_texture_definition_function_simple_mapper(filename, scale_x=1.0, scale_y=1.0):
+def get_texture_definition_function_simple_mapper(filename: str, scale_x: float = 1.0,
+                                                  scale_y: float = 1.0) -> dict[str, Any]:
     """ return a simple function mapper."""
 
     my_context = { "scale_x": scale_x, "scale_y": scale_y}
 
-    def mapper(points, face, context, my_points):
+    def mapper(points: Sequence[cgtypes.vec3], face: Sequence[int],
+               context: dict[str, Any], my_points: Sequence[cgtypes.vec3]) -> None:
         # if possible, use provided coords
         if hasattr(my_points[0], "has_tex") == True:
             logging.info("HAS TEXTURES COORDS")
@@ -74,7 +89,8 @@ def get_texture_definition_function_simple_mapper(filename, scale_x=1.0, scale_y
 
     return get_texture_definition_with_function(filename , mapper, my_context)
 
-def create_accessor(data_file, gltf, elements):
+def create_accessor(data_file: BinaryIO, gltf: dict[str, Any],
+                    elements: Sequence[Sequence[float]] | Sequence[float] | Sequence[int]) -> int:
     """Append an accessor for a given elements list data"""
 
     if isinstance(elements[0], list):
@@ -156,5 +172,5 @@ def create_accessor(data_file, gltf, elements):
                 })
     return len(gltf_accessors) - 1
 
-def vec4_to_vec3(v):
+def vec4_to_vec3(v: cgtypes.vec4) -> cgtypes.vec3:
     return cgtypes.vec3(v.x, v.y, v.z)

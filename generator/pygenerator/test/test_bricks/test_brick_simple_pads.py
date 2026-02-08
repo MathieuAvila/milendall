@@ -2,19 +2,21 @@
 test rectangular room
 """
 
-import logging
-import sys
-import pathlib
-import cgtypes.vec3
+from __future__ import annotations
 
+import logging
+import math
+import sys
 import unittest
-import bricks.simple_pads as simple_pads
-import room
+
+import cgtypes
+
 import brick
 import concrete_room
 import selector_regular
+
+import bricks.simple_pads as simple_pads
 import dressings.basic as basic
-import math
 
 logger = logging.getLogger("TestBrick_SimplePad")
 logger.level = logging.DEBUG
@@ -59,7 +61,7 @@ def_0 = {
 
 class TestBrick_SimplePad(unittest.TestCase):
 
-    def generate(self):
+    def generate(self) -> concrete_room.ConcreteRoom:
         selector = selector_regular.SelectorRegular()
         custom_brick = brick.Brick(def_0, selector)
         custom_brick.structure_personalization()
@@ -69,7 +71,7 @@ class TestBrick_SimplePad(unittest.TestCase):
         custom_brick.finalize(concrete)
         return concrete
 
-    def test_has_4_pads(self):
+    def test_has_4_pads(self) -> None:
         stream_handler = logging.StreamHandler(sys.stdout)
         logger.addHandler(stream_handler)
         concrete = self.generate()
@@ -77,53 +79,53 @@ class TestBrick_SimplePad(unittest.TestCase):
         objects = concrete.get_objects()
         self.assertEqual(len(objects), 4)
 
-    def test_void_pad(self):
+    def test_void_pad(self) -> None:
         stream_handler = logging.StreamHandler(sys.stdout)
         logger.addHandler(stream_handler)
         concrete = self.generate()
 
-        object = concrete.get_objects()[0]
+        obj = concrete.get_objects()[0]
         p_org = cgtypes.vec3(10.0, 11.0, 12.0)
-        p0 = object.matrix * p_org
+        p0 = obj.matrix * p_org
         self.assertEqual(p0, p_org)
 
-    def test_void_translation(self):
+    def test_void_translation(self) -> None:
         stream_handler = logging.StreamHandler(sys.stdout)
         logger.addHandler(stream_handler)
         concrete = self.generate()
 
-        object = concrete.get_objects()[1]
+        obj = concrete.get_objects()[1]
         p_org = cgtypes.vec3(10.0, 11.0, 12.0)
-        p0 = object.matrix * p_org
+        p0 = obj.matrix * p_org
         self.assertEqual(p0, (p_org + cgtypes.vec3(1.0, 2.0, 3.0)))
 
-    def test_void_rotation(self):
+    def test_void_rotation(self) -> None:
         stream_handler = logging.StreamHandler(sys.stdout)
         logger.addHandler(stream_handler)
         concrete = self.generate()
 
-        object = concrete.get_objects()[2]
+        obj = concrete.get_objects()[2]
         p_org = cgtypes.vec3(1.0, 0.0, 0.0)
-        p0 = object.matrix * p_org
+        p0 = obj.matrix * p_org
         length = (p0 - (cgtypes.vec3(-1.0, 0.0, 0.0))).length()
         self.assertAlmostEqual(0.0, length, 2 )
 
-    def test_void_rotation_translation(self):
+    def test_void_rotation_translation(self) -> None:
         stream_handler = logging.StreamHandler(sys.stdout)
         logger.addHandler(stream_handler)
         concrete = self.generate()
 
-        object = concrete.get_objects()[3]
+        obj = concrete.get_objects()[3]
 
         # first check translation
         p_org = cgtypes.vec3(0.0, 0.0, 0.0)
-        p0 = object.matrix * p_org
+        p0 = obj.matrix * p_org
         logger.info(p0)
         self.assertEqual(p0, (p_org + cgtypes.vec3(4.0, 5.0, 6.0)))
 
         # then both
         p_org = cgtypes.vec3(1.0, 0.0, 0.0)
-        p0 = object.matrix * p_org
+        p0 = obj.matrix * p_org
         logger.info(p0)
         self.assertEqual(p0, cgtypes.vec3(3.0, 5.0, 6.0))
 

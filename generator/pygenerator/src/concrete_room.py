@@ -8,6 +8,10 @@ should be sufficient to reconstruct a full one.
 However, it can be dumped to a file to ease debugging of rooms/objects
 """
 
+from __future__ import annotations
+
+from typing import BinaryIO, Iterable, Sequence
+
 import logging
 import json
 import itertools
@@ -26,7 +30,20 @@ logger.setLevel(logging.INFO)
 
 class Node:
 
-    def __init__(self, _name, _parent = None, _matrix = None):
+    structure_points: list[cgtypes.vec3.vec3]
+    structure_faces: list[dict[str, object]]
+    dressing: dict[str, dict[str, list[object]]]
+    matrix: cgtypes.mat4.mat4 | None
+    name: str
+    parent: str | None
+    gravity: dict[str, object] | None
+    gravity_script: str | None
+    gravity_mode: str | None
+    triggers: list[dict[str, object]]
+    objects: list[dict[str, object]]
+
+    def __init__(self, _name: str, _parent: str | None = None,
+                 _matrix: cgtypes.mat4.mat4 | None = None) -> None:
         self.structure_points = []
         self.structure_faces = []
         self.dressing = {}
@@ -39,15 +56,15 @@ class Node:
         self.triggers = []
         self.objects = []
 
-    def set_gravity(self, gravity):
+    def set_gravity(self, gravity: dict[str, object] | None) -> None:
         self.gravity = gravity
 
-    def set_gravity_script(self, gravity, mode):
+    def set_gravity_script(self, gravity: str, mode: str) -> None:
         self.gravity_script = gravity
         self.gravity = {}
         self.gravity_mode = mode
 
-    def add_structure_points(self, points):
+    def add_structure_points(self, points: Sequence[cgtypes.vec3.vec3]) -> int:
         """
         Add structure points to object.
         Return index for insertion for faces creation
@@ -104,7 +121,9 @@ class Node:
     OBJECT_POSITION    = "position"
     OBJECT_PARAMETERS  = "parameters"
 
-    def add_trigger_box(self, enter_or_leave, set_true_or_false, box_min, box_max, event_name):
+    def add_trigger_box(self, enter_or_leave: bool, set_true_or_false: bool,
+                        box_min: cgtypes.vec3.vec3, box_max: cgtypes.vec3.vec3,
+                        event_name: str) -> None:
         self.triggers.append(
             {
                 self.TRIGGER_BOX : [ [box_min.x,box_min.y,box_min.z], [box_max.x,box_max.y,box_max.z] ],
@@ -113,15 +132,19 @@ class Node:
                 self.TRIGGER_BOX_TARGET : set_true_or_false
             })
 
-    def add_object(self, type, position, parameters = {}):
+    def add_object(self, type: str, position: cgtypes.vec3.vec3,
+                   parameters: dict[str, object] | None = None) -> None:
+        parameters_value = copy.deepcopy(parameters) if parameters is not None else None
         self.objects.append(
             {
                 self.OBJECT_TYPE : copy.deepcopy(type),
                 self.OBJECT_POSITION : copy.deepcopy(position),
-                self.OBJECT_PARAMETERS : copy.deepcopy(parameters)
+                self.OBJECT_PARAMETERS : parameters_value
             })
 
-    def add_structure_faces(self, point_offset, faces, categories, hints, physics = None):
+    def add_structure_faces(self, point_offset: int, faces: Sequence[Sequence[int]],
+                            categories: Sequence[str], hints: Sequence[str],
+                            physics: dict[str, object] | None = None) -> None:
         """
         Add faces to object, with a given category. Used by structures, not dressings
         faces are a table of table of points. There can be any number as long as they
@@ -148,7 +171,7 @@ class Node:
             "physics": physics
             })
 
-    def get_visual_face(self, hints):
+    def get_visual_face(self, hints: Sequence[str]) -> list[dict[str, object]]:
         """get visual faces, matching those hints"""
         result = []
         for faces in self.structure_faces:
@@ -157,7 +180,7 @@ class Node:
                     result.append(faces)
         return result
 
-    def get_physical_faces(self):
+    def get_physical_faces(self) -> list[dict[str, object]]:
         """get physical faces"""
         result = []
         for faces in self.structure_faces:
@@ -165,7 +188,9 @@ class Node:
                 result.append(faces)
         return result
 
-    def add_dressing_faces(self, points, faces, texture):
+    def add_dressing_faces(self, points: Sequence[cgtypes.vec3.vec3],
+                           faces: Sequence[Sequence[int]],
+                           texture: dict[str, object]) -> None:
         """
         Add dressing faces to object. Used by dressings, not structures
         faces are a table of table of points. There can be any number as long as they
@@ -298,7 +323,8 @@ class JSONEncoder(json.JSONEncoder):
             pass
         return None
 
-def get_texture_id(gltf, texture_list, texture):
+def get_texture_id(gltf: dict[str, object], texture_list: dict[str, int],
+                   texture: str) -> int:
     """Get a texture id if it was already created, of insert it otherwise """
     gltf_textures = gltf["textures"]
     gltf_images = gltf["images"]
@@ -322,18 +348,24 @@ def get_texture_id(gltf, texture_list, texture):
 
 class ConcreteRoom:
 
-    def __init__(self):
+    objects: list[Node]
+    gravity: dict[str, object] | None
+    animations: list[object]
+    private_data: list[object]
+
+    def __init__(self) -> None:
         self.objects = []
         self.gravity = None
         self.animations = []
         self.private_data = []
 
-    def get_objects(self):
+    def get_objects(self) -> list[Node]:
         """return direct references to the list of objects included in the room
            Is this a good idea to provide a direct access? Not sure..."""
         return self.objects
 
-    def add_child(self, parent, name, matrix = None):
+    def add_child(self, parent: str | None, name: str,
+                  matrix: cgtypes.mat4.mat4 | None = None) -> Node:
         """
         create a new node and return a reference to it for future use.
         Its name can be used to reference a child.
@@ -345,37 +377,37 @@ class ConcreteRoom:
         self.objects.append(obj)
         return obj
 
-    def get_node(self, name):
+    def get_node(self, name: str) -> Node | None:
         """ accessor to a given node"""
         for obj in self.objects:
             if obj.name == name:
                 return obj
         return None
 
-    def add_animation(self, animation):
+    def add_animation(self, animation: object) -> None:
         self.animations.append(animation)
 
-    def add_private_data(self, data):
+    def add_private_data(self, data: object) -> None:
         self.private_data.append(copy.deepcopy(data))
 
-    def setup_gravity_info(self, gravity):
+    def setup_gravity_info(self, gravity: dict[str, object]) -> None:
         """
         Setup the gravity info of the room. This is a private section.
         """
         self.gravity = gravity
 
-    def dump_to_json(self):
+    def dump_to_json(self) -> str:
         """
         dump content to JSON for debug and unit tests
         this is not the expected final output. Use generate_gltf for this.
         """
         return json.dumps(self, cls=JSONEncoder, indent=1)
 
-    def merge(self, other_room):
+    def merge(self, other_room: ConcreteRoom) -> None:
         self.objects.extend(other_room.objects)
         self.animations.extend(other_room.animations)
 
-    def append_prefix(self, prefix):
+    def append_prefix(self, prefix: str) -> None:
         """For every object, set a prefix to its name"""
         for o in self.objects:
             logger.debug("append_prefix : %s,  %s ", o.name, o.parent)
@@ -386,7 +418,7 @@ class ConcreteRoom:
         for animation in self.animations:
             animation.append_prefix(prefix)
 
-    def set_root(self, root_id):
+    def set_root(self, root_id: str) -> None:
         """For every object that has a void parent, set its parent to root_id"""
         for o in self.objects:
             logger.debug("manage %s with parent %s", o.name, o.parent)
@@ -398,7 +430,7 @@ class ConcreteRoom:
                 logger.debug("%s new parent %s", o.name, o.parent)
 
 
-    def generate_gravity(self, gravity_list, directory):
+    def generate_gravity(self, gravity_list: list[dict[str, str]], directory: str) -> None:
         """
         dump the gravity information to a file
         """
@@ -412,13 +444,13 @@ class ConcreteRoom:
                 write_file.write("	return tab_out\n")
                 write_file.write("end\n\n")
 
-    def get_node_rank(self, node_name):
+    def get_node_rank(self, node_name: str) -> int | None:
         """used by animation to get node id reference"""
         for count, value in enumerate(self.objects):
             if node_name == value.name:
                 return count + 1
 
-    def generate_gltf(self, directory):
+    def generate_gltf(self, directory: str) -> None:
         """
         dump the scene to a file
         """

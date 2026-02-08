@@ -2,11 +2,14 @@
 test rectangular room
 """
 
-import sys
+from __future__ import annotations
+
 import logging
+import sys
 import unittest
-import bricks.rectangular as rectangular
+
 import brick
+import bricks.rectangular as rectangular
 import concrete_room
 import selector_regular
 
@@ -37,7 +40,7 @@ class TestBrickRectangular(unittest.TestCase):
 
     selector = selector_regular.SelectorRegular()
 
-    def test_generate_0_pad(self):
+    def test_generate_0_pad(self) -> None:
         """generate one rectangular with no pad"""
         stream_handler = logging.StreamHandler(sys.stdout)
         logger.addHandler(stream_handler)
@@ -60,7 +63,7 @@ class TestBrickRectangular(unittest.TestCase):
         self.assertEqual(len(concrete.objects) , 1)
 
 
-    def test_generate_0_pad_values(self):
+    def test_generate_0_pad_values(self) -> None:
         """generate one rectangular with no pad"""
         stream_handler = logging.StreamHandler(sys.stdout)
         logger.addHandler(stream_handler)

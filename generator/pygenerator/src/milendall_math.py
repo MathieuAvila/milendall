@@ -2,6 +2,8 @@
 math helper
 """
 
+from __future__ import annotations
+
 import logging
 
 import cgtypes.vec3
@@ -16,7 +18,11 @@ logger.setLevel(logging.INFO)
 
 class Plane():
 
-    def __init__(self, p0, p1, p2):
+    normal: cgtypes.vec3.vec3
+    equation: cgtypes.vec4.vec4
+
+    def __init__(self, p0: cgtypes.vec3.vec3, p1: cgtypes.vec3.vec3,
+                 p2: cgtypes.vec3.vec3) -> None:
         '''Init from 3 points'''
         u = p1 - p0
         U = cgtypes.vec3(u.x, u.y, u.z)
@@ -27,12 +33,12 @@ class Plane():
         self.normal = new_vec.cross(U).normalize()
         self.equation = cgtypes.vec4(self.normal.x, self.normal.y, self.normal.z, - p0*self.normal)
 
-    def classify(self, p):
+    def classify(self, p: cgtypes.vec3.vec3) -> float:
         """Return the computed value of the the point P"""
         pX = cgtypes.vec4(p.x, p.y, p.z, 1.0)
         return pX * self.equation
 
-    def cut_point(self, p0, p1):
+    def cut_point(self, p0: cgtypes.vec3.vec3, p1: cgtypes.vec3.vec3) -> cgtypes.vec3.vec3:
         """Find the point where the face cuts the line p0-p1 in 2"""
         c0 = self.classify(p0)
         c1 = self.classify(p1)
@@ -44,7 +50,7 @@ class Plane():
         p = p0 + alpha * (p1 - p0)
         return p
 
-def purge_face(face):
+def purge_face(face: list[cgtypes.vec3.vec3]) -> list[cgtypes.vec3.vec3] | None:
     """For a given face, purge all redundant points.
     If less than 3 point are left return None"""
     index = 0
@@ -58,7 +64,8 @@ def purge_face(face):
         return result
     return None
 
-def cut_face_by_plane(face, plane):
+def cut_face_by_plane(face: list[cgtypes.vec3.vec3],
+                      plane: Plane) -> list[list[cgtypes.vec3.vec3] | None]:
     """Cut a plane by another plane.
     Return 2 lists of faces: one which are on the right side,
     the others which are the other side.
@@ -123,7 +130,8 @@ def cut_face_by_plane(face, plane):
     return [ purge_face(face_pos), purge_face(face_neg) ]
 
 
-def cut_faces_by_plane(faces, plane):
+def cut_faces_by_plane(faces: list[list[cgtypes.vec3.vec3]],
+                       plane: Plane) -> list[list[list[cgtypes.vec3.vec3]]]:
     """Cut the list of faces by a plane.
     Return 2 lists of faces: one which are on the right side,
     the others which are the other side.
@@ -137,7 +145,7 @@ def cut_faces_by_plane(faces, plane):
             result[1].append(f_out)
     return result
 
-def get_point_in_list(points, p):
+def get_point_in_list(points: list[cgtypes.vec3.vec3], p: cgtypes.vec3.vec3) -> int:
     # get current point in points if any
     index = 0
     found = -1
@@ -153,17 +161,20 @@ def get_point_in_list(points, p):
 
 class Faces():
 
-    def __init__(self, points, faces):
+    faces: list[list[cgtypes.vec3.vec3]]
+
+    def __init__(self, points: list[cgtypes.vec3.vec3],
+                 faces: list[list[int]]) -> None:
         """Initialize a list of faces, by dereferencing index to real points"""
         self.faces = []
         for face in faces:
             f = [ points[i] for i in face ]
             self.faces.append(f)
 
-    def get_points_faces(self):
+    def get_points_faces(self) -> list[list[cgtypes.vec3.vec3] | list[list[int]]]:
         """return a compacted set of points and faces"""
-        points = []
-        faces = []
+        points: list[cgtypes.vec3.vec3] = []
+        faces: list[list[int]] = []
         for f in self.faces:
             new_f = []
             for p in f:
@@ -171,7 +182,7 @@ class Faces():
             faces.append(new_f)
         return [points, faces]
 
-    def hole(self, face):
+    def hole(self, face: list[cgtypes.vec3.vec3]) -> None:
         """Punch a hole inside the Faces, by the given face.
         It is expected that the hole hits the faces on their projection to each faces
         All faces are affected by this hole.

@@ -2,6 +2,8 @@
 test milendall_math helper
 """
 
+from __future__ import annotations
+
 import logging
 import unittest
 
@@ -13,25 +15,25 @@ logging.basicConfig()
 logger = logging.getLogger("ut_math")
 logger.setLevel(logging.INFO)
 
-pO = vec3(0.0, 0.0, 0.0)
-pX = vec3(1.0, 0.0, 0.0)
-pY = vec3(0.0, 1.0, 0.0)
-pZ = vec3(0.0, 0.0, 1.0)
-pXY = vec3(1.0, 1.0, 0.0)
+pO: vec3 = vec3(0.0, 0.0, 0.0)
+pX: vec3 = vec3(1.0, 0.0, 0.0)
+pY: vec3 = vec3(0.0, 1.0, 0.0)
+pZ: vec3 = vec3(0.0, 0.0, 1.0)
+pXY: vec3 = vec3(1.0, 1.0, 0.0)
 
 class TestMath(unittest.TestCase):
 
-    def test_00_plane_init_Org(self):
+    def test_00_plane_init_Org(self) -> None:
         """ test compute plane"""
         p = milendall_math.Plane(pO, pY, pX)
         self.assertEqual(p.equation, vec4(0.0, 0.0, 1.0, 0.0))
 
-    def test_00_plane_init_OrgX(self):
+    def test_00_plane_init_OrgX(self) -> None:
         """ test compute plane"""
         p = milendall_math.Plane(pZ, pY + pZ, pX+pZ)
         self.assertEqual(p.equation, vec4(0.0, 0.0, 1.0, -1.0))
 
-    def test_01_classify(self):
+    def test_01_classify(self) -> None:
         """ test classify"""
         p = milendall_math.Plane(pZ, pY + pZ, pX+pZ)
         self.assertEqual(p.classify(pZ), 0.0)
@@ -39,12 +41,12 @@ class TestMath(unittest.TestCase):
         self.assertEqual(p.classify(2* pZ), 1.0)
         self.assertEqual(p.classify(-2* pZ + pX), -3.0)
 
-    def test_02_plane_cut_point(self):
+    def test_02_plane_cut_point(self) -> None:
         """ test cut point"""
         p = milendall_math.Plane(pZ, pY + pZ, pX+pZ)
         self.assertEqual(p.cut_point(pO, 2*pZ), vec3(0.0, 0.0, 1.0))
 
-    def test_03_cut_face_by_plane_ALL_fit(self):
+    def test_03_cut_face_by_plane_ALL_fit(self) -> None:
         """ test cut all fit"""
         plane = milendall_math.Plane(-pZ, pY - pZ, pX-pZ)
         face = [
@@ -54,7 +56,7 @@ class TestMath(unittest.TestCase):
         self.assertEqual(cut[0], face)
         self.assertEqual(cut[1], None)
 
-    def test_03_cut_face_by_plane_NONE_fit(self):
+    def test_03_cut_face_by_plane_NONE_fit(self) -> None:
         """ test cut no fit"""
         plane = milendall_math.Plane(pZ*2 + pZ, pZ*2 + pY + pZ, pZ*2 + pX+pZ)
         face = [
@@ -64,7 +66,7 @@ class TestMath(unittest.TestCase):
         self.assertEqual(cut[0], None)
         self.assertEqual(cut[1], face)
 
-    def test_03_cut_face_by_plane_HALF_fit_rot0(self):
+    def test_03_cut_face_by_plane_HALF_fit_rot0(self) -> None:
         """ test cut half fit 0"""
         plane = milendall_math.Plane(pZ, pY + pZ, pX+pZ)
         face = [
@@ -74,8 +76,7 @@ class TestMath(unittest.TestCase):
         self.assertEqual(cut[0], [vec3(0.0, 0.0, 2.0), vec3(1.0, 0.0, 2.0), vec3(1.0, 0.0, 1.0), vec3(0.0, 0.0, 1.0)])
         self.assertEqual(cut[1], [vec3(1.0, 0.0, 0.0), vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 1.0), vec3(1.0, 0.0, 1.0)])
 
-
-    def test_03_cut_face_by_plane_HALF_fit_rot1(self):
+    def test_03_cut_face_by_plane_HALF_fit_rot1(self) -> None:
         """ test cut half fit 1"""
         plane = milendall_math.Plane(pZ, pY + pZ, pX+pZ)
         face = [
@@ -85,7 +86,7 @@ class TestMath(unittest.TestCase):
         self.assertEqual(cut[0], [vec3(0.0, 0.0, 2.0), vec3(1.0, 0.0, 2.0), vec3(1.0, 0.0, 1.0), vec3(0.0, 0.0, 1.0)])
         self.assertEqual(cut[1], [vec3(1.0, 0.0, 0.0), vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 1.0), vec3(1.0, 0.0, 1.0)])
 
-    def test_03_cut_face_by_plane_HALF_fit_rot2(self):
+    def test_03_cut_face_by_plane_HALF_fit_rot2(self) -> None:
         """ test cut half fit 2"""
         plane = milendall_math.Plane(pZ, pY + pZ, pX+pZ)
         face = [
@@ -95,7 +96,7 @@ class TestMath(unittest.TestCase):
         self.assertEqual(cut[0], [vec3(0.0, 0.0, 2.0), vec3(1.0, 0.0, 2.0), vec3(1.0, 0.0, 1.0), vec3(0.0, 0.0, 1.0)])
         self.assertEqual(cut[1], [vec3(1.0, 0.0, 0.0), vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 1.0), vec3(1.0, 0.0, 1.0)])
 
-    def test_03_cut_face_by_plane_HALF_fit_rot3(self):
+    def test_03_cut_face_by_plane_HALF_fit_rot3(self) -> None:
         """ test cut half fit 3"""
         plane = milendall_math.Plane(pZ, pY + pZ, pX+pZ)
         face = [
@@ -105,7 +106,7 @@ class TestMath(unittest.TestCase):
         self.assertEqual(cut[0], [vec3(0.0, 0.0, 2.0), vec3(1.0, 0.0, 2.0), vec3(1.0, 0.0, 1.0), vec3(0.0, 0.0, 1.0)])
         self.assertEqual(cut[1], [vec3(1.0, 0.0, 0.0), vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 1.0), vec3(1.0, 0.0, 1.0)])
 
-    def test_03_cut_face_by_plane_purge(self):
+    def test_03_cut_face_by_plane_purge(self) -> None:
         """ test cut must purge point"""
         plane = milendall_math.Plane(pZ, pY + pZ, pX+pZ)
         face = [
@@ -115,7 +116,7 @@ class TestMath(unittest.TestCase):
         self.assertEqual(cut[0], [vec3(0.0, 0.0, 2.0), vec3(1.0, 0.0, 2.0), vec3(1.0, 0.0, 1.0), vec3(0.0, 0.0, 1.0)])
         self.assertEqual(cut[1], [vec3(1.0, 0.0, 0.0), vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 1.0), vec3(1.0, 0.0, 1.0)])
 
-    def test_03_cut_face_by_plane_remove_1_point(self):
+    def test_03_cut_face_by_plane_remove_1_point(self) -> None:
         """ test cut remove 1 face because there is only 1 point left"""
         plane = milendall_math.Plane(pZ, pY + pZ, pX+pZ)
         face = [
@@ -125,7 +126,7 @@ class TestMath(unittest.TestCase):
         self.assertEqual(cut[0], None)
         self.assertEqual(cut[1], [vec3(1.0, 0.0, 0.0), vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 1.0)])
 
-    def test_03_cut_face_by_plane_remove_2_point(self):
+    def test_03_cut_face_by_plane_remove_2_point(self) -> None:
         """ test cut remove 1 face because there are only 2 points left"""
         plane = milendall_math.Plane(pZ, pY + pZ, pX+pZ)
         face = [
@@ -135,7 +136,7 @@ class TestMath(unittest.TestCase):
         self.assertEqual(cut[0], None)
         self.assertEqual(cut[1], [pO, pX, pZ + pX, pZ])
 
-    def test_03_cut_face_by_plane_3_points(self):
+    def test_03_cut_face_by_plane_3_points(self) -> None:
         """test cut 1 point only left, make 1 face with 3 points"""
         plane = milendall_math.Plane(pZ, pY + pZ, pX+pZ)
         face = [
@@ -146,7 +147,7 @@ class TestMath(unittest.TestCase):
         self.assertEqual(cut[1], [vec3(0.0, 0.0, 0.0), vec3(1.0, 0.0, 0.0), vec3(0.5, 0.0, 1.0), vec3(0.0, 0.0, 1.0)])
 
 
-    def test_04_puch_hole_keep_all(self):
+    def test_04_puch_hole_keep_all(self) -> None:
         """ test punch a hole into a single face, outside (keep them all)"""
         org_faces = [[pO, pX*3, pX*3 + pZ*3, pZ*3], [ [0,1,2,3] ]]
         faces = milendall_math.Faces( org_faces[0], org_faces[1])
@@ -162,7 +163,7 @@ class TestMath(unittest.TestCase):
         self.assertEqual(result ,org_faces)
 
 
-    def test_04_puch_hole_center(self):
+    def test_04_puch_hole_center(self) -> None:
         """ test punch a hole into a single face, inside, make a hole"""
         org_faces = [[pO, pX*3, pX*3 + pZ*3, pZ*3], [ [0,1,2,3] ]]
         faces = milendall_math.Faces( org_faces[0], org_faces[1])

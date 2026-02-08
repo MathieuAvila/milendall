@@ -2,10 +2,13 @@
 test level
 """
 
+from __future__ import annotations
+
 import logging
 import json
 import pathlib
 import struct
+from typing import Any
 
 import unittest
 import concrete_room
@@ -17,7 +20,8 @@ logger.setLevel(logging.INFO)
 
 from gltf_helper import get_texture_definition_with_function
 
-def my_helper_mapper(points, face, context, my_points):
+def my_helper_mapper(points: list[object], face: list[int], context: dict[str, object],
+                     my_points: list[object]) -> None:
     # need to fill my_points
     for p in my_points:
         p.u = p.x + 1.0
@@ -27,7 +31,8 @@ class TestConcreteRoomImpl(unittest.TestCase):
 
 
 
-    def get_data_from_accessor(self, json_content, index, root_path):
+    def get_data_from_accessor(self, json_content: dict[str, Any], index: int,
+                               root_path: str) -> list[Any]:
         """return accessor data in table, format depends on type"""
         accessor = json_content["accessors"][index]
         data_type = accessor["type"]
@@ -66,7 +71,7 @@ class TestConcreteRoomImpl(unittest.TestCase):
             return result
 
 
-    def test_parent_child(self):
+    def test_parent_child(self) -> None:
         """Test creating a simple impl with parent/child relationships for nodes"""
         room = concrete_room.ConcreteRoom()
         mat_parent2 = cgtypes.mat4(2.0)
@@ -81,7 +86,7 @@ class TestConcreteRoomImpl(unittest.TestCase):
 
         j = room.dump_to_json()
 
-    def test_structure_faces(self):
+    def test_structure_faces(self) -> None:
         """Test creating a simple impl with 1 node with multiple points and faces
         sets for structure"""
         room = concrete_room.ConcreteRoom()
@@ -126,7 +131,7 @@ class TestConcreteRoomImpl(unittest.TestCase):
                 }
             ])
 
-    def test_structure_faces_dump(self):
+    def test_structure_faces_dump(self) -> None:
         """Test generation of structural faces in gltf file"""
         room = concrete_room.ConcreteRoom()
         parent = room.add_child(None, "parent")
@@ -196,7 +201,7 @@ class TestConcreteRoomImpl(unittest.TestCase):
 
 
 
-    def test_get_visual_faces(self):
+    def test_get_visual_faces(self) -> None:
         """test that we can get visuals only"""
         room = concrete_room.ConcreteRoom()
         parent = room.add_child(None, "parent")
@@ -252,7 +257,7 @@ class TestConcreteRoomImpl(unittest.TestCase):
             concrete_room.Node.HINT_CEILING])
         self.assertEqual(0, len(list_building_ceiling))
 
-    def test_dressing_filter_points(self):
+    def test_dressing_filter_points(self) -> None:
         """test filtering points when adding faces, so that only useful points are kept
         and there is no useless data"""
         room = concrete_room.ConcreteRoom()

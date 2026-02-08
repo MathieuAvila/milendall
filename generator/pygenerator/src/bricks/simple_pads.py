@@ -2,7 +2,10 @@
 structure definition for a simple pads provider brick
 """
 
+from __future__ import annotations
+
 import logging
+
 from brick_structure import BrickStructure
 import concrete_room
 import cgtypes.vec3
@@ -14,36 +17,43 @@ logger.setLevel(logging.INFO)
 from .register import register_brick_type
 
 from jsonmerge import merge
+from typing_defs import ElementWithValues, SelectorLike
 
 class BrickSimplePadProvider(BrickStructure):
 
     _name = "simple_pad_provider"
 
-    def __init__(self, _element=None):
+    _element: ElementWithValues | None
+
+    def __init__(self, _element: ElementWithValues | None = None) -> None:
         """ init brick """
         self._element = _element
 
-    def get_instance(self, brick:None):
+    def get_instance(self, brick: ElementWithValues) -> BrickSimplePadProvider:
         """Return an instante"""
         return BrickSimplePadProvider(brick)
 
-    def check_structure(self):
+    def check_structure(self) -> bool:
         """check everything is as expected.
         """
         logger.debug("checking is ok")
         return True
 
-    def instantiate(self, selector):
+    def instantiate(self, selector: SelectorLike) -> None:
         """ Use as-is"""
+        if self._element is None:
+            raise RuntimeError("BrickSimplePadProvider requires an element to instantiate")
         structure_parameters = self._element.values.parameters.structure_parameters
         my_default= {}
         self._element.values.parameters.structure_private = merge( my_default, structure_parameters)
         structure_private = self._element.values.parameters.structure_private
         logger.debug("private: %s", str(structure_private))
 
-    def generate(self, concrete):
+    def generate(self, concrete: concrete_room.ConcreteRoom) -> None:
         """Perform instantiation on concrete_room"""
 
+        if self._element is None:
+            raise RuntimeError("BrickSimplePadProvider requires an element to generate")
         pads = self._element.values.pads
         for pad in pads:
             pad_mat = cgtypes.mat4(1.0)
