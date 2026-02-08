@@ -8,7 +8,6 @@ import concrete_room
 
 from elemental_structure import ElementalStructure
 
-from typing_defs import ElementWithValues
 
 class BrickStructure(ElementalStructure):
 

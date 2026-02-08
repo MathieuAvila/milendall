@@ -6,18 +6,17 @@ from __future__ import annotations
 
 import logging
 
-from brick_structure import BrickStructure
 import concrete_room
-import cgtypes.vec3
 import cgtypes.mat4
-
-logger = logging.getLogger("simple_pad_provider")
-logger.setLevel(logging.INFO)
+import cgtypes.vec3
+from brick_structure import BrickStructure
+from merge_utils import merge
+from typing_defs import ElementWithValues, SelectorLike
 
 from .register import register_brick_type
 
-from jsonmerge import merge
-from typing_defs import ElementWithValues, SelectorLike
+logger = logging.getLogger("simple_pad_provider")
+logger.setLevel(logging.INFO)
 
 class BrickSimplePadProvider(BrickStructure):
 

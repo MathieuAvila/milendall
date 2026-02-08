@@ -88,7 +88,7 @@ class Animation:
             }
             animation["samplers"].append(sampler)
             animation["channels"].append(channel)
-        if not "animations" in gltf:
+        if "animations" not in gltf:
             gltf["animations"] = []
         gltf["animations"].append(animation)
         gltf_extras = gltf["extras"]

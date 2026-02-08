@@ -23,7 +23,6 @@ dependencies = [
   "PyYAML",
   "jsonschema",
   "json5",
-  "jsonmerge",
   "langchain",
   "langgraph"
 ]
@@ -45,6 +44,7 @@ dev = [
   "pytest>=7.0",
   "pytest-cov",
   "mypy",
+  "ruff",
   "black",
   "isort",
   "flake8",
@@ -72,6 +72,13 @@ exclude = ["test", "build"]
 [tool.mypy]
 exclude = ".*cgtypes/.*"
 ignore_missing_imports = true
+
+
+[tool.ruff]
+target-version = "py310"
+extend-exclude = [
+  "generator/pygenerator/src/cgtypes/**",
+]
 
 [[tool.mypy.overrides]]
 module = ["cgtypes.*", "concrete_room", "gltf_helper", "milendall_math", "animation"]

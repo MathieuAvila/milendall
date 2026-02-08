@@ -15,7 +15,7 @@ import cgtypes.mat4
 
 from .register import register_brick_type
 
-from jsonmerge import merge
+from merge_utils import merge
 from typing_defs import ElementWithValues, SelectorLike
 
 logger = logging.getLogger("parametric")
@@ -95,7 +95,6 @@ class BrickParametric(BrickStructure):
                 values=locals["values"]
                 if len(values) != 5:
                     raise "func must return a table of 5"
-                segment = []
                 p = cgtypes.vec3(values[0], values[1], values[2])
                 p.u = values[3]
                 p.v = values[4]
@@ -105,12 +104,11 @@ class BrickParametric(BrickStructure):
                 counter = counter + 1
             indexes.append(index_raw)
 
-        index_wall = parent.add_structure_points(points)
+        parent.add_structure_points(points)
 
         table = []
 
         for i in range(0, nr_s):
-            points_raw = []
             for j in range(0, nr_t):
                 table.append([
                     indexes[i]   [j+1],
@@ -119,11 +117,11 @@ class BrickParametric(BrickStructure):
                     indexes[i]   [j]])
 
         parent.add_structure_faces(
-                    0,
-                    table,
-                    concrete_room.Node.CAT_PHYS_VIS,
-                    [concrete_room.Node.HINT_GROUND, concrete_room.Node.HINT_BUILDING],
-                    {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
+            0,
+            table,
+            concrete_room.Node.CAT_PHYS_VIS,
+            [concrete_room.Node.HINT_GROUND, concrete_room.Node.HINT_BUILDING],
+            {concrete_room.Node.PHYS_TYPE : concrete_room.Node.PHYS_TYPE_HARD} )
 
 
 

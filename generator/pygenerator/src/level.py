@@ -120,7 +120,7 @@ class Level:
         output_file_name = output_dir + "/" + self.status_to_dump_graph[self.status]
         with open(output_file_name, "w") as output_file:
             output_file.write("digraph g {\n")
-            output_file.write('newrank="true"\n');
+            output_file.write('newrank="true"\n')
             output_file.write("node [shape=box];\n")
             for _r in self.values.rooms:
                 _r.dump_graph(output_file)

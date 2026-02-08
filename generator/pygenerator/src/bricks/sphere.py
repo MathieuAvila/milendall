@@ -14,7 +14,7 @@ import cgtypes.mat4
 
 from .register import register_brick_type
 
-from jsonmerge import merge
+from merge_utils import merge
 from typing_defs import ElementWithValues, SelectorLike
 
 logger = logging.getLogger("sphere")
@@ -107,7 +107,6 @@ class BrickSphere(BrickStructure):
         index_wall = parent.add_structure_points(points)
 
         table = []
-        table_sky = []
         for i in range(1, self.lats - 1):
             for j in range(0, self.longs):
                 table.append([
@@ -119,20 +118,20 @@ class BrickSphere(BrickStructure):
         elem0 = []
         elemN = []
         for j in range(0, self.longs):
-                elem0.append(
-                    points_index[self.lats -1][j])
-                elemN.append(
-                    points_index[1][self.longs - j]
-                )
+            elem0.append(
+                points_index[self.lats -1][j])
+            elemN.append(
+                points_index[1][self.longs - j]
+            )
 
         table.append(elem0)
         table.append(elemN)
         parent.add_structure_faces(
-                    index_wall,
-                    table,
-                    concrete_room.Node.CAT_PHYS_VIS,
-                    [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
-                    phys )
+            index_wall,
+            table,
+            concrete_room.Node.CAT_PHYS_VIS,
+            [concrete_room.Node.HINT_WALL, concrete_room.Node.HINT_BUILDING],
+            phys )
 
 
 

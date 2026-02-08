@@ -34,7 +34,6 @@
 # ***** END LICENSE BLOCK *****
 # $Id: vec3.py,v 1.1 2005/08/15 15:39:48 mbaas Exp $
 
-import sys
 import math
 
 # Comparison threshold
@@ -642,7 +641,8 @@ class vec3:
 
 ######################################################################
 def _test():
-    import doctest, vec3
+    import doctest
+    import vec3
     failed, total = doctest.testmod(vec3)
     print ("%d/%d failed" % (failed, total))
 

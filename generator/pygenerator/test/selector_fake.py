@@ -110,14 +110,14 @@ class SelectorFake(Selector):
         self.float_selector = []
         self.float_counter = 0.0
 
-    def get_random_choice(self, l: list[Any]) -> Any:
+    def get_random_choice(self, items: list[Any]) -> Any:
         if len(self.choice_selector) != 0:
             num = self.choice_selector.pop()
-            return l[num]
+            return items[num]
         else:
             n = self.choice_counter
             self.choice_counter += 1
-            return l[n % (len(l))]
+            return items[n % (len(items))]
 
     def get_random_int(self, min: int, max: int) -> int:
         if len(self.int_selector) != 0:

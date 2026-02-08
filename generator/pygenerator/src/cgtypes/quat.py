@@ -544,7 +544,8 @@ def squad(t, a, b, c, d):
 ######################################################################
 
 def _test():
-    import doctest, quat
+    import doctest
+    import quat
     failed, total = doctest.testmod(quat)
     print ("%d/%d failed" % (failed, total))
 

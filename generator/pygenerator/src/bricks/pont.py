@@ -22,7 +22,7 @@ import milendall_math
 
 from .register import register_brick_type
 
-from jsonmerge import merge
+from merge_utils import merge
 from typing_defs import ElementWithValues, SelectorLike
 
 logger = logging.getLogger("pont")

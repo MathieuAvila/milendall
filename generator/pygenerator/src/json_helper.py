@@ -4,14 +4,15 @@ Helpers to load and validate JSON file
 
 from __future__ import annotations
 
-from typing import Callable
+from typing import Any, Callable, cast
 
 import logging
-import pathlib
 import os
 import yaml
 import json
 import jsonschema
+from jsonschema.validators import validator_for
+from referencing import Registry, Resource
 import json5
 
 SCHEMA_LOCATION = "../../schema/"
@@ -39,7 +40,7 @@ def _load_json_or_yaml(json_path: str,
         with open(json_path, "r") as read_file:
             obj = json.load(read_file, object_hook=object_hook)
             return obj
-    except:
+    except (OSError, json.JSONDecodeError):
         try_jsonc = True
     if try_jsonc:
         try:
@@ -60,41 +61,55 @@ def _load_json_or_yaml(json_path: str,
 
     return obj
 
+def _build_registry(schema_path: str) -> Registry:
+    def _retrieve(uri: str) -> Resource:
+        if uri.startswith("file://"):
+            path = uri[len("file://"):]
+            with open(path, "r") as read_file:
+                data = json.load(read_file)
+            return Resource.from_contents(data)
+        if uri.startswith("http://"):
+            data = _handler(uri)
+            return Resource.from_contents(data)
+        raise ValueError(f"Unsupported schema URI: {uri}")
+
+    with open(schema_path, "r") as read_schema_file:
+        schema = json.load(read_schema_file)
+    registry = Registry(retrieve=_retrieve).with_resource(  # type: ignore[call-arg]
+        "file://" + schema_path,
+        Resource.from_contents(schema),
+    )
+    return registry
+
+
 def load_and_validate_json(json_path: str, schema_name: str,
                            decode_hook: Callable[[dict[str, object]], object] | None = None) -> object:
-    schema_path = SCHEMA_LOCATION + schema_name
-    real_path = os.path.realpath(schema_path)
-    with open(real_path, "r") as read_schema_file:
+    schema_path = os.path.realpath(SCHEMA_LOCATION + schema_name)
+    registry = _build_registry(schema_path)
+    with open(schema_path, "r") as read_schema_file:
         schema = json.load(read_schema_file)
-    schemaurl = "file://" + real_path
-    resolver = jsonschema.RefResolver(schemaurl, referrer=schema, handlers={
-        'http': _handler,
-        "file": _handler,
-    })
-    #resolver = jsonschema.RefResolver.from_schema(schema)
 
     obj = _load_json_or_yaml(json_path)
-    jsonschema.validate(instance=obj, resolver=resolver, schema=schema)
+    validator_cls = validator_for(schema)
+    validator_cls.check_schema(schema)
+    validator_cls(schema, registry=registry).validate(cast(Any, obj))
 
     obj = _load_json_or_yaml(json_path, object_hook=decode_hook)
     return obj
 
 def check_json_fragment(fragment: object, schema_name: str) -> None:
     '''If such schema exists, check against it. Otherwise keep going'''
-    schema_path = SCHEMA_LOCATION + schema_name
-    real_path = os.path.realpath(schema_path)
+    schema_path = os.path.realpath(SCHEMA_LOCATION + schema_name)
     try:
-        with open(real_path, "r") as read_schema_file:
+        with open(schema_path, "r") as read_schema_file:
             schema = json.load(read_schema_file)
     except Exception:
-        logger.warning("Schema does not exist: %s",real_path)
+        logger.warning("Schema does not exist: %s",schema_path)
         return
-    schemaurl = "file://" + real_path
-    resolver = jsonschema.RefResolver(schemaurl, referrer=schema, handlers={
-        'http': _handler,
-        "file": _handler,
-    })
-    jsonschema.validate(instance=fragment, resolver=resolver, schema=schema)
+    registry = _build_registry(schema_path)
+    validator_cls = validator_for(schema)
+    validator_cls.check_schema(schema)
+    validator_cls(schema, registry=registry).validate(cast(Any, fragment))
 
 class JSONEncoder(json.JSONEncoder):
 

@@ -15,8 +15,6 @@ import brick
 import concrete_room
 import selector_regular
 
-import bricks.simple_pads as simple_pads
-import dressings.basic as basic
 
 logger = logging.getLogger("TestBrick_SimplePad")
 logger.level = logging.DEBUG

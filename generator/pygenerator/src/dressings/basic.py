@@ -11,7 +11,7 @@ from dressing import Dressing
 from .register import register_dressing_type
 import gltf_helper
 
-from jsonmerge import merge
+from merge_utils import merge
 from typing_defs import ElementWithValues, SelectorLike
 
 logger = logging.getLogger("basic")
@@ -56,11 +56,6 @@ class DressingBasic(Dressing):
 
             # get each kind of walls and associate a texture.
 
-            axes_map = {concrete_room.Node.HINT_GROUND:  [["x"], ["z"]] ,
-                concrete_room.Node.HINT_WALL:  [["x","z"], ["y"]] ,
-                concrete_room.Node.HINT_CEILING: [["x"], ["z"]] ,
-                concrete_room.Node.HINT_DOOR: [["x"], ["z"]]  }
-
             private = self._element.values.parameters.dressing_private
             if private is None:
                 raise RuntimeError("DressingBasic requires dressing parameters to generate")
@@ -70,7 +65,6 @@ class DressingBasic(Dressing):
                 raise RuntimeError("DressingBasic textures are missing")
             for kind_texture in textures.keys():
                 texture = textures[kind_texture]
-                axes = axes_map[kind_texture]
                 list_faces = obj.get_visual_face([kind_texture])
                 logger.debug("kind: %s, texture:%s , len:%i",
                             kind_texture, texture, len(list_faces))

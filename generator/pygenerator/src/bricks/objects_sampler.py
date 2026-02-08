@@ -10,15 +10,11 @@ import math
 
 from brick_structure import BrickStructure
 import concrete_room
-import cgtypes.vec3
-import cgtypes.mat4
 
-import milendall_math
-import gltf_helper
 
 from .register import register_brick_type
 
-from jsonmerge import merge
+from merge_utils import merge
 from typing_defs import ElementWithValues, SelectorLike
 
 logger = logging.getLogger("object_sampler")
@@ -76,7 +72,6 @@ class BrickObjectSampler(BrickStructure):
         func = functools.reduce(lambda a, b: a + "\n" + b, func_array )
 
         for n in range(0, nr): # need to go beyond 1
-            value = {}
             locals={
                 "n":n,
                 "t":"",

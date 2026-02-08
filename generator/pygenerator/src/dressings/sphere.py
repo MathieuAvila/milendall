@@ -13,7 +13,7 @@ from cgtypes.vec3 import vec3
 from dressing import Dressing
 from .register import register_dressing_type
 
-from jsonmerge import merge
+from merge_utils import merge
 from typing_defs import ElementWithValues, SelectorLike
 
 logger = logging.getLogger("basic")

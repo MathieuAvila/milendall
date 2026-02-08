@@ -100,22 +100,22 @@ class Room(Element):
         '''Instantiate everything'''
         logger.info("Personalization room %s " % (self.name))
         self.state = LevelState.Personalized
-        for brick in self.values.bricks:
-            brick.structure_personalization()
+        for room_brick in self.values.bricks:
+            room_brick.structure_personalization()
 
     def dressing_instantiation(self) -> None:
         '''Instantiate everything'''
         logger.info("Dressing instantiation room %s " % (self.name))
         self.state = LevelState.DressingInstantiated
-        for brick in self.values.bricks:
-            brick.dressing_instantiation()
+        for room_brick in self.values.bricks:
+            room_brick.dressing_instantiation()
 
     def dressing_personalization(self) -> None:
         '''Instantiate everything'''
         logger.info("Dressing personalization room %s " % (self.name))
         self.state = LevelState.DressingPersonalized
-        for brick in self.values.bricks:
-            brick.dressing_personalization()
+        for room_brick in self.values.bricks:
+            room_brick.dressing_personalization()
 
     def save(self, level_directory: str | None = None) -> None:
         '''Save to file. File depends on instantiated or not'''
@@ -141,10 +141,9 @@ class Room(Element):
         dump a graphviz repr of a room
         """
 
-        label = self.name
         logger.info("Dump room %s" % (self.name))
-        for brick in self.values.bricks:
-            brick.dump_graph(output_room, output_main, self.name)
+        for room_brick in self.values.bricks:
+            room_brick.dump_graph(output_room, output_main, self.name)
         #output.write('"' + self.name +'" ' + '[ label=< ' + label+ ' > ] ;\n')
 
     def finalize(self, level_directory: str | None = None, preview: bool = False, concrete_test_param: concrete_room.ConcreteRoom | None = None) -> None:  # type: ignore[override]
@@ -157,12 +156,12 @@ class Room(Element):
         else:
             concrete = concrete_room.ConcreteRoom()
 
-        for brick in self.values.bricks:
-            logger.debug("in brick %s" % brick.values.b_id)
+        for room_brick in self.values.bricks:
+            logger.debug("in brick %s" % room_brick.values.b_id)
             concrete_brick = concrete_room.ConcreteRoom()
-            brick.finalize(concrete_brick)
-            concrete_brick.append_prefix(brick.values.b_id + "_")
-            root_pad = brick.values.root_pad
+            room_brick.finalize(concrete_brick)
+            concrete_brick.append_prefix(room_brick.values.b_id + "_")
+            root_pad = room_brick.values.root_pad
             if root_pad is not None:
                 root_id = root_pad.ref_b_id + "_" + root_pad.ref_pad_id
                 parent_root_id = root_id
@@ -181,7 +180,7 @@ class Room(Element):
                     if root_pad.translation is not None:
                         t = root_pad.translation
                         mat = cgtypes.mat4.translation(cgtypes.vec3(t[0],t[1],t[2])) * mat  # type: ignore[arg-type]
-                    parent_root_id = "%s%s%s" %( root_id , "_root_", brick.values.b_id)
+                    parent_root_id = "%s%s%s" %( root_id , "_root_", room_brick.values.b_id)
                     concrete.add_child(root_id, parent_root_id, mat)
                 concrete_brick.set_root(parent_root_id)
             concrete.merge(concrete_brick)

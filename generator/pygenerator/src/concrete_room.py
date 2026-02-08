@@ -10,12 +10,10 @@ However, it can be dumped to a file to ease debugging of rooms/objects
 
 from __future__ import annotations
 
-from typing import BinaryIO, Iterable, Sequence
+from typing import Sequence
 
 import logging
 import json
-import itertools
-import struct
 import shutil
 import os
 import copy
@@ -23,7 +21,9 @@ import copy
 import cgtypes.vec3
 import cgtypes.mat4
 
-from gltf_helper import get_texture_definition, create_accessor
+from gltf_helper import create_accessor, get_texture_definition as _get_texture_definition
+
+get_texture_definition = _get_texture_definition
 
 logger  = logging.getLogger("concrete_room")
 logger.setLevel(logging.INFO)
@@ -262,7 +262,7 @@ class Node:
             faces_block.append(new_face)
 
     def get_extras(self, gltf_node):
-        if not "extras" in gltf_node:
+        if "extras" not in gltf_node:
             gltf_node["extras"] = {}
         extra = gltf_node["extras"]
         return extra
@@ -412,7 +412,7 @@ class ConcreteRoom:
         for o in self.objects:
             logger.debug("append_prefix : %s,  %s ", o.name, o.parent)
             o.name = "%s%s" % (prefix, o.name)
-            if o.parent != None:
+            if o.parent is not None:
                 o.parent = "%s%s" % (prefix, o.parent)
             logger.debug(" => %s parent %s", o.name, o.parent)
         for animation in self.animations:

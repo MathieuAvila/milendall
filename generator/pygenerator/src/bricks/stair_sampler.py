@@ -13,12 +13,10 @@ import concrete_room
 import cgtypes.vec3
 import cgtypes.mat4
 
-import milendall_math
-import gltf_helper
 
 from .register import register_brick_type
 
-from jsonmerge import merge
+from merge_utils import merge
 from typing_defs import ElementWithValues, SelectorLike
 
 logger = logging.getLogger("stair_sampler")
@@ -75,7 +73,6 @@ class BrickStairSampler(BrickStructure):
 
         nr = structure_private["nr_steps"]
         default_u = cgtypes.vec3(structure_private["default_u"])
-        default_v = cgtypes.vec3(structure_private["default_v"])
         default_h = structure_private["default_h"]
         default_x1 = structure_private["default_x1"]
         default_x2 = structure_private["default_x2"]
@@ -143,7 +140,6 @@ class BrickStairSampler(BrickStructure):
         table = []
 
         for i in range(0, nr -1):
-            points_raw = []
             # horiz step
             table.append([
                     points_index[i]["0-0"],

@@ -14,7 +14,7 @@ import cgtypes.mat4
 import concrete_room
 import animation
 
-from jsonmerge import merge
+from merge_utils import merge
 from typing_defs import ElementWithValues, SelectorLike
 
 logger = logging.getLogger("simple_door")
@@ -102,7 +102,7 @@ class SimpleDoorBrick(BrickStructure):
         self._element.values.parameters.structure_private = merge( my_default, structure_parameters)
         p = self._element.values.parameters.structure_private
         # in case we're in auto-open mode, let's define the event
-        if  p["door"]["auto_open"] == True and p["door"]["event"] == "":
+        if p["door"]["auto_open"] and p["door"]["event"] == "":
             p["door"]["event"] = self.brick.get_id() + "_event"
 
     def generate(self, concrete: concrete_room.ConcreteRoom) -> None:

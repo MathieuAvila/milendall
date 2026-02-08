@@ -55,7 +55,7 @@ def check_level(directory: str, filename: str) -> level.Level:
     if directory == '':
         print("Error, expected directory. See --help for info.")
         sys.exit(1)
-    if not filename in os.listdir(directory):
+    if filename not in os.listdir(directory):
         print("Error, expected directory with ", filename, "file. See --help for info.")
         sys.exit(1)
     selector = selector_regular.SelectorRegular()
@@ -91,7 +91,7 @@ def main(argv: Sequence[str]) -> None:
             output_dir = arg
             print("Option: Output set to: %s" % output_dir)
         elif opt in ("-r"):
-            room = arg
+            logger.debug("Option: Room %s", arg)
         elif opt in ("-s"):
             start_step = LevelState.__members__[arg]
         elif opt in ("-e"):

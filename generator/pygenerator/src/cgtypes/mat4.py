@@ -34,7 +34,8 @@
 # ***** END LICENSE BLOCK *****
 # $Id: mat4.py,v 1.2 2005/08/17 19:52:41 mbaas Exp $
 
-import math, copy
+import math
+import copy
 from .vec3 import vec3 as _vec3
 from .vec4 import vec4 as _vec4
 from .mat3 import mat3 as _mat3
@@ -784,7 +785,8 @@ class mat4:
 ######################################################################
 
 def _test():
-    import doctest, mat4
+    import doctest
+    import mat4
     failed, total = doctest.testmod(mat4)
     print ("%d/%d failed" % (failed, total))
 

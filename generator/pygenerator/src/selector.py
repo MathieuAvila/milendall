@@ -64,7 +64,7 @@ class Selector:
             raise ValueError("Dressing name cannot be None")
         return self.classes["dressing"][element.get_class()][name].get_instance(element)
 
-    def get_random_choice(self, l: Sequence[DressingLike]) -> DressingLike:
+    def get_random_choice(self, items: Sequence[DressingLike]) -> DressingLike:
         """Random number wrapper, to allow UT control over random-itude."""
         raise NotImplementedError("subclass me")
 

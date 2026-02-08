@@ -4,15 +4,11 @@ Helpers to create GLTF file
 
 from __future__ import annotations
 
-from typing import Any, BinaryIO, Callable, Iterable, Sequence
+from typing import Any, BinaryIO, Callable, Sequence
 
 import logging
-import json
 import itertools
 import struct
-import shutil
-import os
-import copy
 
 import cgtypes
 logging.basicConfig()
@@ -66,7 +62,7 @@ def get_texture_definition_function_simple_mapper(filename: str, scale_x: float 
     def mapper(points: Sequence[cgtypes.vec3], face: Sequence[int],
                context: dict[str, Any], my_points: Sequence[cgtypes.vec3]) -> None:
         # if possible, use provided coords
-        if hasattr(my_points[0], "has_tex") == True:
+        if hasattr(my_points[0], "has_tex"):
             logging.info("HAS TEXTURES COORDS")
             return
 
@@ -95,7 +91,6 @@ def create_accessor(data_file: BinaryIO, gltf: dict[str, Any],
 
     if isinstance(elements[0], list):
         component_type = 5126
-        target = 34962
         all0 = [elem[0] for elem in elements]
         all1 = [elem[1] for elem in elements]
         lmin = []
@@ -130,7 +125,6 @@ def create_accessor(data_file: BinaryIO, gltf: dict[str, Any],
             component_type = 5126
         else:
             raise "unexpected scalar type"
-        target = 34963
         lmin = [ min(elements) ]
         lmax = [ max(elements) ]
         final_list = elements

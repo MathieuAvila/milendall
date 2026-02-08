@@ -609,7 +609,8 @@ class vec4(object):
 ######################################################################
 
 def _test():
-    import doctest, vec4
+    import doctest
+    import vec4
     failed, total = doctest.testmod(vec4)
     print ("%d/%d failed" % (failed, total))
 

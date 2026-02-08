@@ -13,7 +13,7 @@ attrs==25.4.0
     #   jsonschema
     #   referencing
 black==26.1.0
-    # via pygenerator (./generator/pygenerator/pyproject.toml)
+    # via pygenerator (generator/pygenerator/pyproject.toml)
 build==1.4.0
     # via pip-tools
 certifi==2026.1.4
@@ -26,7 +26,7 @@ cfgv==3.5.0
 charset-normalizer==3.4.4
     # via requests
 clang==21.1.7
-    # via pygenerator (./generator/pygenerator/pyproject.toml)
+    # via pygenerator (generator/pygenerator/pyproject.toml)
 click==8.3.1
     # via
     #   black
@@ -38,7 +38,7 @@ distlib==0.4.0
 filelock==3.20.3
     # via virtualenv
 flake8==7.3.0
-    # via pygenerator (./generator/pygenerator/pyproject.toml)
+    # via pygenerator (generator/pygenerator/pyproject.toml)
 h11==0.16.0
     # via httpcore
 httpcore==1.0.9
@@ -57,23 +57,19 @@ idna==3.11
 iniconfig==2.3.0
     # via pytest
 isort==7.0.0
-    # via pygenerator (./generator/pygenerator/pyproject.toml)
+    # via pygenerator (generator/pygenerator/pyproject.toml)
 json5==0.13.0
-    # via pygenerator (./generator/pygenerator/pyproject.toml)
-jsonmerge==1.9.2
-    # via pygenerator (./generator/pygenerator/pyproject.toml)
+    # via pygenerator (generator/pygenerator/pyproject.toml)
 jsonpatch==1.33
     # via langchain-core
 jsonpointer==3.0.0
     # via jsonpatch
 jsonschema==4.26.0
-    # via
-    #   jsonmerge
-    #   pygenerator (./generator/pygenerator/pyproject.toml)
+    # via pygenerator (generator/pygenerator/pyproject.toml)
 jsonschema-specifications==2025.9.1
     # via jsonschema
 langchain==1.2.9
-    # via pygenerator (./generator/pygenerator/pyproject.toml)
+    # via pygenerator (generator/pygenerator/pyproject.toml)
 langchain-core==1.2.9
     # via
     #   langchain
@@ -83,7 +79,7 @@ langchain-core==1.2.9
 langgraph==1.0.8
     # via
     #   langchain
-    #   pygenerator (./generator/pygenerator/pyproject.toml)
+    #   pygenerator (generator/pygenerator/pyproject.toml)
 langgraph-checkpoint==4.0.0
     # via
     #   langgraph
@@ -99,9 +95,9 @@ librt==0.7.8
 mccabe==0.7.0
     # via flake8
 munch==4.0.0
-    # via pygenerator (./generator/pygenerator/pyproject.toml)
+    # via pygenerator (generator/pygenerator/pyproject.toml)
 mypy==1.19.1
-    # via pygenerator (./generator/pygenerator/pyproject.toml)
+    # via pygenerator (generator/pygenerator/pyproject.toml)
 mypy-extensions==1.1.0
     # via
     #   black
@@ -127,7 +123,7 @@ pathspec==1.0.4
     #   black
     #   mypy
 pip-tools==7.5.2
-    # via pygenerator (./generator/pygenerator/pyproject.toml)
+    # via pygenerator (generator/pygenerator/pyproject.toml)
 platformdirs==4.5.1
     # via
     #   black
@@ -137,7 +133,7 @@ pluggy==1.6.0
     #   pytest
     #   pytest-cov
 pre-commit==4.5.1
-    # via pygenerator (./generator/pygenerator/pyproject.toml)
+    # via pygenerator (generator/pygenerator/pyproject.toml)
 pycodestyle==2.14.0
     # via flake8
 pydantic==2.12.5
@@ -158,17 +154,17 @@ pyproject-hooks==1.2.0
     #   pip-tools
 pytest==9.0.2
     # via
-    #   pygenerator (./generator/pygenerator/pyproject.toml)
+    #   pygenerator (generator/pygenerator/pyproject.toml)
     #   pytest-cov
 pytest-cov==7.0.0
-    # via pygenerator (./generator/pygenerator/pyproject.toml)
+    # via pygenerator (generator/pygenerator/pyproject.toml)
 pytokens==0.4.1
     # via black
 pyyaml==6.0.3
     # via
     #   langchain-core
     #   pre-commit
-    #   pygenerator (./generator/pygenerator/pyproject.toml)
+    #   pygenerator (generator/pygenerator/pyproject.toml)
 referencing==0.37.0
     # via
     #   jsonschema
@@ -184,12 +180,14 @@ rpds-py==0.30.0
     # via
     #   jsonschema
     #   referencing
+ruff==0.15.0
+    # via pygenerator (generator/pygenerator/pyproject.toml)
 tenacity==9.1.4
     # via langchain-core
 types-jsonschema==4.26.0.20260202
-    # via pygenerator (./generator/pygenerator/pyproject.toml)
+    # via pygenerator (generator/pygenerator/pyproject.toml)
 types-pyyaml==6.0.12.20250915
-    # via pygenerator (./generator/pygenerator/pyproject.toml)
+    # via pygenerator (generator/pygenerator/pyproject.toml)
 typing-extensions==4.15.0
     # via
     #   anyio

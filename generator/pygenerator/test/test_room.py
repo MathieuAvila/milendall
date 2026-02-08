@@ -302,8 +302,6 @@ class TestRoom(unittest.TestCase):
         for o in objs:
             logger.info("%s => %s", o.name, o.parent)
             obj_p[o.name] = o
-            if o.name == "b0_objects":
-                special = o
         self.assertEqual(obj_p.keys(), {"b0_parent", "b0_objects"})
         with open(my_test_dir + "/room1/room.gltf") as f:
             j = json.load(f)

@@ -13,11 +13,10 @@ import cgtypes.vec3
 import cgtypes.mat4
 
 import milendall_math
-import gltf_helper
 
 from .register import register_brick_type
 
-from jsonmerge import merge
+from merge_utils import merge
 from typing_defs import ElementWithValues, SelectorLike
 
 logger = logging.getLogger("rectangular")
@@ -66,7 +65,6 @@ class BrickRectangular(BrickStructure):
         """Perform instantiation on concrete_room"""
         structure_private = self._element.values.parameters.structure_private
         direction_size = structure_private["size"]
-        height = direction_size[1]
 
         # create main object
         parent = concrete.add_child(None, "parent")
@@ -131,11 +129,11 @@ class BrickRectangular(BrickStructure):
                 pX * direction_size[size[0]] + pY * direction_size[size[1]],
                 pY * direction_size[size[1]]
                 ]
-            if structure_private["reverse"] == True:
+            if structure_private["reverse"]:
                 org_points = org_points[::-1]
             org_faces = [[0,1,2,3]]
             faces = milendall_math.Faces(org_points, org_faces)
-            if pads != None:
+            if pads is not None:
                 for pad in pads:
                     d = pad["definition"]
                     o = d["origin"]
@@ -147,11 +145,11 @@ class BrickRectangular(BrickStructure):
                                 cgtypes.vec3(s.x, 0.0, 0.0),
                                 cgtypes.vec3(s.x, s.y, 0.0),
                                 cgtypes.vec3(0.0, s.y, 0.0)]
-                        if structure_private["reverse"] == True:
+                        if structure_private["reverse"]:
                             face = face[::-1]
                         # apply transformation to hole, based on border number
                         local_pad_mat = cgtypes.mat4(1.0)
-                        if structure_private["reverse"] == True:
+                        if structure_private["reverse"]:
                             if d["border"] == 0 or d["border"] == 1:
                                 local_pad_mat = local_pad_mat * (
                                     cgtypes.mat4.translation(cgtypes.vec3(S[0], 0.0, 0.0)) *
@@ -186,7 +184,7 @@ class BrickRectangular(BrickStructure):
                         logger.debug("trans_face %i %s " %( d["border"], trans_face))
                         faces.hole(trans_face)
                         # add pad
-                        child_object = concrete.add_child("parent", pad.pad_id, wall_mat* local_pad_mat)
+                        concrete.add_child("parent", pad.pad_id, wall_mat* local_pad_mat)
 
             holed = faces.get_points_faces()
 

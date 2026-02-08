@@ -11,7 +11,6 @@ import unittest
 
 from munch import DefaultMunch
 
-import cgtypes.mat4
 from cgtypes.vec3 import vec3
 
 import concrete_room

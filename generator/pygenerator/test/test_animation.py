@@ -130,7 +130,7 @@ class TestAnimation(unittest.TestCase):
         try:
             cube.generate_gltf(path_gen)
             concrete_room.preview(path_gen + "/room.gltf", path_gen + "/room_preview.gltf")
-        except:
+        except Exception:
             print("Unexpected error:", sys.exc_info())
 
         with open(path_gen + "/room.gltf", "r") as room_file:

@@ -9,11 +9,10 @@ import logging
 
 from brick_structure import BrickStructure
 import concrete_room
-import cgtypes.mat4
 
 from .register import register_brick_type
 
-from jsonmerge import merge
+from merge_utils import merge
 from typing_defs import ElementWithValues, SelectorLike
 
 logger = logging.getLogger("gravity_sampler_func")
@@ -50,7 +49,7 @@ class BrickGravitySamplerFunc(BrickStructure):
         if self._element is None:
             raise RuntimeError("BrickGravitySamplerFunc requires an element to instantiate")
         structure_parameters = self._element.values.parameters.structure_parameters
-        if structure_parameters == None:
+        if structure_parameters is None:
             self._element.values.parameters.structure_parameters = {}
             structure_parameters = self._element.values.parameters.structure_parameters
 

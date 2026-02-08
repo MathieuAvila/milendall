@@ -42,7 +42,6 @@ class Plane():
         """Find the point where the face cuts the line p0-p1 in 2"""
         c0 = self.classify(p0)
         c1 = self.classify(p1)
-        diff = (c1 - c0)
         if c1 - c0 == 0:
             logger.error("Enable to find cutting line")
             return p0
@@ -139,9 +138,9 @@ def cut_faces_by_plane(faces: list[list[cgtypes.vec3.vec3]],
     result = [ [], []]
     for face in faces:
         f_in, f_out = cut_face_by_plane(face, plane)
-        if f_in != None:
+        if f_in is not None:
             result[0].append(f_in)
-        if f_out != None:
+        if f_out is not None:
             result[1].append(f_out)
     return result
 

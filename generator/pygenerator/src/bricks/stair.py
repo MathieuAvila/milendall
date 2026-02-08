@@ -5,19 +5,16 @@ structure definition for a simple stair brick
 from __future__ import annotations
 
 import logging
-import math
 
 from brick_structure import BrickStructure
 import concrete_room
 import cgtypes.vec3
 import cgtypes.mat4
 
-import milendall_math
-import gltf_helper
 
 from .register import register_brick_type
 
-from jsonmerge import merge
+from merge_utils import merge
 from typing_defs import ElementWithValues, SelectorLike
 
 logger = logging.getLogger("stair")
@@ -71,11 +68,6 @@ class BrickStair(BrickStructure):
 
         # create main object
         parent = concrete.add_child(None, "parent")
-
-        wall_kind = [
-            concrete_room.Node.HINT_WALL,
-            ]
-        pads = self._element.values.pads
 
         z0 = structure_private["z0"]
         z1 = structure_private["z1"]

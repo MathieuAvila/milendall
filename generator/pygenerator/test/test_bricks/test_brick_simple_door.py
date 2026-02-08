@@ -12,8 +12,6 @@ import brick
 import concrete_room
 import selector_regular
 
-import bricks.simple_door as simple_door
-import dressings.basic as basic
 
 logger = logging.getLogger("TestBrick_SimpleDoor")
 logger.setLevel(logging.INFO)

@@ -18,7 +18,6 @@ import cgtypes.mat4
 logger = logging.getLogger("TestConcreteRoomImpl")
 logger.setLevel(logging.INFO)
 
-from gltf_helper import get_texture_definition_with_function
 
 def my_helper_mapper(points: list[object], face: list[int], context: dict[str, object],
                      my_points: list[object]) -> None:
@@ -83,8 +82,7 @@ class TestConcreteRoomImpl(unittest.TestCase):
         self.assertIsNotNone(parent2)
         self.assertIsNotNone(child2_1)
         self.assertIsNotNone(child2_2)
-
-        j = room.dump_to_json()
+        room.dump_to_json()
 
     def test_structure_faces(self) -> None:
         """Test creating a simple impl with 1 node with multiple points and faces
@@ -350,15 +348,15 @@ class TestConcreteRoomImpl(unittest.TestCase):
         parent.add_dressing_faces(
             [ cgtypes.vec3(0), cgtypes.vec3(1), cgtypes.vec3(2) , cgtypes.vec3(3) ],
             [ [0,1,2], [1,2,3] ],
-            get_texture_definition_with_function("my_filename_toto", my_helper_mapper, 1))
+            gltf_helper.get_texture_definition_with_function("my_filename_toto", my_helper_mapper, 1))
         parent.add_dressing_faces(
             [  cgtypes.vec3(2) , cgtypes.vec3(3) , cgtypes.vec3(4) ],
             [ [0,1,2] ],
-            get_texture_definition_with_function("my_filename_toto", my_helper_mapper, 1))
+            gltf_helper.get_texture_definition_with_function("my_filename_toto", my_helper_mapper, 1))
         parent.add_dressing_faces(
             [ cgtypes.vec3(0), cgtypes.vec3(1), cgtypes.vec3(2) , cgtypes.vec3(3) ],
             [ [0,1,2], [1,2,3], [2,3,0]],
-            get_texture_definition_with_function("my_filename_toto2", my_helper_mapper, 1))
+            gltf_helper.get_texture_definition_with_function("my_filename_toto2", my_helper_mapper, 1))
         j = json.loads(room.dump_to_json())
         faces = j["objects"][0]["dressing"]
         print(json.dumps(faces, indent=4, sort_keys=True))
@@ -538,12 +536,10 @@ class TestConcreteRoomImpl(unittest.TestCase):
         test merging 2 concrete rooms. 2nd structure is linked to first
         by the name of one of its node's parent child.
         """
-        default_tex = concrete_room.get_texture_definition(
-                "texture.png")
         room1 = concrete_room.ConcreteRoom()
-        parent1 = room1.add_child(None, "parent1")
+        room1.add_child(None, "parent1")
         child1_1 = room1.add_child("parent1", "child1_1")
-        child1_2 = room1.add_child("parent1", "child1_2")
+        room1.add_child("parent1", "child1_2")
         index0 = child1_1.add_structure_points([ cgtypes.vec3(0), cgtypes.vec3(1), cgtypes.vec3(2) ])
         self.assertEqual(0, index0)
         child1_1.add_structure_faces(
@@ -552,9 +548,9 @@ class TestConcreteRoomImpl(unittest.TestCase):
             [concrete_room.Node.CATEGORY_PHYSICS], [concrete_room.Node.HINT_BUILDING], [ 0 ] )
 
         room2 = concrete_room.ConcreteRoom()
-        parent2 = room2.add_child("child1_1", "parent2") # volontarily linked to previous
+        room2.add_child("child1_1", "parent2") # volontarily linked to previous
         child2_1 = room2.add_child("parent2", "child2_1")
-        child2_2 = room2.add_child("parent2", "child1_2")
+        room2.add_child("parent2", "child1_2")
         index0 = child2_1.add_structure_points([ cgtypes.vec3(4), cgtypes.vec3(5), cgtypes.vec3(6) ])
         self.assertEqual(0, index0)
         child2_1.add_structure_faces(

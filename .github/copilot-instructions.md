@@ -45,29 +45,25 @@ make python-test
 
 ### Python typing
 
-To check typing and linting, run this command at the root directory of the project:
+To check typing, run this command at the root directory of the project:
 ```bash
 make python-check
 ```
 
+### Python ruff
+
+To check linting, run this command at the root directory of the project:
+```bash
+make python-ruff
+```
 
 ## Quality and validations
 
-- Quality gates before finishing:
-  - Build: PASS/FAIL.
-  - Lint/Typecheck (if configured): PASS/FAIL.
-  - Unit tests: PASS/FAIL (with key outputs).
-  - Small smoke test when relevant.
-- Report only deltas (what was executed and the essential results).
+For python, always execute typing (`make python-check`), linting (`make python-ruff`), and tests (`make python-test`), and iterate until all errors are corrected.
 
 ## Writing Python dependencies
 
 - Add/update in `generator/pygenerator/pyproject.toml`.
 - Regenerate `requirements.txt` with `pip-compile` (pinned), and install into `.venv`.
+- For dev only, regenerate `dev-requirements.txt` with `pip-compile` (pinned), and install into `.venv`.
 - Keep extras (e.g., `ollama`) minimal if only one backend is desired.
-
-## Small proactive improvements
-
-- After satisfying the request, add small, low-risk improvements (extra tests, brief docs, types) if they add clear value.
-- List larger follow-ups as “next steps” without implementing them directly.
-
