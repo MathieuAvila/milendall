@@ -75,3 +75,7 @@ class Selector:
     def get_random_float(self, min: float, max: float) -> float:
         """Random number wrapper, to allow UT control over random-itude."""
         raise NotImplementedError("subclass me")
+
+    def load_level_extensions(self, level_directory: str) -> None:
+        """Load extension content for a specific level directory."""
+        return None

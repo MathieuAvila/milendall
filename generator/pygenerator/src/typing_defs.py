@@ -59,6 +59,9 @@ class DressingLike(SelectableInstance, Protocol):
 
 
 class SelectorLike(Protocol):
+    def load_level_extensions(self, level_directory: str) -> None:
+        """Load extension bricks for a given level directory."""
+
     def get_structure_from_name(self, name: str | None, element: "ElementWithValues") -> StructureLike:
         """Return a structure instance by name."""
 

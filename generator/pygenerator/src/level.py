@@ -88,6 +88,7 @@ class Level:
     def load(self, directory: str, load_state: LevelState) -> None:
         self.directory = directory
         self.state = StateList(directory + "/state.txt")
+        self.selector.load_level_extensions(directory)
         logger.info("Saved states are: %s" % self.state)
         if not self.state.has_state(load_state):
             raise Exception("Level has no saved state %s" % load_state)
