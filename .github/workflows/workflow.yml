@@ -27,7 +27,7 @@ jobs:
       - name: Build
         run: |
           sudo apt update
-          sudo apt install -y clang-11 nlohmann-json3-dev libboost-all-dev libspdlog-dev libspdlog1 libglm-dev libfreeimageplus-dev googletest libgmock-dev libgl-dev libopengl-dev libglew-dev libglfw3-dev libglfw3 libfreetype-dev libfreetype6-dev liblua5.1-dev ninja-build
+          sudo apt install -y clang-20 nlohmann-json3-dev libboost-all-dev libspdlog1.12 libspdlog-dev libglm-dev libfreeimageplus-dev googletest libgmock-dev libgl-dev libopengl-dev libglew-dev libglfw3-dev libglfw3 libfreetype-dev libfreetype6-dev liblua5.1-dev ninja-build
           cmake -G Ninja -S $PWD -B $PWD/build
           cd $PWD/build
           ninja all
@@ -36,7 +36,7 @@ jobs:
         run: tar -cvf build.tar .
 
       - name: Saves build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build
           path: build.tar
@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: build
       - name: Untar
@@ -72,7 +72,7 @@ jobs:
         continue-on-error: true
         run: |
           sudo apt update
-          sudo apt install -y cmake nlohmann-json3-dev libboost-all-dev libspdlog-dev libspdlog1 libglm-dev libfreeimageplus-dev googletest libgmock-dev libgl-dev libopengl-dev libglew-dev libglfw3-dev libglfw3 libfreetype-dev libfreetype6-dev liblua5.1-dev
+          sudo apt install -y cmake nlohmann-json3-dev libboost-all-dev libspdlog-dev libspdlog1.12 libglm-dev libfreeimageplus-dev googletest libgmock-dev libgl-dev libopengl-dev libglew-dev libglfw3-dev libglfw3 libfreetype-dev libfreetype6-dev liblua5.1-dev
           cd ./build
           ctest -C Debug --output-on-failure --verbose --output-junit test_result.xml
           echo $? > ../gtest.result

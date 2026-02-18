@@ -34,8 +34,8 @@ include_directories(${FREETYPE_INCLUDE_DIR_ft2build} ${FREETYPE_INCLUDE_DIR_free
 include_directories(${LUA_INCLUDE_DIR})
 include_directories(game/src/ game/src/helpers/ game/src/objects/ game/src/gltf/ game/src/structure)
 
-SET (CMAKE_C_COMPILER               "/usr/bin/clang-11")
-SET (CMAKE_CXX_COMPILER             "/usr/bin/clang++-11")
+SET (CMAKE_C_COMPILER               "/usr/bin/clang-20")
+SET (CMAKE_CXX_COMPILER             "/usr/bin/clang++-20")
 SET (CMAKE_CXX_FLAGS                "-std=c++17 -Wall -O0 -DGLM_ENABLE_EXPERIMENTAL")
 SET (CMAKE_CXX_FLAGS_DEBUG          "-g")
 
