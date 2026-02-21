@@ -88,7 +88,7 @@ FaceList::FaceList(std::shared_ptr<PointsBlock> _points, std::unique_ptr<GltfDat
             //console->debug("face, index point = {} ]", raw_data[i]);
             index_points.push_back(raw_data[i]);
         }
-        faces.push_back(FaceList::Face(points, move(index_points)));
+    faces.push_back(FaceList::Face(points, std::move(index_points)));
 
         index += p_count + 1;
     }

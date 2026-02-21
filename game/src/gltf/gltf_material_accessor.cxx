@@ -223,7 +223,7 @@ GltfTextureReference::GltfTextureReference(PGltfMaterialLibraryImpl _lib, const 
     if (!result)
         throw GltfException(string("Error loading texture file: ") + f_path);
     console->debug("Load texture {} returned {} size {}x{}, image type={}, BPP={}", f_path, result,
-        img.getWidth(), img.getHeight(), img.getImageType(), img.getBitsPerPixel());
+        img.getWidth(), img.getHeight(), static_cast<int>(img.getImageType()), img.getBitsPerPixel());
     switch (img.getBitsPerPixel())
     {
         case 32: format = GL_RGBA; break;

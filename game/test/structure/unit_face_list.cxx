@@ -81,10 +81,10 @@ TEST_F(FaceListTest, FaceList_Load_1_faces) {
     auto data_accessor = get_test_face_list_accessor();
 
     auto data_points = data_accessor->accessId(index_points);
-    shared_ptr<PointsBlock> points = make_shared<PointsBlock>(move(data_points));
+    shared_ptr<PointsBlock> points = make_shared<PointsBlock>(std::move(data_points));
     auto data_portal = data_accessor->accessId(index_portal);
 
-    FaceList faceList(points, move(data_portal));
+    FaceList faceList(points, std::move(data_portal));
 
     auto faces = faceList.getFaces();
 
@@ -101,10 +101,10 @@ TEST_F(FaceListTest, FaceList_Load_faces_invalid_types) {
     auto data_accessor = get_test_face_list_accessor();
 
     auto data_points = data_accessor->accessId(index_points);
-    shared_ptr<PointsBlock> points = make_shared<PointsBlock>(move(data_points));
+    shared_ptr<PointsBlock> points = make_shared<PointsBlock>(std::move(data_points));
     auto data_portal = data_accessor->accessId(index_points); // invalid to point to float
 
-    EXPECT_THROW(FaceList faceList(points, move(data_portal)), GltfException);
+    EXPECT_THROW(FaceList faceList(points, std::move(data_portal)), GltfException);
 
 }
 
@@ -112,10 +112,10 @@ TEST_F(FaceListTest, FaceList_Load_multi_faces) {
     auto data_accessor = get_test_face_list_accessor();
 
     auto data_points = data_accessor->accessId(index_points);
-    shared_ptr<PointsBlock> points = make_shared<PointsBlock>(move(data_points));
+    shared_ptr<PointsBlock> points = make_shared<PointsBlock>(std::move(data_points));
     auto data_portal = data_accessor->accessId(index_hard);
 
-    FaceList faceList(points, move(data_portal));
+    FaceList faceList(points, std::move(data_portal));
 
     auto faces = faceList.getFaces();
 
@@ -145,7 +145,7 @@ void check_normal_plane(
     glm::vec4 plane)
 {
         auto data_portal = data_accessor->accessId(index);
-        FaceList faceList(points, move(data_portal));
+    FaceList faceList(points, std::move(data_portal));
         auto faces = faceList.getFaces();
         auto& f = faces.front();
         console->info("{}", glm::to_string(f.normal));
@@ -158,7 +158,7 @@ TEST_F(FaceListTest, FaceList_normals_planes) {
 
     auto data_accessor = get_test_face_list_accessor();
     auto data_points = data_accessor->accessId(9);
-    shared_ptr<PointsBlock> points = make_shared<PointsBlock>(move(data_points));
+    shared_ptr<PointsBlock> points = make_shared<PointsBlock>(std::move(data_points));
 
     // ground : up
     check_normal_plane(data_accessor.get(), points, 10,
@@ -181,9 +181,9 @@ std::list<FaceList::Face> getGroundFaces()
 {
     auto data_accessor = get_test_face_list_accessor();
     auto data_points = data_accessor->accessId(index_points_room_ground);
-    shared_ptr<PointsBlock> points = make_shared<PointsBlock>(move(data_points));
+    shared_ptr<PointsBlock> points = make_shared<PointsBlock>(std::move(data_points));
     auto data_portal = data_accessor->accessId(index_faces_room_ground);
-    FaceList faceList(points, move(data_portal));
+    FaceList faceList(points, std::move(data_portal));
     return faceList.getFaces();
 }
 
@@ -326,10 +326,10 @@ TEST_F(FaceListTest, FaceList_getPolygon_no_matrix) {
     auto data_accessor = get_test_face_list_accessor();
 
     auto data_points = data_accessor->accessId(index_points);
-    shared_ptr<PointsBlock> points = make_shared<PointsBlock>(move(data_points));
+    shared_ptr<PointsBlock> points = make_shared<PointsBlock>(std::move(data_points));
     auto data_portal = data_accessor->accessId(index_portal);
 
-    FaceList faceList(points, move(data_portal));
+    FaceList faceList(points, std::move(data_portal));
     auto faces = faceList.getFaces();
     EXPECT_EQ(faces.size(), 1);
 
@@ -352,10 +352,10 @@ TEST_F(FaceListTest, FaceList_getPolygon_matrix) {
     auto data_accessor = get_test_face_list_accessor();
 
     auto data_points = data_accessor->accessId(index_points);
-    shared_ptr<PointsBlock> points = make_shared<PointsBlock>(move(data_points));
+    shared_ptr<PointsBlock> points = make_shared<PointsBlock>(std::move(data_points));
     auto data_portal = data_accessor->accessId(index_portal);
 
-    FaceList faceList(points, move(data_portal));
+    FaceList faceList(points, std::move(data_portal));
     auto faces = faceList.getFaces();
     EXPECT_EQ(faces.size(), 1);
 

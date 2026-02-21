@@ -6,6 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "common.hxx"
+#include <utility>
 #include "room.hxx"
 #include "gltf_mesh.hxx"
 #include "json_helper_accessor.hxx"
@@ -32,7 +33,7 @@ RoomNode::FacePortal::FacePortal(
     gate = GateIdentifier(
         jsonGetElementByName(json, "gate").get<string>(),
         jsonGetElementByName(json, "connect").get<string>());
-    face = make_unique<FaceList>(points, move(accessor));
+    face = make_unique<FaceList>(points, std::move(accessor));
     // compute list of triangles
     std::vector<unsigned short> triangles;
     for (auto &f : face->getFaces())
@@ -76,7 +77,7 @@ RoomNode::RoomNode(
             auto accessor_points = jsonGetElementByName(extras, "points").get<int>();
             console->debug("Found application data (extras) for RoomNode, points are {}", accessor_points);
             auto points_accessor = data_accessor->accessId(accessor_points);
-            points = make_shared<PointsBlock>(move(points_accessor));
+            points = make_shared<PointsBlock>(std::move(points_accessor));
 
             jsonExecuteAllIfElement(extras, "phys_faces", [this, _portal_register, data_accessor](nlohmann::json &phys, int node_index)
                                     {
@@ -86,12 +87,12 @@ RoomNode::RoomNode(
             console->debug("found phys_face:{} with accessor={}, type is {}", to_string(data), accessor, type);
             auto faces_data = data_accessor->accessId(accessor);
             if (type == "portal") {
-                portals.push_back(FacePortal(points, move(faces_data), data, room_name));
+                portals.push_back(FacePortal(points, std::move(faces_data), data, room_name));
                 if (_portal_register)
                     _portal_register->registerPortal(portals.back().gate, this);
             }
             if (type == "hard") {
-                walls.push_back(FaceHard(points, move(faces_data), data));
+                walls.push_back(FaceHard(points, std::move(faces_data), data));
             } });
         }
 
