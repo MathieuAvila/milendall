@@ -23,6 +23,8 @@ These rules guide Copilot (Chat, Inline, PR) when working in this repository. Th
 ## Build and execution
 
 - C++:
+   - clean and rebuild: "ninja -C $PWD/build clean all"
+   - incremental rebuild: "ninja -C $PWD/build clean all"
 
 - Python:
   - Use the repo venv: `.venv`; interpreter is `./.venv/bin/python`.

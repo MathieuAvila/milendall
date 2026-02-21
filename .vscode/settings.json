@@ -4,6 +4,17 @@
         "--disable=F0401", "--disable=C0115"
     ],
     "cmake.cmakePath": "cmake",
+    "cmake.useCMakePresets": "always",
+    "cmake.configurePreset": "clang-20",
+    "cmake.buildPreset": "clang-20",
+    "cmake.configureSettings": {
+        "CMAKE_C_COMPILER": "/usr/bin/clang-20",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++-20"
+    },
+    "cmake.environment": {
+        "CC": "/usr/bin/clang-20",
+        "CXX": "/usr/bin/clang++-20"
+    },
     "cmake.buildArgs": [
         "-G",
         "Ninja",
@@ -11,6 +22,10 @@
         "${workspaceFolder}",
         "-B",
         "${workspaceFolder}/build"
+    ],
+    "cmake.configureArgs": [
+        "-DCMAKE_C_COMPILER=/usr/bin/clang-20",
+        "-DCMAKE_CXX_COMPILER=/usr/bin/clang++-20"
     ],
     "cmake.generator" : "Ninja",
     "python.testing.unittestArgs": [
